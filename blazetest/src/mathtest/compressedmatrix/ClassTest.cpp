@@ -73,6 +73,7 @@ ClassTest::ClassTest()
    testMultAssign();
    testScaling();
    testFunctionCall();
+   testIterator();
    testNonZeros();
    testReset();
    testClear();
@@ -2986,6 +2987,449 @@ void ClassTest::testFunctionCall()
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 4 0 0 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedMatrix iterator implementation.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the iterator implementation of the CompressedMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testIterator()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
+      typedef MatrixType::Iterator                          Iterator;
+      typedef MatrixType::ConstIterator                     ConstIterator;
+
+      MatrixType mat( 3UL, 3UL, 5UL );
+      mat(0,1) =  1;
+      mat(1,0) = -2;
+      mat(1,2) = -3;
+      mat(2,1) =  4;
+      mat(2,2) =  5;
+
+      // Counting the number of elements in 0th row
+      {
+         test_ = "Row-major iterator subtraction";
+
+         const size_t number( end( mat, 0UL ) - begin( mat, 0UL ) );
+
+         if( number != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st row
+      {
+         test_ = "Row-major iterator subtraction";
+
+         const size_t number( end( mat, 1UL ) - begin( mat, 1UL ) );
+
+         if( number != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row
+      {
+         test_ = "Row-major iterator subtraction";
+
+         const size_t number( end( mat, 2UL ) - begin( mat, 2UL ) );
+
+         if( number != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing read-only access via ConstIterator
+      {
+         test_ = "Row-major read-only access via ConstIterator";
+
+         ConstIterator it ( cbegin( mat, 2UL ) );
+         ConstIterator end( cend( mat, 2UL ) );
+
+         if( it == end || it->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == end || it->value() != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it != cend( mat, 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing assignment via Iterator
+      {
+         test_ = "Row-major assignment via Iterator";
+
+         int value = 8;
+
+         for( Iterator it=begin( mat, 2UL ); it!=end( mat, 2UL ); ++it ) {
+            *it = value++;
+         }
+
+         if( mat(0,0) !=  0 || mat(0,1) != 1 || mat(0,2) !=  0 ||
+             mat(1,0) != -2 || mat(1,1) != 0 || mat(1,2) != -3 ||
+             mat(2,0) !=  0 || mat(2,1) != 8 || mat(2,2) !=  9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  8  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment via Iterator
+      {
+         test_ = "Row-major addition assignment via Iterator";
+
+         int value = 4;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it += value++;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != 1 || mat(0,2) != 0 ||
+             mat(1,0) != 2 || mat(1,1) != 0 || mat(1,2) != 2 ||
+             mat(2,0) != 0 || mat(2,1) != 8 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 1 0 )\n( 2 0 2 )\n( 0 8 9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment via Iterator
+      {
+         test_ = "Row-major subtraction assignment via Iterator";
+
+         int value = 4;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it -= value++;
+         }
+
+         if( mat(0,0) !=  0 || mat(0,1) != 1 || mat(0,2) !=  0 ||
+             mat(1,0) != -2 || mat(1,1) != 0 || mat(1,2) != -3 ||
+             mat(2,0) !=  0 || mat(2,1) != 8 || mat(2,2) !=  9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n(  0  1  0 )\n( -2  0 -3 )\n(  0  8  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment via Iterator
+      {
+         test_ = "Row-major multiplication assignment via Iterator";
+
+         int value = 1;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it *= value++;
+         }
+
+         if( mat(0,0) !=  0 || mat(0,1) != 1 || mat(0,2) !=  0 ||
+             mat(1,0) != -2 || mat(1,1) != 0 || mat(1,2) != -6 ||
+             mat(2,0) !=  0 || mat(2,1) != 8 || mat(2,2) !=  9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n(  0  1  0 )\n( -2  0 -6 )\n(  0  8  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment via Iterator
+      {
+         test_ = "Row-major division assignment via Iterator";
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it /= 2;
+         }
+
+         if( mat(0,0) !=  0 || mat(0,1) != 1 || mat(0,2) !=  0 ||
+             mat(1,0) != -1 || mat(1,1) != 0 || mat(1,2) != -3 ||
+             mat(2,0) !=  0 || mat(2,1) != 8 || mat(2,2) !=  9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n(  0  1  0 )\n( -1  0 -3 )\n(  0  8  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
+      typedef MatrixType::Iterator                             Iterator;
+      typedef MatrixType::ConstIterator                        ConstIterator;
+
+      MatrixType mat( 3UL, 3UL, 0 );
+      mat(1,0) =  1;
+      mat(0,1) = -2;
+      mat(2,1) = -3;
+      mat(1,2) =  4;
+      mat(2,2) =  5;
+
+      // Counting the number of elements in 0th column
+      {
+         test_ = "Column-major iterator subtraction";
+
+         const size_t number( end( mat, 0UL ) - begin( mat, 0UL ) );
+
+         if( number != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st row
+      {
+         test_ = "Column-major iterator subtraction";
+
+         const size_t number( end( mat, 1UL ) - begin( mat, 1UL ) );
+
+         if( number != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row
+      {
+         test_ = "Column-major iterator subtraction";
+
+         const size_t number( end( mat, 2UL ) - begin( mat, 2UL ) );
+
+         if( number != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing read-only access via ConstIterator
+      {
+         test_ = "Column-major read-only access via ConstIterator";
+
+         ConstIterator it ( cbegin( mat, 2UL ) );
+         ConstIterator end( cend( mat, 2UL ) );
+
+         if( it == end || it->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == end || it->value() != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it != cend( mat, 2UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing assignment via Iterator
+      {
+         test_ = "Column-major assignment via Iterator";
+
+         int value = 8;
+
+         for( Iterator it=begin( mat, 2UL ); it!=end( mat, 2UL ); ++it ) {
+            *it = value++;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != -2 || mat(0,2) != 0 ||
+             mat(1,0) != 1 || mat(1,1) !=  0 || mat(1,2) != 8 ||
+             mat(2,0) != 0 || mat(2,1) != -3 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment via Iterator
+      {
+         test_ = "Column-major addition assignment via Iterator";
+
+         int value = 4;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it += value++;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != 2 || mat(0,2) != 0 ||
+             mat(1,0) != 1 || mat(1,1) != 0 || mat(1,2) != 8 ||
+             mat(2,0) != 0 || mat(2,1) != 2 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 2 0 )\n( 1 0 8 )\n( 0 2 9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment via Iterator
+      {
+         test_ = "Column-major subtraction assignment via Iterator";
+
+         int value = 4;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it -= value++;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != -2 || mat(0,2) != 0 ||
+             mat(1,0) != 1 || mat(1,1) !=  0 || mat(1,2) != 8 ||
+             mat(2,0) != 0 || mat(2,1) != -3 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment via Iterator
+      {
+         test_ = "Column-major multiplication assignment via Iterator";
+
+         int value = 1;
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it *= value++;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != -2 || mat(0,2) != 0 ||
+             mat(1,0) != 1 || mat(1,1) !=  0 || mat(1,2) != 8 ||
+             mat(2,0) != 0 || mat(2,1) != -6 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 -2  0 )\n( 1  0  8 )\n( 0 -6  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment via Iterator
+      {
+         test_ = "Column-major division assignment via Iterator";
+
+         for( Iterator it=begin( mat, 1UL ); it!=end( mat, 1UL ); ++it ) {
+            *it /= 2;
+         }
+
+         if( mat(0,0) != 0 || mat(0,1) != -1 || mat(0,2) != 0 ||
+             mat(1,0) != 1 || mat(1,1) !=  0 || mat(1,2) != 8 ||
+             mat(2,0) != 0 || mat(2,1) != -3 || mat(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 -1  0 )\n( 1  0  8 )\n( 0 -3  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
