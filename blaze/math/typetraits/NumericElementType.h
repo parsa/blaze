@@ -41,7 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -60,10 +62,15 @@ namespace blaze {
 // type at the heart of a given data type. Examples:
 
    \code
-   blaze::NumericElementType< double >::Type                              // corresponds to double
-   blaze::NumericElementType< complex<float> >::Type                      // corresponds to complex<float>
-   blaze::NumericElementType< StaticVector<int,3UL> >::Type               // corresponds to int
-   blaze::NumericElementType< CompressedVector< DynamicVector<float> > >  // corresponds to float
+   typedef double                                    Type1;  // Built-in data type
+   typedef complex<float>                            Type2;  // Complex data type
+   typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
+   typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
+
+   blaze::NumericElementType< Type1 >::Type  // corresponds to double
+   blaze::NumericElementType< Type2 >::Type  // corresponds to complex<float>
+   blaze::NumericElementType< Type3 >::Type  // corresponds to int
+   blaze::NumericElementType< Type4 >::Type  // corresponds to float
    \endcode
 
 // Note that per default NumericElementType only supports fundamental/built-in data types,
@@ -74,10 +81,10 @@ template< typename T >
 struct NumericElementType
 {
  private:
-   //**struct Numeric******************************************************************************
+   //**struct BuiltinOrComplex*********************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T2 >
-   struct Numeric { typedef T2  Type; };
+   struct BuiltinOrComplex { typedef T2  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -91,7 +98,10 @@ struct NumericElementType
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename If< IsNumeric<T>, Numeric<T>, Other<T> >::Type::Type  Type;
+   typedef typename If< Or< IsBuiltin<T>, IsComplex<T> >
+                      , BuiltinOrComplex<T>
+                      , Other<T>
+                      >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
