@@ -61,10 +61,15 @@ namespace blaze {
 // heart of a given data type. Examples:
 
    \code
-   blaze::BaseElementType< double >::Type                              // corresponds to double
-   blaze::BaseElementType< complex<float> >::Type                      // corresponds to float
-   blaze::BaseElementType< StaticVector<int,3UL> >::Type               // corresponds to int
-   blaze::BaseElementType< CompressedVector< DynamicVector<float> > >  // corresponds to float
+   typedef double                                    Type1;  // Built-in data type
+   typedef complex<float>                            Type2;  // Complex data type
+   typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
+   typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
+
+   blaze::BaseElementType< Type1 >::Type  // corresponds to double
+   blaze::BaseElementType< Type2 >::Type  // corresponds to float
+   blaze::BaseElementType< Type3 >::Type  // corresponds to int
+   blaze::BaseElementType< Type4 >::Type  // corresponds to float
    \endcode
 
 // Note that per default BaseElementType only supports fundamental/built-in data types, complex,
@@ -100,12 +105,12 @@ struct BaseElementType
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsBuiltin<T>
-                     , Builtin<T>
-                     , typename If< IsComplex<T>
-                                  , Complex<T>
-                                  , Other<T>
-                                  >::Type
-                     >::Type::Type  Type;
+                      , Builtin<T>
+                      , typename If< IsComplex<T>
+                                   , Complex<T>
+                                   , Other<T>
+                                   >::Type
+                      >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
