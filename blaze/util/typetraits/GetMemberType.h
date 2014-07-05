@@ -98,10 +98,10 @@ struct TYPE_TRAIT_NAME                                                          
    BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( LOCAL_TYPE_TRAIT, MEMBER_NAME );                    \
                                                                                                 \
  public:                                                                                        \
-   typedef typename If< LOCAL_TYPE_TRAIT<Type1233>                                              \
-                      , SUCCESS                                                                 \
-                      , FAILURE                                                                 \
-                      >::Type::Type  Type;                                                      \
+   typedef typename blaze::If< LOCAL_TYPE_TRAIT<Type1233>                                       \
+                             , SUCCESS                                                          \
+                             , FAILURE                                                          \
+                             >::Type::Type  Type;                                               \
 };
 //*************************************************************************************************
 

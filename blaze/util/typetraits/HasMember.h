@@ -47,7 +47,7 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
-namespace blaze {
+
 
 //=================================================================================================
 //
@@ -111,7 +111,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    struct FALLBACK { int MEMBER_NAME; };                                                     \
                                                                                              \
    struct DERIVED                                                                            \
-      : If< IsBuiltin<TYPE1230>, BASE, TYPE1230 >::Type                                      \
+      : blaze::If< blaze::IsBuiltin<TYPE1230>, BASE, TYPE1230 >::Type                        \
       , FALLBACK                                                                             \
    {};                                                                                       \
                                                                                              \
@@ -123,7 +123,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
                                                                                              \
  public:                                                                                     \
    enum { value = sizeof( TEST<DERIVED>( NULL ) ) == sizeof( YES ) };                        \
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;                        \
+   typedef typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type  Type;   \
 };                                                                                           \
                                                                                              \
 template< typename TYPE1230 >                                                                \
@@ -176,40 +176,40 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type         
 // \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
 // as locally as possible to minimize the probability of name collisions.
 */
-#define BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )  \
-                                                                                 \
-template < typename TYPE1231 >                                                   \
-struct TYPE_TRAIT_NAME##HELPER                                                   \
-{                                                                                \
- private:                                                                        \
-   typedef char YES[1];                                                          \
-   typedef char NO [2];                                                          \
-                                                                                 \
-   struct BASE {};                                                               \
-                                                                                 \
-   struct FALLBACK { struct MEMBER_NAME { }; };                                  \
-                                                                                 \
-   struct DERIVED                                                                \
-      : If< IsBuiltin<TYPE1231>, BASE, TYPE1231 >::Type                          \
-      , FALLBACK                                                                 \
-   {};                                                                           \
-                                                                                 \
-   template < class U >                                                          \
-   static NO& TEST( typename U::MEMBER_NAME* );                                  \
-                                                                                 \
-   template < typename U >                                                       \
-   static YES& TEST( U* );                                                       \
-                                                                                 \
- public:                                                                         \
-   enum { value = sizeof( TEST<DERIVED>( NULL ) ) == sizeof( YES ) };            \
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;            \
-};                                                                               \
-                                                                                 \
-template< typename TYPE1231 >                                                    \
-struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type          \
-{                                                                                \
-   enum { value = TYPE_TRAIT_NAME##HELPER<TYPE1231>::value };                    \
-   typedef typename TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type  Type;               \
+#define BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )             \
+                                                                                            \
+template < typename TYPE1231 >                                                              \
+struct TYPE_TRAIT_NAME##HELPER                                                              \
+{                                                                                           \
+ private:                                                                                   \
+   typedef char YES[1];                                                                     \
+   typedef char NO [2];                                                                     \
+                                                                                            \
+   struct BASE {};                                                                          \
+                                                                                            \
+   struct FALLBACK { struct MEMBER_NAME { }; };                                             \
+                                                                                            \
+   struct DERIVED                                                                           \
+      : blaze::If< blaze::IsBuiltin<TYPE1231>, BASE, TYPE1231 >::Type                       \
+      , FALLBACK                                                                            \
+   {};                                                                                      \
+                                                                                            \
+   template < class U >                                                                     \
+   static NO& TEST( typename U::MEMBER_NAME* );                                             \
+                                                                                            \
+   template < typename U >                                                                  \
+   static YES& TEST( U* );                                                                  \
+                                                                                            \
+ public:                                                                                    \
+   enum { value = sizeof( TEST<DERIVED>( NULL ) ) == sizeof( YES ) };                       \
+   typedef typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type  Type;  \
+};                                                                                          \
+                                                                                            \
+template< typename TYPE1231 >                                                               \
+struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type                     \
+{                                                                                           \
+   enum { value = TYPE_TRAIT_NAME##HELPER<TYPE1231>::value };                               \
+   typedef typename TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type  Type;                          \
 };
 //*************************************************************************************************
 
@@ -266,7 +266,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
                                                                                                  \
  public:                                                                                         \
    enum { value = LOCAL_TYPE_TRAIT_1<Type1232>::value || LOCAL_TYPE_TRAIT_2<Type1232>::value };  \
-   typedef typename SelectType<value,TrueType,FalseType>::Type  Type;                            \
+   typedef typename blaze::SelectType<value,blaze::TrueType,blaze::FalseType>::Type  Type;       \
 };                                                                                               \
                                                                                                  \
 template< typename Type1232 >                                                                    \
@@ -277,7 +277,5 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<Type1232>::Type         
    typedef typename TYPE_TRAIT_NAME##HELPER<Type1232>::Type  Type;                               \
 };
 //*************************************************************************************************
-
-} // namespace blaze
 
 #endif
