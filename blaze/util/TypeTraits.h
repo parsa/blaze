@@ -46,6 +46,7 @@
 #include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/typetraits/AddVolatile.h>
 #include <blaze/util/typetraits/Extent.h>
+#include <blaze/util/typetraits/GetMemberType.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/HaveSameSize.h>
