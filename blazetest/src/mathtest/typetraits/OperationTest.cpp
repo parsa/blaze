@@ -89,8 +89,8 @@ OperationTest::OperationTest()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the mathematical 'BaseElementType' type trait. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a compile time test of the mathematical 'BaseElementType' type trait.
+// In case an error is detected, a compilation error is created.
 */
 void OperationTest::testBaseElementType()
 {
@@ -119,8 +119,8 @@ void OperationTest::testBaseElementType()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the mathematical 'NumericElementType' type trait. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a compile time test of the mathematical 'NumericElementType' type trait.
+// In case an error is detected, a compilation error is created.
 */
 void OperationTest::testNumericElementType()
 {
