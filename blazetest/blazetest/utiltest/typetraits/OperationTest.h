@@ -80,10 +80,10 @@ class OperationTest
  private:
    //**Type trait setup****************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasValue, value_ );
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasCompute, compute );
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasDataType, DataType );
-   BLAZE_CREATE_GET_MEMBER_TYPE_TYPE_TRAIT( GetDataType, DataType, int );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasValue, value_ );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasCompute, compute );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasDataType, DataType );
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetDataType, DataType, int );
    /*! \endcond */
    //**********************************************************************************************
 

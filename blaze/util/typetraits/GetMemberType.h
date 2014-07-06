@@ -74,7 +74,7 @@ namespace blaze {
 
    struct MyType3 {};
 
-   BLAZE_CREATE_GET_MEMBER_TYPE_TYPE_TRAIT( GetElementType, ElementType, int );
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetElementType, ElementType, int );
 
    GetElementType<MyType1>::Type  // Results in 'float'
    GetElementType<MyType2>::Type  // Results in 'double'
@@ -88,7 +88,7 @@ namespace blaze {
 // macro cannot be used within function scope since a template declaration cannot appear at
 // block scope.
 */
-#define BLAZE_CREATE_GET_MEMBER_TYPE_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME, FALLBACK_TYPE )  \
+#define BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME, FALLBACK_TYPE )  \
                                                                                                 \
 template< typename Type1233 >                                                                   \
 struct TYPE_TRAIT_NAME                                                                          \
@@ -97,7 +97,7 @@ struct TYPE_TRAIT_NAME                                                          
    struct SUCCESS { typedef typename Type1233::MEMBER_NAME  Type; };                            \
    struct FAILURE { typedef FALLBACK_TYPE  Type; };                                             \
                                                                                                 \
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( LOCAL_TYPE_TRAIT, MEMBER_NAME );                    \
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( LOCAL_TYPE_TRAIT, MEMBER_NAME );                    \
                                                                                                 \
  public:                                                                                        \
    typedef typename blaze::If< LOCAL_TYPE_TRAIT<Type1233>                                       \

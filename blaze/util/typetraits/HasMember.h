@@ -74,13 +74,13 @@
       int value_;
    };
 
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasPublicCompute , publicCompute  );
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasPrivateCompute, privateCompute );
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasValue         , value_         );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasPublicCompute , publicCompute  );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasPrivateCompute, privateCompute );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasValue         , value_         );
 
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasEvaluate , evalute   );
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasDetermine, determine );
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( HasData     , data_     );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasEvaluate , evalute   );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasDetermine, determine );
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasData     , data_     );
 
    HasPublicCompute<MyType>::value  // Evaluates to 1
    HasPrivateCompute<MyType>::Type  // Results in TrueType
@@ -97,7 +97,7 @@
 // macro cannot be used within function scope since a template declaration cannot appear at
 // block scope.
 */
-#define BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )  \
+#define BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )  \
                                                                                              \
 template < typename TYPE1230 >                                                               \
 class TYPE_TRAIT_NAME##HELPER                                                                \
@@ -157,13 +157,13 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type         
       typedef double  PrivateType;
    };
 
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasPublicType   , PublicType    );
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasProtectedType, ProtectedType );
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasPrivateType  , PrivateType   );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasPublicType   , PublicType    );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasProtectedType, ProtectedType );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasPrivateType  , PrivateType   );
 
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasValueType  , ValueType    );
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasElementType, ElementTypeType );
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( HasDataType   , DataType   );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasValueType  , ValueType    );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasElementType, ElementTypeType );
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasDataType   , DataType   );
 
    HasPublicType<MyType>::value    // Evaluates to 1
    HasProtectedType<MyType>::Type  // Results in TrueType
@@ -180,7 +180,7 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type         
 // macro cannot be used within function scope since a template declaration cannot appear at
 // block scope.
 */
-#define BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )             \
+#define BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )             \
                                                                                             \
 template < typename TYPE1231 >                                                              \
 struct TYPE_TRAIT_NAME##HELPER                                                              \
@@ -267,8 +267,8 @@ template< typename Type1232 >                                                   
 struct TYPE_TRAIT_NAME##HELPER                                                                   \
 {                                                                                                \
  private:                                                                                        \
-   BLAZE_CREATE_HAS_MEMBER_DATA_OR_FUNCTION_TYPE_TRAIT( LOCAL_TYPE_TRAIT_1, MEMBER_NAME );       \
-   BLAZE_CREATE_HAS_MEMBER_TYPE_TYPE_TRAIT( LOCAL_TYPE_TRAIT_2, MEMBER_NAME );                   \
+   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( LOCAL_TYPE_TRAIT_1, MEMBER_NAME );       \
+   BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( LOCAL_TYPE_TRAIT_2, MEMBER_NAME );                   \
                                                                                                  \
  public:                                                                                         \
    enum { value = LOCAL_TYPE_TRAIT_1<Type1232>::value || LOCAL_TYPE_TRAIT_2<Type1232>::value };  \
