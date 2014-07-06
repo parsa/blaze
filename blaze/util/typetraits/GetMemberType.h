@@ -84,7 +84,9 @@ namespace blaze {
 // The macro results in the definition of a new class with the specified name \a TYPE_TRAIT_NAME
 // within the current namespace. This may cause name collisions with any other entity called
 // \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
-// as locally as possible to minimize the probability of name collisions.
+// as locally as possible to minimize the probability of name collisions. Note however that the
+// macro cannot be used within function scope since a template declaration cannot appear at
+// block scope.
 */
 #define BLAZE_CREATE_GET_MEMBER_TYPE_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME, FALLBACK_TYPE )  \
                                                                                                 \
