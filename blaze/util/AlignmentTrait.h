@@ -43,8 +43,6 @@
 #include <boost/type_traits/alignment_of.hpp>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 
 
@@ -90,14 +88,6 @@ struct AlignmentTrait
 #else
    enum { value = boost::alignment_of<T>::value };
 #endif
-   /*! \endcond */
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST   ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( T );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -198,6 +188,54 @@ struct AlignmentTrait< complex<double> >
 #else
    enum { value = boost::alignment_of< complex<double> >::value };
 #endif
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Partial specialization of AlignmentTrait for 'const' data types.
+// \ingroup util
+*/
+template< typename T >
+struct AlignmentTrait< const T >
+{
+   //**Member enumerations*************************************************************************
+   enum { value = AlignmentTrait<T>::value };
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Partial specialization of AlignmentTrait for 'volatile' data types.
+// \ingroup util
+*/
+template< typename T >
+struct AlignmentTrait< volatile T >
+{
+   //**Member enumerations*************************************************************************
+   enum { value = AlignmentTrait<T>::value };
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Partial specialization of AlignmentTrait for 'const volatile' data types.
+// \ingroup util
+*/
+template< typename T >
+struct AlignmentTrait< const volatile T >
+{
+   //**Member enumerations*************************************************************************
+   enum { value = AlignmentTrait<T>::value };
    //**********************************************************************************************
 };
 /*! \endcond */
