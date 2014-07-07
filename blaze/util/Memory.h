@@ -46,12 +46,79 @@
 #include <cstdlib>
 #include <new>
 #include <stdexcept>
+#include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentTrait.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  BACKEND ALLOCATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation for aligned array allocation.
+// \ingroup util
+//
+// \param size The number of bytes to be allocated.
+// \param alignment The required minimum alignment.
+// \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
+//
+// This function provides the functionality to allocate memory based on the given alignment
+// restrictions. For that purpose it uses the according system-specific memory allocation
+// functions.
+*/
+inline void* allocate_backend( size_t size, size_t alignment )
+{
+   void* raw( NULL );
+
+#if defined(_MSC_VER)
+   raw = _aligned_malloc( size, alignment );
+   if( raw == NULL )
+#else
+   if( posix_memalign( &raw, alignment, size ) )
+#endif
+      throw std::bad_alloc();
+
+   return raw;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation for the deallocation of aligned memory.
+// \ingroup util
+//
+// \param address The address of the first element of the array to be deallocated.
+// \return void
+//
+// This function deallocates the given memory that was previously allocated via the allocate()
+// function. For that purpose it uses the according system-specific memory deallocation functions.
+*/
+inline void* deallocate_backend( const void* address )
+{
+#if defined(_MSC_VER)
+   _aligned_free( const_cast<void*>( address ) );
+#else
+   free( const_cast<void*>( address ) );
+#endif
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
@@ -60,18 +127,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Aligned array allocation.
+/*!\brief Aligned array allocation for built-in data types.
 // \ingroup util
 //
 // \param size The number of elements of the given type to allocate.
 // \return Pointer to the first element of the aligned array.
 // \exception std::bad_alloc Allocation failed.
 //
-// The allocate function provides the functionality to allocate memory based on the alignment
-// restrictions of the given data type. For instance, in case the given type is a fundamental,
-// built-in data type and in case SSE vectorization is possible, the returned memory is guaranteed
-// to be at least 16-byte aligned. In case AVX is active, the memory is even guaranteed to be at
-// least 32-byte aligned.
+// The allocate() function provides the functionality to allocate memory based on the alignment
+// restrictions of the given built-in data type. For instance, in case SSE vectorization is
+// possible, the returned memory is guaranteed to be at least 16-byte aligned. In case AVX is
+// active, the memory is even guaranteed to be at least 32-byte aligned.
 //
 // Examples:
 
@@ -81,20 +147,13 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-T* allocate( size_t size )
+typename EnableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 {
-   void* tmp( NULL );
    const size_t alignment( AlignmentTrait<T>::value );
 
    if( alignment >= 8UL ) {
-#if defined(_MSC_VER)
-      tmp = _aligned_malloc( size*sizeof(T), alignment );
-      if( tmp != NULL )
-#else
-      if( !posix_memalign( &tmp, alignment, size*sizeof(T) ) )
-#endif
-         return reinterpret_cast<T*>( tmp );
-      else throw std::bad_alloc();
+      void* const raw( allocate_backend( size*sizeof(T), alignment ) );
+      return reinterpret_cast<T*>( raw );
    }
    else return ::new T[size];
 }
@@ -102,7 +161,59 @@ T* allocate( size_t size )
 
 
 //*************************************************************************************************
-/*!\brief Deallocation of memory.
+/*!\brief Aligned array allocation for user-specific class types.
+// \ingroup util
+//
+// \param size The number of elements of the given type to allocate.
+// \return Pointer to the first element of the aligned array.
+// \exception std::bad_alloc Allocation failed.
+//
+// The allocate() function provides the functionality to allocate memory based on the alignment
+// restrictions of the given user-specific class type. For instance, in case the given type has
+// the requirement to be 32-byte aligned, the returned pointer is guaranteed to be 32-byte
+// aligned. Additionally, all elements of the array are guaranteed to be default constructed.
+// Note that the allocate() function provides exception safety similar to the new operator: In
+// case any element throws an exception during construction, all elements that have already been
+// constructed are destroyed in reverse order and the allocated memory is deallocated again.
+*/
+template< typename T >
+typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
+{
+   const size_t alignment ( AlignmentTrait<T>::value );
+   const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
+
+   BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );
+   BLAZE_INTERNAL_ASSERT( headersize % alignment == 0UL, "Invalid header size detected" );
+
+   if( alignment >= 8UL )
+   {
+      void* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
+
+      *reinterpret_cast<size_t*>( raw ) = size;
+
+      T* const address( reinterpret_cast<T*>( raw + headersize ) );
+      size_t i( 0UL );
+
+      try {
+         for( ; i<size; ++i )
+            ::new (address+i) T();
+      }
+      catch( ... ) {
+         while( i != 0UL )
+            address[--i].~T();
+         deallocate_backend( raw );
+         throw;
+      }
+
+      return address;
+   }
+   else return ::new T[size];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deallocation of memory for built-in data types.
 // \ingroup util
 //
 // \param address The address of the first element of the array to be deallocated.
@@ -112,16 +223,52 @@ T* allocate( size_t size )
 // function.
 */
 template< typename T >
-void deallocate( T* address )
+typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address )
 {
+   if( address == NULL )
+      return;
+
    const size_t alignment( AlignmentTrait<T>::value );
 
    if( alignment >= 8UL ) {
-#if defined(_MSC_VER)
-      _aligned_free( address );
-#else
-      free( address );
-#endif
+      deallocate_backend( address );
+   }
+   else delete[] address;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Deallocation of memory for user-specific class types.
+// \ingroup util
+//
+// \param address The address of the first element of the array to be deallocated.
+// \return void
+//
+// This function deallocates the given memory that was previously allocated via the allocate()
+// function.
+*/
+template< typename T >
+typename DisableIf< IsBuiltin<T> >::Type deallocate( T* address )
+{
+   if( address == NULL )
+      return;
+
+   const size_t alignment ( AlignmentTrait<T>::value );
+   const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
+
+   BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );
+   BLAZE_INTERNAL_ASSERT( headersize % alignment == 0UL, "Invalid header size detected" );
+
+   if( alignment >= 8UL )
+   {
+      const void* const raw = reinterpret_cast<void*>( address ) - headersize;
+
+      const size_t size( *reinterpret_cast<const size_t*>( raw ) );
+      for( size_t i=0UL; i<size; ++i )
+         address[i].~T();
+
+      deallocate_backend( raw );
    }
    else delete[] address;
 }
