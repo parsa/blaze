@@ -1,6 +1,7 @@
+#!/bin/bash
 #==================================================================================================
 #
-#  Makefile for the utiltest module of the Blaze test suite
+#  Run script for the memory module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -32,55 +33,8 @@
 #==================================================================================================
 
 
-# Build rules
-default: all
+PATH_MEMORY=$( dirname "${BASH_SOURCE[0]}" )
 
-all: alignedallocator memory typetraits uniqueptr uniquearray
+echo " Running memory tests..."
 
-essential: all
-
-single: all
-
-noop: all
-
-
-# Internal rules
-alignedallocator:
-	@echo
-	@echo "Building the aligned allocator tests..."
-	@$(MAKE) --no-print-directory -C ./alignedallocator $(MAKECMDGOALS)
-
-memory:
-	@echo
-	@echo "Building the memory tests..."
-	@$(MAKE) --no-print-directory -C ./memory $(MAKECMDGOALS)
-
-typetraits:
-	@echo
-	@echo "Building the typetraits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
-
-uniqueptr:
-	@echo
-	@echo "Building the unique pointer tests..."
-	@$(MAKE) --no-print-directory -C ./uniqueptr $(MAKECMDGOALS)
-
-uniquearray:
-	@echo
-	@echo "Building the unique array tests..."
-	@$(MAKE) --no-print-directory -C ./uniquearray $(MAKECMDGOALS)
-
-
-# Cleanup
-clean:
-	@$(MAKE) --no-print-directory -C ./alignedallocator clean
-	@$(MAKE) --no-print-directory -C ./memory clean
-	@$(MAKE) --no-print-directory -C ./typetraits clean
-	@$(MAKE) --no-print-directory -C ./uniqueptr clean
-	@$(MAKE) --no-print-directory -C ./uniquearray clean
-	@$(RM) $(OBJ) $(DEP)
-
-
-# Setting the independent commands
-.PHONY: default all essential single clean \
-        alignedallocator memory typetraits uniqueptr uniquearray
+EXE=$PATH_MEMORY/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
