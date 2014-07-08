@@ -106,7 +106,7 @@ inline void* allocate_backend( size_t size, size_t alignment )
 // This function deallocates the given memory that was previously allocated via the allocate()
 // function. For that purpose it uses the according system-specific memory deallocation functions.
 */
-inline void* deallocate_backend( const void* address )
+inline void deallocate_backend( const void* address )
 {
 #if defined(_MSC_VER)
    _aligned_free( const_cast<void*>( address ) );
