@@ -48,6 +48,7 @@
 #include <stdexcept>
 #include <blaze/util/Assert.h>
 #include <blaze/util/AlignmentTrait.h>
+#include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Null.h>
@@ -70,14 +71,14 @@ namespace blaze {
 //
 // \param size The number of bytes to be allocated.
 // \param alignment The required minimum alignment.
-// \return Pointer to the first element of the aligned array.
+// \return Byte pointer to the first element of the aligned array.
 // \exception std::bad_alloc Allocation failed.
 //
 // This function provides the functionality to allocate memory based on the given alignment
 // restrictions. For that purpose it uses the according system-specific memory allocation
 // functions.
 */
-inline void* allocate_backend( size_t size, size_t alignment )
+inline byte* allocate_backend( size_t size, size_t alignment )
 {
    void* raw( NULL );
 
@@ -89,7 +90,7 @@ inline void* allocate_backend( size_t size, size_t alignment )
 #endif
       throw std::bad_alloc();
 
-   return raw;
+   return reinterpret_cast<byte*>( raw );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -152,8 +153,7 @@ typename EnableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
    const size_t alignment( AlignmentTrait<T>::value );
 
    if( alignment >= 8UL ) {
-      void* const raw( allocate_backend( size*sizeof(T), alignment ) );
-      return reinterpret_cast<T*>( raw );
+      return reinterpret_cast<T*>( allocate_backend( size*sizeof(T), alignment ) );
    }
    else return ::new T[size];
 }
@@ -187,7 +187,7 @@ typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 
    if( alignment >= 8UL )
    {
-      void* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
+      byte* const raw( allocate_backend( size*sizeof(T)+headersize, alignment ) );
 
       *reinterpret_cast<size_t*>( raw ) = size;
 
@@ -262,7 +262,7 @@ typename DisableIf< IsBuiltin<T> >::Type deallocate( T* address )
 
    if( alignment >= 8UL )
    {
-      const void* const raw = reinterpret_cast<void*>( address ) - headersize;
+      const byte* const raw = reinterpret_cast<byte*>( address ) - headersize;
 
       const size_t size( *reinterpret_cast<const size_t*>( raw ) );
       for( size_t i=0UL; i<size; ++i )
