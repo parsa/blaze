@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>
@@ -67,6 +68,7 @@ namespace compressedvector {
 */
 ClassTest::ClassTest()
 {
+
    testConstructors();
    testAssignment();
    testAddAssign();
@@ -74,6 +76,7 @@ ClassTest::ClassTest()
    testMultAssign();
    testScaling();
    testSubscript();
+   testAccessProxy();
    testIterator();
    testNonZeros();
    testReset();
@@ -964,6 +967,541 @@ void ClassTest::testSubscript()
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the CompressedVector access proxy.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the access proxy of the CompressedVector class template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAccessProxy()
+{
+   // Vector elements
+   {
+      test_ = "VectorAccessProxy (vector elements)";
+
+      blaze::CompressedVector< blaze::DynamicVector<int> > vec( 3UL, 1UL );
+
+      // Initialization check
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 0UL );
+
+      checkSize( vec[0], 0UL );
+      checkSize( vec[1], 0UL );
+      checkSize( vec[2], 0UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 0UL );
+
+      // Resizing the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::resize() (vector elements)";
+
+         vec[2].resize( 2UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 2UL );
+         checkCapacity( vec[2], 2UL );
+      }
+
+      // Reserving capacity for the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::reserve() (vector elements)";
+
+         vec[2].reserve( 3UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 2UL );
+         checkCapacity( vec[2], 3UL );
+      }
+
+      // Extending the size of the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::extend() (vector elements)";
+
+         vec[2].extend( 1UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 3UL );
+         checkCapacity( vec[2], 3UL );
+      }
+
+      // Setting all elements of the 2nd vector to 0
+      {
+         test_ = "VectorAccessProxy::operator=() (vector elements)";
+
+         vec[2] = 0;
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 3UL );
+         checkCapacity( vec[2], 3UL );
+         checkNonZeros( vec[2], 0UL );
+      }
+
+      // Setting an element of the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::operator[] (vector elements)";
+
+         vec[2][1] = 6;
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 3UL );
+         checkCapacity( vec[2], 3UL );
+         checkNonZeros( vec[2], 1UL );
+
+         if( vec[2][1] != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in 2nd vector element detected\n"
+                << " Details:\n"
+                << "   Value         : " << vec[2][1] << "\n"
+                << "   Expected value: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 2nd vector element via non-const iterators
+      {
+         test_ = "VectorAccessProxy::begin() (vector elements)";
+
+         blaze::DynamicVector<int>::Iterator it  ( begin( vec[2] ) );
+         blaze::DynamicVector<int>::Iterator last( end( vec[2] ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 2nd vector element via const iterators
+      {
+         test_ = "VectorAccessProxy::cbegin() (vector elements)";
+
+         blaze::DynamicVector<int>::ConstIterator it  ( cbegin( vec[2] ) );
+         blaze::DynamicVector<int>::ConstIterator last( cend( vec[2] ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::reset() (vector elements)";
+
+         reset( vec[2] );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkSize    ( vec[0], 0UL );
+         checkSize    ( vec[1], 0UL );
+         checkSize    ( vec[2], 3UL );
+         checkCapacity( vec[2], 3UL );
+         checkNonZeros( vec[2], 0UL );
+      }
+
+      // Clearing the 2nd vector element
+      {
+         test_ = "VectorAccessProxy::clear() (vector elements)";
+
+         clear( vec[2] );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 0UL );
+
+         checkSize( vec[0], 0UL );
+         checkSize( vec[1], 0UL );
+         checkSize( vec[2], 0UL );
+      }
+   }
+
+   // Matrix elements
+   {
+      test_ = "VectorAccessProxy (matrix elements)";
+
+      blaze::CompressedVector< blaze::DynamicMatrix<int> > vec( 3UL, 1UL );
+
+      // Initialization check
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 0UL );
+
+      checkRows   ( vec[0], 0UL );
+      checkColumns( vec[0], 0UL );
+      checkRows   ( vec[1], 0UL );
+      checkColumns( vec[1], 0UL );
+      checkRows   ( vec[2], 0UL );
+      checkColumns( vec[2], 0UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 0UL );
+
+      // Resizing the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::resize() (matrix elements)";
+
+         vec[2].resize( 2UL, 2UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 2UL );
+         checkCapacity( vec[2], 4UL );
+      }
+
+      // Reserving capacity for the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::reserve() (matrix elements)";
+
+         vec[2].reserve( 6UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 2UL );
+         checkCapacity( vec[2], 6UL );
+      }
+
+      // Extending the size of the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::extend() (matrix elements)";
+
+         vec[2].extend( 0UL, 1UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 3UL );
+         checkCapacity( vec[2], 6UL );
+      }
+
+      // Setting all elements of the 2nd matrix to 0
+      {
+         test_ = "VectorAccessProxy::operator=() (matrix elements)";
+
+         vec[2] = 0;
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 3UL );
+         checkCapacity( vec[2], 6UL );
+         checkNonZeros( vec[2], 0UL );
+         checkNonZeros( vec[2], 0UL, 0UL );
+         checkNonZeros( vec[2], 1UL, 0UL );
+      }
+
+      // Setting two elements of the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::operator() (matrix elements)";
+
+         vec[2](0,2) = 4;
+         vec[2](1,1) = 6;
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 3UL );
+         checkCapacity( vec[2], 6UL );
+         checkNonZeros( vec[2], 2UL );
+         checkNonZeros( vec[2], 0UL, 1UL );
+         checkNonZeros( vec[2], 1UL, 1UL );
+
+         if( vec[2](0,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in matrix element at position (1,1) detected\n"
+                << " Details:\n"
+                << "   Value         : " << vec[2](0,2) << "\n"
+                << "   Expected value: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( vec[2](1,1) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in matrix element at position (1,1) detected\n"
+                << " Details:\n"
+                << "   Value         : " << vec[2](1,1) << "\n"
+                << "   Expected value: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 1st row of the 2nd matrix element via non-const iterators
+      {
+         test_ = "VectorAccessProxy::begin() (matrix elements)";
+
+         blaze::DynamicMatrix<int>::Iterator it  ( begin( vec[2], 1UL ) );
+         blaze::DynamicMatrix<int>::Iterator last( end( vec[2], 1UL ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 1st row of the 2nd matrix element via const iterators
+      {
+         test_ = "VectorAccessProxy::cbegin() (matrix elements)";
+
+         blaze::DynamicMatrix<int>::ConstIterator it  ( cbegin( vec[2], 1UL ) );
+         blaze::DynamicMatrix<int>::ConstIterator last( cend( vec[2], 1UL ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 0th row of the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::reset( size_t ) (matrix elements)";
+
+         reset( vec[2], 0UL );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 3UL );
+         checkCapacity( vec[2], 6UL );
+         checkNonZeros( vec[2], 1UL );
+         checkNonZeros( vec[2], 0UL, 0UL );
+         checkNonZeros( vec[2], 1UL, 1UL );
+      }
+
+      // Resetting the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::reset() (matrix elements)";
+
+         reset( vec[2] );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 1UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 2UL );
+         checkColumns ( vec[2], 3UL );
+         checkCapacity( vec[2], 6UL );
+         checkNonZeros( vec[2], 0UL );
+         checkNonZeros( vec[2], 0UL, 0UL );
+         checkNonZeros( vec[2], 1UL, 0UL );
+      }
+
+      // Clearing the 2nd matrix element
+      {
+         test_ = "VectorAccessProxy::clear() (matrix elements)";
+
+         clear( vec[2] );
+
+         checkSize    ( vec, 3UL );
+         checkCapacity( vec, 1UL );
+         checkNonZeros( vec, 0UL );
+
+         checkRows    ( vec[0], 0UL );
+         checkColumns ( vec[0], 0UL );
+         checkRows    ( vec[1], 0UL );
+         checkColumns ( vec[1], 0UL );
+         checkRows    ( vec[2], 0UL );
+         checkColumns ( vec[2], 0UL );
+         checkCapacity( vec[2], 6UL );
+         checkNonZeros( vec[2], 0UL );
+      }
    }
 }
 //*************************************************************************************************

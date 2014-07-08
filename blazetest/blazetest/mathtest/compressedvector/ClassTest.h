@@ -93,6 +93,7 @@ class ClassTest
    void testMultAssign  ();
    void testScaling     ();
    void testSubscript   ();
+   void testAccessProxy ();
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
@@ -112,10 +113,19 @@ class ClassTest
    void checkSize( const Type& vector, size_t expectedSize ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& vector, size_t minCapacity ) const;
+   void checkRows( const Type& matrix, size_t expectedRows ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& vector, size_t nonzeros ) const;
+   void checkColumns( const Type& matrix, size_t expectedColumns ) const;
+
+   template< typename Type >
+   void checkCapacity( const Type& object, size_t minCapacity ) const;
+
+   template< typename Type >
+   void checkNonZeros( const Type& object, size_t nonzeros ) const;
+
+   template< typename Type >
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -153,18 +163,17 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given compressed vector.
+/*!\brief Checking the size of the given vector.
 //
-// \param vector The compressed vector to be checked.
-// \param expectedSize The expected size of the compressed vector.
+// \param vector The vector to be checked.
+// \param expectedSize The expected size of the vector.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given compressed vector. In case the actual size
-// does not correspond to the given expected size, a \a std::runtime_error exception is
-// thrown.
+// This function checks the size of the given vector. In case the actual size does not correspond
+// to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the compressed vector
+template< typename Type >  // Type of the vector
 void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( size( vector ) != expectedSize ) {
@@ -181,26 +190,81 @@ void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given compressed vector.
+/*!\brief Checking the number of rows of the given matrix.
 //
-// \param vector The compressed vector to be checked.
-// \param minCapacity The expected minimum capacity of the compressed vector.
+// \param matrix The matrix to be checked.
+// \param expectedRows The expected number of rows of the matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given compressed vector. In case the actual capacity
-// is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
+// This function checks the number of rows of the given matrix. In case the actual number of rows
+// does not correspond to the given expected number of rows, a \a std::runtime_error exception is
 // thrown.
 */
-template< typename Type >  // Type of the compressed vector
-void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
+template< typename Type >  // Type of the matrix
+void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
-   if( capacity( vector ) < minCapacity ) {
+   if( rows( matrix ) != expectedRows ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of rows detected\n"
+          << " Details:\n"
+          << "   Number of rows         : " << rows( matrix ) << "\n"
+          << "   Expected number of rows: " << expectedRows << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of columns of the given matrix.
+//
+// \param matrix The matrix to be checked.
+// \param expectedRows The expected number of columns of the matrix.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of columns of the given matrix. In case the actual number of
+// columns does not correspond to the given expected number of columns, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >  // Type of the matrix
+void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+{
+   if( columns( matrix ) != expectedColumns ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of columns detected\n"
+          << " Details:\n"
+          << "   Number of columns         : " << columns( matrix ) << "\n"
+          << "   Expected number of columns: " << expectedColumns << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of the given vector/matrix.
+//
+// \param object The vector/matrix to be checked.
+// \param minCapacity The expected minimum capacity of the vector/matrix.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the capacity of the given vector/matrix. In case the actual capacity is
+// smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the vector/matrix
+void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
+{
+   if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << capacity( vector ) << "\n"
+          << "   Capacity                 : " << capacity( object ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -209,27 +273,68 @@ void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given compressed vector.
+/*!\brief Checking the number of non-zero elements of the given vector/matrix.
 //
-// \param vector The compressed vector to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the compressed vector.
+// \param object The vector/matrix to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the vector/matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given compressed vector. In
-// case the actual number of non-zero elements does not correspond to the given expected number,
+// This function checks the number of non-zero elements of the given vector/matrix. In case
+// the actual number of non-zero elements does not correspond to the given expected number,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the compressed vector
-void ClassTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the vector/matrix
+void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
-   if( nonZeros( vector ) != expectedNonZeros ) {
+   if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << nonZeros( vector ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( object ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given matrix.
+//
+// \param matrix The matrix to be checked.
+// \param index The row/column to be checked.
+// \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of non-zero elements in the specified row/column of the
+// given matrix. In case the actual number of non-zero elements does not correspond to the
+// given expected number, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the matrix
+void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+{
+   if( nonZeros( matrix, index ) != expectedNonZeros ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of non-zero elements in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix, index ) << "\n"
+          << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( capacity( matrix, index ) < nonZeros( matrix, index ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Number of non-zeros: " << nonZeros( matrix, index ) << "\n"
+          << "   Capacity           : " << capacity( matrix, index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
