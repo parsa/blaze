@@ -78,6 +78,26 @@ class OperationTest
    //**********************************************************************************************
 
  private:
+   //**Test functions******************************************************************************
+   /*!\name Test functions */
+   //@{
+   void testHasMember();
+   void testGetMember();
+   //@}
+   //**********************************************************************************************
+
+   //**Test type setup*****************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Type1 { int value_; };
+   class  Type2 { volatile int value_; };
+   struct Type3 { void compute(); };
+   class  Type4 { void compute() const; };
+   struct Type5 { typedef float  DataType; };
+   struct Type6 { typedef const double  DataType; };
+   class  Type7 {};
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Type trait setup****************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasValue, value_ );
@@ -85,14 +105,6 @@ class OperationTest
    BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasDataType, DataType );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetDataType, DataType, int );
    /*! \endcond */
-   //**********************************************************************************************
-
-   //**Test functions******************************************************************************
-   /*!\name Test functions */
-   //@{
-   void testHasMember();
-   void testGetMember();
-   //@}
    //**********************************************************************************************
 };
 //*************************************************************************************************

@@ -88,13 +88,6 @@ OperationTest::OperationTest()
 */
 void OperationTest::testHasMember()
 {
-   struct Type1 { int value_; };
-   class  Type2 { volatile int value_; };
-   struct Type3 { void compute(); };
-   class  Type4 { void compute() const; };
-   struct Type5 { typedef int  DataType; };
-   class  Type6 { typedef const int  DataType; };
-
    BLAZE_STATIC_ASSERT( HasValue<Type1>::value == 1 );
    BLAZE_STATIC_ASSERT( HasValue<Type2>::value == 1 );
    BLAZE_STATIC_ASSERT( HasValue<Type3>::value == 0 );
@@ -130,13 +123,9 @@ void OperationTest::testHasMember()
 */
 void OperationTest::testGetMember()
 {
-   struct Type1 { typedef float  DataType; };
-   struct Type2 { typedef const double  DataType; };
-   struct Type3 {};
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type1>::Type, Type1::DataType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type2>::Type, Type2::DataType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type3>::Type, int             );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type5>::Type, Type5::DataType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type6>::Type, Type6::DataType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type7>::Type, int             );
 }
 //*************************************************************************************************
 
