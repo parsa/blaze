@@ -70,7 +70,8 @@ namespace typetraits {
 */
 OperationTest::OperationTest()
 {
-   testElementType();
+   testBaseElementType();
+   testNumericElementType();
 }
 //*************************************************************************************************
 
