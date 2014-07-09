@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <ostream>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -113,24 +114,24 @@ class MatrixAccessProxy
    typedef typename MT::ElementType  ElementType;   //!< Type of the represented sparse matrix element.
    typedef ElementType&              RawReference;  //!< Raw reference to the represented element.
 
-   //! Reference type of the represented sparse vector element.
+   //! Reference type of the represented sparse matrix element.
    typedef typename GetReference<ElementType>::Type  Reference;
 
-   //! Pointer type of the represented sparse vector element.
+   //! Pointer type of the represented sparse matrix element.
    typedef typename GetPointer<ElementType>::Type  Pointer;
 
-   //! Iterator type of the represented sparse vector element.
+   //! Iterator type of the represented sparse matrix element.
    typedef typename GetIterator<ElementType>::Type  Iterator;
 
-   //! ConstIterator type of the represented sparse vector element.
+   //! ConstIterator type of the represented sparse matrix element.
    typedef typename GetConstIterator<ElementType>::Type  ConstIterator;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline MatrixAccessProxy( MT& sv, size_t i, size_t j );
-            inline MatrixAccessProxy( const MatrixAccessProxy& vap );
+   explicit inline MatrixAccessProxy( MT& sm, size_t i, size_t j );
+            inline MatrixAccessProxy( const MatrixAccessProxy& map );
    //@}
    //**********************************************************************************************
 
@@ -144,7 +145,7 @@ class MatrixAccessProxy
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline MatrixAccessProxy& operator= ( const MatrixAccessProxy& vap );
+                          inline MatrixAccessProxy& operator= ( const MatrixAccessProxy& map );
    template< typename T > inline MatrixAccessProxy& operator= ( const T& value );
    template< typename T > inline MatrixAccessProxy& operator+=( const T& value );
    template< typename T > inline MatrixAccessProxy& operator-=( const T& value );
@@ -233,13 +234,13 @@ class MatrixAccessProxy
 //*************************************************************************************************
 /*!\brief Initialization constructor for a MatrixAccessProxy.
 //
-// \param sv Reference to the accessed sparse matrix.
+// \param sm Reference to the accessed sparse matrix.
 // \param i The row-index of the accessed sparse matrix element.
 // \param j The column-index of the accessed sparse matrix element.
 */
 template< typename MT >  // Type of the sparse matrix
-inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sv, size_t i, size_t j )
-   : sm_( sv )  // Reference to the accessed sparse matrix
+inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sm, size_t i, size_t j )
+   : sm_( sm )  // Reference to the accessed sparse matrix
    , i_ ( i  )  // Row-index of the accessed sparse matrix element
    , j_ ( j  )  // Column-index of the accessed sparse matrix element
 {
@@ -271,7 +272,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( const MatrixAccessProxy& map )
 
 //=================================================================================================
 //
-//  CONSTRUCTORS
+//  DESTRUCTORS
 //
 //=================================================================================================
 
@@ -986,59 +987,62 @@ inline typename MatrixAccessProxy<MT>::RawReference MatrixAccessProxy<MT>::get()
 //*************************************************************************************************
 /*!\name MatrixAccessProxy operators */
 //@{
-template< typename VT1, typename VT2 >
-inline bool operator==( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator==( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator==( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator==( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator==( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator==( const T& lhs, const MatrixAccessProxy<MT>& rhs );
 
-template< typename VT1, typename VT2 >
-inline bool operator!=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator!=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator!=( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator!=( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator!=( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator!=( const T& lhs, const MatrixAccessProxy<MT>& rhs );
 
-template< typename VT1, typename VT2 >
-inline bool operator<( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator<( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator<( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator<( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator<( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator<( const T& lhs, const MatrixAccessProxy<MT>& rhs );
 
-template< typename VT1, typename VT2 >
-inline bool operator>( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator>( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator>( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator>( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator>( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator>( const T& lhs, const MatrixAccessProxy<MT>& rhs );
 
-template< typename VT1, typename VT2 >
-inline bool operator<=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator<=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator<=( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator<=( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator<=( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator<=( const T& lhs, const MatrixAccessProxy<MT>& rhs );
 
-template< typename VT1, typename VT2 >
-inline bool operator>=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs );
+template< typename MT1, typename MT2 >
+inline bool operator>=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs );
 
-template< typename VT, typename T >
-inline bool operator>=( const MatrixAccessProxy<VT>& lhs, const T& rhs );
+template< typename MT, typename T >
+inline bool operator>=( const MatrixAccessProxy<MT>& lhs, const T& rhs );
 
-template< typename T, typename VT >
-inline bool operator>=( const T& lhs, const MatrixAccessProxy<VT>& rhs );
+template< typename T, typename MT >
+inline bool operator>=( const T& lhs, const MatrixAccessProxy<MT>& rhs );
+
+template< typename MT >
+inline std::ostream& operator<<( std::ostream& os, const MatrixAccessProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -1051,11 +1055,11 @@ inline bool operator>=( const T& lhs, const MatrixAccessProxy<VT>& rhs );
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if both referenced values are equal, \a false if they are not.
 */
-template< typename VT1, typename VT2 >
-inline bool operator==( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator==( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) == static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1069,10 +1073,10 @@ inline bool operator==( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessPro
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are equal, \a false if they are not.
 */
-template< typename VT, typename T >
-inline bool operator==( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator==( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) == rhs );
 }
 //*************************************************************************************************
@@ -1086,10 +1090,10 @@ inline bool operator==( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the other object and the referenced value are equal, \a false if they are not.
 */
-template< typename T, typename VT >
-inline bool operator==( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator==( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs == static_cast<RawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1103,11 +1107,11 @@ inline bool operator==( const T& lhs, const MatrixAccessProxy<VT>& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if both referenced values are not equal, \a false if they are.
 */
-template< typename VT1, typename VT2 >
-inline bool operator!=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator!=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) != static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1121,10 +1125,10 @@ inline bool operator!=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessPro
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are not equal, \a false if they are.
 */
-template< typename VT, typename T >
-inline bool operator!=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator!=( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) != rhs );
 }
 //*************************************************************************************************
@@ -1138,10 +1142,10 @@ inline bool operator!=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the other object and the referenced value are not equal, \a false if they are.
 */
-template< typename T, typename VT >
-inline bool operator!=( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator!=( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs != static_cast<RawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1155,11 +1159,11 @@ inline bool operator!=( const T& lhs, const MatrixAccessProxy<VT>& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
-template< typename VT1, typename VT2 >
-inline bool operator<( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator<( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) < static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1173,10 +1177,10 @@ inline bool operator<( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProx
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
-template< typename VT, typename T >
-inline bool operator<( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator<( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) < rhs );
 }
 //*************************************************************************************************
@@ -1190,10 +1194,10 @@ inline bool operator<( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side other object is smaller, \a false if not.
 */
-template< typename T, typename VT >
-inline bool operator<( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator<( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs < static_cast<RawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1207,11 +1211,11 @@ inline bool operator<( const T& lhs, const MatrixAccessProxy<VT>& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
-template< typename VT1, typename VT2 >
-inline bool operator>( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator>( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) > static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1225,10 +1229,10 @@ inline bool operator>( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProx
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
-template< typename VT, typename T >
-inline bool operator>( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator>( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) > rhs );
 }
 //*************************************************************************************************
@@ -1242,10 +1246,10 @@ inline bool operator>( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side other object is greater, \a false if not.
 */
-template< typename T, typename VT >
-inline bool operator>( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator>( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs > static_cast<RawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1259,11 +1263,11 @@ inline bool operator>( const T& lhs, const MatrixAccessProxy<VT>& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
-template< typename VT1, typename VT2 >
-inline bool operator<=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator<=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) <= static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1277,10 +1281,10 @@ inline bool operator<=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessPro
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
-template< typename VT, typename T >
-inline bool operator<=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator<=( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) <= rhs );
 }
 //*************************************************************************************************
@@ -1294,10 +1298,10 @@ inline bool operator<=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side other object is smaller or equal, \a false if not.
 */
-template< typename T, typename VT >
-inline bool operator<=( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator<=( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs <= static_cast<RawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1311,11 +1315,11 @@ inline bool operator<=( const T& lhs, const MatrixAccessProxy<VT>& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
-template< typename VT1, typename VT2 >
-inline bool operator>=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessProxy<VT2>& rhs )
+template< typename MT1, typename MT2 >
+inline bool operator>=( const MatrixAccessProxy<MT1>& lhs, const MatrixAccessProxy<MT2>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT1>::RawReference  LhsRawReference;
-   typedef typename MatrixAccessProxy<VT2>::RawReference  RhsRawReference;
+   typedef typename MatrixAccessProxy<MT1>::RawReference  LhsRawReference;
+   typedef typename MatrixAccessProxy<MT2>::RawReference  RhsRawReference;
    return ( static_cast<LhsRawReference>( lhs ) >= static_cast<RhsRawReference>( rhs ) );
 }
 //*************************************************************************************************
@@ -1329,10 +1333,10 @@ inline bool operator>=( const MatrixAccessProxy<VT1>& lhs, const MatrixAccessPro
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
-template< typename VT, typename T >
-inline bool operator>=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
+template< typename MT, typename T >
+inline bool operator>=( const MatrixAccessProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( static_cast<RawReference>( lhs ) >= rhs );
 }
 //*************************************************************************************************
@@ -1346,11 +1350,28 @@ inline bool operator>=( const MatrixAccessProxy<VT>& lhs, const T& rhs )
 // \param rhs The right-hand side MatrixAccessProxy object.
 // \return \a true if the left-hand side other object is greater or equal, \a false if not.
 */
-template< typename T, typename VT >
-inline bool operator>=( const T& lhs, const MatrixAccessProxy<VT>& rhs )
+template< typename T, typename MT >
+inline bool operator>=( const T& lhs, const MatrixAccessProxy<MT>& rhs )
 {
-   typedef typename MatrixAccessProxy<VT>::RawReference  RawReference;
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
    return ( lhs >= static_cast<RawReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Global output operator for the MatrixAccessProxy class template.
+// \ingroup math
+//
+// \param os Reference to the output stream.
+// \param v Reference to a constant proxy object.
+// \return Reference to the output stream.
+*/
+template< typename MT >
+inline std::ostream& operator<<( std::ostream& os, const MatrixAccessProxy<MT>& proxy )
+{
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
+   return os << static_cast<RawReference>( proxy );
 }
 //*************************************************************************************************
 

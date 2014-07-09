@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <ostream>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1029,6 +1030,9 @@ inline bool operator>=( const VectorAccessProxy<VT>& lhs, const T& rhs );
 
 template< typename T, typename VT >
 inline bool operator>=( const T& lhs, const VectorAccessProxy<VT>& rhs );
+
+template< typename VT >
+inline std::ostream& operator<<( std::ostream& os, const VectorAccessProxy<VT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -1341,6 +1345,23 @@ inline bool operator>=( const T& lhs, const VectorAccessProxy<VT>& rhs )
 {
    typedef typename VectorAccessProxy<VT>::RawReference  RawReference;
    return ( lhs >= static_cast<RawReference>( rhs ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Global output operator for the VectorAccessProxy class template.
+// \ingroup math
+//
+// \param os Reference to the output stream.
+// \param v Reference to a constant proxy object.
+// \return Reference to the output stream.
+*/
+template< typename VT >
+inline std::ostream& operator<<( std::ostream& os, const VectorAccessProxy<VT>& proxy )
+{
+   typedef typename VectorAccessProxy<VT>::RawReference  RawReference;
+   return os << static_cast<RawReference>( proxy );
 }
 //*************************************************************************************************
 
