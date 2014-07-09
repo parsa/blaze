@@ -122,13 +122,13 @@ class ClassTest
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& matrix, size_t minCapacity ) const;
+   void checkCapacity( const Type& object, size_t minCapacity ) const;
 
    template< typename Type >
    void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;

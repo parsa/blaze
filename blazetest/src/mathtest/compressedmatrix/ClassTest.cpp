@@ -3006,11 +3006,15 @@ void ClassTest::testFunctionCall()
 */
 void ClassTest::testAccessProxy()
 {
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
    // Vector elements
    {
-      test_ = "MatrixAccessProxy (vector elements)";
+      test_ = "Row-major MatrixAccessProxy (vector elements)";
 
-      blaze::CompressedMatrix< blaze::DynamicVector<int> > mat( 2UL, 2UL, 1UL );
+      blaze::CompressedMatrix< blaze::DynamicVector<int>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
 
       // Initialization check
       checkRows    ( mat, 2UL );
@@ -3030,7 +3034,7 @@ void ClassTest::testAccessProxy()
 
       // Resizing the vector element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::resize() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::resize() (vector elements)";
 
          mat(1,1).resize( 2UL );
 
@@ -3047,7 +3051,7 @@ void ClassTest::testAccessProxy()
 
       // Reserving capacity for the vector element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::reserve() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::reserve() (vector elements)";
 
          mat(1,1).reserve( 3UL );
 
@@ -3065,7 +3069,7 @@ void ClassTest::testAccessProxy()
 
       // Extending the size of the vector element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::extend() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::extend() (vector elements)";
 
          mat(1,1).extend( 1UL );
 
@@ -3083,7 +3087,7 @@ void ClassTest::testAccessProxy()
 
       // Setting all elements of the vector at position (1,1) to 0
       {
-         test_ = "MatrixAccessProxy::operator=() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::operator=() (vector elements)";
 
          mat(1,1) = 0;
 
@@ -3102,7 +3106,7 @@ void ClassTest::testAccessProxy()
 
       // Setting an element of the vector at position (1,1)
       {
-         test_ = "MatrixAccessProxy::operator[] (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::operator[] (vector elements)";
 
          mat(1,1)[1] = 6;
 
@@ -3131,7 +3135,7 @@ void ClassTest::testAccessProxy()
 
       // Traversing the elements of the vector at position (1,1) via non-const iterators
       {
-         test_ = "MatrixAccessProxy::begin() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::begin() (vector elements)";
 
          blaze::DynamicVector<int>::Iterator it  ( begin( mat(1,1) ) );
          blaze::DynamicVector<int>::Iterator last( end( mat(1,1) ) );
@@ -3173,7 +3177,7 @@ void ClassTest::testAccessProxy()
 
       // Traversing the elements of the vector at position (1,1) via const iterators
       {
-         test_ = "MatrixAccessProxy::cbegin() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::cbegin() (vector elements)";
 
          blaze::DynamicVector<int>::ConstIterator it  ( cbegin( mat(1,1) ) );
          blaze::DynamicVector<int>::ConstIterator last( cend( mat(1,1) ) );
@@ -3215,7 +3219,7 @@ void ClassTest::testAccessProxy()
 
       // Resetting the vector element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::reset() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::reset() (vector elements)";
 
          reset( mat(1,1) );
 
@@ -3234,7 +3238,7 @@ void ClassTest::testAccessProxy()
 
       // Clearing the vector element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::clear() (vector elements)";
+         test_ = "Row-major MatrixAccessProxy::clear() (vector elements)";
 
          clear( mat(1,1) );
 
@@ -3252,9 +3256,9 @@ void ClassTest::testAccessProxy()
 
    // Matrix elements
    {
-      test_ = "MatrixAccessProxy (matrix elements)";
+      test_ = "Row-major MatrixAccessProxy (matrix elements)";
 
-      blaze::CompressedMatrix< blaze::DynamicMatrix<int> > mat( 2UL, 2UL, 1UL );
+      blaze::CompressedMatrix< blaze::DynamicMatrix<int>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
 
       // Initialization check
       checkRows    ( mat, 2UL );
@@ -3278,7 +3282,7 @@ void ClassTest::testAccessProxy()
 
       // Resizing the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::resize() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::resize() (matrix elements)";
 
          mat(1,1).resize( 2UL, 2UL );
 
@@ -3300,7 +3304,7 @@ void ClassTest::testAccessProxy()
 
       // Reserving capacity for the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::reserve() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::reserve() (matrix elements)";
 
          mat(1,1).reserve( 6UL );
 
@@ -3322,7 +3326,7 @@ void ClassTest::testAccessProxy()
 
       // Extending the size of the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::extend() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::extend() (matrix elements)";
 
          mat(1,1).extend( 0UL, 1UL );
 
@@ -3344,7 +3348,7 @@ void ClassTest::testAccessProxy()
 
       // Setting all elements of the matrix at position (1,1) to 0
       {
-         test_ = "MatrixAccessProxy::operator=() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::operator=() (matrix elements)";
 
          mat(1,1) = 0;
 
@@ -3369,7 +3373,7 @@ void ClassTest::testAccessProxy()
 
       // Setting two elements of the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::operator() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::operator() (matrix elements)";
 
          mat(1,1)(0,2) = 4;
          mat(1,1)(1,1) = 6;
@@ -3415,7 +3419,7 @@ void ClassTest::testAccessProxy()
 
       // Traversing the elements of the 1st row of the matrix at position (1,1) via non-const iterators
       {
-         test_ = "MatrixAccessProxy::begin() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::begin() (matrix elements)";
 
          blaze::DynamicMatrix<int>::Iterator it  ( begin( mat(1,1), 1UL ) );
          blaze::DynamicMatrix<int>::Iterator last( end( mat(1,1), 1UL ) );
@@ -3457,7 +3461,7 @@ void ClassTest::testAccessProxy()
 
       // Traversing the elements of the 1st row of the matrix at position (1,1) via const iterators
       {
-         test_ = "MatrixAccessProxy::cbegin() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::cbegin() (matrix elements)";
 
          blaze::DynamicMatrix<int>::ConstIterator it  ( cbegin( mat(1,1), 1UL ) );
          blaze::DynamicMatrix<int>::ConstIterator last( cend( mat(1,1), 1UL ) );
@@ -3499,7 +3503,7 @@ void ClassTest::testAccessProxy()
 
       // Resetting the 0th row of the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::reset( size_t ) (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::reset( size_t ) (matrix elements)";
 
          reset( mat(1,1), 0UL );
 
@@ -3524,7 +3528,7 @@ void ClassTest::testAccessProxy()
 
       // Resetting the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::reset() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::reset() (matrix elements)";
 
          reset( mat(1,1) );
 
@@ -3549,7 +3553,575 @@ void ClassTest::testAccessProxy()
 
       // Clearing the matrix element at position (1,1)
       {
-         test_ = "MatrixAccessProxy::clear() (matrix elements)";
+         test_ = "Row-major MatrixAccessProxy::clear() (matrix elements)";
+
+         clear( mat(1,1) );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 0UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 0UL );
+         checkColumns ( mat(1,1), 0UL );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   // Vector elements
+   {
+      test_ = "Column-major MatrixAccessProxy (vector elements)";
+
+      blaze::CompressedMatrix< blaze::DynamicVector<int>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
+
+      // Initialization check
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 0UL );
+
+      checkSize( mat(0,0), 0UL );
+      checkSize( mat(0,1), 0UL );
+      checkSize( mat(1,0), 0UL );
+      checkSize( mat(1,1), 0UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing the vector element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::resize() (vector elements)";
+
+         mat(1,1).resize( 2UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize( mat(0,0), 0UL );
+         checkSize( mat(0,1), 0UL );
+         checkSize( mat(1,0), 0UL );
+         checkSize( mat(1,1), 2UL );
+      }
+
+      // Reserving capacity for the vector element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::reserve() (vector elements)";
+
+         mat(1,1).reserve( 3UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize    ( mat(0,0), 0UL );
+         checkSize    ( mat(0,1), 0UL );
+         checkSize    ( mat(1,0), 0UL );
+         checkSize    ( mat(1,1), 2UL );
+         checkCapacity( mat(1,1), 3UL );
+      }
+
+      // Extending the size of the vector element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::extend() (vector elements)";
+
+         mat(1,1).extend( 1UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize    ( mat(0,0), 0UL );
+         checkSize    ( mat(0,1), 0UL );
+         checkSize    ( mat(1,0), 0UL );
+         checkSize    ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 3UL );
+      }
+
+      // Setting all elements of the vector at position (1,1) to 0
+      {
+         test_ = "Column-major MatrixAccessProxy::operator=() (vector elements)";
+
+         mat(1,1) = 0;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize    ( mat(0,0), 0UL );
+         checkSize    ( mat(0,1), 0UL );
+         checkSize    ( mat(1,0), 0UL );
+         checkSize    ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 3UL );
+         checkNonZeros( mat(1,1), 0UL );
+      }
+
+      // Setting an element of the vector at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::operator[] (vector elements)";
+
+         mat(1,1)[1] = 6;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize    ( mat(0,0), 0UL );
+         checkSize    ( mat(0,1), 0UL );
+         checkSize    ( mat(1,0), 0UL );
+         checkSize    ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 3UL );
+         checkNonZeros( mat(1,1), 1UL );
+
+         if( mat(1,1)[1] != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in vector element at position (1,1) detected\n"
+                << " Details:\n"
+                << "   Value         : " << mat(1,1)[1] << "\n"
+                << "   Expected value: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the vector at position (1,1) via non-const iterators
+      {
+         test_ = "Column-major MatrixAccessProxy::begin() (vector elements)";
+
+         blaze::DynamicVector<int>::Iterator it  ( begin( mat(1,1) ) );
+         blaze::DynamicVector<int>::Iterator last( end( mat(1,1) ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the vector at position (1,1) via const iterators
+      {
+         test_ = "Column-major MatrixAccessProxy::cbegin() (vector elements)";
+
+         blaze::DynamicVector<int>::ConstIterator it  ( cbegin( mat(1,1) ) );
+         blaze::DynamicVector<int>::ConstIterator last( cend( mat(1,1) ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the vector element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::reset() (vector elements)";
+
+         reset( mat(1,1) );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkSize    ( mat(0,0), 0UL );
+         checkSize    ( mat(0,1), 0UL );
+         checkSize    ( mat(1,0), 0UL );
+         checkSize    ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 3UL );
+         checkNonZeros( mat(1,1), 0UL );
+      }
+
+      // Clearing the vector element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::clear() (vector elements)";
+
+         clear( mat(1,1) );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 0UL );
+
+         checkSize( mat(0,0), 0UL );
+         checkSize( mat(0,1), 0UL );
+         checkSize( mat(1,0), 0UL );
+         checkSize( mat(1,1), 0UL );
+      }
+   }
+
+   // Matrix elements
+   {
+      test_ = "Column-major MatrixAccessProxy (matrix elements)";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<int>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
+
+      // Initialization check
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 0UL );
+
+      checkRows   ( mat(0,0), 0UL );
+      checkColumns( mat(0,0), 0UL );
+      checkRows   ( mat(0,1), 0UL );
+      checkColumns( mat(0,1), 0UL );
+      checkRows   ( mat(1,0), 0UL );
+      checkColumns( mat(1,0), 0UL );
+      checkRows   ( mat(1,1), 0UL );
+      checkColumns( mat(1,1), 0UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 0UL );
+
+      // Resizing the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::resize() (matrix elements)";
+
+         mat(1,1).resize( 2UL, 2UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 2UL );
+         checkCapacity( mat(1,1), 4UL );
+      }
+
+      // Reserving capacity for the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::reserve() (matrix elements)";
+
+         mat(1,1).reserve( 6UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 2UL );
+         checkCapacity( mat(1,1), 6UL );
+      }
+
+      // Extending the size of the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::extend() (matrix elements)";
+
+         mat(1,1).extend( 0UL, 1UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 6UL );
+      }
+
+      // Setting all elements of the matrix at position (1,1) to 0
+      {
+         test_ = "Column-major MatrixAccessProxy::operator=() (matrix elements)";
+
+         mat(1,1) = 0;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 6UL );
+         checkNonZeros( mat(1,1), 0UL );
+         checkNonZeros( mat(1,1), 0UL, 0UL );
+         checkNonZeros( mat(1,1), 1UL, 0UL );
+      }
+
+      // Setting two elements of the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::operator() (matrix elements)";
+
+         mat(1,1)(0,2) = 4;
+         mat(1,1)(1,1) = 6;
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 6UL );
+         checkNonZeros( mat(1,1), 2UL );
+         checkNonZeros( mat(1,1), 0UL, 1UL );
+         checkNonZeros( mat(1,1), 1UL, 1UL );
+
+         if( mat(1,1)(0,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in matrix element at position (1,1) detected\n"
+                << " Details:\n"
+                << "   Value         : " << mat(1,1)(0,2) << "\n"
+                << "   Expected value: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(1,1)(1,1) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid value in matrix element at position (1,1) detected\n"
+                << " Details:\n"
+                << "   Value         : " << mat(1,1)(1,1) << "\n"
+                << "   Expected value: 6\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 1st row of the matrix at position (1,1) via non-const iterators
+      {
+         test_ = "Column-major MatrixAccessProxy::begin() (matrix elements)";
+
+         blaze::DynamicMatrix<int>::Iterator it  ( begin( mat(1,1), 1UL ) );
+         blaze::DynamicMatrix<int>::Iterator last( end( mat(1,1), 1UL ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Traversing the elements of the 1st row of the matrix at position (1,1) via const iterators
+      {
+         test_ = "Column-major MatrixAccessProxy::cbegin() (matrix elements)";
+
+         blaze::DynamicMatrix<int>::ConstIterator it  ( cbegin( mat(1,1), 1UL ) );
+         blaze::DynamicMatrix<int>::ConstIterator last( cend( mat(1,1), 1UL ) );
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == last || *it != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == last || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 1UL;
+
+         if( it != last ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Resetting the 0th row of the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::reset( size_t ) (matrix elements)";
+
+         reset( mat(1,1), 0UL );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 6UL );
+         checkNonZeros( mat(1,1), 1UL );
+         checkNonZeros( mat(1,1), 0UL, 0UL );
+         checkNonZeros( mat(1,1), 1UL, 1UL );
+      }
+
+      // Resetting the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::reset() (matrix elements)";
+
+         reset( mat(1,1) );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 2UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+
+         checkRows    ( mat(0,0), 0UL );
+         checkColumns ( mat(0,0), 0UL );
+         checkRows    ( mat(0,1), 0UL );
+         checkColumns ( mat(0,1), 0UL );
+         checkRows    ( mat(1,0), 0UL );
+         checkColumns ( mat(1,0), 0UL );
+         checkRows    ( mat(1,1), 2UL );
+         checkColumns ( mat(1,1), 3UL );
+         checkCapacity( mat(1,1), 6UL );
+         checkNonZeros( mat(1,1), 0UL );
+         checkNonZeros( mat(1,1), 0UL, 0UL );
+         checkNonZeros( mat(1,1), 1UL, 0UL );
+      }
+
+      // Clearing the matrix element at position (1,1)
+      {
+         test_ = "Column-major MatrixAccessProxy::clear() (matrix elements)";
 
          clear( mat(1,1) );
 
