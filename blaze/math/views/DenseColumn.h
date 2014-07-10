@@ -1781,7 +1781,9 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef typename SelectType< returnConst, typename MT::ConstReference, typename MT::Reference >::Type  Reference;
+      typedef typename SelectType< returnConst
+                                 , typename MatrixType::ConstReference
+                                 , typename MatrixType::Reference >::Type  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
