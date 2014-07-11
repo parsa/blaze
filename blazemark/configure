@@ -456,7 +456,7 @@ fi
 DAXPY="$DAXPY \$(OBJECT_PATH)/MAIN_Daxpy.o"
 
 # Configuration of the dense vector/dense vector cross product benchmark
-DVECDVECCROSS="\$(OBJECT_PATH)/BLAZE_DVecDVecCross.o"
+DVECDVECCROSS="\$(OBJECT_PATH)/CLIKE_DVecDVecCross.o \$(OBJECT_PATH)/BLAZE_DVecDVecCross.o"
 if [ "$ARMADILLO" = "yes" ]; then
    DVECDVECCROSS="$DVECDVECCROSS \$(OBJECT_PATH)/ARMADILLO_DVecDVecCross.o"
 fi
@@ -2850,9 +2850,12 @@ dvecdveccross: \$(BINARY_PATH)/dvecdveccross
 	@\$(CXX) \$(CXXFLAGS) -o \$(BINARY_PATH)/dvecdveccross $DVECDVECCROSS \$(LIBRARIES)
 	@echo "... finished"
 	@echo
-\$(OBJECT_PATH)/BLAZE_DVecDVecCross.o:
+\$(OBJECT_PATH)/CLIKE_DVecDVecCross.o:
 	@echo
 	@echo "Building dense vector/dense vector cross product (dvecdveccross) binary..."
+	@echo "  Building the C-like kernel..."
+	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/CLIKE_DVecDVecCross.o \$(INSTALL_PATH)/src/clike/DVecDVecCross.cpp \$(INCLUDES)
+\$(OBJECT_PATH)/BLAZE_DVecDVecCross.o:
 	@echo "  Building the Blaze kernel..."
 	@\$(CXX) \$(CXXFLAGS) -c -o \$(OBJECT_PATH)/BLAZE_DVecDVecCross.o \$(INSTALL_PATH)/src/blaze/DVecDVecCross.cpp \$(INCLUDES)
 EOF

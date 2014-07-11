@@ -52,6 +52,7 @@
 #include <blazemark/armadillo/DVecDVecCross.h>
 #include <blazemark/blaze/DVecDVecCross.h>
 #include <blazemark/blaze/init/StaticVector.h>
+#include <blazemark/clike/DVecDVecCross.h>
 #include <blazemark/eigen/DVecDVecCross.h>
 #include <blazemark/system/Armadillo.h>
 #include <blazemark/system/Config.h>
@@ -196,6 +197,17 @@ void dvecdveccross( std::vector<Run>& runs, Benchmarks benchmarks )
                slowSize = run->getSize();
          }
          else run->setSteps( 1UL );
+      }
+   }
+
+   if( benchmarks.runClike ) {
+      std::cout << "   C-like implementation [MFlop/s]:\n";
+      for( std::vector<Run>::iterator run=runs.begin(); run!=runs.end(); ++run ) {
+         const size_t N    ( run->getNumber() );
+         const size_t steps( run->getSteps()  );
+         run->setClikeResult( blazemark::clike::dvecdveccross( N, steps ) );
+         const double mflops( run->getFlops() * steps / run->getClikeResult() / 1E6 );
+         std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
 
