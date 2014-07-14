@@ -466,11 +466,25 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \param rest The number of remaining elements beyond the final iterator.
       // \param isAligned Memory alignment flag.
       */
-      explicit inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
+      inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
          : iterator_ ( iterator  )  // Iterator to the current submatrix element
          , final_    ( final     )  // The final iterator for intrinsic operations
          , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
          , isAligned_( isAligned )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different SubmatrixIterator instances.
+      //
+      // \param it The submatrix iterator to be copied.
+      */
+      template< typename IteratorType2 >
+      inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
+         : iterator_ ( it.iterator_  )  // Iterator to the current submatrix element
+         , final_    ( it.final_     )  // The final iterator for intrinsic operations
+         , rest_     ( it.rest_      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( it.isAligned_ )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -712,6 +726,12 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       IteratorType final_;      //!< The final iterator for intrinsic operations.
       size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      /*! \cond BLAZE_INTERNAL */
+      template< typename IteratorType2 > friend class SubmatrixIterator;
+      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2673,11 +2693,25 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \param rest The number of remaining elements beyond the final iterator.
       // \param isAligned Memory alignment flag.
       */
-      explicit inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
+      inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
          : iterator_ ( iterator  )  // Iterator to the current submatrix element
          , final_    ( final     )  // The final iterator for intrinsic operations
          , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
          , isAligned_( isAligned )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different SubmatrixIterator instances.
+      //
+      // \param it The submatrix iterator to be copied.
+      */
+      template< typename IteratorType2 >
+      inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
+         : iterator_ ( it.iterator_  )  // Iterator to the current submatrix element
+         , final_    ( it.final_     )  // The final iterator for intrinsic operations
+         , rest_     ( it.rest_      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( it.isAligned_ )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -2919,6 +2953,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       IteratorType final_;      //!< The final iterator for intrinsic operations.
       size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      template< typename IteratorType2 > friend class SubmatrixIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
