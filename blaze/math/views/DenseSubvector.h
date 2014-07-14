@@ -458,11 +458,25 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       // \param rest The number of remaining elements beyond the final iterator.
       // \param isAligned Memory alignment flag.
       */
-      explicit inline SubvectorIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
+      inline SubvectorIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
          : iterator_ ( iterator  )  // Iterator to the current subvector element
          , final_    ( final     )  // The final iterator for intrinsic operations
          , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
          , isAligned_( isAligned )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different SubvectorIterator instances.
+      //
+      // \param it The subvector iterator to be copied
+      */
+      template< typename IteratorType2 >
+      inline SubvectorIterator( const SubvectorIterator<IteratorType2>& it )
+         : iterator_ ( it.iterator_  )  // Iterator to the current subvector element
+         , final_    ( it.final_     )  // The final iterator for intrinsic operations
+         , rest_     ( it.rest_      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( it.isAligned_ )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -704,6 +718,12 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       IteratorType final_;      //!< The final iterator for intrinsic operations.
       size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      /*! \cond BLAZE_INTERNAL */
+      template< typename IteratorType2 > friend class SubvectorIterator;
+      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
