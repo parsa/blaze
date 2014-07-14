@@ -162,7 +162,7 @@ namespace blaze {
    StaticMatrix<double,2UL,2UL,columnMajor> F;       // Creation of a default column-major matrix
 
    E = A + B;     // Matrix addition and assignment to a row-major matrix
-   E = A - C;     // Matrix subtraction and assignment to a column-major matrix
+   F = A - C;     // Matrix subtraction and assignment to a column-major matrix
    F = A * D;     // Matrix multiplication between two matrices of different element types
 
    A *= 2.0;      // In-place scaling of matrix A
@@ -170,7 +170,7 @@ namespace blaze {
    E  = B * 2.0;  // Scaling of matrix B
 
    E += A - B;    // Addition assignment
-   E -= A + C;    // Subtraction assignment
+   F -= A + C;    // Subtraction assignment
    F *= A * D;    // Multiplication assignment
    \endcode
 */
