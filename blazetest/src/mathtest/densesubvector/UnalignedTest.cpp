@@ -1339,7 +1339,22 @@ void UnalignedTest::testIterator()
 {
    initialize();
 
-   // Counting the number of elements in first half of the vector
+   // Testing conversion from Iterator to ConstIterator
+   {
+      test_ = "Iterator/ConstIterator conversion";
+
+      SVT sv = subvector( vec_, 1UL, 4UL );
+      SVT::ConstIterator it( begin( sv ) );
+
+      if( it == end( sv ) || *it != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator conversion detected\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in first half of the vector via Iterator
    {
       test_ = "Iterator subtraction";
 
@@ -1357,12 +1372,12 @@ void UnalignedTest::testIterator()
       }
    }
 
-   // Counting the number of elements in second half of the vector
+   // Counting the number of elements in second half of the vector via ConstIterator
    {
-      test_ = "Iterator subtraction";
+      test_ = "ConstIterator subtraction";
 
       SVT sv = subvector( vec_, 5UL, 3UL );
-      const size_t number( end( sv ) - begin( sv ) );
+      const size_t number( cend( sv ) - cbegin( sv ) );
 
       if( number != 3UL ) {
          std::ostringstream oss;

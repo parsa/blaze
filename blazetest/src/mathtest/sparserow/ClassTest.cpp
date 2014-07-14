@@ -2542,27 +2542,24 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      // Counting the number of elements in 0th column
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major Iterator/ConstIterator conversion";
 
-         RT row0 = row( mat_, 0UL );
-         const size_t number( end( row0 ) - begin( row0 ) );
+         RT row2 = row( mat_, 2UL );
+         RT::ConstIterator it( begin( row2 ) );
 
-         if( number != 0UL ) {
+         if( it == end( row2 ) || it->value() != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 0\n";
+                << " Error: Failed iterator conversion detected\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Counting the number of elements in 1st column
+      // Counting the number of elements in 1st column via Iterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major Iterator subtraction";
 
          RT row1 = row( mat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
@@ -2578,12 +2575,12 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd column
+      // Counting the number of elements in 2nd column via ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major ConstIterator subtraction";
 
          RT row2 = row( mat_, 2UL );
-         const size_t number( end( row2 ) - begin( row2 ) );
+         const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -2592,42 +2589,6 @@ void ClassTest::testIterator()
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 3rd column
-      {
-         test_ = "Row-major iterator subtraction";
-
-         RT row3 = row( mat_, 3UL );
-         const size_t number( end( row3 ) - begin( row3 ) );
-
-         if( number != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 4th column
-      {
-         test_ = "Row-major iterator subtraction";
-
-         RT row4 = row( mat_, 4UL );
-         const size_t number( end( row4 ) - begin( row4 ) );
-
-         if( number != 4UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2874,27 +2835,24 @@ void ClassTest::testIterator()
    {
       initialize();
 
-      // Counting the number of elements in 0th column
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Column-major Iterator/ConstIterator conversion";
 
-         TRT row0 = row( tmat_, 0UL );
-         const size_t number( end( row0 ) - begin( row0 ) );
+         TRT row2 = row( tmat_, 2UL );
+         TRT::ConstIterator it( begin( row2 ) );
 
-         if( number != 0UL ) {
+         if( it == end( row2 ) || it->value() != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 0\n";
+                << " Error: Failed iterator conversion detected\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Counting the number of elements in 1st column
+      // Counting the number of elements in 1st column via Iterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Column-major Iterator subtraction";
 
          TRT row1 = row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
@@ -2910,12 +2868,12 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd column
+      // Counting the number of elements in 2nd column via ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Column-major ConstIterator subtraction";
 
          TRT row2 = row( tmat_, 2UL );
-         const size_t number( end( row2 ) - begin( row2 ) );
+         const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -2924,42 +2882,6 @@ void ClassTest::testIterator()
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 3rd column
-      {
-         test_ = "Row-major iterator subtraction";
-
-         TRT row3 = row( tmat_, 3UL );
-         const size_t number( end( row3 ) - begin( row3 ) );
-
-         if( number != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 4th column
-      {
-         test_ = "Row-major iterator subtraction";
-
-         TRT row4 = row( tmat_, 4UL );
-         const size_t number( end( row4 ) - begin( row4 ) );
-
-         if( number != 4UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }

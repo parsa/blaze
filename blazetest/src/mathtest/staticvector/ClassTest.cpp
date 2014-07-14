@@ -1309,11 +1309,42 @@ void ClassTest::testIterator()
    vec[2] = -2;
    vec[3] = -3;
 
-   // Counting the number of elements
+   // Testing conversion from Iterator to ConstIterator
+   {
+      test_ = "Iterator/ConstIterator conversion";
+
+      ConstIterator it( begin( vec ) );
+
+      if( it == end( vec ) || *it != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator conversion detected\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements via Iterator
    {
       test_ = "Iterator subtraction";
 
       const size_t number( end( vec ) - begin( vec ) );
+
+      if( number != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements via ConstIterator
+   {
+      test_ = "Iterator subtraction";
+
+      const size_t number( cend( vec ) - cbegin( vec ) );
 
       if( number != 4UL ) {
          std::ostringstream oss;

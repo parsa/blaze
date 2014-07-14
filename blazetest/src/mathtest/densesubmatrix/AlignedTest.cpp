@@ -2993,9 +2993,24 @@ void AlignedTest::testIterator()
    {
       initialize();
 
-      // Counting the number of elements in 0th row of a 8x16 matrix
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major Iterator/ConstIterator conversion";
+
+         ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         ASMT::ConstIterator it( begin( sm, 2UL ) );
+
+         if( it == end( sm, 2UL ) || *it != sm(2,0) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator conversion detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 0th row of a 8x16 matrix via Iterator
+      {
+         test_ = "Row-major Iterator subtraction";
 
          ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
          const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
@@ -3011,12 +3026,12 @@ void AlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 15th row of a 16x8 matrix
+      // Counting the number of elements in 15th row of a 16x8 matrix via ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major ConstIterator subtraction";
 
          ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
-         const size_t number( end( sm, 15UL ) - begin( sm, 15UL ) );
+         const size_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
          if( number != 8UL ) {
             std::ostringstream oss;
@@ -3273,9 +3288,24 @@ void AlignedTest::testIterator()
    {
       initialize();
 
-      // Counting the number of elements in 0th column of a 16x8 matrix
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Column-major iterator subtraction";
+         test_ = "Column-major Iterator/ConstIterator conversion";
+
+         ATSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
+         ATSMT::ConstIterator it( begin( sm, 2UL ) );
+
+         if( it == end( sm, 2UL ) || *it != sm(0,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator conversion detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 0th column of a 16x8 matrix via Iterator
+      {
+         test_ = "Column-major Iterator subtraction";
 
          ATSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
          const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
@@ -3291,12 +3321,12 @@ void AlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 15th column of a 8x16 matrix
+      // Counting the number of elements in 15th column of a 8x16 matrix via ConstIterator
       {
-         test_ = "Column-major iterator subtraction";
+         test_ = "Column-major ConstIterator subtraction";
 
          ATSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
-         const size_t number( end( sm, 15UL ) - begin( sm, 15UL ) );
+         const size_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
          if( number != 8UL ) {
             std::ostringstream oss;

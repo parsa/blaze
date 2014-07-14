@@ -1097,7 +1097,22 @@ void AlignedTest::testIterator()
 
    initialize();
 
-   // Counting the number of elements in first half of the vector
+   // Testing conversion from Iterator to ConstIterator
+   {
+      test_ = "Iterator/ConstIterator conversion";
+
+      ASVT sv = subvector<aligned>( vec1_, 0UL, 16UL );
+      ASVT::ConstIterator it( begin( sv ) );
+
+      if( it == end( sv ) || *it != sv[0] ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator conversion detected\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in first half of the vector via Iterator
    {
       test_ = "Iterator subtraction";
 
@@ -1115,12 +1130,12 @@ void AlignedTest::testIterator()
       }
    }
 
-   // Counting the number of elements in second half of the vector
+   // Counting the number of elements in second half of the vector via ConstIterator
    {
-      test_ = "Iterator subtraction";
+      test_ = "ConstIterator subtraction";
 
       ASVT sv = subvector<aligned>( vec1_, 16UL, 48UL );
-      const size_t number( end( sv ) - begin( sv ) );
+      const size_t number( cend( sv ) - cbegin( sv ) );
 
       if( number != 48UL ) {
          std::ostringstream oss;

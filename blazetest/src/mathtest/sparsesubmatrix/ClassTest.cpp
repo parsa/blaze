@@ -4132,9 +4132,23 @@ void ClassTest::testIterator()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
-      // Counting the number of elements in 0th row
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major Iterator/ConstIterator conversion";
+
+         SMT::ConstIterator it( begin( sm, 1UL ) );
+
+         if( it == end( sm, 1UL ) || it->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator conversion detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 0th row via Iterator
+      {
+         test_ = "Row-major Iterator subtraction";
 
          const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
@@ -4149,28 +4163,11 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st row
+      // Counting the number of elements in 1st row via ConstIterator
       {
-         test_ = "Row-major iterator subtraction";
+         test_ = "Row-major ConstIterator subtraction";
 
-         const size_t number( end( sm, 1UL ) - begin( sm, 1UL ) );
-
-         if( number != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 2nd row
-      {
-         test_ = "Row-major iterator subtraction";
-
-         const size_t number( end( sm, 2UL ) - begin( sm, 2UL ) );
+         const size_t number( cend( sm, 1UL ) - cbegin( sm, 1UL ) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
@@ -4430,9 +4427,23 @@ void ClassTest::testIterator()
 
       TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
-      // Counting the number of elements in 0th column
+      // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Column-major iterator subtraction";
+         test_ = "Column-major Iterator/ConstIterator conversion";
+
+         TSMT::ConstIterator it( begin( sm, 1UL ) );
+
+         if( it == end( sm, 1UL ) || it->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator conversion detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 0th column via Iterator
+      {
+         test_ = "Column-major Iterator subtraction";
 
          const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
@@ -4447,28 +4458,11 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st row
+      // Counting the number of elements in 1st row via ConstIterator
       {
-         test_ = "Column-major iterator subtraction";
+         test_ = "Column-major ConstIterator subtraction";
 
-         const size_t number( end( sm, 1UL ) - begin( sm, 1UL ) );
-
-         if( number != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid number of elements detected\n"
-                << " Details:\n"
-                << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Counting the number of elements in 2nd row
-      {
-         test_ = "Column-major iterator subtraction";
-
-         const size_t number( end( sm, 2UL ) - begin( sm, 2UL ) );
+         const size_t number( cend( sm, 1UL ) - cbegin( sm, 1UL ) );
 
          if( number != 2UL ) {
             std::ostringstream oss;
