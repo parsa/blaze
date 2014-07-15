@@ -1,8 +1,8 @@
 #==================================================================================================
 #
-#  Makefile for the utiltest module of the Blaze test suite
+#  Makefile for the valuetraits module of the Blaze test suite
 #
-#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,61 +32,47 @@
 #==================================================================================================
 
 
-# Build rules
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
+
+
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
+# General rules
 default: all
-
-all: alignedallocator memory typetraits valuetraits uniqueptr uniquearray
-
-essential: all
-
-single: all
-
-noop: all
+all: $(BIN)
+essential: $(BIN)
+single: $(BIN)
+noop: $(BIN)
 
 
-# Internal rules
-alignedallocator:
-	@echo
-	@echo "Building the aligned allocator tests..."
-	@$(MAKE) --no-print-directory -C ./alignedallocator $(MAKECMDGOALS)
-
-memory:
-	@echo
-	@echo "Building the memory tests..."
-	@$(MAKE) --no-print-directory -C ./memory $(MAKECMDGOALS)
-
-typetraits:
-	@echo
-	@echo "Building the type traits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
-
-typetraits:
-	@echo
-	@echo "Building the value traits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
-
-uniqueptr:
-	@echo
-	@echo "Building the unique pointer tests..."
-	@$(MAKE) --no-print-directory -C ./uniqueptr $(MAKECMDGOALS)
-
-uniquearray:
-	@echo
-	@echo "Building the unique array tests..."
-	@$(MAKE) --no-print-directory -C ./uniquearray $(MAKECMDGOALS)
+# Build rules
+OperationTest: OperationTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
 clean:
-	@$(MAKE) --no-print-directory -C ./alignedallocator clean
-	@$(MAKE) --no-print-directory -C ./memory clean
-	@$(MAKE) --no-print-directory -C ./typetraits clean
-	@$(MAKE) --no-print-directory -C ./valuetraits clean
-	@$(MAKE) --no-print-directory -C ./uniqueptr clean
-	@$(MAKE) --no-print-directory -C ./uniquearray clean
-	@$(RM) $(OBJ) $(DEP)
+	@$(RM) $(DEP) $(OBJ) $(BIN)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
 
 
 # Setting the independent commands
-.PHONY: default all essential single clean \
-        alignedallocator memory typetraits valuetraits uniqueptr uniquearray
+.PHONY: default all essential single noop clean
