@@ -54,6 +54,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Thresholds.h>
@@ -62,6 +63,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -828,6 +830,24 @@ inline const DMatTDMatSubExpr<T1,T2>
 
    return DMatTDMatSubExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsSymmetric< DMatTDMatSubExpr<MT1,MT2> >
+   : public IsTrue< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
