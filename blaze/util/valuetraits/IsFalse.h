@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/ValueTraits.h
-//  \brief Header file for all value traits
+//  \file blaze/util/valuetraits/IsFalse.h
+//  \brief Header file for the IsFalse value trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,18 +32,58 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_VALUETRAITS_H_
-#define _BLAZE_UTIL_VALUETRAITS_H_
+#ifndef _BLAZE_UTIL_VALUETRAITS_ISFALSE_H_
+#define _BLAZE_UTIL_VALUETRAITS_ISFALSE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/valuetraits/IsEven.h>
-#include <blaze/util/valuetraits/IsFalse.h>
-#include <blaze/util/valuetraits/IsOdd.h>
-#include <blaze/util/valuetraits/IsPowerOf.h>
-#include <blaze/util/valuetraits/IsTrue.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/SelectType.h>
+#include <blaze/util/TrueType.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time check whether a compile time constant expression evaluates to false.
+// \ingroup value_traits
+//
+// This value trait tests whether the given compile time constant \a C evaluates to false. In
+// case the value is false, the \a value member enumeration is set to 1, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
+
+   \code
+   blaze::IsFalse< 0 >::value  // Evaluates to 1
+   blaze::IsFalse< 0 >::Type   // Results in TrueType
+   blaze::IsFalse< 0 >         // Is derived from TrueType
+   blaze::IsFalse< 1 >::value  // Evaluates to 0
+   blaze::IsFalse< 2 >::Type   // Results in FalseType
+   blaze::IsFalse< 3 >         // Is derived from FalseType
+   \endcode
+*/
+template< bool C >
+struct IsFalse : public SelectType<C,FalseType,TrueType>::Type
+{
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   enum { value = ( C )?( 0 ):( 1 ) };
+   typedef typename SelectType<C,FalseType,TrueType>::Type  Type;
+   /*! \endcond */
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
