@@ -118,7 +118,7 @@ template<> struct CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE_FAILED<true> { enum { valu
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE(T) \
    typedef \
       ::blaze::CONSTRAINT_TEST< \
-         ::blaze::CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE_FAILED< ::blaze::IsNumeric<T>::value >::value > \
+         ::blaze::CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE_FAILED< !::blaze::IsNumeric<T>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
