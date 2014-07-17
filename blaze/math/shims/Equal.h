@@ -72,7 +72,7 @@ namespace blaze {
 inline bool equal( float a, float b )
 {
    return ( std::fabs( a - b ) <= 4E-6 ) ||
-          ( boost::math::float_distance( a, b ) <= 6.0F );
+          ( std::fabs( boost::math::float_distance( a, b ) ) <= 6.0F );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -161,7 +161,7 @@ inline bool equal( double a, float b )
 inline bool equal( double a, double b )
 {
    return ( std::fabs( a - b ) <= accuracy ) ||
-          ( boost::math::float_distance( a, b ) <= 4.0 );
+          ( std::fabs( boost::math::float_distance( a, b ) ) <= 4.0 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -250,7 +250,7 @@ inline bool equal( long double a, double b )
 inline bool equal( long double a, long double b )
 {
    return ( std::fabs( a - b ) <= accuracy ) ||
-          ( boost::math::float_distance( a, b ) <= 4.0L );
+          ( std::fabs( boost::math::float_distance( a, b ) ) <= 4.0L );
 }
 /*! \endcond */
 //*************************************************************************************************
