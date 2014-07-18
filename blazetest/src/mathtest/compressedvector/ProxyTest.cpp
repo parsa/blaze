@@ -1,0 +1,1219 @@
+//=================================================================================================
+/*!
+//  \file src/mathtest/compressedvector/ProxyTest.cpp
+//  \brief Source file for the CompressedVector proxy test
+//
+//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. You can redistribute it and/or modify it under
+//  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
+//  forms, with or without modification, are permitted provided that the following conditions
+//  are met:
+//
+//  1. Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, this list
+//     of conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//  3. Neither the names of the Blaze development group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software without specific
+//     prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+//  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+//  SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+//  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+//  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+//  DAMAGE.
+*/
+//=================================================================================================
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <cstdlib>
+#include <iostream>
+#include <blazetest/mathtest/compressedvector/ProxyTest.h>
+
+
+namespace blazetest {
+
+namespace mathtest {
+
+namespace compressedvector {
+
+//=================================================================================================
+//
+//  CONSTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constructor for the CompressedVector proxy test.
+//
+// \exception std::runtime_error Operation error detected.
+*/
+ProxyTest::ProxyTest()
+{
+   testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testMultAssign();
+   testScaling();
+   testSubscript();
+   testIterator();
+   testNonZeros();
+   testReset();
+   testClear();
+   testResize();
+   testExtend();
+   testReserve();
+   testSwap();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  TEST FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all assignment operators of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testAssignment()
+{
+   //=====================================================================================
+   // Homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy homogeneous assignment";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 3UL, 2 );
+
+      vec[1] = 4;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 4 || vec[1][1] != 4 || vec[1][2] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 4 4 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Array assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy array assignment";
+
+      const int array[3] = { 1, 2, 3 };
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 3UL, 0 );
+
+      vec[1] = array;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 || vec[1][1] != 2 || vec[1][2] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy copy assignment";
+
+      DVV vec( 3UL, 1UL );
+      vec[0] = DV( 3UL, 5 );
+
+      vec[1] = vec[0];
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 2UL );
+
+      checkSize    ( vec[0], 3UL );
+      checkCapacity( vec[0], 3UL );
+      checkNonZeros( vec[0], 3UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 5 || vec[1][1] != 5 || vec[1][2] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 5 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Dense vector assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+
+      vec[1] = tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 || vec[1][1] != 2 || vec[1][2] != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy sparse vector assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVV vec( 3UL, 1UL );
+
+      vec[1] = tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 2 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 2 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testAddAssign()
+{
+   //=====================================================================================
+   // Dense vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] += tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 2 || vec[1][1] != 4 || vec[1][2] != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 2 4 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy sparse vector assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] += tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 4 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testSubAssign()
+{
+   //=====================================================================================
+   // Dense vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] -= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 0 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy sparse vector assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] -= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 0 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy multiplication assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the multiplication assignment operators of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testMultAssign()
+{
+   //=====================================================================================
+   // Dense vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy dense vector assignment";
+
+      DV tmp( 3UL );
+      tmp[0] = 1;
+      tmp[1] = 2;
+      tmp[2] = 3;
+      DVV vec( 3UL, 1UL );
+      vec[1] =  tmp;
+
+      vec[1] *= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 3UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 || vec[1][1] != 4 || vec[1][2] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Sparse vector addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy sparse vector assignment";
+
+      SV tmp( 3UL );
+      tmp[1] = 2;
+      DVV vec( 3UL, 1UL );
+      vec[1] = tmp;
+
+      vec[1] *= tmp;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 3UL );
+      checkCapacity( vec[1], 3UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 0 || vec[1][1] != 4 || vec[1][2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of all VectorAccessProxy (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testScaling()
+{
+   //=====================================================================================
+   // Self-scaling (v*=s)
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy self-scaling (v*=s)";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 1UL, 2 );
+
+      vec[1] *= 2;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 1UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy self-scaling (v/=s)";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 1UL, 2 );
+
+      vec[1] /= 2;
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 1UL );
+      checkCapacity( vec[1], 1UL );
+      checkNonZeros( vec[1], 1UL );
+      checkSize    ( vec[2], 0UL );
+
+      if( vec[1][0] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << vec[1] << "\n"
+             << "   Expected result:\n( 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy subscript operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the subscript operator
+// of the VectorAccessProxy class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void ProxyTest::testSubscript()
+{
+   test_ = "VectorAccessProxy::operator[]";
+
+   DVV vec( 3UL, 1UL );
+   vec[1] = DV( 1UL, 2 );
+   vec[1][0] = 3;
+
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 1UL );
+
+   checkSize    ( vec[0], 0UL );
+   checkSize    ( vec[1], 1UL );
+   checkCapacity( vec[1], 1UL );
+   checkNonZeros( vec[1], 1UL );
+   checkSize    ( vec[2], 0UL );
+
+   if( vec[1][0] != DV( 1UL, 3 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec[1] << "\n"
+          << "   Expected result:\n( 3 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy function call operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the function call operator
+// of the VectorAccessProxy class template. In case an error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+void ProxyTest::testFunctionCall()
+{
+   test_ = "VectorAccessProxy::operator()";
+
+   DMV vec( 3UL, 1UL );
+   vec[1] = DM( 1UL, 1UL, 2 );
+   vec[1](0,0) = 3;
+
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 1UL );
+
+   checkRows    ( vec[0], 0UL );
+   checkColumns ( vec[0], 0UL );
+   checkRows    ( vec[1], 0UL );
+   checkColumns ( vec[1], 0UL );
+   checkCapacity( vec[1], 1UL );
+   checkNonZeros( vec[1], 1UL );
+   checkRows    ( vec[2], 0UL );
+   checkColumns ( vec[2], 0UL );
+
+   if( vec[1](0,0) != DM( 1UL, 3 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Function call operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec[1] << "\n"
+          << "   Expected result:\n( 3 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the VectorAccessProxy iterator implementation.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the iterator implementation of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testIterator()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 4UL, 4 );
+
+      // Counting the number of elements via Iterator
+      {
+         test_ = "VectorAccessProxy::begin() and VectorAccessProxy::end()";
+
+         const size_t number( end( vec[1] ) - begin( vec[1] ) );
+
+         if( number != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements via ConstIterator
+      {
+         test_ = "VectorAccessProxy::cbegin() and VectorAccessProxy::cend()";
+
+         const size_t number( cend( vec[1] ) - cbegin( vec[1] ) );
+
+         if( number != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      DMV vec( 3UL, 1UL );
+      vec[1] = DM( 4UL, 4UL, 4 );
+
+      // Counting the number of elements via Iterator
+      {
+         test_ = "VectorAccessProxy::begin( size_t ) and VectorAccessProxy::end( size_t )";
+
+         const size_t number( end( vec[1], 1UL ) - begin( vec[1], 1UL ) );
+
+         if( number != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements via ConstIterator
+      {
+         test_ = "VectorAccessProxy::cbegin( size_t ) and VectorAccessProxy::cend( size_t )";
+
+         const size_t number( cend( vec[1], 1UL ) - cbegin( vec[1], 1UL ) );
+
+         if( number != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c nonZeros() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c nonZeros() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testNonZeros()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::nonZeros()";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 8UL, 8 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 8UL );
+      checkCapacity( vec[1], 8UL );
+      checkNonZeros( vec[1], 8UL );
+      checkSize    ( vec[2], 0UL );
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::nonZeros( size_t )";
+
+      DMV vec( 3UL, 1UL );
+      vec[1] = DM( 3UL, 3UL, 3 );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  0UL );
+      checkColumns ( vec[0],  0UL );
+      checkRows    ( vec[1],  3UL );
+      checkColumns ( vec[1],  3UL );
+      checkCapacity( vec[1],  9UL );
+      checkNonZeros( vec[1],  0UL, 3UL );
+      checkNonZeros( vec[1],  1UL, 3UL );
+      checkNonZeros( vec[1],  2UL, 3UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reset() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reset() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testReset()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::reset()";
+
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 8UL, 8 );
+      vec[1].reset();
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 8UL );
+      checkCapacity( vec[1], 8UL );
+      checkNonZeros( vec[1], 0UL );
+      checkSize    ( vec[2], 0UL );
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::reset( size_t )";
+
+      DMV vec( 3UL, 1UL );
+      vec[1] = DM( 3UL, 3UL, 3 );
+      vec[1].reset( 1UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0], 0UL );
+      checkColumns ( vec[0], 0UL );
+      checkRows    ( vec[1], 3UL );
+      checkColumns ( vec[1], 3UL );
+      checkCapacity( vec[1], 9UL );
+      checkNonZeros( vec[1], 6UL );
+      checkNonZeros( vec[1], 0UL, 3UL );
+      checkNonZeros( vec[1], 1UL, 0UL );
+      checkNonZeros( vec[1], 2UL, 3UL );
+      checkRows    ( vec[2], 0UL );
+      checkColumns ( vec[2], 0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c clear() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testClear()
+{
+   test_ = "VectorAccessProxy::clear()";
+
+   DVV vec( 3UL, 1UL );
+   vec[1] = DV( 8UL, 8 );
+   vec[1].clear();
+
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 0UL );
+
+   checkSize( vec[0], 0UL );
+   checkSize( vec[1], 0UL );
+   checkSize( vec[2], 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c resize() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c resize() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testResize()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::resize( size_t )";
+
+      DVV vec( 3UL, 1UL );
+      vec[1].resize( 10UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0],  0UL );
+      checkSize    ( vec[1], 10UL );
+      checkCapacity( vec[1], 10UL );
+      checkSize    ( vec[2],  0UL );
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::resize( size_t, size_t )";
+
+      DMV vec( 3UL, 1UL );
+      vec[1].resize( 5UL, 5UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  0UL );
+      checkColumns ( vec[0],  0UL );
+      checkRows    ( vec[1],  5UL );
+      checkColumns ( vec[1],  5UL );
+      checkCapacity( vec[1], 25UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c extend() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c extend() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testExtend()
+{
+   //=====================================================================================
+   // Vector elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::extend( size_t )";
+
+      DVV vec( 3UL, 1UL );
+      vec[1].extend( 10UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0],  0UL );
+      checkSize    ( vec[1], 10UL );
+      checkCapacity( vec[1], 10UL );
+      checkSize    ( vec[2],  0UL );
+   }
+
+
+   //=====================================================================================
+   // Matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "VectorAccessProxy::extend( size_t, size_t )";
+
+      DMV vec( 3UL, 1UL );
+      vec[1].extend( 5UL, 5UL );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkRows    ( vec[0],  0UL );
+      checkColumns ( vec[0],  0UL );
+      checkRows    ( vec[1],  5UL );
+      checkColumns ( vec[1],  5UL );
+      checkCapacity( vec[1], 25UL );
+      checkRows    ( vec[2],  0UL );
+      checkColumns ( vec[2],  0UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c reserve() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c reserve() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testReserve()
+{
+   test_ = "VectorAccessProxy::reserve()";
+
+   DVV vec( 3UL, 1UL );
+   vec[0].resize( 5UL );
+   vec[0].reserve( 10UL );
+
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 1UL );
+
+   checkSize    ( vec[0],  5UL );
+   checkCapacity( vec[0], 10UL );
+   checkSize    ( vec[1],  0UL );
+   checkSize    ( vec[2],  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c swap() functionality of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c swap() function of the VectorAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testSwap()
+{
+   test_ = "VectorAccessProxy swap";
+
+   {
+      DVV vec( 3UL, 2UL );
+      vec[0].resize( 2UL );
+      vec[0] = 0;
+      vec[2].resize( 6UL );
+      vec[2] = 0;
+
+      swap( vec[0], vec[2] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
+
+      checkSize    ( vec[0], 6UL );
+      checkCapacity( vec[0], 6UL );
+      checkNonZeros( vec[0], 0UL );
+      checkSize    ( vec[1], 0UL );
+      checkSize    ( vec[2], 2UL );
+      checkCapacity( vec[2], 2UL );
+      checkNonZeros( vec[2], 0UL );
+   }
+
+   {
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 2UL, 2 );
+      DV tmp( 6UL, 6 );
+
+      swap( vec[1], tmp );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 6UL );
+      checkCapacity( vec[1], 6UL );
+      checkNonZeros( vec[1], 6UL );
+      checkSize    ( vec[2], 0UL );
+      checkSize    ( tmp   , 2UL );
+      checkCapacity( tmp   , 2UL );
+      checkNonZeros( tmp   , 2UL );
+   }
+
+   {
+      DVV vec( 3UL, 1UL );
+      vec[1] = DV( 2UL, 2 );
+      DV tmp( 6UL, 6 );
+
+      swap( tmp, vec[1] );
+
+      checkSize    ( vec, 3UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      checkSize    ( vec[0], 0UL );
+      checkSize    ( vec[1], 6UL );
+      checkCapacity( vec[1], 6UL );
+      checkNonZeros( vec[1], 6UL );
+      checkSize    ( vec[2], 0UL );
+      checkSize    ( tmp   , 2UL );
+      checkCapacity( tmp   , 2UL );
+      checkNonZeros( tmp   , 2UL );
+   }
+}
+//*************************************************************************************************
+
+} // namespace compressedvector
+
+} // namespace mathtest
+
+} // namespace blazetest
+
+
+
+
+//=================================================================================================
+//
+//  MAIN FUNCTION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+int main()
+{
+   std::cout << "   Running CompressedVector proxy test..." << std::endl;
+
+   try
+   {
+      RUN_COMPRESSEDVECTOR_PROXY_TEST;
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during CompressedVector proxy test:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
