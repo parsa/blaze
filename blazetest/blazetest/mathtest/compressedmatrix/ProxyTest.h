@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/compressedmatrix/ClassTest.h
-//  \brief Header file for the CompressedMatrix class test
+//  \file blazetest/mathtest/compressedmatrix/ProxyTest.h
+//  \brief Header file for the CompressedMatrix proxy test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_PROXYTEST_H_
+#define _BLAZETEST_MATHTEST_COMPRESSEDMATRIX_PROXYTEST_H_
 
 
 //*************************************************************************************************
@@ -44,7 +44,10 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/Types.h>
@@ -63,18 +66,19 @@ namespace compressedmatrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the CompressedMatrix class template.
+/*!\brief Auxiliary class for all tests of the access proxy of the CompressedMatrix class template.
 //
-// This class represents a test suite for the blaze::CompressedMatrix class template. It performs
-// a series of both compile time as well as runtime tests.
+// This class represents a test suite for the access proxy of the blaze::CompressedMatrix class
+// template, the blaze::MatrixAccessProxy class template. It performs a series of both compile
+// time as well as runtime tests.
 */
-class ClassTest
+class ProxyTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ClassTest();
+   explicit ProxyTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -87,29 +91,24 @@ class ClassTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testConstructors();
-   void testAssignment  ();
-   void testAddAssign   ();
-   void testSubAssign   ();
-   void testMultAssign  ();
-   void testScaling     ();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testMultAssign();
+   void testScaling();
+   void testSubscript();
    void testFunctionCall();
-   void testIterator    ();
-   void testNonZeros    ();
-   void testReset       ();
-   void testClear       ();
-   void testAppend      ();
-   void testInsert      ();
-   void testErase       ();
-   void testResize      ();
-   void testReserve     ();
-   void testTrim        ();
-   void testTranspose   ();
-   void testSwap        ();
-   void testFind        ();
-   void testLowerBound  ();
-   void testUpperBound  ();
-   void testIsDefault   ();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testClear();
+   void testResize();
+   void testExtend();
+   void testReserve();
+   void testSwap();
+
+   template< typename Type >
+   void checkSize( const Type& vector, size_t expectedSize ) const;
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
@@ -118,13 +117,13 @@ class ClassTest
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& matrix, size_t minCapacity ) const;
+   void checkCapacity( const Type& object, size_t minCapacity ) const;
 
    template< typename Type >
    void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
@@ -139,16 +138,62 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Type of the compressed matrix
-   typedef MT::TransposeType                             TMT;  //!< Transpose compressed matrix type
+   typedef blaze::DynamicVector<int,blaze::rowVector>     DV;  //!< Type of the dense vector elements.
+   typedef blaze::CompressedVector<int,blaze::rowVector>  SV;  //!< Type of the sparse vector elements.
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>      DM;  //!< Type of the dense matrix elements.
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>   SM;  //!< Type of the sparse matrix elements.
+
+   //! Type of the compressed matrix with dense vector elements.
+   typedef blaze::CompressedMatrix<DV,blaze::rowMajor>  DVM;
+
+   //! Transpose compressed matrix type with dense vector elements.
+   typedef DVM::TransposeType  TDVM;
+
+   //! Type of the compressed matrix with sparse vector elements.
+   typedef blaze::CompressedMatrix<SV,blaze::rowMajor>  SVM;
+
+   //! Transpose compressed matrix type with sparse vector elements.
+   typedef SVM::TransposeType  TSVM;
+
+   //! Type of the compressed matrix with dense matrix elements.
+   typedef blaze::CompressedMatrix<DM,blaze::rowMajor>  DMM;
+
+   //! Transpose compressed matrix type with dense matrix elements.
+   typedef DMM::TransposeType  TDMM;
+
+   //! Type of the compressed matrix with sparse matrix elements.
+   typedef blaze::CompressedMatrix<SM,blaze::rowMajor>  SMM;
+
+   //! Transpose compressed matrix type with sparse matrix elements.
+   typedef SMM::TransposeType  TSMM;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, TMT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, TMT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( DVM  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TDVM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SVM  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSVM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( DMM  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TDMM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SMM  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSMM );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( DVM );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( SVM );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( DMM );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( SMM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDVM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TSVM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDMM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TSMM );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM, TDVM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM, TSVM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM, TDMM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM, TSMM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM::ElementType, TDVM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM::ElementType, TSVM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM::ElementType, TDMM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM::ElementType, TSMM::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -164,6 +209,33 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Checking the size of the given vector.
+//
+// \param vector The vector to be checked.
+// \param expectedSize The expected size of the vector.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the size of the given vector. In case the actual size does not correspond
+// to the given expected size, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the vector
+void ProxyTest::checkSize( const Type& vector, size_t expectedSize ) const
+{
+   if( size( vector ) != expectedSize ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid size detected\n"
+          << " Details:\n"
+          << "   Size         : " << size( vector ) << "\n"
+          << "   Expected size: " << expectedSize << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checking the number of rows of the given matrix.
 //
 // \param matrix The matrix to be checked.
@@ -176,7 +248,7 @@ class ClassTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void ProxyTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -204,7 +276,7 @@ void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // exception is thrown.
 */
 template< typename Type >  // Type of the  matrix
-void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void ProxyTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -220,25 +292,25 @@ void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given matrix.
+/*!\brief Checking the capacity of the given vector/matrix.
 //
-// \param matrix The matrix to be checked.
-// \param minCapacity The expected minimum capacity of the matrix.
+// \param object The vector/matrix to be checked.
+// \param minCapacity The expected minimum capacity of the vector/matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given matrix. In case the actual capacity is smaller
-// than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
+// This function checks the capacity of the given vector/matrix. In case the actual capacity is
+// smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the matrix
-void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+template< typename Type >  // Type of the vector/matrix
+void ProxyTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
-   if( capacity( matrix ) < minCapacity ) {
+   if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << capacity( matrix ) << "\n"
+          << "   Capacity                 : " << capacity( object ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -260,7 +332,7 @@ void ClassTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 // exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ClassTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+void ProxyTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
 {
    if( capacity( matrix, index ) < minCapacity ) {
       std::ostringstream oss;
@@ -277,37 +349,37 @@ void ClassTest::checkCapacity( const Type& matrix, size_t index, size_t minCapac
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given matrix.
+/*!\brief Checking the number of non-zero elements of the given vector/matrix.
 //
-// \param matrix The matrix to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the matrix.
+// \param object The vector/matrix to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the vector/matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given matrix. In case the
-// actual number of non-zero elements does not correspond to the given expected number,
+// This function checks the number of non-zero elements of the given vector/matrix. In case
+// the actual number of non-zero elements does not correspond to the given expected number,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the matrix
-void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the vector/matrix
+void ProxyTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
-   if( nonZeros( matrix ) != expectedNonZeros ) {
+   if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << nonZeros( matrix ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( object ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( capacity( matrix ) < nonZeros( matrix ) ) {
+   if( capacity( object ) < nonZeros( object ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << nonZeros( matrix ) << "\n"
-          << "   Capacity           : " << capacity( matrix ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( object ) << "\n"
+          << "   Capacity           : " << capacity( object ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -328,7 +400,7 @@ void ClassTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) con
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the matrix
-void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void ProxyTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -364,13 +436,13 @@ void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expected
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the CompressedMatrix class template.
+/*!\brief Testing the functionality of the MatrixAccessProxy class template.
 //
 // \return void
 */
 void runTest()
 {
-   ClassTest();
+   ProxyTest();
 }
 //*************************************************************************************************
 
@@ -385,9 +457,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the CompressedMatrix class test.
+/*!\brief Macro for the execution of the MatrixAccessProxy class test.
 */
-#define RUN_COMPRESSEDMATRIX_CLASS_TEST \
+#define RUN_COMPRESSEDMATRIX_PROXY_TEST \
    blazetest::mathtest::compressedmatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
