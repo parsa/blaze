@@ -69,7 +69,7 @@ namespace blaze {
 // this with two examples by means of the CompressedVector class:
 
    \code
-   CompressedVector<real> a( 5 );
+   blaze::CompressedVector<real> a( 5 );
 
    // Standard usage of the subscript operator to initialize a vector element.
    // Only a single vector matrix element is accessed!
@@ -1354,7 +1354,7 @@ inline bool operator>=( const T& lhs, const VectorAccessProxy<VT>& rhs )
 // \ingroup math
 //
 // \param os Reference to the output stream.
-// \param v Reference to a constant proxy object.
+// \param proxy Reference to a constant proxy object.
 // \return Reference to the output stream.
 */
 template< typename VT >
@@ -1430,6 +1430,15 @@ inline void reset( const VectorAccessProxy<VT>& proxy, size_t i );
 
 template< typename VT >
 inline void clear( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) /* throw() */;
+
+template< typename VT, typename T >
+inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */;
+
+template< typename T, typename VT >
+inline void swap( T& a, const VectorAccessProxy<VT>& v ) /* throw() */;
 //@}
 //*************************************************************************************************
 
@@ -1785,6 +1794,66 @@ template< typename VT >
 inline void clear( const VectorAccessProxy<VT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Swapping the contents of two access proxies.
+// \ingroup math
+//
+// \param a The first access proxy to be swapped.
+// \param b The second access proxy to be swapped.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename VT >
+inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) /* throw() */
+{
+   using std::swap;
+
+   typedef typename VectorAccessProxy<VT>::RawReference  RawReference;
+   swap( static_cast<RawReference>( a ), static_cast<RawReference>( b ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Swapping the contents of an access proxy with another element.
+// \ingroup math
+//
+// \param a The access proxy to be swapped.
+// \param b The other element to be swapped.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename VT, typename T >
+inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */
+{
+   using std::swap;
+
+   typedef typename VectorAccessProxy<VT>::RawReference  RawReference;
+   swap( static_cast<RawReference>( a ), b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Swapping the contents of an access proxy with another element.
+// \ingroup math
+//
+// \param a The other element to be swapped.
+// \param b The access proxy to be swapped.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename T, typename VT >
+inline void swap( T& a, const VectorAccessProxy<VT>& b ) /* throw() */
+{
+   using std::swap;
+
+   typedef typename VectorAccessProxy<VT>::RawReference  RawReference;
+   swap( a, static_cast<RawReference>( b ) );
 }
 //*************************************************************************************************
 
