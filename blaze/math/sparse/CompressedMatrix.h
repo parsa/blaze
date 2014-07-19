@@ -1613,7 +1613,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::trim()
+inline void CompressedMatrix<Type,SO>::trim()
 {
    for( size_t i=0UL; i<m_; ++i )
       trim( i );
@@ -1634,7 +1634,7 @@ void CompressedMatrix<Type,SO>::trim()
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-void CompressedMatrix<Type,SO>::trim( size_t i )
+inline void CompressedMatrix<Type,SO>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
