@@ -102,6 +102,7 @@ class MatrixAccessProxy
 
    //**Type trait generation***********************************************************************
    /*! \cond BLAZE_INTERNAL */
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetElementType  , ElementType  , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetReference    , Reference    , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetPointer      , Pointer      , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetIterator     , Iterator     , INVALID_TYPE );
@@ -111,21 +112,24 @@ class MatrixAccessProxy
 
  public:
    //**Type definitions****************************************************************************
-   typedef MT                        MatrixType;    //!< Type of the accessed sparse matrix.
-   typedef typename MT::ElementType  ElementType;   //!< Type of the represented sparse matrix element.
-   typedef ElementType&              RawReference;  //!< Raw reference to the represented element.
+   typedef MT                        MatrixType;       //!< Type of the accessed sparse matrix.
+   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented sparse matrix element.
+   typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
+
+   //! Element type of the represented sparse vector element.
+   typedef typename GetElementType<RepresentedType>::Type  ElementType;
 
    //! Reference type of the represented sparse matrix element.
-   typedef typename GetReference<ElementType>::Type  Reference;
+   typedef typename GetReference<RepresentedType>::Type  Reference;
 
    //! Pointer type of the represented sparse matrix element.
-   typedef typename GetPointer<ElementType>::Type  Pointer;
+   typedef typename GetPointer<RepresentedType>::Type  Pointer;
 
    //! Iterator type of the represented sparse matrix element.
-   typedef typename GetIterator<ElementType>::Type  Iterator;
+   typedef typename GetIterator<RepresentedType>::Type  Iterator;
 
    //! ConstIterator type of the represented sparse matrix element.
-   typedef typename GetConstIterator<ElementType>::Type  ConstIterator;
+   typedef typename GetConstIterator<RepresentedType>::Type  ConstIterator;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -162,8 +166,8 @@ class MatrixAccessProxy
    //@}
    //**********************************************************************************************
 
-   //**Vector/matrix utility functions*************************************************************
-   /*!\name Vector utility functions */
+   //**Vector/matrix data access functions*********************************************************
+   /*!\name Vector/matrix data access functions */
    //@{
    inline Reference operator[]( size_t index ) const;
    inline Reference operator()( size_t i, size_t j ) const;
@@ -178,23 +182,57 @@ class MatrixAccessProxy
    inline Iterator      end   ( size_t i ) const;
    inline ConstIterator cend  () const;
    inline ConstIterator cend  ( size_t i ) const;
+   //@}
+   //**********************************************************************************************
 
-   inline size_t size() const;
-   inline size_t rows() const;
-   inline size_t columns() const;
-   inline size_t spacing() const;
-   inline size_t capacity() const;
-   inline size_t capacity( size_t i ) const;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset() const;
-   inline void   reset( size_t i ) const;
-   inline void   clear() const;
-   inline void   resize( size_t n, bool preserve=true ) const;
-   inline void   resize ( size_t m, size_t n, bool preserve=true ) const;
-   inline void   extend( size_t n, bool preserve=true ) const;
-   inline void   extend ( size_t m, size_t n, bool preserve=true ) const;
-   inline void   reserve( size_t n ) const;
+   //**Vector/matrix utility functions*************************************************************
+   /*!\name Vector/matrix utility functions */
+   //@{
+   inline size_t   size() const;
+   inline size_t   rows() const;
+   inline size_t   columns() const;
+   inline size_t   spacing() const;
+   inline size_t   capacity() const;
+   inline size_t   capacity( size_t i ) const;
+   inline size_t   nonZeros() const;
+   inline size_t   nonZeros( size_t i ) const;
+   inline void     reset() const;
+   inline void     reset( size_t i ) const;
+   inline void     clear() const;
+   inline Iterator insert( size_t index, const ElementType& value ) const;
+   inline Iterator insert( size_t i, size_t j, const ElementType& value ) const;
+   inline void     append( size_t index, const ElementType& value, bool check=false ) const;
+   inline void     append( size_t i, size_t j, const ElementType& value, bool check=false ) const;
+   inline void     finalize( size_t i ) const;
+   inline void     erase( size_t index ) const;
+   inline Iterator erase( Iterator pos ) const;
+   inline Iterator erase( Iterator first, Iterator last ) const;
+   inline void     erase( size_t i, size_t j ) const;
+   inline Iterator erase( size_t i, Iterator pos ) const;
+   inline Iterator erase( size_t i, Iterator first, Iterator last ) const;
+   inline void     resize( size_t n, bool preserve=true ) const;
+   inline void     resize ( size_t m, size_t n, bool preserve=true ) const;
+   inline void     extend( size_t n, bool preserve=true ) const;
+   inline void     extend ( size_t m, size_t n, bool preserve=true ) const;
+   inline void     reserve( size_t n ) const;
+   inline void     reserve( size_t i, size_t n ) const;
+   inline void     trim() const;
+   inline void     trim( size_t i ) const;
+   inline void     transpose() const;
+
+   template< typename Other > inline void scale( const Other& scalar ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Vector/matrix lookup functions**************************************************************
+   /*!\name Vector/matrix lookup functions */
+   //@{
+   inline Iterator find      ( size_t index ) const;
+   inline Iterator find      ( size_t i, size_t j ) const;
+   inline Iterator lowerBound( size_t index ) const;
+   inline Iterator lowerBound( size_t i, size_t j ) const;
+   inline Iterator upperBound( size_t index ) const;
+   inline Iterator upperBound( size_t i, size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -248,7 +286,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sm, size_t i, size_t j )
    const typename MT::Iterator element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
    if( element == sm_.end(index) )
-      sm_.insert( i_, j_, ElementType() );
+      sm_.insert( i_, j_, RepresentedType() );
 }
 //*************************************************************************************************
 
@@ -842,6 +880,256 @@ inline void MatrixAccessProxy<MT>::clear() const
 
 
 //*************************************************************************************************
+/*!\brief Inserting an element into the represented sparse vector.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Reference to the inserted value.
+// \exception std::invalid_argument Invalid compressed vector access index.
+//
+// In case the access proxy represents a vector-like data structure that provides an insert()
+// function, this function inserts a new element into the sparse vector. However, duplicate
+// elements are not allowed. In case the sparse vector already contains an element with index
+// \a index, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::insert( size_t index, const ElementType& value ) const
+{
+   get().insert( index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inserting an element into the represented sparse matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse matrix access index.
+//
+// In case the access proxy represents a vector-like data structure that provides an insert()
+// function, this function inserts a new element into the sparse matrix. However, duplicate
+// elements are not allowed. In case the sparse matrix already contains an element with row
+// index \a i and column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::insert( size_t i, size_t j, const ElementType& value ) const
+{
+   get().insert( i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Appending an element to the represented sparse vector.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// In case the access proxy represents a vector-like data structure that provides an append()
+// function, this function provides a very efficient way to fill a sparse vector with elements.
+// It appends a new element to the end of the sparse vector without any memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the compressed vector
+//  - the current number of non-zero elements must be smaller than the capacity of the vector
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::append( size_t index, const ElementType& value, bool check ) const
+{
+   get().append( index, value, check );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Appending an element to the specified row/column of the sparse matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function provides a very efficient way to fill a sparse matrix with elements. It appends
+// a new element to the end of the specified row/column without any additional memory allocation.
+// Therefore it is strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the specified row/column of the sparse matrix
+//  - the current number of non-zero elements in the matrix must be smaller than the capacity
+//    of the matrix
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::append( size_t i, size_t j, const ElementType& value, bool check ) const
+{
+   get().append( i, j, value, check );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Finalizing the element insertion of a row/column.
+//
+// \param i The index of the row/column to be finalized \f$[0..M-1]\f$.
+// \return void
+//
+// In case the access proxy represents a matrix-like data structure that provides a finalize()
+// function, this function provides the functionality to finalize the element insertion of a
+// row/column. This function is part of the low-level interface to efficiently fill a sparse
+// matrix with elements. After completion of row/column \a i via the append() function, this
+// function can be called to finalize row/column \a i and prepare the next row/column for
+// insertion process via append().
+//
+// \b Note: Although finalize() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::finalize( size_t i ) const
+{
+   get().finalize( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the compressed vector.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// In case the access proxy represents a vector-like data structure that provides an erase()
+// function, this function erases an element from the sparse vector.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::erase( size_t index ) const
+{
+   get().erase( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the compressed vector.
+//
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// In case the access proxy represents a vector-like data structure that provides an erase()
+// function, this function erases an element from the sparse vector.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator MatrixAccessProxy<MT>::erase( Iterator pos ) const
+{
+   return get().erase( pos );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing a range of elements from the compressed vector.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// In case the access proxy represents a vector-like data structure that provides an erase()
+// function, this function erases a range of elements from the sparse vector.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::erase( Iterator first, Iterator last ) const
+{
+   return get().erase( first, last );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the sparse matrix.
+//
+// \param i The row index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// In case the access proxy represents a matrix-like data structure that provides an erase()
+// function, this function erases an element from the sparse matrix.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::erase( size_t i, size_t j ) const
+{
+   get().erase( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing an element from the sparse matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param pos Iterator to the element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// In case the access proxy represents a matrix-like data structure that provides an erase()
+// function, this function erases an element from the sparse matrix. In case the storage order
+// is set to \a rowMajor the function erases an element from row \a i, in case the storage flag
+// is set to \a columnMajor the function erases an element from column \a i.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::erase( size_t i, Iterator pos ) const
+{
+   return get().erase( i, pos );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Erasing a range of elements from the sparse matrix.
+//
+// \param i The row/column index of the element to be erased. The index has to be in the range \f$[0..M-1]\f$.
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// In case the access proxy represents a matrix-like data structure that provides an erase()
+// function, this function erases a range of element from the sparse matrix. In case the storage
+// order is set to \a rowMajor the function erases a range of elements from row \a i, in case the
+// storage flag is set to \a columnMajor the function erases a range of elements from column \a i.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::erase( size_t i, Iterator first, Iterator last ) const
+{
+   return get().erase( i, first, last );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Changing the size of the represented vector.
 //
 // \param n The new size of the vector.
@@ -950,6 +1238,252 @@ template< typename MT >  // Type of the sparse matrix
 inline void MatrixAccessProxy<MT>::reserve( size_t n ) const
 {
    get().reserve( n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the minimum capacity of a specific row/column of the sparse matrix.
+//
+// \param i The row/column index of the new element \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
+// \param n The new minimum capacity of the specified row/column.
+// \return void
+//
+// In case the access proxy represents a matrix-like data structure that provides a reserve()
+// function, this function increases the capacity of row/column \a i of the sparse matrix to
+// at least \a n elements. The current values of the sparse matrix and all other individual
+// row/column capacities are preserved. In case the storage order is set to \a rowMajor, the
+// function reserves capacity for row \a i and the index has to be in the range \f$[0..M-1]\f$.
+// In case the storage order is set to \a columnMajor, the function reserves capacity for column
+// \a i and the index has to be in the range \f$[0..N-1]\f$.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::reserve( size_t i, size_t n ) const
+{
+   get().reserve( i, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Removing all excessive capacity from all rows/columns.
+//
+// \return void
+//
+// In case the access proxy represents a matrix-like data structure that provides a trim()
+// function, this function can be used to reverse the effect of all row/column-specific reserve()
+// calls. The function removes all excessive capacity from all rows (in case of a rowMajor
+// matrix) or columns (in case of a columnMajor matrix). Note that this function does not
+// remove the overall capacity but only reduces the capacity per row/column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::trim() const
+{
+   get().trim();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Removing all excessive capacity of a specific row/column of the sparse matrix.
+//
+// \param i The index of the row/column to be trimmed (\f$[0..M-1]\f$ or \f$[0..N-1]\f$).
+// \return void
+//
+// In case the access proxy represents a matrix-like data structure that provides a trim()
+// function, this function can be used to reverse the effect of a row/column-specific reserve()
+// call. It removes all excessive capacity from the specified row (in case of a rowMajor matrix)
+// or column (in case of a columnMajor matrix). The excessive capacity is assigned to the
+// subsequent row/column.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::trim( size_t i ) const
+{
+   get().trim( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Transposing the represented matrix.
+//
+// \return Reference to the transposed matrix.
+//
+// In case the access proxy represents a matrix-like data structure that provides an transpose()
+// function, this function transposes the matrix.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::transpose() const
+{
+   get().transpose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Scaling of the represented vector/matrix by the scalar value \a scalar.
+//
+// \param scalar The scalar value for the scaling.
+// \return void
+//
+// In case the access proxy represents a vector- or matrix-like data structure that provides a
+// scale() function, this function performs a scaling by the given scalar.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline void MatrixAccessProxy<MT>::scale( const Other& scalar ) const
+{
+   get().scale( scalar );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  VECTOR/MATRIX LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Searches for a specific vector element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// In case the access proxy represents a vector-like data structure that provides a find()
+// function, this function can be used to check whether a specific element is contained in the
+// sparse vector. It specifically searches for the element with index \a index. In case the
+// element is found, the function returns an iterator to the element. Otherwise an iterator just
+// past the last non-zero element of the compressed vector (the end() iterator) is returned. Note
+// that the returned compressed vector iterator is subject to invalidation due to inserting
+// operations via the subscript operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator MatrixAccessProxy<MT>::find( size_t index ) const
+{
+   return get().find( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Searches for a specific matrix element.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// In case the access proxy represents a matrix-like data structure that provides a find()
+// function, this function can be used to check whether a specific element is contained in the
+// sparse matrix. It specifically searches for the element with row index \a i and column index
+// \a j. In case the element is found, the function returns an row/column iterator to the element.
+// Otherwise an iterator just past the last non-zero element of row \a i or column \a j (the end()
+// iterator) is returned. Note that the returned sparse matrix iterator is subject to invalidation
+// due to inserting operations via the function call operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::find( size_t i, size_t j ) const
+{
+   return get().find( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// In case the access proxy represents a vector-like data structure that provides a lowerBound()
+// function, this function returns an iterator to the first element with an index not less then
+// the given index. In combination with the upperBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// vector iterator is subject to invalidation due to inserting operations via the subscript
+// operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::lowerBound( size_t index ) const
+{
+   return get().lowerBound( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// In case the access proxy represents a matrix-like data structure that provides a lowerBound()
+// function, this function can be used to search for a lower bound iterator within a row/column.
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::lowerBound( size_t i, size_t j ) const
+{
+   return get().lowerBound( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// In case the access proxy represents a vector-like data structure that provides a upperBound()
+// function, this function returns an iterator to the first element with an index greater then
+// the given index. In combination with the lowerBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned compressed
+// vector iterator is subject to invalidation due to inserting operations via the subscript
+// operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::upperBound( size_t index ) const
+{
+   return get().upperBound( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// In case the access proxy represents a matrix-like data structure that provides a upperBound()
+// function, this function can be used to search for an upper bound iterator within a row/column.
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned compressed matrix
+// iterator is subject to invalidation due to inserting operations via the function call operator
+// or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::upperBound( size_t i, size_t j ) const
+{
+   return get().upperBound( i, j );
 }
 //*************************************************************************************************
 
@@ -1386,7 +1920,7 @@ inline std::ostream& operator<<( std::ostream& os, const MatrixAccessProxy<MT>& 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name VectorAccessProxy global functions */
+/*!\name MatrixAccessProxy global functions */
 //@{
 template< typename MT >
 inline typename MatrixAccessProxy<MT>::Iterator begin( const MatrixAccessProxy<MT>& proxy );
