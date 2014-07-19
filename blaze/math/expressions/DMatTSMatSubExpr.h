@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -708,6 +709,24 @@ struct IsSymmetric< DMatTSMatSubExpr<MT1,MT2> >
 template< typename MT1, typename MT2 >
 struct IsLower< DMatTSMatSubExpr<MT1,MT2> >
    : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsUpper< DMatTSMatSubExpr<MT1,MT2> >
+   : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

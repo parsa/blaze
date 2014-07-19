@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/logging/FunctionTrace.h>
@@ -767,6 +768,24 @@ struct IsSymmetric< SMatSMatAddExpr<MT1,MT2> >
 template< typename MT1, typename MT2 >
 struct IsLower< SMatSMatAddExpr<MT1,MT2> >
    : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsUpper< SMatSMatAddExpr<MT1,MT2> >
+   : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
