@@ -857,10 +857,11 @@ namespace blaze {}
 
 // Although the compressed vector is only used for read access within the for loop, using the
 // subscript operator temporarily inserts 10 non-zero elements into the vector. Therefore, all
-// vectors (sparse as well as dense) offer an alternate way via the \c begin() and \c end()
-// functions to traverse only the currently contained elements by iterators. In case of
-// non-const vectors, \c begin() and \c end() return an Iterator, which allows a manipulation
-// of the non-zero value, in case of a constant vector a ConstIterator is returned:
+// vectors (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
+// \c end(), and \c cend() functions to traverse the currently contained elements by iterators.
+// In case of non-const vectors, \c begin() and \c end() return an \c Iterator, which allows a
+// manipulation of the non-zero value, in case of a constant vector or in case \c cbegin() or
+// \c cend() are used a \c ConstIterator is returned:
 
    \code
    using blaze::CompressedVector;
@@ -878,11 +879,23 @@ namespace blaze {}
    }
 
    // Traversing the vector by ConstIterator
-   for( CompressedVector<int>::ConstIterator it=v1.begin(); it!=v1.end(); ++it ) {
+   for( CompressedVector<int>::ConstIterator it=v1.cbegin(); it!=v1.cend(); ++it ) {
       it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the non-zero element.
+   }
+   \endcode
+
+// Note that \c begin(), \c cbegin(), \c end(), and \c cend() are also available as free functions:
+
+   \code
+   for( CompressedVector<int>::Iterator it=begin( v1 ); it!=end( v1 ); ++it ) {
+      // ...
+   }
+
+   for( CompressedVector<int>::ConstIterator it=cbegin( v1 ); it!=cend( v1 ); ++it ) {
+      // ...
    }
    \endcode
 
@@ -1687,12 +1700,12 @@ namespace blaze {}
 
 // Although the compressed matrix is only used for read access within the for loop, using the
 // function call operator temporarily inserts 16 non-zero elements into the matrix. Therefore,
-// all matrices (sparse as well as dense) offer an alternate way via the \c begin() and \c end()
-// functions to traverse all contained elements by iterator. Note that it is not possible to
-// traverse all elements of the matrix, but that it is only possible to traverse elements in a
-// row/column-wise fashion. In case of a non-const matrix, \c begin() and \c end() return an
-// Iterator, which allows a manipulation of the non-zero value, in case of a constant matrix a
-// ConstIterator is returned:
+// all matrices (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
+// \c end() and \c cend() functions to traverse all contained elements by iterator. Note that
+// it is not possible to traverse all elements of the matrix, but that it is only possible to
+// traverse elements in a row/column-wise fashion. In case of a non-const matrix, \c begin() and
+// \c end() return an \c Iterator, which allows a manipulation of the non-zero value, in case of
+// a constant matrix or in case \c cbegin() or \c cend() are used a \c ConstIterator is returned:
 
    \code
    using blaze::CompressedMatrix;
@@ -1711,11 +1724,27 @@ namespace blaze {}
 
    // Traversing the matrix by ConstIterator
    for( size_t i=0UL; i<A.rows(); ++i ) {
-      for( CompressedMatrix<int,rowMajor>::ConstIterator it=A.begin(i); it!=A.end(i); ++it ) {
+      for( CompressedMatrix<int,rowMajor>::ConstIterator it=A.cbegin(i); it!=A.cend(i); ++it ) {
          it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
          ... = it->value();  // OK: Read access to the value of the non-zero element.
          it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
          ... = it->index();  // OK: Read access to the index of the non-zero element.
+      }
+   }
+   \endcode
+
+// Note that \c begin(), \c cbegin(), \c end(), and \c cend() are also available as free functions:
+
+   \code
+   for( size_t i=0UL; i<A.rows(); ++i ) {
+      for( CompressedMatrix<int,rowMajor>::Iterator it=begin( A, i ); it!=end( A, i ); ++it ) {
+         // ...
+      }
+   }
+
+   for( size_t i=0UL; i<A.rows(); ++i ) {
+      for( CompressedMatrix<int,rowMajor>::ConstIterator it=cbegin( A, i ); it!=cend( A, i ); ++it ) {
+         // ...
       }
    }
    \endcode
