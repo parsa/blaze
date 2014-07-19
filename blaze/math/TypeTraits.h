@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsDivExpr.h>
 #include <blaze/math/typetraits/IsEvalExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>

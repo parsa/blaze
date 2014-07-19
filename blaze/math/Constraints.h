@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/DivExpr.h>
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatAbsExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
