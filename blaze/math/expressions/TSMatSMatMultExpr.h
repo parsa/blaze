@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -855,6 +856,24 @@ inline const TSMatSMatMultExpr<T1,T2>
 template< typename MT1, typename MT2 >
 struct IsLower< TSMatSMatMultExpr<MT1,MT2> >
    : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsUpper< TSMatSMatMultExpr<MT1,MT2> >
+   : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
