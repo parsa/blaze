@@ -68,6 +68,10 @@ namespace blaze {
 // limited machine accuracy, a direct comparison of two floating point numbers should be avoided.
 // This function offers the possibility to compare two floating-point values with a certain
 // accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( float a, float b )
 {
@@ -91,6 +95,10 @@ inline bool equal( float a, float b )
 // number. Due to the limited machine accuracy, a direct comparison of two floating point numbers
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( float a, double b )
 {
@@ -113,6 +121,10 @@ inline bool equal( float a, double b )
 // number. Due to the limited machine accuracy, a direct comparison of two floating point numbers
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( float a, long double b )
 {
@@ -157,6 +169,10 @@ inline bool equal( double a, float b )
 // limited machine accuracy, a direct comparison of two floating point numbers should be avoided.
 // This function offers the possibility to compare two floating-point values with a certain
 // accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( double a, double b )
 {
@@ -180,6 +196,10 @@ inline bool equal( double a, double b )
 // number. Due to the limited machine accuracy, a direct comparison of two floating point numbers
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( double a, long double b )
 {
@@ -202,6 +222,10 @@ inline bool equal( double a, long double b )
 // number. Due to the limited machine accuracy, a direct comparison of two floating point numbers
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( long double a, float b )
 {
@@ -224,6 +248,10 @@ inline bool equal( long double a, float b )
 // number. Due to the limited machine accuracy, a direct comparison of two floating point numbers
 // should be avoided. This function offers the possibility to compare two floating-point values
 // with a certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( long double a, double b )
 {
@@ -246,6 +274,10 @@ inline bool equal( long double a, double b )
 // to the limited machine accuracy, a direct comparison of two floating point numbers should be
 // avoided. This function offers the possibility to compare two floating-point values with a
 // certain accuracy margin.
+//
+// For more information on comparing float point numbers, see
+//
+//       http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
 */
 inline bool equal( long double a, long double b )
 {
