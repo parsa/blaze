@@ -56,6 +56,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -766,6 +767,24 @@ inline const SMatTSMatAddExpr<T2,T1>
 template< typename MT1, typename MT2 >
 struct IsSymmetric< SMatTSMatAddExpr<MT1,MT2> >
    : public IsTrue< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsLower< SMatTSMatAddExpr<MT1,MT2> >
+   : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
