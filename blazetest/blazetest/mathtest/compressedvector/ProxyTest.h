@@ -100,10 +100,18 @@ class ProxyTest
    void testNonZeros();
    void testReset();
    void testClear();
+   void testAppend();
+   void testInsert();
+   void testErase();
    void testResize();
    void testExtend();
    void testReserve();
+   void testTrim();
+   void testTranspose();
    void testSwap();
+   void testFind();
+   void testLowerBound();
+   void testUpperBound();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
@@ -116,6 +124,9 @@ class ProxyTest
 
    template< typename Type >
    void checkCapacity( const Type& object, size_t minCapacity ) const;
+
+   template< typename Type >
+   void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& object, size_t nonzeros ) const;
@@ -298,6 +309,36 @@ void ProxyTest::checkCapacity( const Type& object, size_t minCapacity ) const
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
           << "   Capacity                 : " << capacity( object ) << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of a specific row/column of the given matrix.
+//
+// \param matrix The matrix to be checked.
+// \param index The row/column to be checked.
+// \param minCapacity The expected minimum capacity of the specified row/column.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the capacity of a specific row/column of the given matrix. In case the
+// actual capacity is smaller than the given expected minimum capacity, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >  // Type of the matrix
+void ProxyTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+{
+   if( capacity( matrix, index ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Capacity                 : " << capacity( matrix, index ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
