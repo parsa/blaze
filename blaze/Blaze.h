@@ -3932,7 +3932,7 @@ namespace blaze {}
    \code
    blaze::StaticVector<int,3UL,columnVector> v1( 2, 5, -1 );
 
-   blaze::DynamicVector<int,rowVector> v2( 3UL );
+   blaze::DynamicVector<int,columnVector> v2( 3UL );
    v2[0] = -1;
    v2[1] = 3;
    v2[2] = -2;
@@ -3941,7 +3941,7 @@ namespace blaze {}
    \endcode
 
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
-// vectors.
+// column vectors.
 //
 // \n <center> Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication </center>
 */
