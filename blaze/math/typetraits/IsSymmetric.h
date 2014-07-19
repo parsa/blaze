@@ -69,13 +69,13 @@ namespace blaze {
    typedef blaze::DynamicMatrix<float,rowMajor>   DynamicMatrixType;
    typedef blaze::CompressedMatrix<int,rowMajor>  CompressedMatrixType;
 
-   typedef blaze::DenseSymmetric<StaticMatrixType>       StaticSymmetricType;
-   typedef blaze::DenseSymmetric<DynamicMatrixType>      DynamicSymmetricType;
-   typedef blaze::SparseSymmetric<CompressedMatrixType>  CompressedSymmetricType;
+   typedef blaze::SymmetricMatrix<StaticMatrixType>      SymmetricStaticType;
+   typedef blaze::SymmetricMatrix<DynamicMatrixType>     SymmetricDynamicType;
+   typedef blaze::SymmetricMatrix<CompressedMatrixType>  SymmetricCompressedType;
 
-   blaze::IsSymmetric< StaticSymmetricType >::value        // Evaluates to 1
-   blaze::IsSymmetric< const DynamicSymmetricType >::Type  // Results in TrueType
-   blaze::IsSymmetric< volatile CompressedSymmetricType >  // Is derived from TrueType
+   blaze::IsSymmetric< SymmetricStaticType >::value        // Evaluates to 1
+   blaze::IsSymmetric< const SymmetricDynamicType >::Type  // Results in TrueType
+   blaze::IsSymmetric< volatile SymmetricCompressedType >  // Is derived from TrueType
    blaze::IsSymmetric< StaticMatrixType >::value           // Evaluates to 0
    blaze::IsSymmetric< const DynamicMatrixType >::Type     // Results in FalseType
    blaze::IsSymmetric< volatile CompressedMatrixType >     // Is derived from FalseType

@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_SYMMETRIC CONSTRAINT
+//  MUST_BE_SYMMETRIC_MATRIX_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -63,8 +63,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_SYMMETRIC_FAILED;
-template<> struct CONSTRAINT_MUST_BE_SYMMETRIC_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -75,11 +75,11 @@ template<> struct CONSTRAINT_MUST_BE_SYMMETRIC_FAILED<true> { enum { value = 1 }
 //
 // In case the given data type \a T is not a symmetric matrix type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_SYMMETRIC_FAILED< blaze::IsSymmetric<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_SYMMETRIC_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE_FAILED< blaze::IsSymmetric<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -87,7 +87,7 @@ template<> struct CONSTRAINT_MUST_BE_SYMMETRIC_FAILED<true> { enum { value = 1 }
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_SYMMETRIC CONSTRAINT
+//  MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -101,8 +101,8 @@ template<> struct CONSTRAINT_MUST_BE_SYMMETRIC_FAILED<true> { enum { value = 1 }
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_SYMMETRIC_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_SYMMETRIC_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -113,11 +113,11 @@ template<> struct CONSTRAINT_MUST_NOT_BE_SYMMETRIC_FAILED<true> { enum { value =
 //
 // In case the given data type \a T is a symmetric matrix type, a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_SYMMETRIC_FAILED< !blaze::IsSymmetric<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SYMMETRIC_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE_FAILED< !blaze::IsSymmetric<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
