@@ -69,7 +69,7 @@ namespace blaze {
 // this with two examples by means of the CompressedVector class:
 
    \code
-   blaze::CompressedVector<real> a( 5 );
+   blaze::CompressedVector<double> a( 5 );
 
    // Standard usage of the subscript operator to initialize a vector element.
    // Only a single vector matrix element is accessed!
@@ -80,7 +80,7 @@ namespace blaze {
    a[1] = a[0];
 
    // Multiple accesses to elements of the sparse vector in one statement!
-   const real result = a[0] + a[2] + a[4];
+   const double result = a[0] + a[2] + a[4];
    \endcode
 
 // The problem (especially with the last statement) is that several insertion operations might
@@ -97,6 +97,7 @@ class VectorAccessProxy
  private:
    //**Type trait generation***********************************************************************
    /*! \cond BLAZE_INTERNAL */
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetValueType    , value_type   , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetElementType  , ElementType  , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetReference    , Reference    , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetPointer      , Pointer      , INVALID_TYPE );
@@ -110,6 +111,9 @@ class VectorAccessProxy
    typedef VT                        VectorType;       //!< Type of the accessed sparse vector.
    typedef typename VT::ElementType  RepresentedType;  //!< Type of the represented sparse vector element.
    typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
+
+   //! Value type of the represented complex element.
+   typedef typename GetValueType<RepresentedType>::Type  ValueType;
 
    //! Element type of the represented sparse vector element.
    typedef typename GetElementType<RepresentedType>::Type  ElementType;
@@ -158,6 +162,16 @@ class VectorAccessProxy
    /*!\name Conversion operator */
    //@{
    inline operator RawReference() const;
+   //@}
+   //**********************************************************************************************
+
+   //**Complex data access functions***************************************************************
+   /*!\name Complex data access functions */
+   //@{
+   inline ValueType real() const;
+   inline void      real( ValueType value ) const;
+   inline ValueType imag() const;
+   inline void      imag( ValueType value ) const;
    //@}
    //**********************************************************************************************
 
@@ -438,6 +452,80 @@ template< typename VT >  // Type of the sparse vector
 inline VectorAccessProxy<VT>::operator RawReference() const
 {
    return get();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COMPLEX DATA ACCESS FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns the real part of the represented complex number.
+//
+// \return The current real part of the represented complex number.
+//
+// In case the access proxy represents a complex number, this function returns the current value
+// of its real part.
+*/
+template< typename VT >  // Type of the sparse vector
+inline typename VectorAccessProxy<VT>::ValueType VectorAccessProxy<VT>::real() const
+{
+   return get().real();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the real part of the represented complex number.
+//
+// \param value The new value for the real part.
+// \return void
+//
+// In case the access proxy represents a complex number, this function sets a new value to its
+// real part.
+*/
+template< typename VT >  // Type of the sparse vector
+inline void VectorAccessProxy<VT>::real( ValueType value ) const
+{
+   get().real( value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the imaginary part of the represented complex number.
+//
+// \return The current imaginary part of the represented complex number.
+//
+// In case the access proxy represents a complex number, this function returns the current value
+// of its imaginary part.
+*/
+template< typename VT >  // Type of the sparse vector
+inline typename VectorAccessProxy<VT>::ValueType VectorAccessProxy<VT>::imag() const
+{
+   return get().imag();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the imaginary part of the represented complex number.
+//
+// \param value The new value for the imaginary part.
+// \return void
+//
+// In case the access proxy represents a complex number, this function sets a new value to its
+// imaginary part.
+*/
+template< typename VT >  // Type of the sparse vector
+inline void VectorAccessProxy<VT>::imag( ValueType value ) const
+{
+   get().imag( value );
 }
 //*************************************************************************************************
 
