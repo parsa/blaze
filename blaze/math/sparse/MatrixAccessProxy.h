@@ -70,7 +70,7 @@ namespace blaze {
 // this with two examples by means of the CompressedMatrix class:
 
    \code
-   blaze::CompressedMatrix<real> A( 4, 4 );
+   blaze::CompressedMatrix<double> A( 4, 4 );
 
    // Standard usage of the function call operator to initialize a matrix element.
    // Only a single sparse matrix element is accessed!
@@ -81,7 +81,7 @@ namespace blaze {
    A(1,2) = A(0,1);
 
    // Multiple accesses to elements of the sparse matrix in one statement!
-   const real result = A(0,2) + A(1,2) + A(2,2);
+   const double result = A(0,2) + A(1,2) + A(2,2);
    \endcode
 
 // The problem (especially with the last statement) is that several insertion operations might
@@ -102,6 +102,7 @@ class MatrixAccessProxy
 
    //**Type trait generation***********************************************************************
    /*! \cond BLAZE_INTERNAL */
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetValueType    , value_type   , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetElementType  , ElementType  , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetReference    , Reference    , INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetPointer      , Pointer      , INVALID_TYPE );
@@ -115,6 +116,9 @@ class MatrixAccessProxy
    typedef MT                        MatrixType;       //!< Type of the accessed sparse matrix.
    typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented sparse matrix element.
    typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
+
+   //! Value type of the represented complex element.
+   typedef typename GetValueType<RepresentedType>::Type  ValueType;
 
    //! Element type of the represented sparse vector element.
    typedef typename GetElementType<RepresentedType>::Type  ElementType;
@@ -163,6 +167,16 @@ class MatrixAccessProxy
    /*!\name Conversion operator */
    //@{
    inline operator RawReference() const;
+   //@}
+   //**********************************************************************************************
+
+   //**Complex data access functions***************************************************************
+   /*!\name Complex data access functions */
+   //@{
+   inline ValueType real() const;
+   inline void      real( ValueType value ) const;
+   inline ValueType imag() const;
+   inline void      imag( ValueType value ) const;
    //@}
    //**********************************************************************************************
 
@@ -449,6 +463,80 @@ template< typename MT >  // Type of the sparse matrix
 inline MatrixAccessProxy<MT>::operator RawReference() const
 {
    return get();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COMPLEX DATA ACCESS FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns the real part of the represented complex number.
+//
+// \return The current real part of the represented complex number.
+//
+// In case the access proxy represents a complex number, this function returns the current value
+// of its real part.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::ValueType MatrixAccessProxy<MT>::real() const
+{
+   return get().real();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the real part of the represented complex number.
+//
+// \param value The new value for the real part.
+// \return void
+//
+// In case the access proxy represents a complex number, this function sets a new value to its
+// real part.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::real( ValueType value ) const
+{
+   get().real( value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the imaginary part of the represented complex number.
+//
+// \return The current imaginary part of the represented complex number.
+//
+// In case the access proxy represents a complex number, this function returns the current value
+// of its imaginary part.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::ValueType MatrixAccessProxy<MT>::imag() const
+{
+   return get().imag();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting the imaginary part of the represented complex number.
+//
+// \param value The new value for the imaginary part.
+// \return void
+//
+// In case the access proxy represents a complex number, this function sets a new value to its
+// imaginary part.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::imag( ValueType value ) const
+{
+   get().imag( value );
 }
 //*************************************************************************************************
 
