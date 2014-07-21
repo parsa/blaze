@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Thresholds.h>
@@ -158,7 +159,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
        kernel can be used, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionKernel {
-      enum { value = IsFloat<typename T1::ElementType>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value };
    };
@@ -172,7 +175,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
        kernel can be used, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionKernel {
-      enum { value = IsDouble<typename T1::ElementType>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value };
    };
@@ -188,7 +193,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -204,7 +211,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -415,6 +424,230 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense matrix of the multiplication expression.
    RightOperand rhs_;  //!< Right-hand side dense matrix of the multiplication expression.
+   //**********************************************************************************************
+
+   //**BLAS kernel (single precision)***********************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication with single precision
+   //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for single precision
+   // matrices based on the BLAS cblas_sgemm() and cblas_ssymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void sgemm( MT3& C, const MT4& A, const MT5& B, float alpha, float beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_ssymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_ssymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, alpha, B.data(), ldb, A.data(), lda, beta, C.data(), ldc );
+      }
+      else {
+         cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision)**************************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication with double precision
+   //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for double precision
+   // matrices based on the BLAS cblas_dgemm() and cblas_dsymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void dgemm( MT3& C, const MT4& A, const MT5& B, double alpha, double beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_dsymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_dsymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, alpha, B.data(), ldb, A.data(), lda, beta, C.data(), ldc );
+      }
+      else {
+         cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense matrices (single precision complex)**************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for single precision
+   //        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for single precision
+   // complex matrices based on the BLAS cblas_cgemm() and cblas_csymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void cgemm( MT3& C, const MT4& A, const MT5& B,
+                             complex<float> alpha, complex<float> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_csymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_csymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, &alpha, B.data(), ldb, A.data(), lda, &beta, C.data(), ldc );
+      }
+      else {
+         cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense matrices (double precision complex)**************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for double precision
+   //        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for double precision
+   // complex matrices based on the BLAS cblas_zgemm() and cblas_zsymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void zgemm( MT3& C, const MT4& A, const MT5& B,
+                             complex<double> alpha, complex<double> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_zsymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_zsymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, &alpha, B.data(), ldb, A.data(), lda, &beta, C.data(), ldc );
+      }
+      else {
+         cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+   }
+   /*! \endcond */
+#endif
    //**********************************************************************************************
 
    //**Assignment to dense matrices****************************************************************
@@ -753,7 +986,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // matrices based on the BLAS cblas_sgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -761,23 +994,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, 1.0F, A.data(), lda, B.data(), ldb, 0.0F, C.data(), ldc );
+      sgemm( C, A, B, 1.0F, 0.0F );
    }
    /*! \endcond */
 #endif
@@ -796,7 +1013,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // matrices based on the BLAS cblas_dgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -804,23 +1021,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, 1.0, A.data(), lda, B.data(), ldb, 0.0, C.data(), ldc );
+      dgemm( C, A, B, 1.0, 0.0 );
    }
    /*! \endcond */
 #endif
@@ -839,7 +1040,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // complex matrices based on the BLAS cblas_cgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -847,28 +1048,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( 1.0F, 0.0F );
-      const complex<float> beta ( 0.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -887,7 +1067,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // complex matrices based on the BLAS cblas_zgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -895,28 +1075,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( 1.0, 0.0 );
-      const complex<double> beta ( 0.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -1318,7 +1477,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // matrices based on the BLAS cblas_sgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1326,23 +1485,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, 1.0F, A.data(), lda, B.data(), ldb, 1.0F, C.data(), ldc );
+      sgemm( C, A, B, 1.0F, 1.0F );
    }
    /*! \endcond */
 #endif
@@ -1361,7 +1504,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // matrices based on the BLAS cblas_dgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1369,23 +1512,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, 1.0, A.data(), lda, B.data(), ldb, 1.0, C.data(), ldc );
+      dgemm( C, A, B, 1.0, 1.0 );
    }
    /*! \endcond */
 #endif
@@ -1404,7 +1531,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // complex matrices based on the BLAS cblas_cgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1412,28 +1539,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( 1.0F, 0.0F );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -1452,7 +1558,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // complex matrices based on the BLAS cblas_zgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1460,28 +1566,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( 1.0, 0.0 );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -1851,7 +1936,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // matrices based on the BLAS cblas_sgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1859,23 +1944,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, -1.0F, A.data(), lda, B.data(), ldb, 1.0F, C.data(), ldc );
+      sgemm( C, A, B, -1.0F, 1.0F );
    }
    /*! \endcond */
 #endif
@@ -1894,7 +1963,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // matrices based on the BLAS cblas_dgemm() function.
+   // matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1902,23 +1971,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, -1.0, A.data(), lda, B.data(), ldb, 1.0, C.data(), ldc );
+      dgemm( C, A, B, -1.0, 1.0 );
    }
    /*! \endcond */
 #endif
@@ -1937,7 +1990,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for single precision
-   // complex matrices based on the BLAS cblas_cgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1945,28 +1998,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( -1.0F, 0.0F );
-      const complex<float> beta (  1.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -1985,7 +2017,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \return void
    //
    // This function performs the dense matrix-dense matrix multiplication for double precision
-   // complex matrices based on the BLAS cblas_zgemm() function.
+   // complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -1993,28 +2025,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( -1.0, 0.0 );
-      const complex<double> beta (  1.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -2299,7 +2310,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseSinglePrecisionKernel {
-      enum { value = IsFloat<typename T1::ElementType>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value &&
                      !IsComplex<T4>::value };
@@ -2313,7 +2326,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseDoublePrecisionKernel {
-      enum { value = IsDouble<typename T1::ElementType>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value &&
                      !IsComplex<T4>::value };
@@ -2328,7 +2343,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -2342,7 +2359,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = IsSame<typename T1::ElementType,Type>::value &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+                     IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
    };
@@ -2531,6 +2550,222 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //**Member variables****************************************************************************
    LeftOperand  matrix_;  //!< Left-hand side dense matrix of the multiplication expression.
    RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
+   //**********************************************************************************************
+
+   //**BLAS kernel (single precision)**************************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for single precision
+   //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for single precision
+   // matrices based on the BLAS cblas_sgemm() and cblas_ssymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void sgemm( MT3& C, const MT4& A, const MT5& B, float alpha, float beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_ssymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_ssymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, alpha, B.data(), ldb, A.data(), lda, beta, C.data(), ldc );
+      }
+      else {
+         cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision)**************************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for double precision
+   //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for double precision
+   // matrices based on the BLAS cblas_dgemm() and cblas_dsymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void dgemm( MT3& C, const MT4& A, const MT5& B, double alpha, double beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_dsymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_dsymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, alpha, B.data(), ldb, A.data(), lda, beta, C.data(), ldc );
+      }
+      else {
+         cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, alpha, A.data(), lda, B.data(), ldb, beta, C.data(), ldc );
+      }
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (single precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for single precision
+   //        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for single precision
+   // complex matrices based on the BLAS cblas_cgemm() and cblas_csymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void cgemm( MT3& C, const MT4& A, const MT5& B,
+                             complex<float> alpha, complex<float> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_csymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_csymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, &alpha, B.data(), ldb, A.data(), lda, &beta, C.data(), ldc );
+      }
+      else {
+         cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a dense matrix-dense matrix multiplication for double precision
+   //        complex matrices (\f$ C=\alpha*A*B+\beta*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param alpha The scaling factor for \f$ A*B \f$.
+   // \param beta The scaling factor for \f$ C \f$.
+   // \return void
+   //
+   // This function performs the dense matrix-dense matrix multiplication for double precision
+   // complex matrices based on the BLAS cblas_zgemm() and cblas_zsymm() functions.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline void zgemm( MT3& C, const MT4& A, const MT5& B,
+                             complex<double> alpha, complex<double> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( B.columns() ) );
+      const int K  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+      const int ldb( numeric_cast<int>( B.spacing() ) );
+      const int ldc( numeric_cast<int>( C.spacing() ) );
+
+      if( IsSymmetric<MT4>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_zsymm( CblasRowMajor, CblasLeft, CblasLower,
+                      M, N, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+      else if( IsSymmetric<MT5>::value && IsRowMajorMatrix<MT3>::value ) {
+         cblas_zsymm( CblasRowMajor, CblasRight, CblasLower,
+                      M, N, &alpha, B.data(), ldb, A.data(), lda, &beta, C.data(), ldc );
+      }
+      else {
+         cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
+                      M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      }
+   }
+#endif
    //**********************************************************************************************
 
    //**Assignment to dense matrices****************************************************************
@@ -2877,7 +3112,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision matrices based on the BLAS cblas_sgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -2886,23 +3121,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, scalar, A.data(), lda, B.data(), ldb, 0.0F, C.data(), ldc );
+      sgemm( C, A, B, scalar, 0.0F );
    }
 #endif
    //**********************************************************************************************
@@ -2920,7 +3139,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision matrices based on the BLAS cblas_dgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -2929,23 +3148,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, scalar, A.data(), lda, B.data(), ldb, 0.0, C.data(), ldc );
+      dgemm( C, A, B, scalar, 0.0 );
    }
 #endif
    //**********************************************************************************************
@@ -2963,7 +3166,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision complex matrices based on the BLAS cblas_cgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -2972,28 +3175,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( scalar );
-      const complex<float> beta ( 0.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -3011,7 +3193,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision complex matrices based on the BLAS cblas_zgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3020,28 +3202,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( scalar );
-      const complex<double> beta ( 0.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
@@ -3405,7 +3566,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision matrices based on the BLAS cblas_sgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3414,23 +3575,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, scalar, A.data(), lda, B.data(), ldb, 1.0F, C.data(), ldc );
+      sgemm( C, A, B, scalar, 1.0F );
    }
 #endif
    //**********************************************************************************************
@@ -3448,7 +3593,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision matrices based on the BLAS cblas_dgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3457,23 +3602,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, scalar, A.data(), lda, B.data(), ldb, 1.0, C.data(), ldc );
+      dgemm( C, A, B, scalar, 1.0 );
    }
 #endif
    //**********************************************************************************************
@@ -3491,7 +3620,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision complex matrices based on the BLAS cblas_cgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3500,28 +3629,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( scalar );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -3539,7 +3647,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision complex matrices based on the BLAS cblas_zgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3548,28 +3656,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( scalar );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
@@ -3903,7 +3990,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision matrices based on the BLAS cblas_sgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3912,23 +3999,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_sgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, -scalar, A.data(), lda, B.data(), ldb, 1.0F, C.data(), ldc );
+      sgemm( C, A, B, -scalar, 1.0F );
    }
 #endif
    //**********************************************************************************************
@@ -3946,7 +4017,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision matrices based on the BLAS cblas_dgemm() function.
+   // precision matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3955,23 +4026,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT5::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-
-      cblas_dgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, -scalar, A.data(), lda, B.data(), ldb, 1.0, C.data(), ldc );
+      dgemm( C, A, B, -scalar, 1.0 );
    }
 #endif
    //**********************************************************************************************
@@ -3989,7 +4044,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for single
-   // precision complex matrices based on the BLAS cblas_cgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -3998,28 +4053,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<float> alpha( -scalar );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      cgemm( C, A, B, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -4037,7 +4071,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function performs the scaled dense matrix-dense matrix multiplication for double
-   // precision complex matrices based on the BLAS cblas_zgemm() function.
+   // precision complex matrices based on the according BLAS functionality.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
@@ -4046,28 +4080,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT3::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT4::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT5::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT3::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT4::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT5::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( B.columns() ) );
-      const int K  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const int ldb( numeric_cast<int>( B.spacing() ) );
-      const int ldc( numeric_cast<int>( C.spacing() ) );
-      const complex<double> alpha( -scalar );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemm( ( IsRowMajorMatrix<MT3>::value )?( CblasRowMajor ):( CblasColMajor ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   ( IsRowMajorMatrix<MT3>::value )?( CblasNoTrans  ):( CblasTrans    ),
-                   M, N, K, &alpha, A.data(), lda, B.data(), ldb, &beta, C.data(), ldc );
+      zgemm( C, A, B, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
