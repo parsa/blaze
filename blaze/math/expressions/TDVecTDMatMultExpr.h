@@ -399,6 +399,170 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    const size_t end_;  //!< End of the unrolled calculation loop.
    //**********************************************************************************************
 
+   //**BLAS  kernel (single precision)*************************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        single precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // single precision operands based on the BLAS cblas_sgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void sgemv( VT1& y, const VT2& x, const MT1& A, float alpha, float beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_sgemv( CblasColMajor, CblasTrans, M, N, alpha,
+                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision)**************************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        double precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // double precision operands based on the BLAS cblas_dgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void dgemv( VT1& y, const VT2& x, const MT1& A, double alpha, double beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_dgemv( CblasColMajor, CblasTrans, M, N, alpha,
+                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (single precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        single precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // single precision complex operands based on the BLAS cblas_cgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void cgemv( VT1& y, const VT2& x, const MT1& A,
+                             complex<float> alpha, complex<float> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
+                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        double precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // double precision complex operands based on the BLAS cblas_zgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void zgemv( VT1& y, const VT2& x, const MT1& A,
+                             complex<double> alpha, complex<double> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
+                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+   }
+   /*! \endcond */
+#endif
+   //**********************************************************************************************
+
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose dense vector-transpose dense matrix multiplication to a
@@ -615,7 +779,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
 #if BLAZE_BLAS_MODE
    /*! \cond BLAZE_INTERNAL */
    /*!\brief BLAS-based assignment of a transpose dense vector-transpose dense matrix multiplication
-   //        for single precision operands (\f$ \vec{y}^T=\vec{x}^T*x \f$).
+   //        for single precision operands (\f$ \vec{y}^T=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -624,7 +788,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision operands based on the BLAS cblas_sgemv() function.
+   // single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -632,18 +796,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, 1.0F,
-                   A.data(), lda, x.data(), 1, 0.0F, y.data(), 1 );
+      sgemv( y, x, A, 1.0F, 0.0F );
    }
    /*! \endcond */
 #endif
@@ -662,7 +815,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision operands based on the BLAS cblas_dgemv() function.
+   // double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -670,18 +823,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, 1.0,
-                   A.data(), lda, x.data(), 1, 0.0, y.data(), 1 );
+      dgemv( y, x, A, 1.0, 0.0 );
    }
    /*! \endcond */
 #endif
@@ -700,7 +842,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision complex operands based on the BLAS cblas_cgemv() function.
+   // single precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -708,23 +850,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( 1.0F, 0.0F );
-      const complex<float> beta ( 0.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -743,7 +869,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision complex operands based on the BLAS cblas_zgemv() function.
+   // double precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -751,23 +877,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( 1.0, 0.0 );
-      const complex<double> beta ( 0.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -1024,7 +1134,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision operands based on the BLAS cblas_sgemv() function.
+   // single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1032,18 +1142,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, 1.0F,
-                   A.data(), lda, x.data(), 1, 1.0F, y.data(), 1 );
+      sgemv( y, x, A, 1.0F, 1.0F );
    }
    /*! \endcond */
 #endif
@@ -1062,7 +1161,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision operands based on the BLAS cblas_dgemv() function.
+   // double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1070,18 +1169,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, 1.0,
-                   A.data(), lda, x.data(), 1, 1.0, y.data(), 1 );
+      dgemv( y, x, A, 1.0, 1.0 );
    }
    /*! \endcond */
 #endif
@@ -1100,7 +1188,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision complex operands based on the BLAS cblas_cgemv() function.
+   // single precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1108,23 +1196,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( 1.0F, 0.0F );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -1143,7 +1215,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision complex operands based on the BLAS cblas_zgemv() function.
+   // double precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1151,23 +1223,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( 1.0, 0.0 );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -1398,7 +1454,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision operands based on the BLAS cblas_sgemv() function.
+   // single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1406,18 +1462,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, -1.0F,
-                   A.data(), lda, x.data(), 1, 1.0F, y.data(), 1 );
+      sgemv( y, x, A, -1.0F, 1.0F );
    }
    /*! \endcond */
 #endif
@@ -1436,7 +1481,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision operands based on the BLAS cblas_dgemv() function.
+   // double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1444,18 +1489,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, -1.0,
-                   A.data(), lda, x.data(), 1, 1.0, y.data(), 1 );
+      dgemv( y, x, A, -1.0, 1.0 );
    }
    /*! \endcond */
 #endif
@@ -1474,7 +1508,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // single precision complex operands based on the BLAS cblas_cgemv() function.
+   // single precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1482,23 +1516,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( -1.0F, 0.0F );
-      const complex<float> beta (  1.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
    /*! \endcond */
 #endif
@@ -1517,7 +1535,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function performs the transpose dense vector-transpose dense matrix multiplication for
-   // double precision complex operands based on the BLAS cblas_zgemv() function.
+   // double precision complex operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1525,23 +1543,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( -1.0, 0.0 );
-      const complex<double> beta (  1.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
    /*! \endcond */
 #endif
@@ -2090,6 +2092,162 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
    //**********************************************************************************************
 
+   //**BLAS  kernel (single precision)*************************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        single precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // single precision operands based on the BLAS cblas_sgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void sgemv( VT1& y, const VT2& x, const MT1& A, float alpha, float beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_sgemv( CblasColMajor, CblasTrans, M, N, alpha,
+                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision)**************************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        double precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // double precision operands based on the BLAS cblas_dgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void dgemv( VT1& y, const VT2& x, const MT1& A, double alpha, double beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_dgemv( CblasColMajor, CblasTrans, M, N, alpha,
+                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (single precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        single precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // single precision complex operands based on the BLAS cblas_cgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void cgemv( VT1& y, const VT2& x, const MT1& A,
+                             complex<float> alpha, complex<float> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
+                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+   }
+#endif
+   //**********************************************************************************************
+
+   //**BLAS kernel (double precision complex)******************************************************
+#if BLAZE_BLAS_MODE
+   /*!\brief BLAS kernel for a transpose dense vector-transpose dense matrix multiplication for
+   //        double precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
+   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
+   // \return void
+   //
+   // This function performs the transpose dense vector-transpose dense matrix multiplication for
+   // double precision complex operands based on the BLAS cblas_zgemv() function.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline void zgemv( VT1& y, const VT2& x, const MT1& A,
+                             complex<double> alpha, complex<double> beta )
+   {
+      using boost::numeric_cast;
+
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
+      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
+
+      const int M  ( numeric_cast<int>( A.rows() )    );
+      const int N  ( numeric_cast<int>( A.columns() ) );
+      const int lda( numeric_cast<int>( A.spacing() ) );
+
+      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
+                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+   }
+#endif
+   //**********************************************************************************************
+
    //**Assignment to dense vectors*****************************************************************
    /*!\brief Assignment of a scaled transpose dense vector-transpose dense matrix multiplication
    //        to a transpose dense vector (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
@@ -2306,7 +2464,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    //**BLAS-based assignment to dense vectors (single precision)***********************************
 #if BLAZE_BLAS_MODE
    /*!\brief BLAS-based assignment of a scaled transpose dense vector-transpose dense matrix
-   //        multiplication for single precision operands (\f$ \vec{y}^T=s*\vec{x}^T*x \f$).
+   //        multiplication for single precision operands (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -2316,7 +2474,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision operands based on the BLAS cblas_sgemv() function.
+   // multiplication for single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2325,18 +2483,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, scalar,
-                   A.data(), lda, x.data(), 1, 0.0F, y.data(), 1 );
+      sgemv( y, x, A, scalar, 0.0F );
    }
 #endif
    //**********************************************************************************************
@@ -2354,7 +2501,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision operands based on the BLAS cblas_dgemv() function.
+   // multiplication for double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2363,18 +2510,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, scalar,
-                   A.data(), lda, x.data(), 1, 0.0, y.data(), 1 );
+      dgemv( y, x, A, scalar, 0.0 );
    }
 #endif
    //**********************************************************************************************
@@ -2392,8 +2528,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision complex operands based on the BLAS cblas_cgemv()
-   // function.
+   // multiplication for single precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2402,23 +2538,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( scalar );
-      const complex<float> beta ( 0.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -2436,8 +2556,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision complex operands based on the BLAS cblas_zgemv()
-   // function.
+   // multiplication for double precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2446,23 +2566,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( scalar );
-      const complex<double> beta ( 0.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                      A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
@@ -2719,7 +2823,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision operands based on the BLAS cblas_sgemv() function.
+   // multiplication for single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2728,18 +2832,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, scalar,
-                   A.data(), lda, x.data(), 1, 1.0F, y.data(), 1 );
+      sgemv( y, x, A, scalar, 1.0F );
    }
 #endif
    //**********************************************************************************************
@@ -2757,7 +2850,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision operands based on the BLAS cblas_dgemv() function.
+   // multiplication for double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2766,18 +2859,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, scalar,
-                   A.data(), lda, x.data(), 1, 1.0, y.data(), 1 );
+      dgemv( y, x, A, scalar, 1.0 );
    }
 #endif
    //**********************************************************************************************
@@ -2795,8 +2877,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision complex operands based on the BLAS cblas_cgemv()
-   // function.
+   // multiplication for single precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2805,23 +2887,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( scalar );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -2839,8 +2905,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision complex operands based on the BLAS cblas_zgemv()
-   // function.
+   // multiplication for double precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2849,23 +2915,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( scalar );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
@@ -3098,7 +3148,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision operands based on the BLAS cblas_sgemv() function.
+   // multiplication for single precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -3107,18 +3157,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasColMajor, CblasTrans, M, N, -scalar,
-                   A.data(), lda, x.data(), 1, 1.0F, y.data(), 1 );
+      sgemv( y, x, A, -scalar, 1.0F );
    }
 #endif
    //**********************************************************************************************
@@ -3136,7 +3175,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision operands based on the BLAS cblas_dgemv() function.
+   // multiplication for double precision operands based on the according BLAS functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -3145,18 +3184,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasColMajor, CblasTrans, M, N, -scalar,
-                   A.data(), lda, x.data(), 1, 1.0, y.data(), 1 );
+      dgemv( y, x, A, -scalar, 1.0 );
    }
 #endif
    //**********************************************************************************************
@@ -3175,8 +3203,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for single precision complex operands based on the BLAS cblas_cgemv()
-   // function.
+   // multiplication for single precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -3185,23 +3213,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<float> alpha( -scalar );
-      const complex<float> beta ( 1.0F, 0.0F );
-
-      cblas_cgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      cgemv( y, x, A, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
    }
 #endif
    //**********************************************************************************************
@@ -3220,8 +3232,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function performs the scaled transpose dense vector-transpose dense matrix
-   // multiplication for double precision complex operands based on the BLAS cblas_zgemv()
-   // function.
+   // multiplication for double precision complex operands based on the according BLAS
+   // functionality.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -3230,23 +3242,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-      const complex<double> alpha( -scalar );
-      const complex<double> beta ( 1.0, 0.0 );
-
-      cblas_zgemv( CblasColMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
+      zgemv( y, x, A, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
 #endif
    //**********************************************************************************************
