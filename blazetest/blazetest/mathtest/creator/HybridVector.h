@@ -42,6 +42,7 @@
 
 #include <blaze/math/HybridVector.h>
 #include <blazetest/mathtest/creator/Default.h>
+#include <blazetest/system/Types.h>
 
 
 namespace blazetest {
