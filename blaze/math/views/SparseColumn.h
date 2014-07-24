@@ -70,6 +70,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/Null.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -1785,21 +1786,32 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the ColumnIterator class.
+      /*!\brief Default constructor of the ColumnIterator class.
+      */
+      inline ColumnIterator()
+         : matrix_( NULL )  // The sparse matrix containing the column.
+         , row_   ( 0UL  )  // The current row index.
+         , column_( 0UL  )  // The current column index.
+         , pos_   ()        // Iterator to the current sparse element.
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the ColumnIterator class.
       //
       // \param matrix The matrix containing the column.
       // \param row The row index.
       // \param column The column index.
       */
       inline ColumnIterator( MatrixType& matrix, size_t row, size_t column )
-         : matrix_( matrix )  // The sparse matrix containing the column.
-         , row_   ( row    )  // The current row index.
-         , column_( column )  // The current column index.
-         , pos_   ()          // Iterator to the current sparse element.
+         : matrix_( &matrix )  // The sparse matrix containing the column.
+         , row_   ( row     )  // The current row index.
+         , column_( column  )  // The current column index.
+         , pos_   ()           // Iterator to the current sparse element.
       {
-         for( ; row_<matrix_.rows(); ++row_ ) {
-            pos_ = matrix_.find( row_, column_ );
-            if( pos_ != matrix_.end( row_ ) ) break;
+         for( ; row_<matrix_->rows(); ++row_ ) {
+            pos_ = matrix_->find( row_, column_ );
+            if( pos_ != matrix_->end( row_ ) ) break;
          }
       }
       //*******************************************************************************************
@@ -1813,10 +1825,10 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       // \param pos Initial position of the iterator
       */
       inline ColumnIterator( MatrixType& matrix, size_t row, size_t column, IteratorType pos )
-         : matrix_( matrix )  // The sparse matrix containing the column.
-         , row_   ( row    )  // The current row index.
-         , column_( column )  // The current column index.
-         , pos_   ( pos    )  // Iterator to the current sparse element.
+         : matrix_( &matrix )  // The sparse matrix containing the column.
+         , row_   ( row     )  // The current row index.
+         , column_( column  )  // The current column index.
+         , pos_   ( pos     )  // Iterator to the current sparse element.
       {
          BLAZE_INTERNAL_ASSERT( matrix.find( row, column ) == pos, "Invalid initial iterator position" );
       }
@@ -1843,9 +1855,9 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       */
       inline ColumnIterator& operator++() {
          ++row_;
-         for( ; row_<matrix_.rows(); ++row_ ) {
-            pos_ = matrix_.find( row_, column_ );
-            if( pos_ != matrix_.end( row_ ) ) break;
+         for( ; row_<matrix_->rows(); ++row_ ) {
+            pos_ = matrix_->find( row_, column_ );
+            if( pos_ != matrix_->end( row_ ) ) break;
          }
 
          return *this;
@@ -1892,7 +1904,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline bool operator==( const ColumnIterator<MatrixType2,IteratorType2>& rhs ) const {
-         return ( &matrix_ == &rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
+         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
       }
       //*******************************************************************************************
 
@@ -1917,7 +1929,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       inline DifferenceType operator-( const ColumnIterator& rhs ) const {
          size_t counter( 0UL );
          for( size_t i=rhs.row_; i<row_; ++i ) {
-            if( matrix_.find( i, column_ ) != matrix_.end( i ) )
+            if( matrix_->find( i, column_ ) != matrix_->end( i ) )
                ++counter;
          }
          return counter;
@@ -1926,7 +1938,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
 
     private:
       //**Member variables*************************************************************************
-      MatrixType&  matrix_;  //!< The sparse matrix containing the column.
+      MatrixType*  matrix_;  //!< The sparse matrix containing the column.
       size_t       row_;     //!< The current row index.
       size_t       column_;  //!< The current column index.
       IteratorType pos_;     //!< Iterator to the current sparse element.
