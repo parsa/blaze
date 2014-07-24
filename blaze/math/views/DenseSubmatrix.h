@@ -459,7 +459,18 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the SubmatrixIterator class.
+      /*!\brief Default constructor of the SubmatrixIterator class.
+      */
+      inline SubmatrixIterator()
+         : iterator_ (       )  // Iterator to the current submatrix element
+         , final_    ( 0UL   )  // The final iterator for intrinsic operations
+         , rest_     ( 0UL   )  // The number of remaining elements beyond the final iterator
+         , isAligned_( false )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
       // \param final The final iterator for intrinsic operations.
@@ -2686,7 +2697,18 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the SubmatrixIterator class.
+      /*!\brief Default constructor of the SubmatrixIterator class.
+      */
+      inline SubmatrixIterator()
+         : iterator_ (       )  // Iterator to the current submatrix element
+         , final_    ( 0UL   )  // The final iterator for intrinsic operations
+         , rest_     ( 0UL   )  // The number of remaining elements beyond the final iterator
+         , isAligned_( false )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
       // \param final The final iterator for intrinsic operations.
