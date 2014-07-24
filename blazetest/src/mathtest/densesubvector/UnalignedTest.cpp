@@ -1339,6 +1339,34 @@ void UnalignedTest::testIterator()
 {
    initialize();
 
+   // Testing the Iterator default constructor
+   {
+      test_ = "Iterator default constructor";
+
+      SVT::Iterator it = SVT::Iterator();
+
+      if( it != SVT::Iterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing the ConstIterator default constructor
+   {
+      test_ = "ConstIterator default constructor";
+
+      SVT::ConstIterator it = SVT::ConstIterator();
+
+      if( it != SVT::ConstIterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    // Testing conversion from Iterator to ConstIterator
    {
       test_ = "Iterator/ConstIterator conversion";

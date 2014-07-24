@@ -2454,6 +2454,34 @@ void ClassTest::testIterator()
    {
       initialize();
 
+      // Testing the Iterator default constructor
+      {
+         test_ = "Row-major Iterator default constructor";
+
+         CT::Iterator it = CT::Iterator();
+
+         if( it != CT::Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Row-major ConstIterator default constructor";
+
+         CT::ConstIterator it = CT::ConstIterator();
+
+         if( it != CT::ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Testing conversion from Iterator to ConstIterator
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
@@ -2736,6 +2764,34 @@ void ClassTest::testIterator()
 
    {
       initialize();
+
+      // Testing the Iterator default constructor
+      {
+         test_ = "Column-major Iterator default constructor";
+
+         TCT::Iterator it = TCT::Iterator();
+
+         if( it != TCT::Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Column-major ConstIterator default constructor";
+
+         TCT::ConstIterator it = TCT::ConstIterator();
+
+         if( it != TCT::ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       // Testing conversion from Iterator to ConstIterator
       {

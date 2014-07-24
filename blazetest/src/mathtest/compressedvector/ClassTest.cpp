@@ -989,6 +989,34 @@ void ClassTest::testIterator()
    vec[1] = -2;
    vec[2] = -3;
 
+   // Testing the Iterator default constructor
+   {
+      test_ = "Iterator default constructor";
+
+      Iterator it = Iterator();
+
+      if( it != Iterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing the ConstIterator default constructor
+   {
+      test_ = "ConstIterator default constructor";
+
+      ConstIterator it = ConstIterator();
+
+      if( it != ConstIterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    // Testing conversion from Iterator to ConstIterator
    {
       test_ = "Iterator/ConstIterator conversion";

@@ -4132,6 +4132,34 @@ void ClassTest::testIterator()
 
       SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 3UL );
 
+      // Testing the Iterator default constructor
+      {
+         test_ = "Row-major Iterator default constructor";
+
+         SMT::Iterator it = SMT::Iterator();
+
+         if( it != SMT::Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Row-major ConstIterator default constructor";
+
+         SMT::ConstIterator it = SMT::ConstIterator();
+
+         if( it != SMT::ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Testing conversion from Iterator to ConstIterator
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
@@ -4426,6 +4454,34 @@ void ClassTest::testIterator()
       initialize();
 
       TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+
+      // Testing the Iterator default constructor
+      {
+         test_ = "Row-major Iterator default constructor";
+
+         TSMT::Iterator it = TSMT::Iterator();
+
+         if( it != TSMT::Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Row-major ConstIterator default constructor";
+
+         TSMT::ConstIterator it = TSMT::ConstIterator();
+
+         if( it != TSMT::ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       // Testing conversion from Iterator to ConstIterator
       {
