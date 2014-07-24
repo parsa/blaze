@@ -76,9 +76,6 @@ namespace blaze {
       UNUSED_PARAMETER( x );  // Suppresses the unused parameter warnings
    }
    \endcode
-
-// The NullType class represents an invalid or terminating data type for generic codes. For
-// instance, the TypeList class uses the NullType as terminating data type for the type list.
 */
 template< typename T1 >
 inline void UNUSED_PARAMETER( const T1& )
