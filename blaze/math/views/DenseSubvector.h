@@ -451,7 +451,18 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the SubvectorIterator class.
+      /*!\brief Default constructor of the SubvectorIterator class.
+      */
+      inline SubvectorIterator()
+         : iterator_ (       )  // Iterator to the current subvector element
+         , final_    ( 0UL   )  // The final iterator for intrinsic operations
+         , rest_     ( 0UL   )  // The number of remaining elements beyond the final iterator
+         , isAligned_( false )  // Memory alignment flag
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the SubvectorIterator class.
       //
       // \param iterator Iterator to the initial element.
       // \param final The final iterator for intrinsic operations.
