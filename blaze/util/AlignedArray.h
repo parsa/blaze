@@ -42,10 +42,10 @@
 
 #include <blaze/system/Alignment.h>
 #include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 
 
 namespace blaze {
@@ -258,9 +258,9 @@ struct AlignedArrayHelper<Type,N,256UL>
 
 // This limitation will be resolved when AlignedArray is updated to C++11.
 */
-template< typename Type                                     // Data type of the elements
-        , size_t N                                          // Number of elements
-        , size_t Alignment = AlignmentTrait<Type>::value >  // Array alignment
+template< typename Type                                  // Data type of the elements
+        , size_t N                                       // Number of elements
+        , size_t Alignment = AlignmentOf<Type>::value >  // Array alignment
 class AlignedArray
 {
  public:

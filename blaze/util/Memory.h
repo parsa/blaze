@@ -47,12 +47,12 @@
 #include <new>
 #include <stdexcept>
 #include <blaze/util/Assert.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 
 
@@ -150,7 +150,7 @@ inline void deallocate_backend( const void* address )
 template< typename T >
 typename EnableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 {
-   const size_t alignment( AlignmentTrait<T>::value );
+   const size_t alignment( AlignmentOf<T>::value );
 
    if( alignment >= 8UL ) {
       return reinterpret_cast<T*>( allocate_backend( size*sizeof(T), alignment ) );
@@ -179,7 +179,7 @@ typename EnableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 template< typename T >
 typename DisableIf< IsBuiltin<T>, T* >::Type allocate( size_t size )
 {
-   const size_t alignment ( AlignmentTrait<T>::value );
+   const size_t alignment ( AlignmentOf<T>::value );
    const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
 
    BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );
@@ -228,7 +228,7 @@ typename EnableIf< IsBuiltin<T> >::Type deallocate( T* address )
    if( address == NULL )
       return;
 
-   const size_t alignment( AlignmentTrait<T>::value );
+   const size_t alignment( AlignmentOf<T>::value );
 
    if( alignment >= 8UL ) {
       deallocate_backend( address );
@@ -254,7 +254,7 @@ typename DisableIf< IsBuiltin<T> >::Type deallocate( T* address )
    if( address == NULL )
       return;
 
-   const size_t alignment ( AlignmentTrait<T>::value );
+   const size_t alignment ( AlignmentOf<T>::value );
    const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
 
    BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );

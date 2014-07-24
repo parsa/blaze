@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/system/Alignment.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 
 
 namespace blaze {
@@ -203,7 +203,7 @@ struct BLAZE_ALIGN( 256UL ) AlignedStorageHelper<256UL>
 // the Intel, and the Visual Studio compiler, but fails with the Clang compiler.
 */
 template< typename T >
-class AlignedStorage : private AlignedStorageHelper< AlignmentTrait<T>::value >
+class AlignedStorage : private AlignedStorageHelper< AlignmentOf<T>::value >
 {
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

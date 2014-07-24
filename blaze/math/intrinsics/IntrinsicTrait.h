@@ -42,10 +42,11 @@
 
 #include <blaze/math/intrinsics/BasicTypes.h>
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TypeTraits.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -248,7 +249,7 @@ struct IntrinsicTraitBase
 {
    typedef T  Type;
    enum { size           = 1,
-          alignment      = AlignmentTrait<T>::value,
+          alignment      = AlignmentOf<T>::value,
           addition       = 0,
           subtraction    = 0,
           multiplication = 0,
@@ -273,7 +274,7 @@ struct IntrinsicTraitBase<char>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<char>::value,
+          alignment      = AlignmentOf<char>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -298,7 +299,7 @@ struct IntrinsicTraitBase<signed char>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<signed char>::value,
+          alignment      = AlignmentOf<signed char>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -323,7 +324,7 @@ struct IntrinsicTraitBase<unsigned char>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<unsigned char>::value,
+          alignment      = AlignmentOf<unsigned char>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -348,7 +349,7 @@ struct IntrinsicTraitBase<wchar_t>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<wchar_t>::value,
+          alignment      = AlignmentOf<wchar_t>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -373,7 +374,7 @@ struct IntrinsicTraitBase<short>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<short>::value,
+          alignment      = AlignmentOf<short>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -398,7 +399,7 @@ struct IntrinsicTraitBase<unsigned short>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<unsigned short>::value,
+          alignment      = AlignmentOf<unsigned short>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -423,7 +424,7 @@ struct IntrinsicTraitBase<int>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<int>::value,
+          alignment      = AlignmentOf<int>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -448,7 +449,7 @@ struct IntrinsicTraitBase<unsigned int>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<unsigned int>::value,
+          alignment      = AlignmentOf<unsigned int>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -473,7 +474,7 @@ struct IntrinsicTraitBase<long>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<long>::value,
+          alignment      = AlignmentOf<long>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -498,7 +499,7 @@ struct IntrinsicTraitBase<unsigned long>
  public:
    typedef Helper::Type  Type;
    enum { size           = Helper::size,
-          alignment      = AlignmentTrait<unsigned long>::value,
+          alignment      = AlignmentOf<unsigned long>::value,
           addition       = Helper::addition,
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
@@ -519,7 +520,7 @@ struct IntrinsicTraitBase<float>
 {
    typedef sse_float_t  Type;
    enum { size           = ( 64UL / sizeof(float) ),
-          alignment      = AlignmentTrait<float>::value,
+          alignment      = AlignmentOf<float>::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -532,7 +533,7 @@ struct IntrinsicTraitBase<float>
 {
    typedef sse_float_t  Type;
    enum { size           = ( 32UL / sizeof(float) ),
-          alignment      = AlignmentTrait<float>::value,
+          alignment      = AlignmentOf<float>::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -545,7 +546,7 @@ struct IntrinsicTraitBase<float>
 {
    typedef sse_float_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(float) ):( 1 ),
-          alignment      = AlignmentTrait<float>::value,
+          alignment      = AlignmentOf<float>::value,
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
           multiplication = BLAZE_SSE_MODE,
@@ -568,7 +569,7 @@ struct IntrinsicTraitBase<double>
 {
    typedef sse_double_t  Type;
    enum { size           = ( 64UL / sizeof(double) ),
-          alignment      = AlignmentTrait<double>::value,
+          alignment      = AlignmentOf<double>::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -581,7 +582,7 @@ struct IntrinsicTraitBase<double>
 {
    typedef sse_double_t  Type;
    enum { size           = ( 32UL / sizeof(double) ),
-          alignment      = AlignmentTrait<double>::value,
+          alignment      = AlignmentOf<double>::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -594,7 +595,7 @@ struct IntrinsicTraitBase<double>
 {
    typedef sse_double_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(double) ):( 1 ),
-          alignment      = AlignmentTrait<double>::value,
+          alignment      = AlignmentOf<double>::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE2_MODE,
@@ -617,7 +618,7 @@ struct IntrinsicTraitBase< complex<float> >
 {
    typedef sse_cfloat_t  Type;
    enum { size           = ( 64UL / sizeof(complex<float>) ),
-          alignment      = AlignmentTrait< complex<float> >::value,
+          alignment      = AlignmentOf< complex<float> >::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
@@ -632,7 +633,7 @@ struct IntrinsicTraitBase< complex<float> >
 {
    typedef sse_cfloat_t  Type;
    enum { size           = ( 32UL / sizeof(complex<float>) ),
-          alignment      = AlignmentTrait< complex<float> >::value,
+          alignment      = AlignmentOf< complex<float> >::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -647,7 +648,7 @@ struct IntrinsicTraitBase< complex<float> >
 {
    typedef sse_cfloat_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<float>) ):( 1 ),
-          alignment      = AlignmentTrait< complex<float> >::value,
+          alignment      = AlignmentOf< complex<float> >::value,
           addition       = BLAZE_SSE_MODE,
           subtraction    = BLAZE_SSE_MODE,
           multiplication = BLAZE_SSE3_MODE,
@@ -672,7 +673,7 @@ struct IntrinsicTraitBase< complex<double> >
 {
    typedef sse_cdouble_t  Type;
    enum { size           = ( 64UL / sizeof(complex<double>) ),
-          alignment      = AlignmentTrait< complex<double> >::value,
+          alignment      = AlignmentOf< complex<double> >::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 0,
@@ -687,7 +688,7 @@ struct IntrinsicTraitBase< complex<double> >
 {
    typedef sse_cdouble_t  Type;
    enum { size           = ( 32UL / sizeof(complex<double>) ),
-          alignment      = AlignmentTrait< complex<double> >::value,
+          alignment      = AlignmentOf< complex<double> >::value,
           addition       = 1,
           subtraction    = 1,
           multiplication = 1,
@@ -702,7 +703,7 @@ struct IntrinsicTraitBase< complex<double> >
 {
    typedef sse_cdouble_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
-          alignment      = AlignmentTrait< complex<double> >::value,
+          alignment      = AlignmentOf< complex<double> >::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
           multiplication = BLAZE_SSE3_MODE,

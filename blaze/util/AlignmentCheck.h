@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 
 
 namespace blaze {
@@ -67,7 +67,7 @@ namespace blaze {
 template< typename T >
 bool checkAlignment( const T* address )
 {
-   return !( reinterpret_cast<size_t>( address ) % AlignmentTrait<T>::value );
+   return !( reinterpret_cast<size_t>( address ) % AlignmentOf<T>::value );
 }
 //*************************************************************************************************
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/AlignmentTrait.h
-//  \brief Header file for the alignment trait
+//  \file blaze/util/typetraits/AlignmentOf.h
+//  \brief Header file for the AlignmentOf type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALIGNMENTTRAIT_H_
-#define _BLAZE_UTIL_ALIGNMENTTRAIT_H_
+#ifndef _BLAZE_UTIL_TYPETRAITS_ALIGNMENTOF_H_
+#define _BLAZE_UTIL_TYPETRAITS_ALIGNMENTOF_H_
 
 
 //*************************************************************************************************
@@ -50,31 +50,31 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SIZETRAIT CLASS DEFINITION
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\brief Evaluation of the required alignment of the given data type.
-// \ingroup util
+// \ingroup type_traits
 //
-// The AlignmentTrait class template evaluates the required alignment for the given data type.
+// The AlignmentOf type trait template evaluates the required alignment for the given data type.
 // For instance, for fundamental data types that can be vectorized via SSE or AVX instructions,
 // the proper alignment is 16 or 32 bytes, respectively. For all other data types, a multiple
 // of the alignment chosen by the compiler is returned. The evaluated alignment can be queried
 // via the nested \a value member.
 
    \code
-   AlignmentTrait<unsigned int>::value  // Evaluates to 32 if AVX2 is available, to 16 if only
-                                        // SSE2 is available, and a multiple of the alignment
-                                        // chosen by the compiler otherwise.
-   AlignmentTrait<double>::value        // Evaluates to 32 if AVX is available, to 16 if only
-                                        // SSE is available, and a multiple of the alignment
-                                        // chosen by the compiler otherwise.
+   AlignmentOf<unsigned int>::value  // Evaluates to 32 if AVX2 is available, to 16 if only
+                                     // SSE2 is available, and a multiple of the alignment
+                                     // chosen by the compiler otherwise.
+   AlignmentOf<double>::value        // Evaluates to 32 if AVX is available, to 16 if only
+                                     // SSE is available, and a multiple of the alignment
+                                     // chosen by the compiler otherwise.
    \endcode
 */
 template< typename T >
-struct AlignmentTrait
+struct AlignmentOf
 {
  public:
    //**Member enumerations*************************************************************************
@@ -96,11 +96,11 @@ struct AlignmentTrait
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of AlignmentTrait for 'float'.
-// \ingroup util
+/*!\brief Specialization of AlignmentOf for 'float'.
+// \ingroup type_traits
 */
 template<>
-struct AlignmentTrait<float>
+struct AlignmentOf<float>
 {
  public:
    //**Member enumerations*************************************************************************
@@ -121,11 +121,11 @@ struct AlignmentTrait<float>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of AlignmentTrait for 'double'.
-// \ingroup util
+/*!\brief Specialization of AlignmentOf for 'double'.
+// \ingroup type_traits
 */
 template<>
-struct AlignmentTrait<double>
+struct AlignmentOf<double>
 {
  public:
    //**Member enumerations*************************************************************************
@@ -146,11 +146,11 @@ struct AlignmentTrait<double>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of AlignmentTrait for 'complex<float>'.
-// \ingroup util
+/*!\brief Specialization of AlignmentOf for 'complex<float>'.
+// \ingroup type_traits
 */
 template<>
-struct AlignmentTrait< complex<float> >
+struct AlignmentOf< complex<float> >
 {
  public:
    //**Member enumerations*************************************************************************
@@ -171,11 +171,11 @@ struct AlignmentTrait< complex<float> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of AlignmentTrait for 'complex<double>'.
-// \ingroup util
+/*!\brief Specialization of AlignmentOf for 'complex<double>'.
+// \ingroup type_traits
 */
 template<>
-struct AlignmentTrait< complex<double> >
+struct AlignmentOf< complex<double> >
 {
  public:
    //**Member enumerations*************************************************************************
@@ -196,14 +196,14 @@ struct AlignmentTrait< complex<double> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Partial specialization of AlignmentTrait for 'const' data types.
-// \ingroup util
+/*!\brief Partial specialization of AlignmentOf for 'const' data types.
+// \ingroup type_traits
 */
 template< typename T >
-struct AlignmentTrait< const T >
+struct AlignmentOf< const T >
 {
    //**Member enumerations*************************************************************************
-   enum { value = AlignmentTrait<T>::value };
+   enum { value = AlignmentOf<T>::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -212,14 +212,14 @@ struct AlignmentTrait< const T >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Partial specialization of AlignmentTrait for 'volatile' data types.
-// \ingroup util
+/*!\brief Partial specialization of AlignmentOf for 'volatile' data types.
+// \ingroup type_traits
 */
 template< typename T >
-struct AlignmentTrait< volatile T >
+struct AlignmentOf< volatile T >
 {
    //**Member enumerations*************************************************************************
-   enum { value = AlignmentTrait<T>::value };
+   enum { value = AlignmentOf<T>::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -228,14 +228,14 @@ struct AlignmentTrait< volatile T >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Partial specialization of AlignmentTrait for 'const volatile' data types.
-// \ingroup util
+/*!\brief Partial specialization of AlignmentOf for 'const volatile' data types.
+// \ingroup type_traits
 */
 template< typename T >
-struct AlignmentTrait< const volatile T >
+struct AlignmentOf< const volatile T >
 {
    //**Member enumerations*************************************************************************
-   enum { value = AlignmentTrait<T>::value };
+   enum { value = AlignmentOf<T>::value };
    //**********************************************************************************************
 };
 /*! \endcond */
