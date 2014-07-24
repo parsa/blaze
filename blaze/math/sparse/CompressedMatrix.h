@@ -1537,7 +1537,7 @@ inline void CompressedMatrix<Type,SO>::reserve( size_t nonzeros )
 //*************************************************************************************************
 /*!\brief Setting the minimum capacity of a specific row/column of the sparse matrix.
 //
-// \param i The row/column index of the new element \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
+// \param i The row/column index \f$[0..M-1]\f$ or \f$[0..N-1]\f$.
 // \param nonzeros The new minimum capacity of the specified row/column.
 // \return void
 //
