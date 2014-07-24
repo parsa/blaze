@@ -1800,7 +1800,17 @@ class DenseColumn<MT,false> : public DenseVector< DenseColumn<MT,false>, false >
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the ColumnIterator class.
+      /*!\brief Default constructor of the ColumnIterator class.
+      */
+      inline ColumnIterator()
+         : matrix_( NULL )  // The dense matrix containing the column.
+         , row_   ( 0UL  )  // The current row index.
+         , column_( 0UL  )  // The current column index.
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the ColumnIterator class.
       //
       // \param matrix The matrix containing the column.
       // \param row The row index.
