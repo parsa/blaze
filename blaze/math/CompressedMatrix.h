@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <cmath>
+#include <stdexcept>
 #include <blaze/math/sparse/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/SparseMatrix.h>
