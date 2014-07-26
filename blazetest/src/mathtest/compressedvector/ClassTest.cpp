@@ -1272,7 +1272,24 @@ void ClassTest::testReset()
           << " Error: Initialization failed\n"
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 1 0 3 0 0 0 3 0 4 0 )\n";
+          << "   Expected result:\n( 0 1 0 2 0 0 0 3 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Resetting a single element
+   reset( vec[7] );
+
+   checkSize    ( vec, 11UL );
+   checkCapacity( vec,  4UL );
+   checkNonZeros( vec,  3UL );
+
+   if( vec[1] != 1 || vec[3] != 2 || vec[7] != 0 || vec[9] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Reset operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 1 0 2 0 0 0 0 0 4 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 
@@ -1280,6 +1297,7 @@ void ClassTest::testReset()
    reset( vec );
 
    checkSize    ( vec, 11UL );
+   checkCapacity( vec,  4UL );
    checkNonZeros( vec,  0UL );
 }
 //*************************************************************************************************
@@ -1315,6 +1333,23 @@ void ClassTest::testClear()
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 1 0 0 0 0 0 0 2 3 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Clearing a single element
+   clear( vec[7] );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 3UL );
+   checkNonZeros( vec, 2UL );
+
+   if( vec[0] != 1 || vec[7] != 0 || vec[8] != 3 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Clear operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 0 0 0 0 0 0 0 3 )\n";
       throw std::runtime_error( oss.str() );
    }
 
@@ -2610,6 +2645,15 @@ void ClassTest::testIsDefault()
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL );
 
+      if( isDefault( vec[1] ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector element:\n" << vec[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
       if( isDefault( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2624,6 +2668,15 @@ void ClassTest::testIsDefault()
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 1UL );
       vec[1] = 1;
+
+      if( isDefault( vec[1] ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector element:\n" << vec[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
 
       if( isDefault( vec ) != false ) {
          std::ostringstream oss;
