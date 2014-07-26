@@ -56,6 +56,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1633,7 +1634,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class RowElement
+   class RowElement : private SparseElement
    {
     private:
       //*******************************************************************************************
@@ -1646,9 +1647,20 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       enum { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
+      //**Type definitions*************************************************************************
+      //! Type of the underlying sparse elements.
+      typedef typename std::iterator_traits<IteratorType>::value_type  SET;
+
+      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
+      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      //*******************************************************************************************
+
     public:
       //**Type definitions*************************************************************************
-      typedef typename SelectType< returnConst, const ElementType&, ElementType& >::Type  ReferenceType;
+      typedef typename SET::ValueType                        ValueType;       //!< The value type of the row element.
+      typedef size_t                                         IndexType;       //!< The index type of the row element.
+      typedef typename SelectType<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
+      typedef CRT                                            ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1738,7 +1750,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //
       // \return The current value of the sparse row element.
       */
-      inline ReferenceType value() const {
+      inline Reference value() const {
          return pos_->value();
       }
       //*******************************************************************************************
@@ -1748,7 +1760,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
       //
       // \return The current index of the sparse element.
       */
-      inline size_t index() const {
+      inline IndexType index() const {
          return column_;
       }
       //*******************************************************************************************

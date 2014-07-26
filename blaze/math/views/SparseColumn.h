@@ -56,6 +56,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -1634,7 +1635,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
    */
    template< typename MatrixType      // Type of the sparse matrix
            , typename IteratorType >  // Type of the sparse matrix iterator
-   class ColumnElement
+   class ColumnElement : private SparseElement
    {
     private:
       //*******************************************************************************************
@@ -1647,9 +1648,20 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       enum { returnConst = IsConst<MatrixType>::value };
       //*******************************************************************************************
 
+      //**Type definitions*************************************************************************
+      //! Type of the underlying sparse elements.
+      typedef typename std::iterator_traits<IteratorType>::value_type  SET;
+
+      typedef typename SET::Reference       RT;   //!< Reference type of the underlying sparse element.
+      typedef typename SET::ConstReference  CRT;  //!< Reference-to-const type of the underlying sparse element.
+      //*******************************************************************************************
+
     public:
       //**Type definitions*************************************************************************
-      typedef typename SelectType< returnConst, const ElementType&, ElementType& >::Type  ReferenceType;
+      typedef typename SET::ValueType                        ValueType;       //!< The value type of the row element.
+      typedef size_t                                         IndexType;       //!< The index type of the row element.
+      typedef typename SelectType<returnConst,CRT,RT>::Type  Reference;       //!< Reference return type
+      typedef CRT                                            ConstReference;  //!< Reference-to-const return type.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1739,7 +1751,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //
       // \return The current value of the sparse column element.
       */
-      inline ReferenceType value() const {
+      inline Reference value() const {
          return pos_->value();
       }
       //*******************************************************************************************
@@ -1749,7 +1761,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
       //
       // \return The current index of the sparse element.
       */
-      inline size_t index() const {
+      inline IndexType index() const {
          return row_;
       }
       //*******************************************************************************************
