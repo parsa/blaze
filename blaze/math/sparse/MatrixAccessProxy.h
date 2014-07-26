@@ -163,6 +163,14 @@ class MatrixAccessProxy
    //@}
    //**********************************************************************************************
 
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline void reset() const;
+   inline void clear() const;
+   //@}
+   //**********************************************************************************************
+
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
@@ -210,9 +218,7 @@ class MatrixAccessProxy
    inline size_t   capacity( size_t i ) const;
    inline size_t   nonZeros() const;
    inline size_t   nonZeros( size_t i ) const;
-   inline void     reset() const;
    inline void     reset( size_t i ) const;
-   inline void     clear() const;
    inline Iterator insert( size_t index, const ElementType& value ) const;
    inline Iterator insert( size_t i, size_t j, const ElementType& value ) const;
    inline void     append( size_t index, const ElementType& value, bool check=false ) const;
@@ -442,6 +448,53 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator/=( const T& value 
 {
    get() /= value;
    return *this;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Reset to the default initial values.
+//
+// \return void
+//
+// This function resets the element represented by the access proxy to its default initial value.
+// In case the access proxy represents a vector- or matrix-like data structure that provides a
+// reset() function, this function resets all elements of the vector/matrix to the default initial
+// values.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::reset() const
+{
+   using blaze::reset;
+
+   reset( get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Clearing the represented element.
+//
+// \return void
+//
+// This function clears the element represented by the access proxy to its default initial state.
+// In case the access proxy represents a vector- or matrix-like data structure that provides a
+// clear() function, this function clears the vector/matrix to its default initial state.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void MatrixAccessProxy<MT>::clear() const
+{
+   using blaze::clear;
+
+   clear( get() );
 }
 //*************************************************************************************************
 
@@ -909,25 +962,6 @@ inline size_t MatrixAccessProxy<MT>::nonZeros( size_t i ) const
 
 
 //*************************************************************************************************
-/*!\brief Reset to the default initial values.
-//
-// \return void
-//
-// In case the access proxy represents a vector- or matrix-like data structure that provides a
-// reset() function, this function resets all elements of the vector/matrix to the default initial
-// values.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline void MatrixAccessProxy<MT>::reset() const
-{
-   using blaze::reset;
-
-   reset( get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Reset the specified row/column to the default initial values.
 //
 // \param i The index of the row/column.
@@ -945,24 +979,6 @@ inline void MatrixAccessProxy<MT>::reset( size_t i ) const
    using blaze::reset;
 
    reset( get(), i );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Clearing the represented vector/matrix.
-//
-// \return void
-//
-// In case the access proxy represents a vector- or matrix-like data structure that provides a
-// clear() function, this function clears the vector/matrix to its default initial state.
-*/
-template< typename MT >  // Type of the sparse matrix
-inline void MatrixAccessProxy<MT>::clear() const
-{
-   using blaze::clear;
-
-   clear( get() );
 }
 //*************************************************************************************************
 
@@ -2065,6 +2081,9 @@ template< typename MT >
 inline void clear( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
+inline bool isDefault( const MatrixAccessProxy<MT>& proxy );
+
+template< typename MT >
 inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) /* throw() */;
 
 template< typename MT, typename T >
@@ -2373,12 +2392,13 @@ inline size_t nonZeros( const MatrixAccessProxy<MT>& proxy, size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Resetting the represented vector/matrix to the default initial values.
+/*!\brief Resetting the represented element to the default initial values.
 // \ingroup math
 //
 // \param proxy The given access proxy.
 // \return void
 //
+// This function resets the element represented by the access proxy to its default initial value.
 // In case the access proxy represents a vector- or matrix-like data structure that provides a
 // reset() function, this function resets all elements of the vector/matrix to the default initial
 // values.
@@ -2414,12 +2434,13 @@ inline void reset( const MatrixAccessProxy<MT>& proxy, size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented vector/matrix.
+/*!\brief Clearing the represented element.
 // \ingroup math
 //
 // \param proxy The given access proxy.
 // \return void
 //
+// This function clears the element represented by the access proxy to its default initial state.
 // In case the access proxy represents a vector- or matrix-like data structure that provides a
 // clear() function, this function clears the vector/matrix to its default initial state.
 */
@@ -2427,6 +2448,27 @@ template< typename MT >
 inline void clear( const MatrixAccessProxy<MT>& proxy )
 {
    proxy.clear();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is in default state.
+// \ingroup math
+//
+// \param proxy The given access proxy
+// \return \a true in case the represented element is in default state, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy is in default state.
+// In case it is in default state, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT >
+inline bool isDefault( const MatrixAccessProxy<MT>& proxy )
+{
+   using blaze::isDefault;
+
+   typedef typename MatrixAccessProxy<MT>::RawReference  RawReference;
+   return isDefault( static_cast<RawReference>( proxy ) );
 }
 //*************************************************************************************************
 
