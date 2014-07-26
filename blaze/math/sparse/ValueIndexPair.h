@@ -70,8 +70,10 @@ class ValueIndexPair : private SparseElement
 {
  public:
    //**Type definitions****************************************************************************
-   typedef Type    ValueType;  //!< The value type of the value-index-pair.
-   typedef size_t  IndexType;  //!< The index type of the value-index-pair.
+   typedef Type         ValueType;       //!< The value type of the value-index-pair.
+   typedef size_t       IndexType;       //!< The index type of the value-index-pair.
+   typedef Type&        Reference;       //!< Reference return type.
+   typedef const Type&  ConstReference;  //!< Reference-to-const return type.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -107,9 +109,9 @@ class ValueIndexPair : private SparseElement
    //**Acess functions*****************************************************************************
    /*!\name Access functions */
    //@{
-   inline Type&       value();
-   inline const Type& value() const;
-   inline size_t      index() const;
+   inline Reference      value();
+   inline ConstReference value() const;
+   inline IndexType      index() const;
    //@}
    //**********************************************************************************************
 
@@ -299,7 +301,7 @@ inline ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Other& v )
 // \return The current value of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline Type& ValueIndexPair<Type>::value()
+inline typename ValueIndexPair<Type>::Reference ValueIndexPair<Type>::value()
 {
    return value_;
 }
@@ -312,7 +314,7 @@ inline Type& ValueIndexPair<Type>::value()
 // \return The current value of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline const Type& ValueIndexPair<Type>::value() const
+inline typename ValueIndexPair<Type>::ConstReference ValueIndexPair<Type>::value() const
 {
    return value_;
 }
@@ -325,7 +327,7 @@ inline const Type& ValueIndexPair<Type>::value() const
 // \return The current index of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline size_t ValueIndexPair<Type>::index() const
+inline typename ValueIndexPair<Type>::IndexType ValueIndexPair<Type>::index() const
 {
    return index_;
 }
