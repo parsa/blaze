@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/mathtest/densesubvector/AlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -111,7 +112,7 @@ void AlignedTest::testConstructors()
 
    initialize();
 
-   const size_t alignment = blaze::AlignmentTrait<int>::value;
+   const size_t alignment = blaze::AlignmentOf<int>::value;
 
    for( size_t start=0UL; start<vec1_.size(); start+=alignment ) {
       for( size_t maxsize=0UL; ; maxsize+=alignment )

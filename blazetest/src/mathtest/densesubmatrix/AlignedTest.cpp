@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/mathtest/densesubmatrix/AlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -122,7 +123,7 @@ void AlignedTest::testConstructors()
 
       initialize();
 
-      const size_t alignment = blaze::AlignmentTrait<int>::value;
+      const size_t alignment = blaze::AlignmentOf<int>::value;
 
       for( size_t row=0UL; row<mat1_.rows(); row+=alignment ) {
          for( size_t column=0UL; column<mat1_.columns(); column+=alignment ) {
@@ -240,7 +241,7 @@ void AlignedTest::testConstructors()
 
       initialize();
 
-      const size_t alignment = blaze::AlignmentTrait<int>::value;
+      const size_t alignment = blaze::AlignmentOf<int>::value;
 
       for( size_t column=0UL; column<mat1_.columns(); column+=alignment ) {
          for( size_t row=0UL; row<mat1_.rows(); row+=alignment ) {
