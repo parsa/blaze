@@ -4095,7 +4095,7 @@ void ClassTest::testAppend()
          // Appending two more non-zero elements
          mat.append( 3UL, 0UL, 4 );
          mat.append( 3UL, 1UL, 5 );
-         mat.finalize( 1UL );
+         mat.finalize( 3UL );
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 4UL );
@@ -4126,7 +4126,7 @@ void ClassTest::testAppend()
    {
       test_ = "Column-major CompressedMatrix::append()";
 
-      // Appending with pre-allocation in each row
+      // Appending with pre-allocation in each column
       {
          // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
@@ -4212,7 +4212,7 @@ void ClassTest::testAppend()
          }
       }
 
-      // Appending with row finalization
+      // Appending with column finalization
       {
          // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
@@ -4270,7 +4270,7 @@ void ClassTest::testAppend()
          // Appending two more non-zero elements
          mat.append( 0UL, 3UL, 4 );
          mat.append( 1UL, 3UL, 5 );
-         mat.finalize( 1UL );
+         mat.finalize( 3UL );
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 4UL );
