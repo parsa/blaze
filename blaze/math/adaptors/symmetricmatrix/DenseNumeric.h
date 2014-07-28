@@ -1,0 +1,2246 @@
+//=================================================================================================
+/*!
+//  \file blaze/math/adaptors/symmetricmatrix/DenseNumeric.h
+//  \brief SymmetricMatrix specialization for dense matrices with numeric element type
+//
+//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. You can redistribute it and/or modify it under
+//  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
+//  forms, with or without modification, are permitted provided that the following conditions
+//  are met:
+//
+//  1. Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, this list
+//     of conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//  3. Neither the names of the Blaze development group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software without specific
+//     prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+//  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+//  SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+//  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+//  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+//  DAMAGE.
+*/
+//=================================================================================================
+
+#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_DENSENUMERIC_H_
+#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_DENSENUMERIC_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <algorithm>
+#include <iterator>
+#include <stdexcept>
+#include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/symmetricmatrix/SymmetricProxy.h>
+#include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Lower.h>
+#include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Upper.h>
+#include <blaze/math/dense/DenseMatrix.h>
+#include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/shims/Clear.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/views/Column.h>
+#include <blaze/math/views/DenseColumn.h>
+#include <blaze/math/views/DenseRow.h>
+#include <blaze/math/views/DenseSubmatrix.h>
+#include <blaze/math/views/Row.h>
+#include <blaze/math/views/Submatrix.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Const.h>
+#include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/Unused.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR DENSE MATRICES WITH NUMERIC ELEMENT TYPE
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of SymmetricMatrix for dense matrices with numeric element type.
+// \ingroup symmetric_matrix
+//
+// This specialization of SymmetricMatrix adapts the class template to the requirements of dense
+// matrices with numeric element type.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+class SymmetricMatrix<MT,true,true>
+   : public DenseMatrix< SymmetricMatrix<MT,true,true>, IsColumnMajorMatrix<MT>::value >
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef typename MT::OppositeType   OT;  //!< Opposite type of the dense matrix.
+   typedef typename MT::TransposeType  TT;  //!< Transpose type of the dense matrix.
+   typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef SymmetricMatrix<MT,true,true>  This;            //!< Type of this SymmetricMatrix instance.
+   typedef This                           ResultType;      //!< Result type for expression template evaluations.
+   typedef SymmetricMatrix<OT,true,true>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef SymmetricMatrix<TT,true,true>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                             ElementType;     //!< Type of the matrix elements.
+   typedef typename MT::IntrinsicType     IntrinsicType;   //!< Intrinsic type of the matrix elements.
+   typedef typename MT::ReturnType        ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                    CompositeType;   //!< Data type for composite expression templates.
+   typedef SymmetricProxy<MT>             Reference;       //!< Reference to a non-constant matrix value.
+   typedef typename MT::ConstReference    ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Pointer           Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef typename MT::ConstPointer      ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef typename MT::ConstIterator     ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**RowIterator class definition****************************************************************
+   /*!\brief Row-wise iterator over the non-constant elements of the dense symmetric matrix.
+   */
+   class RowIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
+      typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
+      typedef SymmetricProxy<MT>               PointerType;       //!< Pointer return type.
+      typedef SymmetricProxy<MT>               ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the RowIterator class.
+      //
+      // \param matrix The adapted matrix.
+      // \param row Initial row index of the iterator.
+      // \param column Initial column index of the iterator.
+      */
+      inline RowIterator( MT& matrix, size_t row, size_t column )
+         : matrix_( &matrix )  // Reference to the adapted dense matrix.
+         , row_   ( row     )  // The current row-index of the iterator.
+         , column_( column  )  // The current column-index of the iterator.
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline RowIterator& operator+=( size_t inc ) {
+         column_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline RowIterator& operator-=( size_t dec ) {
+         column_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline RowIterator& operator++() {
+         ++column_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator++( int ) {
+         const RowIterator tmp( *this );
+         ++(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline RowIterator& operator--() {
+         --column_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator--( int ) {
+         const RowIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReferenceType operator*() const {
+         return ReferenceType( *matrix_, row_, column_ );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline PointerType operator->() const {
+         return PointerType( *matrix_, row_, column_ );
+      }
+      //*******************************************************************************************
+
+      //**Conversion operator**********************************************************************
+      /*!\brief Conversion to an iterator over constant elements.
+      //
+      // \return An iterator over constant elements.
+      */
+      inline operator ConstIterator() const {
+         return matrix_->begin(row_) + column_;
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ == rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between a RowIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) == rhs );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between a ConstIterator and a RowIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs == ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ != rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between a RowIterator and ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) != rhs );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between a ConstIterator and RowIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs != ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ < rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between a RowIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) < rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between a ConstIterator and a RowIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs < ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ > rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between a RowIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) > rhs );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between a ConstIterator and a RowIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs > ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ <= rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between a RowIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) <= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between a ConstIterator and a RowIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs <= ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const RowIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs.column_ >= rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between a RowIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const RowIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) >= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const ConstIterator& lhs, const RowIterator& rhs ) {
+         return ( lhs >= ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const RowIterator& rhs ) const {
+         return ( column_ - rhs.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) {
+         return RowIterator( *it.matrix_, it.row_, it.column_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a RowIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) {
+         return RowIterator( *it.matrix_, it.row_, it.column_ + inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param dec The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) {
+         return RowIterator( *it.matrix_, it.row_, it.column_ - dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      MT*    matrix_;  //!< Reference to the adapted dense matrix.
+      size_t row_;     //!< The current row-index of the iterator.
+      size_t column_;  //!< The current column-index of the iterator.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**ColumnIterator class definition*************************************************************
+   /*!\brief Column-wise iterator over the non-constant elements of the dense symmetric matrix.
+   */
+   class ColumnIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
+      typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
+      typedef SymmetricProxy<MT>               PointerType;       //!< Pointer return type.
+      typedef SymmetricProxy<MT>               ReferenceType;     //!< Reference return type.
+      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
+
+      // STL iterator requirements
+      typedef IteratorCategory  iterator_category;  //!< The iterator category.
+      typedef ValueType         value_type;         //!< Type of the underlying elements.
+      typedef PointerType       pointer;            //!< Pointer return type.
+      typedef ReferenceType     reference;          //!< Reference return type.
+      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor for the ColumnIterator class.
+      //
+      // \param matrix The adapted matrix.
+      // \param row Initial row index of the iterator.
+      // \param column Initial column index of the iterator.
+      */
+      inline ColumnIterator( MT& matrix, size_t row, size_t column )
+         : matrix_( &matrix )  // Reference to the adapted dense matrix.
+         , row_   ( row     )  // The current row-index of the iterator.
+         , column_( column  )  // The current column-index of the iterator.
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline ColumnIterator& operator+=( size_t inc ) {
+         row_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline ColumnIterator& operator-=( size_t dec ) {
+         row_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline ColumnIterator& operator++() {
+         ++row_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ColumnIterator operator++( int ) {
+         const ColumnIterator tmp( *this );
+         ++(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline ColumnIterator& operator--() {
+         --row_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const ColumnIterator operator--( int ) {
+         const ColumnIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline ReferenceType operator*() const {
+         return ReferenceType( *matrix_, row_, column_ );
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return The resulting value.
+      */
+      inline PointerType operator->() const {
+         return PointerType( *matrix_, row_, column_ );
+      }
+      //*******************************************************************************************
+
+      //**Conversion operator**********************************************************************
+      /*!\brief Conversion to an iterator over constant elements.
+      //
+      // \return An iterator over constant elements.
+      */
+      inline operator ConstIterator() const {
+         return matrix_->begin(column_) + row_;
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ == rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between a ColumnIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) == rhs );
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between a ConstIterator and a ColumnIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      friend inline bool operator==( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs == ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ != rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between a ColumnIterator and ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) != rhs );
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between a ConstIterator and ColumnIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      friend inline bool operator!=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs != ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ < rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between a ColumnIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) < rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between a ConstIterator and a ColumnIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      friend inline bool operator<( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs < ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ > rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between a ColumnIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) > rhs );
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between a ConstIterator and a ColumnIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      friend inline bool operator>( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs > ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ <= rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between a ColumnIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) <= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between a ConstIterator and a ColumnIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      friend inline bool operator<=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs <= ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs.row_ >= rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between a ColumnIterator and a ConstIterator.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
+         return ( ConstIterator( lhs ) >= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two ColumnIterator objects.
+      //
+      // \param lhs The left-hand side iterator.
+      // \param rhs The right-hand side iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      friend inline bool operator>=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
+         return ( lhs >= ConstIterator( rhs ) );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two iterators.
+      //
+      // \param rhs The right-hand side iterator.
+      // \return The number of elements between the two iterators.
+      */
+      inline DifferenceType operator-( const ColumnIterator& rhs ) const {
+         return ( row_ - rhs.row_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a ColumnIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ColumnIterator operator+( const ColumnIterator& it, size_t inc ) {
+         return ColumnIterator( *it.matrix_, it.row_ + inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a ColumnIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const ColumnIterator operator+( size_t inc, const ColumnIterator& it ) {
+         return ColumnIterator( *it.matrix_, it.row_ + inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a ColumnIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param dec The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const ColumnIterator operator-( const ColumnIterator& it, size_t dec ) {
+         return ColumnIterator( *it.matrix_, it.row_ - dec, it.column_ );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      MT*    matrix_;  //!< Reference to the adapted dense matrix.
+      size_t row_;     //!< The current row-index of the iterator.
+      size_t column_;  //!< The current column-index of the iterator.
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
+   //! Iterator over non-constant elements.
+   typedef typename If< IsRowMajorMatrix<MT>, RowIterator, ColumnIterator >::Type  Iterator;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum { vectorizable = MT::vectorizable };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = MT::smpAssignable };
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline SymmetricMatrix();
+   explicit inline SymmetricMatrix( size_t n );
+
+   inline SymmetricMatrix( const SymmetricMatrix& m );
+
+   template< typename MT2, bool SO >
+   inline SymmetricMatrix( const Matrix<MT2,SO>& m );
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   // No explicitly declared destructor.
+   //**********************************************************************************************
+
+   //**Data access functions***********************************************************************
+   /*!\name Data access functions */
+   //@{
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline ConstPointer   data  () const;
+   inline ConstPointer   data  ( size_t i ) const;
+   inline Iterator       begin ( size_t i );
+   inline ConstIterator  begin ( size_t i ) const;
+   inline ConstIterator  cbegin( size_t i ) const;
+   inline Iterator       end   ( size_t i );
+   inline ConstIterator  end   ( size_t i ) const;
+   inline ConstIterator  cend  ( size_t i ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   inline SymmetricMatrix& operator=( const SymmetricMatrix& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator+=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator+=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator-=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
+      operator-=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2, bool SO >
+   inline SymmetricMatrix& operator*=( const Matrix<MT2,SO>& rhs );
+
+   template< typename Other >
+   inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix >::Type&
+      operator*=( Other rhs );
+
+   template< typename Other >
+   inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix >::Type&
+      operator/=( Other rhs );
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+                              inline size_t           rows() const;
+                              inline size_t           columns() const;
+                              inline size_t           spacing() const;
+                              inline size_t           capacity() const;
+                              inline size_t           capacity( size_t i ) const;
+                              inline size_t           nonZeros() const;
+                              inline size_t           nonZeros( size_t i ) const;
+                              inline void             reset();
+                              inline void             reset( size_t i );
+                              inline void             clear();
+                                     void             resize ( size_t n, bool preserve=true );
+                              inline void             extend ( size_t n, bool preserve=true );
+                              inline void             reserve( size_t elements );
+                              inline SymmetricMatrix& transpose();
+   template< typename Other > inline SymmetricMatrix& scale( Other scalar );
+                              inline void             swap( SymmetricMatrix& m ) /* throw() */;
+   //@}
+   //**********************************************************************************************
+
+   //**Expression template evaluation functions****************************************************
+   /*!\name Expression template evaluation functions */
+   //@{
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   inline bool isAligned   () const;
+   inline bool canSMPAssign() const;
+
+   inline IntrinsicType load ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu( size_t i, size_t j ) const;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   MT matrix_;  //!< The adapted dense matrix.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool DF2, bool NF2 >
+   friend bool isDefault( const SymmetricMatrix<MT2,DF2,NF2>& m );
+   //**********************************************************************************************
+
+   //**Compile time checks*************************************************************************
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE        ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
+   BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The default constructor for SymmetricMatrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline SymmetricMatrix<MT,true,true>::SymmetricMatrix()
+   : matrix_()  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for a matrix of size \f$ n \times n \f$.
+//
+// \param n The number of rows and columns of the matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline SymmetricMatrix<MT,true,true>::SymmetricMatrix( size_t n )
+   : matrix_( n, n, ElementType() )  // The adapted dense matrix
+{
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The copy constructor for SymmetricMatrix.
+//
+// \param m The symmetric matrix to be copied.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline SymmetricMatrix<MT,true,true>::SymmetricMatrix( const SymmetricMatrix& m )
+   : matrix_( m.matrix_ )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conversion constructor from different matrices.
+//
+// \param m Matrix to be copied.
+// \exception std::invalid_argument Invalid setup of symmetric matrix.
+//
+// This constructor initializes the symmetric matrix as a copy of the given matrix. In case the
+// given matrix is not a symmetric matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the foreign matrix
+        , bool SO >      // Storage order of the foreign matrix
+inline SymmetricMatrix<MT,true,true>::SymmetricMatrix( const Matrix<MT2,SO>& m )
+   : matrix_( ~m )  // The adapted dense matrix
+{
+   if( !IsSymmetric<MT2>::value && !isSymmetric( matrix_ ) )
+      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DATA ACCESS FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief 2D-access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..N-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+//
+// The function call operator provides access to both the elements at position (i,j) and (j,i).
+// In order to preserve the symmetry of the matrix, any modification to one of the elements will
+// also be applied to the other element.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::Reference
+   SymmetricMatrix<MT,true,true>::operator()( size_t i, size_t j )
+{
+   BLAZE_USER_ASSERT( i<rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<columns(), "Invalid column access index" );
+
+   return Reference( matrix_, i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief 2D-access to the matrix elements.
+//
+// \param i Access index for the row. The index has to be in the range \f$[0..N-1]\f$.
+// \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+// \return Reference to the accessed value.
+//
+// The function call operator provides access to both the elements at position (i,j) and (j,i).
+// In order to preserve the symmetry of the matrix, any modification to one of the elements will
+// also be applied to the other element.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstReference
+   SymmetricMatrix<MT,true,true>::operator()( size_t i, size_t j ) const
+{
+   BLAZE_USER_ASSERT( i<rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j<columns(), "Invalid column access index" );
+
+   return matrix_(i,j);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the matrix elements.
+//
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the symmetric matrix. Note that you
+// can NOT assume that all matrix elements lie adjacent to each other! The symmetric matrix may
+// use techniques such as padding to improve the alignment of the data. Whereas the number of
+// elements within a row/column are given by the \c rows() and \c columns() member functions,
+// respectively, the total number of elements including padding is given by the \c spacing()
+// member function. Also note that you can NOT assume that the symmetric matrix stores all its
+// elements. It may choose to store its elements in a lower or upper triangular matrix fashion.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstPointer
+   SymmetricMatrix<MT,true,true>::data() const
+{
+   return matrix_.data();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the matrix elements of row/column \a i.
+//
+// \param i The row/column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in row/column \a i.
+// Note that you can NOT assume that the symmetric matrix stores all its elements. It may choose
+// to store its elements in a lower or upper triangular matrix fashion.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstPointer
+   SymmetricMatrix<MT,true,true>::data( size_t i ) const
+{
+   return matrix_.data(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the storage order is set to \a rowMajor the function returns an iterator to the first element
+// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
+// to the first element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::Iterator
+   SymmetricMatrix<MT,true,true>::begin( size_t i )
+{
+   if( IsRowMajorMatrix<MT>::value )
+      return Iterator( matrix_, i, 0UL );
+   else
+      return Iterator( matrix_, 0UL, i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the symmetric matrix adapts a \a rowMajor dense matrix the function returns an iterator to
+// the first element of row \a i, in case it adapts a \a columnMajor dense matrix the function
+// returns an iterator to the first element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstIterator
+   SymmetricMatrix<MT,true,true>::begin( size_t i ) const
+{
+   return matrix_.begin(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator to the first element of row/column \a i.
+//
+// This function returns a row/column iterator to the first element of row/column \a i. In case
+// the symmetric matrix adapts a \a rowMajor dense matrix the function returns an iterator to
+// the first element of row \a i, in case it adapts a \a columnMajor dense matrix the function
+// returns an iterator to the first element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstIterator
+   SymmetricMatrix<MT,true,true>::cbegin( size_t i ) const
+{
+   return matrix_.cbegin(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the storage order is set to \a rowMajor the function returns an iterator just past
+// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
+// returns an iterator just past the last element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::Iterator
+   SymmetricMatrix<MT,true,true>::end( size_t i )
+{
+   if( IsRowMajorMatrix<MT>::value )
+      return Iterator( matrix_, i, columns() );
+   else
+      return Iterator( matrix_, rows(), i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the symmetric matrix adapts a \a rowMajor dense matrix the function returns an iterator
+// just past the last element of row \a i, in case it adapts a \a columnMajor dense matrix the
+// function returns an iterator just past the last element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstIterator
+   SymmetricMatrix<MT,true,true>::end( size_t i ) const
+{
+   return matrix_.end(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of row/column \a i.
+//
+// \param i The row/column index.
+// \return Iterator just past the last element of row/column \a i.
+//
+// This function returns an row/column iterator just past the last element of row/column \a i.
+// In case the symmetric matrix adapts a \a rowMajor dense matrix the function returns an iterator
+// just past the last element of row \a i, in case it adapts a \a columnMajor dense matrix the
+// function returns an iterator just past the last element of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::ConstIterator
+   SymmetricMatrix<MT,true,true>::cend( size_t i ) const
+{
+   return matrix_.cend(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ASSIGNMENT OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for SymmetricMatrix.
+//
+// \param rhs Matrix to be copied.
+// \return Reference to the assigned matrix.
+//
+// If possible and necessary, the matrix is resized according to the given \f$ N \times N \f$
+// matrix and initialized as a copy of this matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline SymmetricMatrix<MT,true,true>&
+   SymmetricMatrix<MT,true,true>::operator=( const SymmetricMatrix& rhs )
+{
+   matrix_ = rhs.matrix_;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for plain matrices.
+//
+// \param rhs The plain matrix to be copied.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// If possible and necessary, the matrix is resized according to the given \f$ N \times N \f$
+// matrix and initialized as a copy of this matrix. If the matrix cannot be resized accordingly,
+// a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
+// symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator=( const Matrix<MT2,SO>& rhs )
+{
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   matrix_ = ~rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for matrix computations.
+//
+// \param rhs The matrix computation to be copied.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// If possible and necessary, the matrix is resized according to the given \f$ N \times N \f$
+// matrix and initialized as a copy of this matrix. If the matrix cannot be resized accordingly,
+// a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
+// symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator=( const Matrix<MT2,SO>& rhs )
+{
+   using std::swap;
+
+   if( IsSymmetric<MT2>::value ) {
+      matrix_ = ~rhs;
+      return *this;
+   }
+
+   MT tmp( ~rhs );
+
+   if( !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   if( IsResizable<MT>::value )
+      swap( matrix_, tmp );
+   else
+      matrix_ = tmp;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition assignment operator for the addition of a plain matrix (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side plain matrix to be added.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the addition operation must be a symmetric matrix, i.e.
+// the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
+{
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   matrix_ += ~rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition assignment operator for the addition of a matrix computation (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side matrix computation to be added.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the addition operation must be a symmetric matrix, i.e.
+// the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
+{
+   typedef typename MT2::ResultType  RT;
+
+   if( IsSymmetric<MT2>::value ) {
+      matrix_ += ~rhs;
+      return *this;
+   }
+
+   RT tmp( ~rhs );
+
+   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   matrix_ += tmp;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction assignment operator for the subtraction of a plain matrix (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side plain matrix to be subtracted.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the subtraction operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
+{
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   matrix_ -= ~rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction assignment operator for the subtraction of a matrix computation (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side matrix computation to be subtracted.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the subtraction operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::Type
+   SymmetricMatrix<MT,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
+{
+   typedef typename MT2::ResultType  RT;
+
+   if( IsSymmetric<MT2>::value ) {
+      matrix_ -= ~rhs;
+      return *this;
+   }
+
+   RT tmp( ~rhs );
+
+   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+   matrix_ -= tmp;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
+//
+// \param rhs The right-hand side matrix for the multiplication.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the multiplication operation must be a symmetric matrix.
+// In case it is not, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO >      // Storage order of the right-hand side matrix
+inline SymmetricMatrix<MT,true,true>&
+   SymmetricMatrix<MT,true,true>::operator*=( const Matrix<MT2,SO>& rhs )
+{
+   using std::swap;
+
+   MT tmp( matrix_ * ~rhs );
+
+   if( !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to static matrix" );
+
+   if( IsResizable<MT>::value )
+      swap( matrix_, tmp );
+   else
+      matrix_ = tmp;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication between a matrix and
+//        a scalar value (\f$ A*=s \f$).
+//
+// \param rhs The right-hand side scalar value for the multiplication.
+// \return Reference to the matrix.
+*/
+template< typename MT >     // Type of the adapted dense matrix
+template< typename Other >  // Data type of the right-hand side scalar
+inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,true> >::Type&
+   SymmetricMatrix<MT,true,true>::operator*=( Other rhs )
+{
+   matrix_ *= rhs;
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a matrix by a scalar value
+//        (\f$ A/=s \f$).
+//
+// \param rhs The right-hand side scalar value for the division.
+// \return Reference to the matrix.
+*/
+template< typename MT >     // Type of the adapted dense matrix
+template< typename Other >  // Data type of the right-hand side scalar
+inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,true> >::Type&
+   SymmetricMatrix<MT,true,true>::operator/=( Other rhs )
+{
+   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+   matrix_ /= rhs;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current number of rows of the matrix.
+//
+// \return The number of rows of the matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::rows() const
+{
+   return matrix_.rows();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current number of columns of the matrix.
+//
+// \return The number of columns of the matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::columns() const
+{
+   return matrix_.columns();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the spacing between the beginning of two rows/columns.
+//
+// \return The spacing between the beginning of two rows/columns.
+//
+// This function returns the spacing between the beginning of two rows/columns, i.e.
+// the total number of elements of a row/column. In case the symmetric matrix adapts a
+// \a rowMajor dense matrix the function returns the spacing between two rows, in case
+// it adapts a \a columnMajor dense matrix the function returns the spacing between two
+// columns.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::spacing() const
+{
+   return matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the maximum capacity of the matrix.
+//
+// \return The capacity of the matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::capacity() const
+{
+   return matrix_.capacity();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current capacity of the specified row/column.
+//
+// \param i The index of the row/column.
+// \return The current capacity of row/column \a i.
+//
+// This function returns the current capacity of the specified row/column. In case the symmetric
+// matrix adapts a \a rowMajor dense matrix the function returns the capacity of row \a i, in
+// case it adapts a \a columnMajor dense matrix the function returns the capacity of column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::capacity( size_t i ) const
+{
+   return matrix_.capacity(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the total number of non-zero elements in the matrix
+//
+// \return The number of non-zero elements in the symmetric matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::nonZeros() const
+{
+   return matrix_.nonZeros();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of non-zero elements in the specified row/column.
+//
+// \param i The index of the row/column.
+// \return The number of non-zero elements of row/column \a i.
+//
+// This function returns the current number of non-zero elements in the specified row/column. In
+// case the symmetric matrix adapts a \a rowMajor dense matrix the function returns the number of
+// non-zero elements in row \a i, in case it adapts a to \a columnMajor dense matrix the function
+// returns the number of non-zero elements in column \a i.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,true,true>::nonZeros( size_t i ) const
+{
+   return matrix_.nonZeros(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::reset()
+{
+   matrix_.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset the specified row \b and column to the default initial values.
+//
+// \param i The index of the row/column.
+// \return void
+// \exception std::invalid_argument Invalid row/column access index.
+//
+// This function resets the values in the specified row \b and column to their default value.
+// The following example demonstrates this by means of a \f$ 5 \times 5 \f$ symmetric matrix:
+
+   \code
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<int> > A;
+
+   // Initializing the symmetric matrix A to
+   //
+   //      (  0  2  5 -4  0 )
+   //      (  2  1 -3  7  0 )
+   //  A = (  0 -3  8 -1 -2 )
+   //      (  5  7 -1  0 -6 )
+   //      ( -4  0 -2 -6  1 )
+   // ...
+
+   // Resetting the 1st row/column results in the matrix
+   //
+   //      (  0  0  5 -4  0 )
+   //      (  0  0  0  0  0 )
+   //  A = (  0  0  8 -1 -2 )
+   //      (  5  0 -1  0 -6 )
+   //      ( -4  0 -2 -6  1 )
+   //
+   A.reset( 1UL );
+   \endcode
+
+// Note that the reset() function has no impact on the capacity of the matrix or row/column.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::reset( size_t i )
+{
+   row   ( matrix_, i ).reset();
+   column( matrix_, i ).reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Clearing the symmetric matrix.
+//
+// \return void
+//
+// This function clears the symmetric matrix and returns it to its default state. The function has
+// the same effect as calling clear() on the adapted matrix of type \a MT: In case of a resizable
+// matrix (for instance DynamicMatrix or HybridMatrix) the number of rows and columns will be set
+// to 0, whereas in case of a fixed-size matrix (for instance StaticMatrix) only the elements will
+// be reset to their default state.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::clear()
+{
+   using blaze::clear;
+
+   clear( matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Changing the size of the symmetric matrix.
+//
+// \param n The new number of rows and columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+//
+// In case the symmetric matrix adapts a resizable matrix, this function resizes the matrix using
+// the given size to \f$ n \times n \f$. During this operation, new dynamic memory may be allocated
+// in case the capacity of the matrix is too small. Note that this function may invalidate all
+// existing views (submatrices, rows, columns, ...) on the matrix if it is used to shrink the
+// matrix. Additionally, the resize operation potentially changes all matrix elements. In order
+// to preserve the old matrix values, the \a preserve flag can be set to \a true. In case the
+// size of the matrix is increased, new elements are default initialized.\n
+// The following example illustrates the resize operation of a \f$ 3 \times 3 \f$ matrix to a
+// \f$ 4 \times 4 \f$ matrix:
+
+                              \f[
+                              \left(\begin{array}{*{3}{c}}
+                              1 & 2 & 3 \\
+                              2 & 4 & 5 \\
+                              3 & 5 & 6 \\
+                              \end{array}\right)
+
+                              \Longrightarrow
+
+                              \left(\begin{array}{*{4}{c}}
+                              1 & 2 & 3 & 0 \\
+                              2 & 4 & 5 & 0 \\
+                              3 & 5 & 6 & 0 \\
+                              0 & 0 & 0 & 0 \\
+                              \end{array}\right)
+                              \f]
+*/
+template< typename MT >  // Type of the adapted dense matrix
+void SymmetricMatrix<MT,true,true>::resize( size_t n, bool preserve )
+{
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   UNUSED_PARAMETER( preserve );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+
+   const size_t oldsize( matrix_.rows() );
+
+   matrix_.resize( n, n, true );
+
+   if( n > oldsize ) {
+      const size_t increment( n - oldsize );
+      submatrix( matrix_, 0UL, oldsize, oldsize, increment ).reset();
+      submatrix( matrix_, oldsize, 0UL, increment, n ).reset();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Extending the size of the matrix.
+//
+// \param n Number of additional rows and columns.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+//
+// This function increases the matrix size by \a n rows and \a n columns. During this operation,
+// new dynamic memory may be allocated in case the capacity of the matrix is too small. Therefore
+// this function potentially changes all matrix elements. In order to preserve the old matrix
+// values, the \a preserve flag can be set to \a true. The new elements are default initialized.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::extend( size_t n, bool preserve )
+{
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   UNUSED_PARAMETER( preserve );
+
+   resize( rows() + n, true );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the matrix.
+//
+// \param elements The new minimum capacity of the symmetric matrix.
+// \return void
+//
+// This function increases the capacity of the symmetric matrix to at least \a elements elements.
+// The current values of the matrix elements are preserved.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::reserve( size_t elements )
+{
+   matrix_.reserve( elements );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Transposing the symmetric matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline SymmetricMatrix<MT,true,true>& SymmetricMatrix<MT,true,true>::transpose()
+{
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the matrix by the scalar value \a scalar (\f$ A=B*s \f$).
+//
+// \param scalar The scalar value for the matrix scaling.
+// \return Reference to the matrix.
+*/
+template< typename MT >     // Type of the adapted dense matrix
+template< typename Other >  // Data type of the scalar value
+inline SymmetricMatrix<MT,true,true>& SymmetricMatrix<MT,true,true>::scale( Other scalar )
+{
+   matrix_.scale( scalar );
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Swapping the contents of two matrices.
+//
+// \param m The matrix to be swapped.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::swap( SymmetricMatrix& m ) /* throw() */
+{
+   using std::swap;
+
+   swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address can alias with the matrix. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename MT >     // Type of the adapted dense matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool SymmetricMatrix<MT,true,true>::canAlias( const Other* alias ) const
+{
+   return matrix_.canAlias( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix is aliased with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this matrix, \a false if not.
+//
+// This function returns whether the given address is aliased with the matrix. In contrast
+// to the conAlias() function this function is not allowed to use compile time expressions
+// to optimize the evaluation.
+*/
+template< typename MT >     // Type of the adapted dense matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool SymmetricMatrix<MT,true,true>::isAliased( const Other* alias ) const
+{
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix is properly aligned in memory.
+//
+// \return \a true in case the matrix is aligned, \a false if not.
+//
+// This function returns whether the matrix is guaranteed to be properly aligned in memory, i.e.
+// whether the beginning and the end of each row/column of the matrix are guaranteed to conform
+// to the alignment restrictions of the element type \a Type.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline bool SymmetricMatrix<MT,true,true>::isAligned() const
+{
+   return matrix_.isAligned();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the matrix can be used in SMP assignments.
+//
+// \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the matrix can be used in SMP assignments. In contrast to the
+// \a smpAssignable member enumeration, which is based solely on compile time information, this
+// function additionally provides runtime information (as for instance the current number of
+// rows and/or columns of the matrix).
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline bool SymmetricMatrix<MT,true,true>::canSMPAssign() const
+{
+   return matrix_.canSMPAssign();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an aligned load of a specific intrinsic element of the symmetric matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::IntrinsicType
+   SymmetricMatrix<MT,true,true>::load( size_t i, size_t j ) const
+{
+   return matrix_.load( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the symmetric
+// matrix. The row index must be smaller than the number of rows and the column index must be
+// smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline typename SymmetricMatrix<MT,true,true>::IntrinsicType
+   SymmetricMatrix<MT,true,true>::loadu( size_t i, size_t j ) const
+{
+   return matrix_.loadu( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
+
+#endif
