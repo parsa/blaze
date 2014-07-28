@@ -2613,7 +2613,7 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         CT::ConstIterator it = CT::ConstIterator;
+         CT::ConstIterator it = CT::ConstIterator();
 
          if( it != CT::ConstIterator() ) {
             std::ostringstream oss;
