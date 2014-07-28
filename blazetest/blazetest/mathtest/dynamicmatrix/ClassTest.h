@@ -48,7 +48,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/util/AlignmentTrait.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/Types.h>
 
@@ -178,7 +178,7 @@ void ClassTest::testAlignment( const std::string& type )
    typedef blaze::DynamicMatrix<Type,blaze::rowMajor>     RowMajorMatrixType;
    typedef blaze::DynamicMatrix<Type,blaze::columnMajor>  ColumnMajorMatrixType;
 
-   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+   const size_t alignment( blaze::AlignmentOf<Type>::value );
 
 
    //=====================================================================================

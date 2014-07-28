@@ -47,8 +47,8 @@
 #include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/system/Types.h>
 
 
@@ -164,7 +164,7 @@ void ClassTest::testAlignment( const std::string& type )
 {
    typedef blaze::StaticVector<Type,7UL,blaze::rowVector>  VectorType;
 
-   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+   const size_t alignment( blaze::AlignmentOf<Type>::value );
 
 
    //=====================================================================================

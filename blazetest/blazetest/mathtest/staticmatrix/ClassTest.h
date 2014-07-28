@@ -48,8 +48,8 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/system/Types.h>
 
 
@@ -174,7 +174,7 @@ void ClassTest::testAlignment( const std::string& type )
    typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::rowMajor>     RowMajorMatrixType;
    typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::columnMajor>  ColumnMajorMatrixType;
 
-   const size_t alignment( blaze::AlignmentTrait<Type>::value );
+   const size_t alignment( blaze::AlignmentOf<Type>::value );
 
 
    //=====================================================================================
