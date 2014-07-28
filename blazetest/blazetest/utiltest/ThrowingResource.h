@@ -42,8 +42,8 @@
 
 #include <stdexcept>
 #include <blaze/system/Alignment.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/utiltest/InstanceCounter.h>
 
 
@@ -91,7 +91,7 @@ class BLAZE_ALIGN( 16UL ) ThrowingResource : public InstanceCounter<ThrowingReso
 inline ThrowingResource::ThrowingResource()
    : InstanceCounter<ThrowingResource>()
 {
-   BLAZE_STATIC_ASSERT( blaze::AlignmentTrait<ThrowingResource>::value == 16UL );
+   BLAZE_STATIC_ASSERT( blaze::AlignmentOf<ThrowingResource>::value == 16UL );
 
    if( getCount() == 7U )
       throw std::runtime_error( "Runtime error for testing purposes" );

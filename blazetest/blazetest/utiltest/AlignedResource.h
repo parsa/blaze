@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/system/Alignment.h>
-#include <blaze/util/AlignmentTrait.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/utiltest/InstanceCounter.h>
 
 
@@ -106,7 +106,7 @@ inline AlignedResource::AlignedResource()
    : InstanceCounter<AlignedResource>()
    , value_( 7 )
 {
-   BLAZE_STATIC_ASSERT( blaze::AlignmentTrait<AlignedResource>::value == 64UL );
+   BLAZE_STATIC_ASSERT( blaze::AlignmentOf<AlignedResource>::value == 64UL );
 }
 //*************************************************************************************************
 

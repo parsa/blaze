@@ -44,6 +44,7 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Null.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/utiltest/memory/OperationTest.h>
 #include <blazetest/utiltest/AlignedResource.h>
 #include <blazetest/utiltest/ThrowingResource.h>
@@ -101,7 +102,7 @@ void OperationTest::testBuiltinTypes()
 
       char* array = blaze::allocate<char>( number );
 
-      const size_t alignment( blaze::AlignmentTrait<char>::value );
+      const size_t alignment( blaze::AlignmentOf<char>::value );
       const size_t deviation( reinterpret_cast<size_t>( array ) % alignment );
 
       if( deviation != 0UL ) {
@@ -123,7 +124,7 @@ void OperationTest::testBuiltinTypes()
 
       int* array = blaze::allocate<int>( number );
 
-      const size_t alignment( blaze::AlignmentTrait<int>::value );
+      const size_t alignment( blaze::AlignmentOf<int>::value );
       const size_t deviation( reinterpret_cast<size_t>( array ) % alignment );
 
       if( deviation != 0UL ) {
@@ -145,7 +146,7 @@ void OperationTest::testBuiltinTypes()
 
       float* array = blaze::allocate<float>( number );
 
-      const size_t alignment( blaze::AlignmentTrait<float>::value );
+      const size_t alignment( blaze::AlignmentOf<float>::value );
       const size_t deviation( reinterpret_cast<size_t>( array ) % alignment );
 
       if( deviation != 0UL ) {
@@ -167,7 +168,7 @@ void OperationTest::testBuiltinTypes()
 
       double* array = blaze::allocate<double>( number );
 
-      const size_t alignment( blaze::AlignmentTrait<double>::value );
+      const size_t alignment( blaze::AlignmentOf<double>::value );
       const size_t deviation( reinterpret_cast<size_t>( array ) % alignment );
 
       if( deviation != 0UL ) {
@@ -204,7 +205,7 @@ void OperationTest::testClassTypes()
 
       AlignedResource* array = blaze::allocate<AlignedResource>( number );
 
-      const size_t alignment( blaze::AlignmentTrait<AlignedResource>::value );
+      const size_t alignment( blaze::AlignmentOf<AlignedResource>::value );
 
       for( size_t i=0UL; i<number; ++i )
       {

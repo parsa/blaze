@@ -46,7 +46,7 @@
 #include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/AlignmentTrait.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 
 
 namespace blazetest {
@@ -174,7 +174,7 @@ void ClassTest::testAllocation()
           << " Error: Invalid alignment detected\n"
           << " Details:\n"
           << "   Detected alignment = " << getAlignment( ptr ) << "-bit\n"
-          << "   Expected alignment = " << blaze::AlignmentTrait<T>::value << "-bit\n";
+          << "   Expected alignment = " << blaze::AlignmentOf<T>::value << "-bit\n";
       throw std::runtime_error( oss.str() );
    }
 
