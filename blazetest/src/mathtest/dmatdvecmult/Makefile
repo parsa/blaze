@@ -46,9 +46,13 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: M3x3aV3a M3x3aV3b M3x3bV3a M3x3bV3b MHaVHa MHaVHb MHbVHa MHbVHb MDaVDa MDaVDb MDbVDa MDbVDb AliasingTest
+default: M3x3aV3a M3x3aV3b M3x3bV3a M3x3bV3b \
+         MHaVHa MHaVHb MHbVHa MHbVHb \
+         MDaVDa MDaVDb MDbVDa MDbVDb \
+         SDaVDa SDaVDb SDbVDa SDbVDb \
+         AliasingTest
 all: $(BIN)
-essential: M3x3aV3a MHaVHa MDaVDa AliasingTest
+essential: M3x3aV3a MHaVHa MDaVDa SDaVDa AliasingTest
 single: MDaVDa
 
 
@@ -308,6 +312,15 @@ MHbVDb: MHbVDb.o
 MHbVHa: MHbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbVHb: MHbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SDaVDa: SDaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaVDb: SDaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbVDa: SDbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbVDb: SDbVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
