@@ -46,9 +46,11 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: VCaMCa VCaMCb VCbMCa VCbMCb AliasingTest
+default: VCaMCa VCaMCb VCbMCa VCbMCb \
+         VCaSCa VCaSCb VCbSCa VCbSCb \
+         AliasingTest
 all: $(BIN)
-essential: VCaMCa AliasingTest
+essential: VCaMCa VCaSCa AliasingTest
 single: VCaMCa
 
 
@@ -57,9 +59,17 @@ VCaMCa: VCaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaMCb: VCaMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaSCa: VCaSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaSCb: VCaSCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMCa: VCbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMCb: VCbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbSCa: VCbSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbSCb: VCbSCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
