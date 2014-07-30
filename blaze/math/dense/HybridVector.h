@@ -2112,6 +2112,9 @@ inline bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
 inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* throw() */;
+
+template< typename Type, size_t N, bool TF >
+inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) /* throw() */;
 //@}
 //*************************************************************************************************
 
@@ -2194,6 +2197,25 @@ template< typename Type  // Data type of the vector
 inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* throw() */
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Moving the contents of one hybrid vector to another.
+// \ingroup hybrid_vector
+//
+// \param dst The destination vector.
+// \param src The source vector.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void move( HybridVector<Type,N,TF>& dst, HybridVector<Type,N,TF>& src ) /* throw() */
+{
+   dst = src;
 }
 //*************************************************************************************************
 
