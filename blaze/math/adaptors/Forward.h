@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Forward.h
-//  \brief Header file for all forward declarations of the math module
+//  \file blaze/math/adaptors/Forward.h
+//  \brief Header file for all adaptor forward declarations
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,18 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FORWARD_H_
-#define _BLAZE_MATH_FORWARD_H_
-
-
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/math/adaptors/Forward.h>
-#include <blaze/math/dense/Forward.h>
-#include <blaze/math/sparse/Forward.h>
-#include <blaze/math/views/Forward.h>
+#ifndef _BLAZE_MATH_ADAPTORS_FORWARD_H_
+#define _BLAZE_MATH_ADAPTORS_FORWARD_H_
 
 
 namespace blaze {
@@ -54,8 +44,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename > class Quaternion;
-template< typename > class RotationMatrix;
+template< typename, bool, bool > class SymmetricMatrix;
 
 } // namespace blaze
 
