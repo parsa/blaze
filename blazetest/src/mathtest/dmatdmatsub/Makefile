@@ -46,9 +46,13 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: M3x3aM3x3a M3x3aM3x3b M3x3bM3x3a M3x3bM3x3b MHaMHa MHaMHb MHbMHa MHbMHb MDaMDa MDaMDb MDbMDa MDbMDb AliasingTest
+default: M3x3aM3x3a M3x3aM3x3b M3x3bM3x3a M3x3bM3x3b \
+         MHaMHa MHaMHb MHbMHa MHbMHb \
+         MDaMDa MDaMDb MDbMDa MDbMDb \
+         SDaSDa SDaSDb SDbSDa SDbSDb \
+         AliasingTest
 all: $(BIN)
-essential: M3x3aM3x3a MHaMHa MDaMDa AliasingTest
+essential: M3x3aM3x3a MHaMHa MDaMDa SDaSDa AliasingTest
 single: MDaMDa
 
 
@@ -216,6 +220,10 @@ MDaMHa: MDaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaMHb: MDaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSDa: MDaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSDb: MDaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbM2x2a: MDbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbM2x2b: MDbM2x2b.o
@@ -252,6 +260,10 @@ MDbMHa: MDbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbMHb: MDbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSDa: MDbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSDb: MDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MHaM6x6a: MHaM6x6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -276,6 +288,23 @@ MHbMDb: MHbMDb.o
 MHbMHa: MHbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbMHb: MHbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SDaMDa: SDaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaMDb: SDaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSDa: SDaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSDb: SDaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbMDa: SDbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbMDb: SDbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSDa: SDbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSDb: SDbSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

@@ -79,6 +79,8 @@ MDaMDa
 MDaMDb
 MDaMHa
 MDaMHb
+MDaSDa
+MDaSDb
 MDbM2x2a
 MDbM2x2b
 MDbM3x3a
@@ -97,6 +99,8 @@ MDbMDa
 MDbMDb
 MDbMHa
 MDbMHb
+MDbSDa
+MDbSDb
 MHaM6x6a
 MHaM6x6b
 MHaMDa
@@ -109,4 +113,12 @@ MHbMDa
 MHbMDb
 MHbMHa
 MHbMHb
+SDaMDa
+SDaMDb
+SDaSDa
+SDaSDb
+SDbMDa
+SDbMDb
+SDbSDa
+SDbSDb
 
