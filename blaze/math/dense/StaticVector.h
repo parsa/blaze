@@ -2169,6 +2169,9 @@ inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v 
 
 template< typename Type, size_t N, bool TF >
 inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* throw() */;
+
+template< typename Type, size_t N, bool TF >
+inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) /* throw() */;
 //@}
 //*************************************************************************************************
 
@@ -2294,6 +2297,25 @@ template< typename Type  // Data type of the vector
 inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) /* throw() */
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Moving the contents of one static vector to another.
+// \ingroup static_vector
+//
+// \param dst The destination vector.
+// \param src The source vector.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) /* throw() */
+{
+   dst = src;
 }
 //*************************************************************************************************
 
