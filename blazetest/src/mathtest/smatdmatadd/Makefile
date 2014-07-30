@@ -46,9 +46,14 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b MCaMHa MCaMHb MCbMHa MCbMHb MCaMDa MCaMDb MCbMDa MCbMDb
+default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
+         MCaMHa MCaMHb MCbMHa MCbMHb \
+         MCaMDa MCaMDb MCbMDa MCbMDb \
+         MCaSDa MCaSDb MCbSDa MCbSDb \
+         SCaMDa SCaMDb SCbMDa SCbMDb \
+         SCaSDa SCaSDb SCbSDa SCbSDb
 all: $(BIN)
-essential: MCaM3x3a MCaMHa MCaMDa
+essential: MCaM3x3a MCaMHa MCaMDa MCaSDa SCaMDa SCaSDa
 single: MCaMDa
 
 
@@ -89,6 +94,10 @@ MCaMHa: MCaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaMHb: MCaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaSDa: MCaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaSDb: MCaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MCbM2x2a: MCbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -125,6 +134,27 @@ MCbMDb: MCbMDb.o
 MCbMHa: MCbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbMHb: MCbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbSDa: MCbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbSDb: MCbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SCaMDa: SCaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaMDb: SCaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaSDa: SCaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaSDb: SCaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbMDa: SCbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbMDb: SCbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbSDa: SCbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbSDb: SCbSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

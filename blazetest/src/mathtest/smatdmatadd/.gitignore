@@ -18,6 +18,8 @@ MCaMDa
 MCaMDb
 MCaMHa
 MCaMHb
+MCaSDa
+MCaSDb
 MCbM2x2a
 MCbM2x2b
 MCbM3x3a
@@ -36,4 +38,14 @@ MCbMDa
 MCbMDb
 MCbMHa
 MCbMHb
+MCbSDa
+MCbSDb
+SCaMDa
+SCaMDb
+SCaSDa
+SCaSDb
+SCbMDa
+SCbMDb
+SCbSDa
+SCbSDb
 
