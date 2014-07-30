@@ -46,9 +46,13 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: V3aMCa V3aMCb V3bMCa V3bMCb VHaMCa VHaMCb VHbMCa VHbMCb VDaMCa VDaMCb VDbMCa VDbMCb AliasingTest
+default: V3aMCa V3aMCb V3bMCa V3bMCb \
+         VHaMCa VHaMCb VHbMCa VHbMCb \
+         VDaMCa VDaMCb VDbMCa VDbMCb \
+         VDaSCa VDaSCb VDbSCa VDbSCb \
+         AliasingTest
 all: $(BIN)
-essential: V3aMCa VHaMCa VDaMCa AliasingTest
+essential: V3aMCa VHaMCa VDaMCa VDaSCa AliasingTest
 single: VDaMCa
 
 
@@ -102,9 +106,17 @@ VDaMCa: VDaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaMCb: VDaMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaSCa: VDaSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaSCb: VDaSCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbMCa: VDbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbMCb: VDbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbSCa: VDbSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbSCb: VDbSCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VHaMCa: VHaMCa.o
