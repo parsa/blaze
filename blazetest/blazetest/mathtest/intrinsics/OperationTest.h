@@ -285,8 +285,12 @@ void OperationTest<T>::testReduction()
    initialize();
 
    T ssum = T();
-   for( size_t i=0UL; i<N; ++i ) {
-      ssum += a_[i];
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      T tmp = T();
+      for( size_t j=0UL; j<IT::size; ++j ) {
+         tmp += a_[i+j];
+      }
+      ssum += tmp;
    }
 
    T vsum = T();
