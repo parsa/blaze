@@ -1952,6 +1952,9 @@ inline bool isDefault( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */;
+
+template< typename Type, bool TF >
+inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* throw() */;
 //@}
 //*************************************************************************************************
 
@@ -2028,6 +2031,24 @@ template< typename Type  // Data type of the vector
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Moving the contents of one dynamic vector to another.
+// \ingroup dynamic_vector
+//
+// \param dst The destination vector.
+// \param src The source vector.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* throw() */
+{
+   dst.swap( src );
 }
 //*************************************************************************************************
 
