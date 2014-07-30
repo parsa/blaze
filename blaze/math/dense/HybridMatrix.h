@@ -5055,6 +5055,9 @@ inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) /* throw() */;
+
+template< typename Type, size_t M, size_t N, bool SO >
+inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) /* throw() */;
 //@}
 //*************************************************************************************************
 
@@ -5166,6 +5169,26 @@ template< typename Type  // Data type of the matrix
 inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) /* throw() */
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Moving the contents of one hybrid matrix to another.
+// \ingroup hybrid_matrix
+//
+// \param dst The destination matrix.
+// \param src The source matrix.
+// \return void
+// \exception no-throw guarantee.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src ) /* throw() */
+{
+   dst = src;
 }
 //*************************************************************************************************
 
