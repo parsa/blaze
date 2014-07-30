@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Move.h
+//  \brief Header file for the move shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,22 +32,38 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_MOVE_H_
+#define _BLAZE_MATH_SHIMS_MOVE_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MOVE SHIM
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Moving the contents of one value to another.
+// \ingroup math_shims
+//
+// \param dst The destination value.
+// \param src The source value.
+// \return void
+//
+// The move shim implements the most efficient way to move the contents of \a src to \a dst.
+// Depending on the given type \a Type, this may be a C++11 move operation, a swap operation
+// or a simple copy operation. Semantically, \a dst may be modified during this operation,
+// but is guaranteed to be in a valid and destructible but unspecified state.
+*/
+template< typename Type >
+inline void move( Type& dst, Type& src )
+{
+   dst = src;
+}
 //*************************************************************************************************
 
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNan.h>
-#include <blaze/math/shims/Move.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Square.h>
+} // namespace blaze
 
 #endif
