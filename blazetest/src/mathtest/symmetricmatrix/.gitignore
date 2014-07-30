@@ -1,0 +1,7 @@
+*.d
+*.o
+DenseNumericTest
+DenseNonNumericTest
+SparseNumericTest
+SparseNonNumericTest
+
