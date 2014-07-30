@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Move.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -837,14 +838,10 @@ class SymmetricMatrix<MT,true,false>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename MT2, bool SO > inline void assign( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2 >          inline void assign( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >          inline void assign( const SparseMatrix<MT2,true>&  rhs );
-
-   template< typename MT2, bool SO >
-   inline typename EnableIf< IsResizable<typename MT2::ElementType> >::Type
-      assign( DenseMatrix<MT2,SO>& rhs );
-
+   template< typename MT2, bool SO > inline void assign   (       DenseMatrix<MT2,SO>&     rhs );
+   template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
+   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&     rhs );
    template< typename MT2 >          inline void addAssign( const SparseMatrix<MT2,false>& rhs );
    template< typename MT2 >          inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -2094,6 +2091,41 @@ inline bool SymmetricMatrix<MT,true,false>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized implementation of the assignment of a temporary dense matrix.
+//
+// \param rhs The right-hand side dense matrix to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+template< typename MT2   // Type of the right-hand side dense matrix
+        , bool SO >      // Storage order of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,true,false>::assign( DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            move( matrix_(i,j), (~rhs)(i,j) );
+   }
+   else {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            move( matrix_(i,j), (~rhs)(i,j) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2201,44 +2233,6 @@ inline void SymmetricMatrix<MT,true,false>::assign( const SparseMatrix<MT2,true>
          for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) = element->value();
       }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Optimized implementation of the assignment of a dense matrix with resizable elements.
-//
-// \param rhs The right-hand side dense matrix to be assigned.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline typename EnableIf< IsResizable<typename MT2::ElementType> >::Type
-   SymmetricMatrix<MT,true,false>::assign( DenseMatrix<MT2,SO>& rhs )
-{
-   using std::swap;
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
-            swap( matrix_(i,j), (~rhs)(i,j) );
-   }
-   else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
-            swap( matrix_(i,j), (~rhs)(i,j) );
    }
 }
 /*! \endcond */
