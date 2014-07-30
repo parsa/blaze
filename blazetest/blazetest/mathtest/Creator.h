@@ -42,13 +42,17 @@
 
 #include <blazetest/mathtest/creator/Complex.h>
 #include <blazetest/mathtest/creator/CompressedMatrix.h>
+#include <blazetest/mathtest/creator/CompressedSymmetric.h>
 #include <blazetest/mathtest/creator/CompressedVector.h>
 #include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/mathtest/creator/DynamicMatrix.h>
+#include <blazetest/mathtest/creator/DynamicSymmetric.h>
 #include <blazetest/mathtest/creator/DynamicVector.h>
 #include <blazetest/mathtest/creator/HybridMatrix.h>
+#include <blazetest/mathtest/creator/HybridSymmetric.h>
 #include <blazetest/mathtest/creator/HybridVector.h>
 #include <blazetest/mathtest/creator/StaticMatrix.h>
+#include <blazetest/mathtest/creator/StaticSymmetric.h>
 #include <blazetest/mathtest/creator/StaticVector.h>
 
 #endif
