@@ -82,9 +82,11 @@ namespace blaze {
 //        parameter doesn't have to be defined explicitly, it is automatically derived from the
 //        first template parameter. Defining the parameter explicitly may result in a compilation
 //        error!
-//  - NF: determines how the elements of the matrix are handled internally. This template parameter
-//        must \b NOT be defined explicitly, it is automatically derived from the first template
-//        parameter. Defining the parameter explicitly may result in a compilation error!
+//  - NF: determines how the elements of the matrix are handled internally. In order to provide
+//        maximum performance and to save memory by exploiting the symmetry of the matrix, the
+//        SymmetricMatrix class template implements several storage strategies. This template
+//        parameter must \b NOT be defined explicitly, it is automatically derived from the first
+//        template parameter. Defining the parameter explicitly may result in a compilation error!
 //
 // The following example give an impression of several possible symmetric matrices:
 
@@ -314,16 +316,32 @@ namespace blaze {
    G *= A * E;    // Multiplication assignment
    \endcode
 
-// Note that it is possible to use have block-structured symmetric matrices:
+// \n \section Block-Structured Symmetric Matrices
+//
+// It is also possible to use block-structured symmetric matrices:
 
    \code
-   // Definition of a block-structured row-major dense symmetric matrix based on CompressedMatrix
-   blaze::SymmetricMatrix< blaze::CompressedMatrix< blaze::StaticMatrix<double,3UL> > > A;
+   using blaze::CompressedMatrix;
+   using blaze::StaticMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Definition of a 3x3 block-structured symmetric matrix based on CompressedMatrix
+   SymmetricMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > A( 3 );
    \endcode
 
 // Also in this case, the SymmetricMatrix class template enforces the invariant of symmetry and
 // guarantees that a modifications of element \f$ a_{ij} \f$ of the adapted matrix is also
-// applied to element \f$ a_{ji} \f$.
+// applied to element \f$ a_{ji} \f$:
+
+   \code
+   // Inserting the elements (2,4) and (4,2)
+   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( 1, -4,  5,
+                                              6,  8, -3,
+                                              2, -1,  2 ) );
+
+   // Manipulating the elements (2,4) and (4,2)
+   A(2,4)(1,1) = -5;
+   \endcode
 */
 template< typename MT                                             // Type of the adapted matrix
         , bool DF = IsDenseMatrix<MT>::value                      // Density flag
