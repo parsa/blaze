@@ -1178,7 +1178,7 @@ void ClassTest::testSubscript()
 
    SVT sv = subvector( vec_, 1UL, 4UL );
 
-   // Writing the first element
+   // Assignment to the element at index 1
    sv[1] = 9;
 
    checkSize    ( sv  , 4UL );
@@ -1207,7 +1207,7 @@ void ClassTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the second element
+   // Assignment to the element at index 2
    sv[2] = 0;
 
    checkSize    ( sv  , 4UL );
@@ -1236,7 +1236,7 @@ void ClassTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the third element
+   // Assignment to the element at index 3
    sv[3] = -8;
 
    checkSize    ( sv  , 4UL );
@@ -1250,7 +1250,7 @@ void ClassTest::testSubscript()
           << " Error: Subscript operator failed\n"
           << " Details:\n"
           << "   Result:\n" << sv << "\n"
-          << "   Expected result:\n( -2 9 0 -8 )\n";
+          << "   Expected result:\n( 1 9 0 -8 )\n";
       throw std::runtime_error( oss.str() );
    }
 
@@ -1262,6 +1262,122 @@ void ClassTest::testSubscript()
           << " Details:\n"
           << "   Result:\n" << vec_ << "\n"
           << "   Expected result:\n( 0 1 9 0 -8 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Addition assignment to the element at index 0
+   sv[0] += -3;
+
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
+
+   if( sv[0] != -2 || sv[1] != 9 || sv[2] != 0 || sv[3] != -8 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( -2 9 0 -8 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( vec_[0] !=  0 || vec_[1] != -2 || vec_[2] != 9 || vec_[3] != 0 ||
+       vec_[4] != -8 || vec_[5] !=  0 || vec_[6] != 4 || vec_[7] != 0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec_ << "\n"
+          << "   Expected result:\n( 0 -2 9 0 -8 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Subtraction assignment to the element at index 1
+   sv[1] -= 6;
+
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
+
+   if( sv[0] != -2 || sv[1] != 3 || sv[2] != 0 || sv[3] != -8 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( -2 3 0 -8 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( vec_[0] !=  0 || vec_[1] != -2 || vec_[2] != 3 || vec_[3] != 0 ||
+       vec_[4] != -8 || vec_[5] !=  0 || vec_[6] != 4 || vec_[7] != 0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec_ << "\n"
+          << "   Expected result:\n( 0 -2 3 0 -8 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Multiplication assignment to the element at index 1
+   sv[1] *= -3;
+
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
+
+   if( sv[0] != -2 || sv[1] != -9 || sv[2] != 0 || sv[3] != -8 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( -2 -9 0 -8 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( vec_[0] !=  0 || vec_[1] != -2 || vec_[2] != -9 || vec_[3] != 0 ||
+       vec_[4] != -8 || vec_[5] !=  0 || vec_[6] !=  4 || vec_[7] != 0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec_ << "\n"
+          << "   Expected result:\n( 0 -2 -9 0 -8 0 4 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Multiplication assignment to the element at index 3
+   sv[3] /= 2;
+
+   checkSize    ( sv  , 4UL );
+   checkNonZeros( sv  , 3UL );
+   checkSize    ( vec_, 8UL );
+   checkNonZeros( vec_, 4UL );
+
+   if( sv[0] != -2 || sv[1] != -9 || sv[2] != 0 || sv[3] != -4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( -2 -9 0 -4 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   if( vec_[0] !=  0 || vec_[1] != -2 || vec_[2] != -9 || vec_[3] != 0 ||
+       vec_[4] != -4 || vec_[5] !=  0 || vec_[6] !=  4 || vec_[7] != 0 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec_ << "\n"
+          << "   Expected result:\n( 0 -2 -9 0 -4 0 4 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
