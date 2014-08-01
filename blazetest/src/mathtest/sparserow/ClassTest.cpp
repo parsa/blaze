@@ -2303,7 +2303,7 @@ void ClassTest::testSubscript()
 
       RT row2 = row( mat_, 2UL );
 
-      // Writing the first element
+      // Assignment to the element at index 1
       row2[1] = 9;
 
       checkSize    ( row2, 4UL );
@@ -2337,7 +2337,7 @@ void ClassTest::testSubscript()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the second element
+      // Assignment to the element at index 2
       row2[2] = 0;
 
       checkSize    ( row2, 4UL );
@@ -2371,7 +2371,7 @@ void ClassTest::testSubscript()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the third element
+      // Assignment to the element at index 3
       row2[3] = -8;
 
       checkSize    ( row2, 4UL );
@@ -2404,6 +2404,146 @@ void ClassTest::testSubscript()
                                      "(  7 -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      // Addition assignment to the element at index 0
+      row2[0] += -3;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 9 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -5 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5  9  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element at index 1
+      row2[1] -= 6;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 3 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -5 || mat_(2,1) !=  3 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5  3  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element at index 1
+      row2[1] *= -3;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 -9 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5 -9  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element at index 3
+      row2[3] /= 2;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 -9 0 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -4 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5 -9  0 -4 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -2418,7 +2558,7 @@ void ClassTest::testSubscript()
 
       TRT row2 = row( tmat_, 2UL );
 
-      // Writing the first element
+      // Assignment to the element at index 1
       row2[1] = 9;
 
       checkSize    ( row2, 4UL );
@@ -2452,7 +2592,7 @@ void ClassTest::testSubscript()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the second element
+      // Assignment to the element at index 2
       row2[2] = 0;
 
       checkSize    ( row2, 4UL );
@@ -2486,7 +2626,7 @@ void ClassTest::testSubscript()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the third element
+      // Assignment to the element at index 3
       row2[3] = -8;
 
       checkSize    ( row2, 4UL );
@@ -2515,6 +2655,146 @@ void ClassTest::testSubscript()
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
                                      "( -2  9  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Addition assignment to the element at index 0
+      row2[0] += -3;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 9 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -5 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5  9  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element at index 1
+      row2[1] -= 6;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 3 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -5 || tmat_(2,1) !=  3 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5  3  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element at index 1
+      row2[1] *= -3;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 -9 0 -8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5 -9  0 -8 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element at index 3
+      row2[3] /= 2;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+
+      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -5 -9 0 -4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
+          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "( -5 -9  0 -4 )\n"
                                      "(  0  4  5 -6 )\n"
                                      "(  7 -8  9 10 )\n";
          throw std::runtime_error( oss.str() );
