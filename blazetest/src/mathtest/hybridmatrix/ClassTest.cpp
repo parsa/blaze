@@ -3011,7 +3011,7 @@ void ClassTest::testFunctionCall()
    {
       test_ = "Row-major HybridMatrix::operator()";
 
-      // Writing the first element
+      // Assignment to the element (2,1)
       blaze::HybridMatrix<int,3UL,5UL,blaze::rowMajor> mat( 3UL, 5UL, 0 );
       mat(2,1) = 1;
 
@@ -3033,7 +3033,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the second element
+      // Assignment to the element (1,4)
       mat(1,4) = 2;
 
       checkRows    ( mat,  3UL );
@@ -3044,7 +3044,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 ) {
+      if( mat(1,4) != 2 || mat(2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -3054,7 +3054,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the third element
+      // Assignment to the element (0,3)
       mat(0,3) = 3;
 
       checkRows    ( mat,  3UL );
@@ -3065,7 +3065,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
+      if( mat(0,3) != 3 || mat(1,4) != 2 || mat(2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -3075,7 +3075,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the fourth element
+      // Assignment to the element (2,2)
       mat(2,2) = 4;
 
       checkRows    ( mat,  3UL );
@@ -3086,13 +3086,97 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL );
       checkNonZeros( mat,  2UL, 2UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
+      if( mat(0,3) != 3 || mat(1,4) != 2 || mat(2,1) != 1 || mat(2,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Addition assignment to the element (2,1)
+      mat(2,1) += mat(0,3);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,3) != 3 || mat(1,4) != 2 || mat(2,1) != 4 || mat(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element (1,0)
+      mat(1,0) -= mat(1,4);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,3) != 3 || mat(1,0) != -2 || mat(1,4) != 2 || mat(2,1) != 4 || mat(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 3 0 )\n( -2 0 0 0 2 )\n(  0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element (0,3)
+      mat(0,3) *= -3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,3) != -9 || mat(1,0) != -2 || mat(1,4) != 2 || mat(2,1) != 4 || mat(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 4 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element (2,1)
+      mat(2,1) /= 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 2UL );
+      checkNonZeros( mat,  2UL, 2UL );
+
+      if( mat(0,3) != -9 || mat(1,0) != -2 || mat(1,4) != 2 || mat(2,1) != 2 || mat(2,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -3 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3105,7 +3189,7 @@ void ClassTest::testFunctionCall()
    {
       test_ = "Column-major HybridMatrix::operator()";
 
-      // Writing the first element
+      // Assignment to the element (2,1)
       blaze::HybridMatrix<int,3UL,5UL,blaze::columnMajor> mat( 3UL, 5UL, 0 );
       mat(2,1) = 1;
 
@@ -3129,7 +3213,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the second element
+      // Assignment to the element (1,4)
       mat(1,4) = 2;
 
       checkRows    ( mat,  3UL );
@@ -3142,7 +3226,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  3UL, 0UL );
       checkNonZeros( mat,  4UL, 1UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 ) {
+      if( mat(1,4) != 2 || mat(2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -3152,7 +3236,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the third element
+      // Assignment to the element (0,3)
       mat(0,3) = 3;
 
       checkRows    ( mat,  3UL );
@@ -3165,7 +3249,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  3UL, 1UL );
       checkNonZeros( mat,  4UL, 1UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 ) {
+      if( mat(0,3) != 3 || mat(1,4) != 2 || mat(2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -3175,7 +3259,7 @@ void ClassTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Writing the fourth element
+      // Assignment to the element (2,2)
       mat(2,2) = 4;
 
       checkRows    ( mat,  3UL );
@@ -3188,13 +3272,105 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  3UL, 1UL );
       checkNonZeros( mat,  4UL, 1UL );
 
-      if( mat(2,1) != 1 || mat(1,4) != 2 || mat(0,3) != 3 || mat(2,2) != 4 ) {
+      if( mat(0,3) != 3 || mat(1,4) != 2 || mat(2,1) != 1 || mat(2,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 1 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Addition assignment to the element (2,1)
+      mat(2,1) += mat(0,3);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  4UL );
+      checkNonZeros( mat,  0UL, 0UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat(2,1) != 4 || mat(2,2) != 4 || mat(0,3) != 3 || mat(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 0 0 3 0 )\n( 0 0 0 0 2 )\n( 0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element (1,0)
+      mat(1,0) -= mat(1,4);
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat(1,0) != -2 || mat(2,1) != 4 || mat(2,2) != 4 || mat(0,3) != 3 || mat(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 3 0 )\n( -2 0 0 0 2 )\n(  0 4 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element (0,3)
+      mat(0,3) *= -3;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat(1,0) != -2 || mat(2,1) != 4 || mat(2,2) != 4 || mat(0,3) != -9 || mat(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 4 4  0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element (2,1)
+      mat(2,1) /= 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  5UL );
+      checkCapacity( mat, 15UL );
+      checkNonZeros( mat,  5UL );
+      checkNonZeros( mat,  0UL, 1UL );
+      checkNonZeros( mat,  1UL, 1UL );
+      checkNonZeros( mat,  2UL, 1UL );
+      checkNonZeros( mat,  3UL, 1UL );
+      checkNonZeros( mat,  4UL, 1UL );
+
+      if( mat(1,0) != -2 || mat(2,1) != 2 || mat(2,2) != 4 || mat(0,3) != -9 || mat(1,4) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  0 0 0 -9 0 )\n( -2 0 0  0 2 )\n(  0 2 4  0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
