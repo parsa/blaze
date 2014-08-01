@@ -1209,7 +1209,7 @@ void ClassTest::testSubscript()
 {
    test_ = "HybridVector::operator[]";
 
-   // Writing the first element
+   // Assignment to the element at index 2
    blaze::HybridVector<int,7UL,blaze::rowVector> vec( 7UL, 0UL );
    vec[2] = 1;
 
@@ -1227,7 +1227,7 @@ void ClassTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the second element
+   // Assignment to the element at index 5
    vec[5] = 2;
 
    checkSize    ( vec, 7UL );
@@ -1244,7 +1244,7 @@ void ClassTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the third element
+   // Assignment to the element at index 3
    vec[3] = 3;
 
    checkSize    ( vec, 7UL );
@@ -1261,7 +1261,7 @@ void ClassTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the fourth element
+   // Assignment to the element at index 0
    vec[0] = 4;
 
    checkSize    ( vec, 7UL );
@@ -1275,6 +1275,74 @@ void ClassTest::testSubscript()
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 4 0 1 3 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Addition assignment to the element at index 2
+   vec[2] += vec[3];
+
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[0] != 4 || vec[2] != 4 || vec[3] != 3 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 0 4 3 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Subtraction assignment to the element at index 1
+   vec[1] -= vec[5];
+
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec[0] != 4 || vec[1] != -2 || vec[2] != 4 || vec[3] != 3 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 4 3 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Multiplication assignment to the element at index 3
+   vec[3] *= -3;
+
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec[0] != 4 || vec[1] != -2 || vec[2] != 4 || vec[3] != -9 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 4 -9 0 2 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Division assignment to the element at index 2
+   vec[2] /= 2;
+
+   checkSize    ( vec, 7UL );
+   checkCapacity( vec, 7UL );
+   checkNonZeros( vec, 5UL );
+
+   if( vec[0] != 4 || vec[1] != -2 || vec[2] != 2 || vec[3] != -9 || vec[5] != 2 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 4 -2 2 -9 0 2 0 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
