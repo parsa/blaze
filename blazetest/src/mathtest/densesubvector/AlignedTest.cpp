@@ -1026,7 +1026,7 @@ void AlignedTest::testSubscript()
    ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
    USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-   // Writing the first element
+   // Assignment to the element at index 1
    sv1[1] = 9;
    sv2[1] = 9;
 
@@ -1043,7 +1043,7 @@ void AlignedTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the second element
+   // Assignment to the element at index 2
    sv1[2] = 0;
    sv2[2] = 0;
 
@@ -1060,9 +1060,77 @@ void AlignedTest::testSubscript()
       throw std::runtime_error( oss.str() );
    }
 
-   // Writing the third element
+   // Assignment to the element at index 3
    sv1[3] = -8;
    sv2[3] = -8;
+
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Addition assignment to the element at index 0
+   sv1[0] += -3;
+   sv2[0] += -3;
+
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Subtraction assignment to the element at index 1
+   sv1[1] -= 6;
+   sv2[1] -= 6;
+
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Multiplication assignment to the element at index 1
+   sv1[1] *= 3;
+   sv2[1] *= 3;
+
+   checkSize( sv1, 16UL );
+   checkSize( sv2, 16UL );
+
+   if( sv1 != sv2 || vec1_ != vec2_ ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Subscript operator failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv1 << "\n"
+          << "   Expected result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Division assignment to the element at index 3
+   sv1[3] /= 2;
+   sv2[3] /= 2;
 
    checkSize( sv1, 16UL );
    checkSize( sv2, 16UL );
