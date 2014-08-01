@@ -2827,7 +2827,7 @@ void AlignedTest::testFunctionCall()
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
 
-      // Writing the first element
+      // Assignment to the element (1,4)
       {
          sm1(1,4) = 9;
          sm2(1,4) = 9;
@@ -2848,7 +2848,7 @@ void AlignedTest::testFunctionCall()
          }
       }
 
-      // Writing the second element
+      // Assignment to the element (3,10)
       {
          sm1(3,10) = 0;
          sm2(3,10) = 0;
@@ -2869,10 +2869,94 @@ void AlignedTest::testFunctionCall()
          }
       }
 
-      // Writing the third element
+      // Assignment to the element (6,8)
       {
          sm1(6,8) = -7;
          sm2(6,8) = -7;
+
+         checkRows   ( sm1,  8UL );
+         checkColumns( sm1, 16UL );
+         checkRows   ( sm2,  8UL );
+         checkColumns( sm2, 16UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Addition assignment to the element (5,7)
+      {
+         sm1(5,7) += 3;
+         sm2(5,7) += 3;
+
+         checkRows   ( sm1,  8UL );
+         checkColumns( sm1, 16UL );
+         checkRows   ( sm2,  8UL );
+         checkColumns( sm2, 16UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Subtraction assignment to the element (2,14)
+      {
+         sm1(2,14) -= -8;
+         sm2(2,14) -= -8;
+
+         checkRows   ( sm1,  8UL );
+         checkColumns( sm1, 16UL );
+         checkRows   ( sm2,  8UL );
+         checkColumns( sm2, 16UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Multiplication assignment to the element (1,1)
+      {
+         sm1(1,1) *= 3;
+         sm2(1,1) *= 3;
+
+         checkRows   ( sm1,  8UL );
+         checkColumns( sm1, 16UL );
+         checkRows   ( sm2,  8UL );
+         checkColumns( sm2, 16UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Division assignment to the element (3,4)
+      {
+         sm1(3,4) /= 2;
+         sm2(3,4) /= 2;
 
          checkRows   ( sm1,  8UL );
          checkColumns( sm1, 16UL );
@@ -2904,7 +2988,7 @@ void AlignedTest::testFunctionCall()
       ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
 
-      // Writing the first element
+      // Assignment to the element (4,1)
       {
          sm1(4,1) = 9;
          sm2(4,1) = 9;
@@ -2925,7 +3009,7 @@ void AlignedTest::testFunctionCall()
          }
       }
 
-      // Writing the second element
+      // Assignment to the element (10,3)
       {
          sm1(10,3) = 0;
          sm2(10,3) = 0;
@@ -2946,10 +3030,94 @@ void AlignedTest::testFunctionCall()
          }
       }
 
-      // Writing the third element
+      // Assignment to the element (8,6)
       {
          sm1(8,6) = -7;
          sm2(8,6) = -7;
+
+         checkRows   ( sm1, 16UL );
+         checkColumns( sm1,  8UL );
+         checkRows   ( sm2, 16UL );
+         checkColumns( sm2,  8UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Addition assignment to the element (7,5)
+      {
+         sm1(7,5) += 3;
+         sm2(7,5) += 3;
+
+         checkRows   ( sm1, 16UL );
+         checkColumns( sm1,  8UL );
+         checkRows   ( sm2, 16UL );
+         checkColumns( sm2,  8UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Subtraction assignment to the element (14,2)
+      {
+         sm1(14,2) -= -8;
+         sm2(14,2) -= -8;
+
+         checkRows   ( sm1, 16UL );
+         checkColumns( sm1,  8UL );
+         checkRows   ( sm2, 16UL );
+         checkColumns( sm2,  8UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Multiplication assignment to the element (1,1)
+      {
+         sm1(1,1) *= 3;
+         sm2(1,1) *= 3;
+
+         checkRows   ( sm1, 16UL );
+         checkColumns( sm1,  8UL );
+         checkRows   ( sm2, 16UL );
+         checkColumns( sm2,  8UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Division assignment to the element (4,3)
+      {
+         sm1(4,3) /= 2;
+         sm2(4,3) /= 2;
 
          checkRows   ( sm1, 16UL );
          checkColumns( sm1,  8UL );
