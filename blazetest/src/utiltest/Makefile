@@ -60,7 +60,7 @@ typetraits:
 	@echo "Building the type traits tests..."
 	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
 
-typetraits:
+valuetraits:
 	@echo
 	@echo "Building the value traits tests..."
 	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
