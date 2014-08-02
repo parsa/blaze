@@ -2718,7 +2718,7 @@ void ClassTest::testIsDefault()
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"
              << " Details:\n"
-             << "   Vector element:\n" << vec[1] << "\n";
+             << "   Vector element: " << vec[1] << "\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2742,7 +2742,7 @@ void ClassTest::testIsDefault()
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isDefault evaluation\n"
              << " Details:\n"
-             << "   Vector element:\n" << vec[1] << "\n";
+             << "   Vector element: " << vec[1] << "\n";
          throw std::runtime_error( oss.str() );
       }
 
