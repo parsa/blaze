@@ -1628,6 +1628,23 @@ void ClassTest::testReset()
       throw std::runtime_error( oss.str() );
    }
 
+   // Resetting a single element
+   blaze::reset( vec[2] );
+
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 3UL );
+
+   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Reset operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 2 0 4 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
    // Resetting the vector
    reset( vec );
 
@@ -1679,6 +1696,23 @@ void ClassTest::testClear()
           << " Details:\n"
           << "   Result:\n" << vec << "\n"
           << "   Expected result:\n( 1 2 3 4 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Clearing a single element
+   blaze::clear( vec[2] );
+
+   checkSize    ( vec, 4UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 3UL );
+
+   if( vec[0] != 1 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Clear operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 1 2 0 4 )\n";
       throw std::runtime_error( oss.str() );
    }
 
@@ -1949,7 +1983,18 @@ void ClassTest::testIsDefault()
 
    // isDefault with default vector
    {
+      using blaze::isDefault;
+
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+
+      if( isDefault( vec[1] ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector element: " << vec[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
 
       if( isDefault( vec ) != false ) {
          std::ostringstream oss;
@@ -1963,8 +2008,19 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
+      using blaze::isDefault;
+
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[1] = 1;
+
+      if( isDefault( vec[1] ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Vector element: " << vec[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
 
       if( isDefault( vec ) != false ) {
          std::ostringstream oss;
