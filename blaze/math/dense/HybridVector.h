@@ -39,8 +39,8 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -1190,9 +1190,9 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void HybridVector<Type,N,TF>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
-      reset( v_[i] );
+      clear( v_[i] );
 }
 //*************************************************************************************************
 
@@ -2142,8 +2142,6 @@ inline void reset( HybridVector<Type,N,TF>& v )
 //
 // \param v The vector to be cleared.
 // \return void
-//
-// Clearing a hybrid vector is equivalent to resetting it via the reset() function.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements

@@ -48,8 +48,8 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -1334,11 +1334,11 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
-         reset( v_[i*nn_+j] );
+         clear( v_[i*nn_+j] );
 }
 //*************************************************************************************************
 
@@ -1358,11 +1358,11 @@ template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::reset( size_t i )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    for( size_t j=0UL; j<n_; ++j )
-      reset( v_[i*nn_+j] );
+      clear( v_[i*nn_+j] );
 }
 //*************************************************************************************************
 
@@ -3524,11 +3524,11 @@ inline size_t DynamicMatrix<Type,true>::nonZeros( size_t j ) const
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
-         reset( v_[i+j*mm_] );
+         clear( v_[i+j*mm_] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3547,11 +3547,11 @@ inline void DynamicMatrix<Type,true>::reset()
 template< typename Type >  // Data type of the sparse matrix
 inline void DynamicMatrix<Type,true>::reset( size_t j )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    for( size_t i=0UL; i<m_; ++i )
-      reset( v_[i+j*mm_] );
+      clear( v_[i+j*mm_] );
 }
 /*! \endcond */
 //*************************************************************************************************

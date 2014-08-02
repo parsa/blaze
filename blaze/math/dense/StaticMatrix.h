@@ -48,8 +48,8 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -2091,11 +2091,11 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void StaticMatrix<Type,M,N,SO>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    for( size_t i=0UL; i<M; ++i )
       for( size_t j=0UL; j<N; ++j )
-         reset( v_[i*NN+j] );
+         clear( v_[i*NN+j] );
 }
 //*************************************************************************************************
 
@@ -2117,11 +2117,11 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    for( size_t j=0UL; j<N; ++j )
-      reset( v_[i*NN+j] );
+      clear( v_[i*NN+j] );
 }
 //*************************************************************************************************
 
@@ -4926,11 +4926,11 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void StaticMatrix<Type,M,N,true>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    for( size_t j=0UL; j<N; ++j )
       for( size_t i=0UL; i<M; ++i )
-         reset( v_[i+j*MM] );
+         clear( v_[i+j*MM] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4951,11 +4951,11 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    for( size_t i=0UL; i<M; ++i )
-      reset( v_[i+j*MM] );
+      clear( v_[i+j*MM] );
 }
 /*! \endcond */
 //*************************************************************************************************
