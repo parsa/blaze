@@ -75,6 +75,7 @@ UnalignedTest::UnalignedTest()
    testIterator();
    testNonZeros();
    testReset();
+   testClear();
    testTranspose();
    testIsDefault();
    testIsSame();
@@ -5773,6 +5774,59 @@ void UnalignedTest::testNonZeros()
 void UnalignedTest::testReset()
 {
    //=====================================================================================
+   // Row-major single element reset
+   //=====================================================================================
+
+   {
+      test_ = "Row-major reset() function";
+
+      using blaze::reset;
+      using blaze::isDefault;
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
+
+      reset( sm(0,1) );
+
+      checkRows    ( sm  , 3UL );
+      checkColumns ( sm  , 2UL );
+      checkNonZeros( sm  , 2UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
+
+      if( !isDefault( sm(0,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 0 )\n( -2 0 )\n(  0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "( -2  0 -3  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major reset
    //=====================================================================================
 
@@ -5809,7 +5863,7 @@ void UnalignedTest::testReset()
           mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
@@ -5908,6 +5962,57 @@ void UnalignedTest::testReset()
 
 
    //=====================================================================================
+   // Column-major single element reset
+   //=====================================================================================
+
+   {
+      test_ = "Column-major reset() function";
+
+      using blaze::reset;
+      using blaze::isDefault;
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+
+      reset( sm(1,0) );
+
+      checkRows    ( sm   , 2UL );
+      checkColumns ( sm   , 3UL );
+      checkNonZeros( sm   , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( !isDefault( sm(1,0) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 0  0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                     "( 0  0  0  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major reset
    //=====================================================================================
 
@@ -5943,7 +6048,7 @@ void UnalignedTest::testReset()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0  0  0  7 )\n"
@@ -6033,6 +6138,123 @@ void UnalignedTest::testReset()
                 << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c clear() function with the DenseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() function with the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedTest::testClear()
+{
+   //=====================================================================================
+   // Row-major single element clear
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function";
+
+      using blaze::clear;
+      using blaze::isDefault;
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 1UL, 0UL, 3UL, 2UL );
+
+      clear( sm(0,1) );
+
+      checkRows    ( sm  , 3UL );
+      checkColumns ( sm  , 2UL );
+      checkNonZeros( sm  , 2UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
+
+      if( !isDefault( sm(0,1) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0 0 )\n( -2 0 )\n(  0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
+          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  0  0 )\n"
+                                     "( -2  0 -3  0 )\n"
+                                     "(  0  4  5 -6 )\n"
+                                     "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major single element clear
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function";
+
+      using blaze::clear;
+      using blaze::isDefault;
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+
+      clear( sm(1,0) );
+
+      checkRows    ( sm   , 2UL );
+      checkColumns ( sm   , 3UL );
+      checkNonZeros( sm   , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( !isDefault( sm(1,0) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 -2 0 )\n( 0  0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0 -2  0  7 )\n"
+                                     "( 0  0  0  4 -8 )\n"
+                                     "( 0  0 -3  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -6265,11 +6487,22 @@ void UnalignedTest::testIsDefault()
    {
       test_ = "Row-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default submatrix
       {
          SMT sm = submatrix( mat_, 0UL, 0UL, 1UL, 4UL );
+
+         if( isDefault( sm(0,1) ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(0,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != true ) {
             std::ostringstream oss;
@@ -6284,6 +6517,15 @@ void UnalignedTest::testIsDefault()
       // isDefault with non-default submatrix
       {
          SMT sm = submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
+
+         if( isDefault( sm(0,1) ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(0,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != false ) {
             std::ostringstream oss;
@@ -6304,11 +6546,22 @@ void UnalignedTest::testIsDefault()
    {
       test_ = "Column-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default submatrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 1UL );
+
+         if( isDefault( sm(1,0) ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(1,0) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != true ) {
             std::ostringstream oss;
@@ -6323,6 +6576,15 @@ void UnalignedTest::testIsDefault()
       // isDefault with non-default submatrix
       {
          TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
+
+         if( isDefault( sm(1,0) ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(1,0) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != false ) {
             std::ostringstream oss;

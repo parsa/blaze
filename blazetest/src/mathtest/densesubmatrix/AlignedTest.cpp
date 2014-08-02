@@ -80,6 +80,7 @@ AlignedTest::AlignedTest()
    testIterator();
    testNonZeros();
    testReset();
+   testClear();
    testTranspose();
    testIsDefault();
    testIsSame();
@@ -3871,6 +3872,39 @@ void AlignedTest::testReset()
    using blaze::submatrix;
    using blaze::aligned;
    using blaze::unaligned;
+   using blaze::reset;
+
+
+   //=====================================================================================
+   // Row-major single element reset
+   //=====================================================================================
+
+   {
+      test_ = "Row-major reset() function";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      reset( sm1(4,4) );
+      reset( sm2(4,4) );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
 
    //=====================================================================================
@@ -3936,6 +3970,38 @@ void AlignedTest::testReset()
 
 
    //=====================================================================================
+   // Column-major single element reset
+   //=====================================================================================
+
+   {
+      test_ = "Column-major reset() function";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      reset( sm1(4,4) );
+      reset( sm2(4,4) );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major reset
    //=====================================================================================
 
@@ -3993,6 +4059,89 @@ void AlignedTest::testReset()
                 << "   Expected result:\n" << sm2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c clear() function with the DenseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() function with the DenseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testClear()
+{
+   using blaze::submatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::clear;
+
+
+   //=====================================================================================
+   // Row-major single element clear
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+
+      clear( sm1(4,4) );
+      clear( sm2(4,4) );
+
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major single element clear
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function";
+
+      initialize();
+
+      ATSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UTSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+
+      clear( sm1(4,4) );
+      clear( sm2(4,4) );
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
@@ -4149,6 +4298,7 @@ void AlignedTest::testIsDefault()
 {
    using blaze::submatrix;
    using blaze::aligned;
+   using blaze::isDefault;
 
 
    //=====================================================================================
@@ -4164,6 +4314,15 @@ void AlignedTest::testIsDefault()
       {
          MT mat( 64UL, 64UL, 0 );
          ASMT sm = submatrix<aligned>( mat, 8UL, 16UL, 8UL, 16UL );
+
+         if( isDefault( sm(4,4) ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != true ) {
             std::ostringstream oss;
@@ -4204,6 +4363,15 @@ void AlignedTest::testIsDefault()
       {
          TMT mat( 64UL, 64UL, 0 );
          ATSMT sm = submatrix<aligned>( mat, 16UL, 8UL, 16UL, 8UL );
+
+         if( isDefault( sm(4,4) ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Submatrix element: " << sm(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( sm ) != true ) {
             std::ostringstream oss;
