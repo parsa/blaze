@@ -61,10 +61,6 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/views/Column.h>
-#include <blaze/math/views/SparseColumn.h>
-#include <blaze/math/views/SparseRow.h>
-#include <blaze/math/views/Row.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1573,9 +1569,26 @@ inline void SymmetricMatrix<MT,false,true>::reset()
 template< typename MT >  // Type of the adapted sparse matrix
 inline void SymmetricMatrix<MT,false,true>::reset( size_t i )
 {
-   // TODO: Increase efficiency of row/column reset
-   row   ( matrix_, i ).reset();
-   column( matrix_, i ).reset();
+   for( typename MT::Iterator it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   {
+      const size_t j( it->index() );
+
+      if( i == j )
+         continue;
+
+      if( IsRowMajorMatrix<MT>::value ) {
+         const typename MT::Iterator pos( matrix_.find( j, i ) );
+         BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
+         matrix_.erase( j, pos );
+      }
+      else {
+         const typename MT::Iterator pos( matrix_.find( i, j ) );
+         BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
+         matrix_.erase( j, pos );
+      }
+   }
+
+   matrix_.reset( i );
 }
 /*! \endcond */
 //*************************************************************************************************
