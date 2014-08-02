@@ -102,6 +102,7 @@ class ClassTest
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
+   void testClear       ();
    void testSwap        ();
    void testIsDefault   ();
 
