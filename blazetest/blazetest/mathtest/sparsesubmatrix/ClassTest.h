@@ -96,6 +96,7 @@ class ClassTest
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
+   void testClear       ();
    void testAppend      ();
    void testInsert      ();
    void testErase       ();
