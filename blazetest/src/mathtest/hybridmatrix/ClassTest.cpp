@@ -4154,14 +4154,15 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major HybridMatrix::reset()";
-
-      using blaze::reset;
 
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
@@ -4261,8 +4262,6 @@ void ClassTest::testReset()
 
    {
       test_ = "Column-major HybridMatrix::reset()";
-
-      using blaze::reset;
 
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
@@ -4373,14 +4372,15 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major HybridMatrix::clear()";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
@@ -4445,8 +4445,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major HybridMatrix::clear()";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
@@ -5313,6 +5311,9 @@ void ClassTest::testSwap()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5336,8 +5337,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         using blaze::isDefault;
-
          blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL, 0 );
 
          if( isDefault( mat(0,1) ) != true ) {
@@ -5361,8 +5360,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::HybridMatrix<int,3UL,2UL,blaze::rowMajor> mat( 3UL, 2UL, 0 );
          mat(0,1) = 1;
 
@@ -5410,8 +5407,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         using blaze::isDefault;
-
          blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL, 0 );
 
          if( isDefault( mat(0,1) ) != true ) {
@@ -5435,8 +5430,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::HybridMatrix<int,3UL,2UL,blaze::columnMajor> mat( 3UL, 2UL, 0 );
          mat(1,0) = 1;
 

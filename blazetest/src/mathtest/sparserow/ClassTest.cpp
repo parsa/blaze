@@ -3602,14 +3602,15 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major SparseRow::reset()";
-
-      using blaze::reset;
 
       initialize();
 
@@ -3666,8 +3667,6 @@ void ClassTest::testReset()
 
    {
       test_ = "Column-major SparseRow::reset()";
-
-      using blaze::reset;
 
       initialize();
 
@@ -3731,14 +3730,15 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major clear() function";
-
-      using blaze::clear;
 
       initialize();
 
@@ -3773,8 +3773,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major clear() function";
-
-      using blaze::clear;
 
       initialize();
 
@@ -5521,6 +5519,9 @@ void ClassTest::testUpperBound()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5532,8 +5533,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default row
       {
-         using blaze::isDefault;
-
          RT row0 = row( mat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
@@ -5557,8 +5556,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         using blaze::isDefault;
-
          RT row1 = row( mat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
@@ -5593,8 +5590,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default row
       {
-         using blaze::isDefault;
-
          TRT row0 = row( tmat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
@@ -5618,8 +5613,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         using blaze::isDefault;
-
          TRT row1 = row( tmat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {

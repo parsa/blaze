@@ -3750,14 +3750,15 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major DenseColumn::reset()";
-
-      using blaze::reset;
 
       initialize();
 
@@ -3815,8 +3816,6 @@ void ClassTest::testReset()
 
    {
       test_ = "Column-major DenseColumn::reset()";
-
-      using blaze::reset;
 
       initialize();
 
@@ -3881,14 +3880,15 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major clear() function";
-
-      using blaze::clear;
 
       initialize();
 
@@ -3923,8 +3923,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major clear() function";
-
-      using blaze::clear;
 
       initialize();
 
@@ -3966,14 +3964,15 @@ void ClassTest::testClear()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major isDefault() function";
-
-      using blaze::isDefault;
 
       initialize();
 
@@ -4031,8 +4030,6 @@ void ClassTest::testIsDefault()
 
    {
       test_ = "Column-major isDefault() function";
-
-      using blaze::isDefault;
 
       initialize();
 

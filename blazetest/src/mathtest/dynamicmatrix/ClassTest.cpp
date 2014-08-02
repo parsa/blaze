@@ -4138,14 +4138,15 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major DynamicMatrix::reset()";
-
-      using blaze::reset;
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
@@ -4245,8 +4246,6 @@ void ClassTest::testReset()
 
    {
       test_ = "Column-major DynamicMatrix::reset()";
-
-      using blaze::reset;
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
@@ -4357,14 +4356,15 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major DynamicMatrix::clear()";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
@@ -4429,8 +4429,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major DynamicMatrix::clear()";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
@@ -5358,6 +5356,9 @@ void ClassTest::testSwap()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5381,8 +5382,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         using blaze::isDefault;
-
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
 
          if( isDefault( mat(0,1) ) != true ) {
@@ -5406,8 +5405,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
          mat(0,1) = 1;
 
@@ -5455,8 +5452,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         using blaze::isDefault;
-
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
 
          if( isDefault( mat(0,1) ) != true ) {
@@ -5480,8 +5475,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
          mat(1,0) = 1;
 

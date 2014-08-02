@@ -1719,9 +1719,9 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
-   test_ = "StaticVector::reset()";
-
    using blaze::reset;
+
+   test_ = "StaticVector::reset()";
 
    // Initialization check
    blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
@@ -1788,9 +1788,9 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
-   test_ = "clear() function";
-
    using blaze::clear;
+
+   test_ = "clear() function";
 
    // Initialization check
    blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
@@ -1889,6 +1889,8 @@ void ClassTest::testSwap()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
    test_ = "isDefault() function";
 
    // isDefault with default vector
@@ -1907,8 +1909,6 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      using blaze::isDefault;
-
       blaze::StaticVector<int,3UL,blaze::rowVector> vec( 0, 1, 0 );
 
       if( isDefault( vec[1] ) != false ) {

@@ -1605,9 +1605,9 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
-   test_ = "DynamicVector::reset()";
-
    using blaze::reset;
+
+   test_ = "DynamicVector::reset()";
 
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
@@ -1678,9 +1678,9 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
-   test_ = "DynamicVector::clear()";
-
    using blaze::clear;
+
+   test_ = "DynamicVector::clear()";
 
    // Initialization check
    blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
@@ -1969,6 +1969,8 @@ void ClassTest::testSwap()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
    test_ = "isDefault() function";
 
    // isDefault with vector of size 0
@@ -1987,8 +1989,6 @@ void ClassTest::testIsDefault()
 
    // isDefault with default vector
    {
-      using blaze::isDefault;
-
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
 
       if( isDefault( vec[1] ) != true ) {
@@ -2012,8 +2012,6 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      using blaze::isDefault;
-
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
       vec[1] = 1;
 

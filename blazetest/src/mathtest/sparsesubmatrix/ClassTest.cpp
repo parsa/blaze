@@ -5279,15 +5279,16 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major single element reset
    //=====================================================================================
 
    {
       test_ = "Row-major reset() function";
-
-      using blaze::reset;
-      using blaze::isDefault;
 
       initialize();
 
@@ -5474,9 +5475,6 @@ void ClassTest::testReset()
    {
       test_ = "Column-major reset() function";
 
-      using blaze::reset;
-      using blaze::isDefault;
-
       initialize();
 
       TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
@@ -5661,15 +5659,16 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major single element clear
    //=====================================================================================
 
    {
       test_ = "Row-major clear() function";
-
-      using blaze::clear;
-      using blaze::isDefault;
 
       initialize();
 
@@ -5720,9 +5719,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major clear() function";
-
-      using blaze::clear;
-      using blaze::isDefault;
 
       initialize();
 
@@ -8205,14 +8201,15 @@ void ClassTest::testUpperBound()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major submatrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major isDefault() function";
-
-      using blaze::isDefault;
 
       initialize();
 
@@ -8261,8 +8258,6 @@ void ClassTest::testIsDefault()
 
    {
       test_ = "Column-major isDefault() function";
-
-      using blaze::isDefault;
 
       initialize();
 

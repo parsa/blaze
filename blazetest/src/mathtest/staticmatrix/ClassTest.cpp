@@ -5144,14 +5144,15 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
+   using blaze::reset;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major StaticMatrix::reset()";
-
-      using blaze::reset;
 
       // Initialization check
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
@@ -5246,7 +5247,7 @@ void ClassTest::testReset()
    {
       test_ = "Column-major StaticMatrix::reset()";
 
-      using blaze::reset;
+
 
       // Initialization check
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
@@ -5351,14 +5352,15 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
+   using blaze::clear;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
       test_ = "Row-major clear() function";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor> mat( 1, 2, 3, 4, 5, 6 );
@@ -5410,8 +5412,6 @@ void ClassTest::testClear()
 
    {
       test_ = "Column-major clear() function";
-
-      using blaze::clear;
 
       // Initialization check
       blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor> mat( 1, 2, 3, 4, 5, 6 );
@@ -5717,6 +5717,9 @@ void ClassTest::testSwap()
 */
 void ClassTest::testIsDefault()
 {
+   using blaze::isDefault;
+
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5740,8 +5743,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::StaticMatrix<int,3UL,2UL,blaze::rowMajor> mat( 0, 1, 0, 0, 0, 0 );
 
          if( isDefault( mat(0,1) ) != false ) {
@@ -5788,8 +5789,6 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         using blaze::isDefault;
-
          blaze::StaticMatrix<int,3UL,2UL,blaze::columnMajor> mat( 0, 0, 0, 1, 0, 0 );
 
          if( isDefault( mat(0,1) ) != false ) {

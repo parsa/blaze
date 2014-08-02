@@ -1761,9 +1761,9 @@ void ClassTest::testNonZeros()
 */
 void ClassTest::testReset()
 {
-   test_ = "SparseSubvector::reset()";
-
    using blaze::reset;
+
+   test_ = "SparseSubvector::reset()";
 
    initialize();
 
@@ -1844,9 +1844,9 @@ void ClassTest::testReset()
 */
 void ClassTest::testClear()
 {
-   test_ = "clear() function";
-
    using blaze::clear;
+
+   test_ = "clear() function";
 
    initialize();
 
@@ -2721,9 +2721,9 @@ void ClassTest::testUpperBound()
 */
 void ClassTest::testIsDefault()
 {
-   test_ = "isDefault() function";
-
    using blaze::isDefault;
+
+   test_ = "isDefault() function";
 
    initialize();
 
