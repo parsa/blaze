@@ -4145,6 +4145,8 @@ void ClassTest::testReset()
    {
       test_ = "Row-major DynamicMatrix::reset()";
 
+      using blaze::reset;
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4173,7 +4175,7 @@ void ClassTest::testReset()
       }
 
       // Resetting a single element
-      blaze::reset( mat(0,2) );
+      reset( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4244,6 +4246,8 @@ void ClassTest::testReset()
    {
       test_ = "Column-major DynamicMatrix::reset()";
 
+      using blaze::reset;
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4273,7 +4277,7 @@ void ClassTest::testReset()
       }
 
       // Resetting a single element
-      blaze::reset( mat(0,2) );
+      reset( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4360,6 +4364,8 @@ void ClassTest::testClear()
    {
       test_ = "Row-major DynamicMatrix::clear()";
 
+      using blaze::clear;
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4388,7 +4394,7 @@ void ClassTest::testClear()
       }
 
       // Clearing a single element
-      blaze::clear( mat(0,2) );
+      clear( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4424,6 +4430,8 @@ void ClassTest::testClear()
    {
       test_ = "Column-major DynamicMatrix::clear()";
 
+      using blaze::clear;
+
       // Initialization check
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4453,7 +4461,7 @@ void ClassTest::testClear()
       }
 
       // Clearing a single element
-      blaze::clear( mat(0,2) );
+      clear( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );

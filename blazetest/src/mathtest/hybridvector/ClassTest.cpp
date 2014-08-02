@@ -1716,6 +1716,8 @@ void ClassTest::testReset()
 {
    test_ = "HybridVector::reset()";
 
+   using blaze::reset;
+
    // Initialization check
    blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
    vec[0] = 1;
@@ -1738,7 +1740,7 @@ void ClassTest::testReset()
    }
 
    // Resetting a single element
-   blaze::reset( vec[2] );
+   reset( vec[2] );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -1787,6 +1789,8 @@ void ClassTest::testClear()
 {
    test_ = "HybridVector::clear()";
 
+   using blaze::clear;
+
    // Initialization check
    blaze::HybridVector<int,4UL,blaze::rowVector> vec( 4UL );
    vec[0] = 1;
@@ -1809,7 +1813,7 @@ void ClassTest::testClear()
    }
 
    // Clearing a single element
-   blaze::clear( vec[2] );
+   clear( vec[2] );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );

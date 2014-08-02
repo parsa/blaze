@@ -1721,6 +1721,8 @@ void ClassTest::testReset()
 {
    test_ = "StaticVector::reset()";
 
+   using blaze::reset;
+
    // Initialization check
    blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
 
@@ -1739,7 +1741,7 @@ void ClassTest::testReset()
    }
 
    // Resetting a single element
-   blaze::reset( vec[2] );
+   reset( vec[2] );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );
@@ -1788,6 +1790,8 @@ void ClassTest::testClear()
 {
    test_ = "clear() function";
 
+   using blaze::clear;
+
    // Initialization check
    blaze::StaticVector<int,4UL,blaze::rowVector> vec( 1, 2, 3, 4 );
 
@@ -1806,7 +1810,7 @@ void ClassTest::testClear()
    }
 
    // Clearing a single element
-   blaze::clear( vec[2] );
+   clear( vec[2] );
 
    checkSize    ( vec, 4UL );
    checkCapacity( vec, 4UL );

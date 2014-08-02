@@ -4161,6 +4161,8 @@ void ClassTest::testReset()
    {
       test_ = "Row-major HybridMatrix::reset()";
 
+      using blaze::reset;
+
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4189,7 +4191,7 @@ void ClassTest::testReset()
       }
 
       // Resetting a single element
-      blaze::reset( mat(0,2) );
+      reset( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4260,6 +4262,8 @@ void ClassTest::testReset()
    {
       test_ = "Column-major HybridMatrix::reset()";
 
+      using blaze::reset;
+
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4289,7 +4293,7 @@ void ClassTest::testReset()
       }
 
       // Resetting a single element
-      blaze::reset( mat(0,2) );
+      reset( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4376,6 +4380,8 @@ void ClassTest::testClear()
    {
       test_ = "Row-major HybridMatrix::clear()";
 
+      using blaze::clear;
+
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4404,7 +4410,7 @@ void ClassTest::testClear()
       }
 
       // Clearing a single element
-      blaze::clear( mat(0,2) );
+      clear( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -4440,6 +4446,8 @@ void ClassTest::testClear()
    {
       test_ = "Column-major HybridMatrix::clear()";
 
+      using blaze::clear;
+
       // Initialization check
       blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor> mat( 2UL, 3UL );
       mat(0,0) = 1;
@@ -4469,7 +4477,7 @@ void ClassTest::testClear()
       }
 
       // Clearing a single element
-      blaze::clear( mat(0,2) );
+      clear( mat(0,2) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
