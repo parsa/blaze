@@ -3757,96 +3757,29 @@ void ClassTest::testReset()
    {
       test_ = "Row-major DenseColumn::reset()";
 
+      using blaze::reset;
+
       initialize();
 
-      // Resetting the 0th column
+      // Resetting a single element in column 3
       {
-         CT col0 = column( mat_, 0UL );
-         reset( col0 );
+         CT col3 = column( mat_, 3UL );
+         reset( col3[1] );
 
-         checkSize    ( col0,  4UL );
-         checkCapacity( col0,  4UL );
-         checkNonZeros( col0,  0UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 10UL );
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 1st column
-      {
-         CT col1 = column( mat_, 1UL );
-         reset( col1 );
-
-         checkSize    ( col1, 4UL );
-         checkCapacity( col1, 4UL );
-         checkNonZeros( col1, 0UL );
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 2UL );
          checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 5UL );
          checkNonZeros( mat_, 9UL );
 
-         if( col1[0] != 0 || col1[1] != 0 || col1[2] != 0 || col1[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col1 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 2nd column
-      {
-         CT col2 = column( mat_, 2UL );
-         reset( col2 );
-
-         checkSize    ( col2, 4UL );
-         checkCapacity( col2, 4UL );
-         checkNonZeros( col2, 0UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( col2[0] != 0 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 2nd column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 3rd column
-      {
-         CT col3 = column( mat_, 3UL );
-         reset( col3 );
-
-         checkSize    ( col3, 4UL );
-         checkCapacity( col3, 4UL );
-         checkNonZeros( col3, 0UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 4UL );
-
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 3rd column failed\n"
+                << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3861,7 +3794,7 @@ void ClassTest::testReset()
          checkNonZeros( col4, 0UL );
          checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 0UL );
+         checkNonZeros( mat_, 5UL );
 
          if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
             std::ostringstream oss;
@@ -3883,96 +3816,29 @@ void ClassTest::testReset()
    {
       test_ = "Column-major DenseColumn::reset()";
 
+      using blaze::reset;
+
       initialize();
 
-      // Resetting the 0th column
+      // Resetting a single element in column 3
       {
-         TCT col0 = column( tmat_, 0UL );
-         reset( col0 );
+         TCT col3 = column( tmat_, 3UL );
+         reset( col3[1] );
 
-         checkSize    ( col0,  4UL );
-         checkCapacity( col0,  4UL );
-         checkNonZeros( col0,  0UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 10UL );
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 0th column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 1st column
-      {
-         TCT col1 = column( tmat_, 1UL );
-         reset( col1 );
-
-         checkSize    ( col1, 4UL );
-         checkCapacity( col1, 4UL );
-         checkNonZeros( col1, 0UL );
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 2UL );
          checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 5UL );
          checkNonZeros( tmat_, 9UL );
 
-         if( col1[0] != 0 || col1[1] != 0 || col1[2] != 0 || col1[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col1 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 2nd column
-      {
-         TCT col2 = column( tmat_, 2UL );
-         reset( col2 );
-
-         checkSize    ( col2, 4UL );
-         checkCapacity( col2, 4UL );
-         checkNonZeros( col2, 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( col2[0] != 0 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 2nd column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 3rd column
-      {
-         TCT col3 = column( tmat_, 3UL );
-         reset( col3 );
-
-         checkSize    ( col3, 4UL );
-         checkCapacity( col3, 4UL );
-         checkNonZeros( col3, 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 4UL );
-
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 3rd column failed\n"
+                << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3982,12 +3848,12 @@ void ClassTest::testReset()
          TCT col4 = column( tmat_, 4UL );
          reset( col4 );
 
-         checkSize    ( col4, 4UL );
-         checkCapacity( col4, 4UL );
-         checkNonZeros( col4, 0UL );
+         checkSize    ( col4 , 4UL );
+         checkCapacity( col4 , 4UL );
+         checkNonZeros( col4 , 0UL );
          checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 0UL );
+         checkNonZeros( tmat_, 5UL );
 
          if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
             std::ostringstream oss;
@@ -3996,6 +3862,91 @@ void ClassTest::testReset()
                 << " Details:\n"
                 << "   Result:\n" << col4 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c clear() function with the DenseColumn class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() function with the DenseColumn class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testClear()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function";
+
+      using blaze::clear;
+
+      initialize();
+
+      // Clearing a single element in column 3
+      {
+         CT col3 = column( mat_, 3UL );
+         clear( col3[1] );
+
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
+
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function";
+
+      using blaze::clear;
+
+      initialize();
+
+      // Clearing a single element in column 3
+      {
+         TCT col3 = column( tmat_, 3UL );
+         clear( col3[1] );
+
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 2UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 9UL );
+
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col3 << "\n"
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4022,11 +3973,22 @@ void ClassTest::testIsDefault()
    {
       test_ = "Row-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default column
       {
          CT col0 = column( mat_, 0UL );
+
+         if( isDefault( col0[1] ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column element: " << col0[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( col0 ) != true ) {
             std::ostringstream oss;
@@ -4041,6 +4003,15 @@ void ClassTest::testIsDefault()
       // isDefault with non-default column
       {
          CT col1 = column( mat_, 1UL );
+
+         if( isDefault( col1[1] ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column element: " << col1[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( col1 ) != false ) {
             std::ostringstream oss;
@@ -4061,11 +4032,22 @@ void ClassTest::testIsDefault()
    {
       test_ = "Column-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default column
       {
          TCT col0 = column( tmat_, 0UL );
+
+         if( isDefault( col0[1] ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column element: " << col0[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( col0 ) != true ) {
             std::ostringstream oss;
@@ -4080,6 +4062,15 @@ void ClassTest::testIsDefault()
       // isDefault with non-default column
       {
          TCT col1 = column( tmat_, 1UL );
+
+         if( isDefault( col1[1] ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Column element: " << col1[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( col1 ) != false ) {
             std::ostringstream oss;
