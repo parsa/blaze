@@ -73,6 +73,7 @@ UnalignedTest::UnalignedTest()
    testIterator();
    testNonZeros();
    testReset();
+   testClear();
    testIsDefault();
    testIsSame();
    testSubvector();
@@ -1883,7 +1884,30 @@ void UnalignedTest::testReset()
 {
    test_ = "DenseSubvector::reset()";
 
+   using blaze::reset;
+
    initialize();
+
+   // Resetting a single element of the range [1,6]
+   {
+      SVT sv = subvector( vec_, 1UL, 6UL );
+      reset( sv[2] );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 1 || sv[1] != 0 || sv[2] != 0 || sv[3] != -3 || sv[4] != 0 || sv[5] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Reset operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 0 0 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    // Resetting the range [0,3]
    {
@@ -1931,6 +1955,47 @@ void UnalignedTest::testReset()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c clear() function with the DenseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() function of the DenseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void UnalignedTest::testClear()
+{
+   test_ = "clear() function";
+
+   using blaze::clear;
+
+   initialize();
+
+   // Clearing a single element of the range [1,6]
+   {
+      SVT sv = subvector( vec_, 1UL, 6UL );
+      clear( sv[2] );
+
+      checkSize    ( sv  , 6UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 1 || sv[1] != 0 || sv[2] != 0 || sv[3] != -3 || sv[4] != 0 || sv[5] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Clear operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 1 0 0 -3 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c isDefault() function with the DenseSubvector class template.
 //
 // \return void
@@ -1943,12 +2008,23 @@ void UnalignedTest::testIsDefault()
 {
    test_ = "isDefault() function";
 
+   using blaze::isDefault;
+
    initialize();
 
    // isDefault with default vector
    {
       VT vec( 8UL, 0 );
       SVT sv = subvector( vec, 2UL, 5UL );
+
+      if( isDefault( sv[1] ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Subvector element: " << sv[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
 
       if( isDefault( sv ) != true ) {
          std::ostringstream oss;
@@ -1963,6 +2039,15 @@ void UnalignedTest::testIsDefault()
    // isDefault with non-default vector
    {
       SVT sv = subvector( vec_, 2UL, 5UL );
+
+      if( isDefault( sv[1] ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isDefault evaluation\n"
+             << " Details:\n"
+             << "   Subvector element: " << sv[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
 
       if( isDefault( sv ) != false ) {
          std::ostringstream oss;

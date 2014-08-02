@@ -96,6 +96,7 @@ class AlignedTest
    void testIterator    ();
    void testNonZeros    ();
    void testReset       ();
+   void testClear       ();
    void testIsDefault   ();
    void testIsSame      ();
    void testSubvector   ();
