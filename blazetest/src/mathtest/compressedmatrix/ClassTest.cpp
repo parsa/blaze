@@ -7943,7 +7943,7 @@ void ClassTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << mat(0,1) << "\n";
+                << "   Matrix element: " << mat(0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -7967,7 +7967,7 @@ void ClassTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << mat(0,1) << "\n";
+                << "   Matrix element: " << mat(0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -8013,7 +8013,7 @@ void ClassTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << mat(1,0) << "\n";
+                << "   Matrix element: " << mat(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -8037,7 +8037,7 @@ void ClassTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << mat(1,0) << "\n";
+                << "   Matrix element: " << mat(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
