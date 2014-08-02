@@ -3887,96 +3887,29 @@ void ClassTest::testReset()
    {
       test_ = "Row-major DenseRow::reset()";
 
+      using blaze::reset;
+
       initialize();
 
-      // Resetting the 0th row
+      // Resetting a single element in row 3
       {
-         RT row0 = row( mat_, 0UL );
-         reset( row0 );
+         RT row3 = row( mat_, 3UL );
+         reset( row3[1] );
 
-         checkSize    ( row0,  4UL );
-         checkCapacity( row0,  4UL );
-         checkNonZeros( row0,  0UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
-
-         if( row0[0] != 0 || row0[1] != 0 || row0[2] != 0 || row0[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 0th row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row0 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 1st row
-      {
-         RT row1 = row( mat_, 1UL );
-         reset( row1 );
-
-         checkSize    ( row1, 4UL );
-         checkCapacity( row1, 4UL );
-         checkNonZeros( row1, 0UL );
+         checkSize    ( row3, 4UL );
+         checkCapacity( row3, 4UL );
+         checkNonZeros( row3, 2UL );
          checkRows    ( mat_, 5UL );
          checkColumns ( mat_, 4UL );
          checkNonZeros( mat_, 9UL );
 
-         if( row1[0] != 0 || row1[1] != 0 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 2nd row
-      {
-         RT row2 = row( mat_, 2UL );
-         reset( row2 );
-
-         checkSize    ( row2, 4UL );
-         checkCapacity( row2, 4UL );
-         checkNonZeros( row2, 0UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 2nd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 3rd row
-      {
-         RT row3 = row( mat_, 3UL );
-         reset( row3 );
-
-         checkSize    ( row3, 4UL );
-         checkCapacity( row3, 4UL );
-         checkNonZeros( row3, 0UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 4UL );
-
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 3rd row failed\n"
+                << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3991,7 +3924,7 @@ void ClassTest::testReset()
          checkNonZeros( row4, 0UL );
          checkRows    ( mat_, 5UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 0UL );
+         checkNonZeros( mat_, 5UL );
 
          if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
@@ -4013,96 +3946,29 @@ void ClassTest::testReset()
    {
       test_ = "Column-major DenseRow::reset()";
 
+      using blaze::reset;
+
       initialize();
 
-      // Resetting the 0th row
+      // Resetting a single element in row 3
       {
-         TRT row0 = row( tmat_, 0UL );
-         reset( row0 );
+         TRT row3 = row( tmat_, 3UL );
+         reset( row3[1] );
 
-         checkSize    ( row0,  4UL );
-         checkCapacity( row0,  4UL );
-         checkNonZeros( row0,  0UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
-
-         if( row0[0] != 0 || row0[1] != 0 || row0[2] != 0 || row0[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 0th row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row0 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 1st row
-      {
-         TRT row1 = row( tmat_, 1UL );
-         reset( row1 );
-
-         checkSize    ( row1, 4UL );
-         checkCapacity( row1, 4UL );
-         checkNonZeros( row1, 0UL );
+         checkSize    ( row3 , 4UL );
+         checkCapacity( row3 , 4UL );
+         checkNonZeros( row3 , 2UL );
          checkRows    ( tmat_, 5UL );
          checkColumns ( tmat_, 4UL );
          checkNonZeros( tmat_, 9UL );
 
-         if( row1[0] != 0 || row1[1] != 0 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 2nd row
-      {
-         TRT row2 = row( tmat_, 2UL );
-         reset( row2 );
-
-         checkSize    ( row2, 4UL );
-         checkCapacity( row2, 4UL );
-         checkNonZeros( row2, 0UL );
-         checkRows    ( tmat_, 5UL );
-         checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 2nd row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Resetting the 3rd row
-      {
-         TRT row3 = row( tmat_, 3UL );
-         reset( row3 );
-
-         checkSize    ( row3, 4UL );
-         checkCapacity( row3, 4UL );
-         checkNonZeros( row3, 0UL );
-         checkRows    ( tmat_, 5UL );
-         checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 4UL );
-
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 3rd row failed\n"
+                << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4112,12 +3978,12 @@ void ClassTest::testReset()
          TRT row4 = row( tmat_, 4UL );
          reset( row4 );
 
-         checkSize    ( row4, 4UL );
-         checkCapacity( row4, 4UL );
-         checkNonZeros( row4, 0UL );
+         checkSize    ( row4 , 4UL );
+         checkCapacity( row4 , 4UL );
+         checkNonZeros( row4 , 0UL );
          checkRows    ( tmat_, 5UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 0UL );
+         checkNonZeros( tmat_, 5UL );
 
          if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
             std::ostringstream oss;
@@ -4126,6 +3992,91 @@ void ClassTest::testReset()
                 << " Details:\n"
                 << "   Result:\n" << row4 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c clear() function with the DenseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c clear() function with the DenseRow class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testClear()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major clear() function";
+
+      using blaze::clear;
+
+      initialize();
+
+      // Clearing a single element in row 3
+      {
+         RT row3 = row( mat_, 3UL );
+         clear( row3[1] );
+
+         checkSize    ( row3, 4UL );
+         checkCapacity( row3, 4UL );
+         checkNonZeros( row3, 2UL );
+         checkRows    ( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
+
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major clear() function";
+
+      using blaze::clear;
+
+      initialize();
+
+      // Clearing a single element in row 3
+      {
+         TRT row3 = row( tmat_, 3UL );
+         clear( row3[1] );
+
+         checkSize    ( row3 , 4UL );
+         checkCapacity( row3 , 4UL );
+         checkNonZeros( row3 , 2UL );
+         checkRows    ( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 9UL );
+
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Clear operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 5 -6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4152,11 +4103,22 @@ void ClassTest::testIsDefault()
    {
       test_ = "Row-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default row
       {
          RT row0 = row( mat_, 0UL );
+
+         if( isDefault( row0[1] ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row element: " << row0[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( row0 ) != true ) {
             std::ostringstream oss;
@@ -4171,6 +4133,15 @@ void ClassTest::testIsDefault()
       // isDefault with non-default row
       {
          RT row1 = row( mat_, 1UL );
+
+         if( isDefault( row1[1] ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row element: " << row1[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( row1 ) != false ) {
             std::ostringstream oss;
@@ -4191,11 +4162,22 @@ void ClassTest::testIsDefault()
    {
       test_ = "Column-major isDefault() function";
 
+      using blaze::isDefault;
+
       initialize();
 
       // isDefault with default row
       {
          TRT row0 = row( tmat_, 0UL );
+
+         if( isDefault( row0[1] ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row element: " << row0[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( row0 ) != true ) {
             std::ostringstream oss;
@@ -4210,6 +4192,15 @@ void ClassTest::testIsDefault()
       // isDefault with non-default row
       {
          TRT row1 = row( tmat_, 1UL );
+
+         if( isDefault( row0[1] ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Row element: " << row0[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
          if( isDefault( row1 ) != false ) {
             std::ostringstream oss;
