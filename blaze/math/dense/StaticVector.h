@@ -185,6 +185,15 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a StaticVector with different data/element type.
+   */
+   template< typename ET >  // Data type of the other vector
+   struct Rebind {
+      typedef StaticVector<ET,N,TF>  Other;  //!< The type of the other StaticVector.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
