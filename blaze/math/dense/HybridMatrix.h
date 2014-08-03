@@ -213,6 +213,15 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    typedef DenseIterator<const Type>   ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a HybridMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      typedef HybridMatrix<ET,M,N,SO>  Other;  //!< The type of the other HybridMatrix.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the matrix is involved
@@ -2609,6 +2618,15 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    typedef const Type*                   ConstPointer;    //!< Pointer to a constant matrix value.
    typedef DenseIterator<Type>           Iterator;        //!< Iterator over non-constant elements.
    typedef DenseIterator<const Type>     ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a HybridMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      typedef HybridMatrix<ET,M,N,true>  Other;  //!< The type of the other HybridMatrix.
+   };
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
