@@ -71,7 +71,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Access proxy for symmetric, square matrices.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // The SymmetricProxy provides controlled access to the elements of a non-const symmetric matrix.
 // It guarantees that a modification of element \f$ a_{ij} \f$ of the accessed matrix is also
