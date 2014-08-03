@@ -141,8 +141,11 @@ class DenseNonNumericTest
    //! Type of the non-numeric symmetric matrix.
    typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >  ST;
 
-   //! Transpose non-numeric symmetric matrix type.
-   typedef ST::TransposeType  TST;
+   typedef ST::OppositeType           OST;   //!< Opposite non-numeric symmetric matrix type.
+   typedef ST::TransposeType          TST;   //!< Transpose non-numeric symmetric matrix type.
+   typedef ST::Rebind<double>::Other  RST;   //!< Type of the non-numeric symmetric matrix.
+   typedef RST::OppositeType          ORST;  //!< Opposite non-numeric symmetric matrix type.
+   typedef RST::TransposeType         TRST;  //!< Transpose non-numeric symmetric matrix type.
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -154,10 +157,20 @@ class DenseNonNumericTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TST );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TST  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRST );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, OST::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, TST::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST, ORST::OppositeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST, TRST::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType, OST::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType, TST::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType, ORST::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType, TRST::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
