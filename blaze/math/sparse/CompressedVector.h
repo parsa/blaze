@@ -240,6 +240,15 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a CompressedVector with different data/element type.
+   */
+   template< typename ET >  // Data type of the other vector
+   struct Rebind {
+      typedef CompressedVector<ET,TF>  Other;  //!< The type of the other CompressedVector.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
