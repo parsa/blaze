@@ -42,8 +42,11 @@
 
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -52,6 +55,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/Template.h>
 
 
 namespace blaze {
@@ -95,14 +99,27 @@ class SymmetricMatrix<MT,false,false>
    typedef typename MT::ConstIterator       ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a SymmetricMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      //! The type of the other DynamicMatrix.
+      typedef SymmetricMatrix< typename MT::BLAZE_TEMPLATE Rebind<ET>::Other >  Other;
+   };
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE   ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST          ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE       ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE   ( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE         ( ElementType );
    BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
    //**********************************************************************************************
 };

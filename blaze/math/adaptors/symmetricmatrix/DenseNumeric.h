@@ -76,6 +76,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -123,6 +124,16 @@ class SymmetricMatrix<MT,true,true>
    typedef typename MT::Pointer           Pointer;         //!< Pointer to a non-constant matrix value.
    typedef typename MT::ConstPointer      ConstPointer;    //!< Pointer to a constant matrix value.
    typedef typename MT::ConstIterator     ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a SymmetricMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      //! The type of the other DynamicMatrix.
+      typedef SymmetricMatrix< typename MT::BLAZE_TEMPLATE Rebind<ET>::Other >  Other;
+   };
    //**********************************************************************************************
 
    //**RowIterator class definition****************************************************************
