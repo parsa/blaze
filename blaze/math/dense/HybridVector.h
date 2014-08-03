@@ -182,6 +182,15 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a HybridVector with different data/element type.
+   */
+   template< typename ET >  // Data type of the other vector
+   struct Rebind {
+      typedef HybridVector<ET,N,TF>  Other;  //!< The type of the other HybridVector.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
