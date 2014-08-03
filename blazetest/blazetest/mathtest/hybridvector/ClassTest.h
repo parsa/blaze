@@ -127,17 +127,22 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::HybridVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the hybrid vector
-   typedef VT::TransposeType                              TVT;  //!< Transpose hybrid vector type
-   typedef VT::ElementType                                ET;   //!< Element type of the hybrid vector
+   typedef blaze::HybridVector<int,4UL,blaze::rowVector>  VT;    //!< Type of the hybrid vector.
+   typedef VT::TransposeType                              TVT;   //!< Transpose hybrid vector type.
+   typedef VT::Rebind<double>::Other                      RVT;   //!< Rebound hybrid vector type.
+   typedef RVT::TransposeType                             TRVT;  //!< Transpose rebound hybrid vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RVT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TRVT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT, TRVT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT::ElementType, TRVT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
