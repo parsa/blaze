@@ -257,6 +257,15 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    typedef const Element*              ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a CompressedMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      typedef CompressedMatrix<ET,SO>  Other;  //!< The type of the other CompressedMatrix.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -2410,6 +2419,15 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    typedef const Type&                   ConstReference;  //!< Reference to a constant matrix value.
    typedef Element*                      Iterator;        //!< Iterator over non-constant elements.
    typedef const Element*                ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a CompressedMatrix with different data/element type.
+   */
+   template< typename ET >  // Data type of the other matrix
+   struct Rebind {
+      typedef CompressedMatrix<ET,true>  Other;  //!< The type of the other CompressedMatrix.
+   };
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
