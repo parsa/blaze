@@ -133,17 +133,30 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>  MT;   //!< Type of the static matrix
-   typedef MT::TransposeType                                 TMT;  //!< Transpose static matrix type
-   typedef MT::ElementType                                   ET;   //!< Element type of the static matrix
+   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>  MT;    //!< Type of the static matrix.
+   typedef MT::OppositeType                                  OMT;   //!< Opposite static matrix type.
+   typedef MT::TransposeType                                 TMT;   //!< Transpose static matrix type.
+   typedef MT::Rebind<double>::Other                         RMT;   //!< Rebound static matrix type.
+   typedef RMT::OppositeType                                 ORMT;  //!< Opposite rebound static matrix type.
+   typedef RMT::TransposeType                                TRMT;  //!< Transpose rebound static matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRMT );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, OMT::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, TMT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT, ORMT::OppositeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT, TRMT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, OMT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, TMT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, ORMT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, TRMT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
