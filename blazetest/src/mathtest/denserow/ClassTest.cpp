@@ -4190,12 +4190,12 @@ void ClassTest::testIsDefault()
       {
          TRT row1 = row( tmat_, 1UL );
 
-         if( isDefault( row0[1] ) != false ) {
+         if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Row element: " << row0[1] << "\n";
+                << "   Row element: " << row1[1] << "\n";
             throw std::runtime_error( oss.str() );
          }
 
