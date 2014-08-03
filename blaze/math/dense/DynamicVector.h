@@ -181,6 +181,15 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
+   //**Rebind struct definition********************************************************************
+   /*!\brief Rebind mechanism to obtain a DynamicVector with different data/element type.
+   */
+   template< typename ET >  // Data type of the other vector
+   struct Rebind {
+      typedef DynamicVector<ET,TF>  Other;  //!< The type of the other DynamicVector.
+   };
+   //**********************************************************************************************
+
    //**Compilation flags***************************************************************************
    //! Compilation flag for intrinsic optimization.
    /*! The \a vectorizable compilation flag indicates whether expressions the vector is involved
