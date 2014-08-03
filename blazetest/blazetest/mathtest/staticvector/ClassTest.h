@@ -125,17 +125,22 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;   //!< Type of the static vector
-   typedef VT::TransposeType                              TVT;  //!< Transpose static vector type
-   typedef VT::ElementType                                ET;   //!< Element type of the static vector
+   typedef blaze::StaticVector<int,4UL,blaze::rowVector>  VT;    //!< Type of the static vector.
+   typedef VT::TransposeType                              TVT;   //!< Transpose static vector type.
+   typedef VT::Rebind<double>::Other                      RVT;   //!< Rebound static vector type.
+   typedef RVT::TransposeType                             TRVT;  //!< Transpose rebound static vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TVT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RVT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TRVT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT, TRVT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT::ElementType, TRVT::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
