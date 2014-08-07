@@ -596,7 +596,7 @@ inline std::ostream& operator<<( std::ostream& os, const SymmetricProxy<MT>& pro
 
 //*************************************************************************************************
 /*!\brief Equality comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -614,7 +614,7 @@ inline bool operator==( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2
 
 //*************************************************************************************************
 /*!\brief Equality comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -631,7 +631,7 @@ inline bool operator==( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Equality comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -648,7 +648,7 @@ inline bool operator==( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Inequality comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -666,7 +666,7 @@ inline bool operator!=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2
 
 //*************************************************************************************************
 /*!\brief Inequality comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -683,7 +683,7 @@ inline bool operator!=( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Inquality comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -700,7 +700,7 @@ inline bool operator!=( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -718,7 +718,7 @@ inline bool operator<( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -735,7 +735,7 @@ inline bool operator<( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -752,7 +752,7 @@ inline bool operator<( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -770,7 +770,7 @@ inline bool operator>( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -787,7 +787,7 @@ inline bool operator>( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -804,7 +804,7 @@ inline bool operator>( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -822,7 +822,7 @@ inline bool operator<=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -839,7 +839,7 @@ inline bool operator<=( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -856,7 +856,7 @@ inline bool operator<=( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between two SymmetricProxy objects.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -874,7 +874,7 @@ inline bool operator>=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between a SymmetricProxy object and an object of different type.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side SymmetricProxy object.
 // \param rhs The right-hand side object of other type.
@@ -891,7 +891,7 @@ inline bool operator>=( const SymmetricProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between an object of different type and a SymmetricProxy object.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side SymmetricProxy object.
@@ -908,7 +908,7 @@ inline bool operator>=( const T& lhs, const SymmetricProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Global output operator for symmetric proxies.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param os Reference to the output stream.
 // \param proxy Reference to a constant symmetric proxy object.
@@ -948,7 +948,7 @@ inline bool isDefault( const SymmetricProxy<MT>& proxy );
 
 //*************************************************************************************************
 /*!\brief Resetting the represented element to the default initial values.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -966,7 +966,7 @@ inline void reset( const SymmetricProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Clearing the represented element.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -984,7 +984,7 @@ inline void clear( const SymmetricProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is in default state.
-// \ingroup adaptors
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy
 // \return \a true in case the represented element is in default state, \a false otherwise.
