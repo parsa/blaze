@@ -52,8 +52,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -2698,10 +2698,10 @@ inline size_t DenseRow<MT,false>::nonZeros() const
 template< typename MT >  // Type of the dense matrix
 inline void DenseRow<MT,false>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
    const size_t columns( size() );
    for( size_t j=0UL; j<columns; ++j )
-      reset( matrix_(row_,j) );
+      clear( matrix_(row_,j) );
 }
 /*! \endcond */
 //*************************************************************************************************
