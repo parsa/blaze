@@ -56,7 +56,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -1760,17 +1759,17 @@ inline size_t SymmetricMatrix<MT,true,false>::nonZeros( size_t i ) const
 template< typename MT >  // Type of the adapted dense matrix
 inline void SymmetricMatrix<MT,true,false>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    if( IsRowMajorMatrix<MT>::value ) {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=0UL; j<=i; ++j )
-            reset( matrix_(i,j) );
+            clear( matrix_(i,j) );
    }
    else {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            reset( matrix_(i,j) );
+            clear( matrix_(i,j) );
    }
 }
 /*! \endcond */
@@ -1791,10 +1790,10 @@ inline void SymmetricMatrix<MT,true,false>::reset()
 template< typename MT >  // Type of the adapted dense matrix
 inline void SymmetricMatrix<MT,true,false>::reset( size_t i )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    for( Iterator element=begin(i); element!=end(i); ++element )
-      reset( *element );
+      clear( *element );
 }
 /*! \endcond */
 //*************************************************************************************************
