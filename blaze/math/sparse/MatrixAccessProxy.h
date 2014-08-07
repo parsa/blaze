@@ -273,6 +273,13 @@ class MatrixAccessProxy
    //@}
    //**********************************************************************************************
 
+   //**Forbidden operations************************************************************************
+   /*!\name Forbidden operations */
+   //@{
+   void* operator&() const;  //!< Address operator (private & undefined)
+   //@}
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -2456,7 +2463,7 @@ inline void clear( const MatrixAccessProxy<MT>& proxy )
 /*!\brief Returns whether the represented element is in default state.
 // \ingroup math
 //
-// \param proxy The given access proxy
+// \param proxy The given access proxy.
 // \return \a true in case the represented element is in default state, \a false otherwise.
 //
 // This function checks whether the element represented by the access proxy is in default state.
