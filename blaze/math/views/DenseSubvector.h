@@ -55,8 +55,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/Subvector.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1538,11 +1538,11 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,AF,TF>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( offset_ + size_ );
    for( size_t i=offset_; i<iend; ++i )
-      reset( vector_[i] );
+      clear( vector_[i] );
 }
 //*************************************************************************************************
 
@@ -3124,11 +3124,11 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,aligned,TF>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( offset_ + size_ );
    for( size_t i=offset_; i<iend; ++i )
-      reset( vector_[i] );
+      clear( vector_[i] );
 }
 /*! \endcond */
 //*************************************************************************************************
