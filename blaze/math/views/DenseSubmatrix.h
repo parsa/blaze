@@ -53,8 +53,8 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -1676,14 +1676,14 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
       for( size_t j=column_; j<jend; ++j )
-         reset( matrix_(i,j) );
+         clear( matrix_(i,j) );
 }
 //*************************************************************************************************
 
@@ -1704,13 +1704,13 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::reset( size_t i )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    const size_t jend( column_ + n_ );
    for( size_t j=column_; j<jend; ++j )
-      reset( matrix_(row_+i,j) );
+      clear( matrix_(row_+i,j) );
 }
 //*************************************************************************************************
 
@@ -3869,14 +3869,14 @@ inline size_t DenseSubmatrix<MT,unaligned,true>::nonZeros( size_t j ) const
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
       for( size_t i=row_; i<iend; ++i )
-         reset( matrix_(i,j) );
+         clear( matrix_(i,j) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3892,13 +3892,13 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset()
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    const size_t iend( row_ + m_ );
    for( size_t i=row_; i<iend; ++i )
-      reset( matrix_(i,column_+j) );
+      clear( matrix_(i,column_+j) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5753,14 +5753,14 @@ inline size_t DenseSubmatrix<MT,aligned,false>::nonZeros( size_t i ) const
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,aligned,false>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
       for( size_t j=column_; j<jend; ++j )
-         reset( matrix_(i,j) );
+         clear( matrix_(i,j) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5781,13 +5781,13 @@ inline void DenseSubmatrix<MT,aligned,false>::reset()
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    const size_t jend( column_ + n_ );
    for( size_t j=column_; j<jend; ++j )
-      reset( matrix_(row_+i,j) );
+      clear( matrix_(row_+i,j) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7594,14 +7594,14 @@ inline size_t DenseSubmatrix<MT,aligned,true>::nonZeros( size_t j ) const
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,aligned,true>::reset()
 {
-   using blaze::reset;
+   using blaze::clear;
 
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
       for( size_t i=row_; i<iend; ++i )
-         reset( matrix_(i,j) );
+         clear( matrix_(i,j) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7617,13 +7617,13 @@ inline void DenseSubmatrix<MT,aligned,true>::reset()
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
 {
-   using blaze::reset;
+   using blaze::clear;
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    const size_t iend( row_ + m_ );
    for( size_t i=row_; i<iend; ++i )
-      reset( matrix_(i,column_+j) );
+      clear( matrix_(i,column_+j) );
 }
 /*! \endcond */
 //*************************************************************************************************
