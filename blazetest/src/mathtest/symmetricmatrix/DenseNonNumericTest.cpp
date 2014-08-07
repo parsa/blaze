@@ -219,7 +219,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -269,7 +269,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -315,6 +315,7 @@ void DenseNonNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
@@ -325,7 +326,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -438,7 +439,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -488,7 +489,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -534,6 +535,7 @@ void DenseNonNumericTest::testConstructors()
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
       checkNonZeros( sym2, 7UL );
 
       if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
@@ -544,7 +546,7 @@ void DenseNonNumericTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -606,7 +608,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -658,7 +660,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -691,7 +693,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -724,7 +726,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -757,7 +759,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -896,7 +898,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -927,7 +929,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -976,7 +978,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1028,7 +1030,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1061,7 +1063,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1094,7 +1096,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1127,7 +1129,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1266,7 +1268,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1297,7 +1299,7 @@ void DenseNonNumericTest::testAssignment()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) ( 0 ) )\n( (  7 ) (  0 ) ( 3 ) )\n";
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n( ( -4 ) (  2 ) (   ) )\n( (  7 ) (    ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3239,7 +3241,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3275,7 +3277,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3311,7 +3313,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3347,7 +3349,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3383,7 +3385,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3418,7 +3420,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3441,7 +3443,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3464,7 +3466,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3500,7 +3502,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3536,7 +3538,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3572,7 +3574,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3608,7 +3610,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3644,7 +3646,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3679,7 +3681,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3702,7 +3704,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -4 ) )\n( (  0 ) ( 0 ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -4 ) )\n( (    ) (   ) (  2 ) )\n( ( -4 ) ( 2 ) (  6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3725,7 +3727,7 @@ void DenseNonNumericTest::testScaling()
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  0 ) ( 0 ) ( -2 ) )\n( (  0 ) ( 0 ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
+             << "   Expected result:\n( (    ) (   ) ( -2 ) )\n( (    ) (   ) (  1 ) )\n( ( -2 ) ( 1 ) (  3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3773,7 +3775,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 1 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) ( 1 ) (   ) )\n( (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3796,7 +3798,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 1 ) ( 2 ) )\n( ( 0 ) ( 2 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) ( 1 ) ( 2 ) )\n( (   ) ( 2 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3819,7 +3821,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 2 ) )\n( ( 2 ) ( 2 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 2 ) )\n( ( 2 ) ( 2 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3842,7 +3844,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 5 ) )\n( ( 2 ) ( 5 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 5 ) )\n( ( 2 ) ( 5 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3865,7 +3867,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 2 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 2 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3888,7 +3890,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 6 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 6 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 6 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 6 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3911,7 +3913,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 3 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 3 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 3 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 3 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3945,7 +3947,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 1 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) ( 1 ) (   ) )\n( (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3968,7 +3970,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 1 ) ( 2 ) )\n( ( 0 ) ( 2 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) ( 1 ) ( 2 ) )\n( (   ) ( 2 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3991,7 +3993,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 2 ) )\n( ( 2 ) ( 2 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 2 ) )\n( ( 2 ) ( 2 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4014,7 +4016,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 5 ) )\n( ( 2 ) ( 5 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 5 ) )\n( ( 2 ) ( 5 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4037,7 +4039,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 2 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 2 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 2 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4060,7 +4062,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 6 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 6 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 6 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 6 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4083,7 +4085,7 @@ void DenseNonNumericTest::testFunctionCall()
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 3 ) )\n( ( 0 ) ( 1 ) ( 1 ) )\n( ( 3 ) ( 1 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) ( 3 ) )\n( (   ) ( 1 ) ( 1 ) )\n( ( 3 ) ( 1 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4853,20 +4855,20 @@ void DenseNonNumericTest::testReset()
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 9UL );
-      checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 4UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 3 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 3 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 6 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 3 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) )   || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 3 )   || !isDefault( sym(2,1) )   || sym(2,2) != vec( 6 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 3 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 3 ) ( 0 ) ( 6 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 3 ) )\n( (   ) (   ) (   ) )\n( ( 3 ) (   ) ( 6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4876,20 +4878,20 @@ void DenseNonNumericTest::testReset()
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 9UL );
-      checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
 
-      if( sym(0,0) != vec( 0 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 0 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 0 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 0 ) ) {
+      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) || !isDefault( sym(0,2) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) (   ) (   ) )\n( (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4960,20 +4962,20 @@ void DenseNonNumericTest::testReset()
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 9UL );
-      checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 4UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 2UL );
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 3 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 3 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 6 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 3 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 3 )   || !isDefault( sym(2,1) ) || sym(2,2) != vec( 6 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 3 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 3 ) ( 0 ) ( 6 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 3 ) )\n( (   ) (   ) (   ) )\n( ( 3 ) (   ) ( 6 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4983,20 +4985,20 @@ void DenseNonNumericTest::testReset()
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
       checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 9UL );
-      checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 3UL );
-      checkNonZeros( sym, 2UL, 3UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
 
-      if( sym(0,0) != vec( 0 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 0 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 0 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 0 ) ) {
+      if( !isDefault( sym(0,0) ) || !isDefault( sym(0,1) ) || !isDefault( sym(0,2) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) (   ) (   ) )\n( (   ) (   ) (   ) )\n( (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5195,7 +5197,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5222,7 +5224,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) ( 0 ) ( 0 ) )\n( ( 1 ) ( 2 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n( ( 1 ) ( 2 ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5244,7 +5246,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) )\n( ( 1 ) ( 2 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) )\n( ( 1 ) ( 2 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5288,7 +5290,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5315,7 +5317,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) ( 0 ) ( 0 ) )\n( ( 1 ) ( 2 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n( ( 1 ) ( 2 ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5337,7 +5339,7 @@ void DenseNonNumericTest::testResize()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) )\n( ( 1 ) ( 2 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) )\n( ( 1 ) ( 2 ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5394,7 +5396,7 @@ void DenseNonNumericTest::testExtend()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5421,7 +5423,7 @@ void DenseNonNumericTest::testExtend()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) ( 0 ) ( 0 ) )\n( ( 1 ) ( 2 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n( ( 1 ) ( 2 ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5458,7 +5460,7 @@ void DenseNonNumericTest::testExtend()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5485,7 +5487,7 @@ void DenseNonNumericTest::testExtend()
              << " Error: Resizing the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 0 ) ( 1 ) ( 0 ) ( 0 ) )\n( ( 1 ) ( 2 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n( ( 1 ) ( 2 ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n( (   ) (   ) (   ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5614,7 +5616,7 @@ void DenseNonNumericTest::testTranspose()
              << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n( (   ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5647,7 +5649,7 @@ void DenseNonNumericTest::testTranspose()
              << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n( (   ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5685,7 +5687,7 @@ void DenseNonNumericTest::testTranspose()
              << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n( (   ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5718,7 +5720,7 @@ void DenseNonNumericTest::testTranspose()
              << " Error: Transpose operation failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 2 ) )\n( ( 0 ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n( (   ) ( 3 ) ( 4 ) )\n( ( 2 ) ( 4 ) ( 5 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5769,7 +5771,7 @@ void DenseNonNumericTest::testSwap()
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n( ( 5 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n( ( 5 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5825,7 +5827,7 @@ void DenseNonNumericTest::testSwap()
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym1 << "\n"
-             << "   Expected result:\n( ( 4 ) ( 5 ) )\n( ( 5 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( 4 ) ( 5 ) )\n( ( 5 ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -6082,26 +6084,26 @@ void DenseNonNumericTest::testSubmatrix()
 
       reset( sm );
 
-      if( sm(0,0) != vec( 0 ) || sm(0,1) != vec( 0 ) ||
-          sm(1,0) != vec( 0 ) || sm(1,1) != vec( 0 ) ) {
+      if( !isDefault( sm(0,0) ) || !isDefault( sm(0,1) ) ||
+          !isDefault( sm(1,0) ) || !isDefault( sm(1,1) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 0 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 0 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || !isDefault( sym(0,2) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) (   ) )\n( (   ) (   ) (   ) )\n( (   ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6174,26 +6176,26 @@ void DenseNonNumericTest::testSubmatrix()
 
       reset( sm );
 
-      if( sm(0,0) != vec( 0 ) || sm(0,1) != vec( 0 ) ||
-          sm(1,0) != vec( 0 ) || sm(1,1) != vec( 0 ) ) {
+      if( !isDefault( sm(0,0) ) || !isDefault( sm(0,1) ) ||
+          !isDefault( sm(1,0) ) || !isDefault( sm(1,1) ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+             << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 0 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 0 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || !isDefault( sym(0,2) ) ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          !isDefault( sym(2,0) ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 0 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) (   ) )\n( (   ) (   ) (   ) )\n( (   ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6278,25 +6280,25 @@ void DenseNonNumericTest::testRow()
 
       reset( row1 );
 
-      if( row1[0] != vec( 0 ) || row1[1] != vec( 0 ) || row1[2] != vec( 0 ) ) {
+      if( !isDefault( row1[0] ) || !isDefault( row1[1] ) || !isDefault( row1[2] ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Row reset failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 7 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 7 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 7 )   || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Row reset failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 7 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 7 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n( (   ) (   ) (   ) )\n( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6368,25 +6370,25 @@ void DenseNonNumericTest::testRow()
 
       reset( row1 );
 
-      if( row1[0] != vec( 0 ) || row1[1] != vec( 0 ) || row1[2] != vec( 0 ) ) {
+      if( !isDefault( row1[0] ) || !isDefault( row1[1] ) || !isDefault( row1[2] ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Row reset failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 7 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 7 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 7 )   || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Row reset failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 7 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 7 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n( (   ) (   ) (   ) )\n( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6471,25 +6473,25 @@ void DenseNonNumericTest::testColumn()
 
       reset( col1 );
 
-      if( col1[0] != vec( 0 ) || col1[1] != vec( 0 ) || col1[2] != vec( 0 ) ) {
+      if( !isDefault( col1[0] ) || !isDefault( col1[1] ) || !isDefault( col1[2] ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Column reset failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 7 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 7 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 7 )   || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Column reset failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 7 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 7 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n( (   ) (   ) (   ) )\n( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6561,25 +6563,25 @@ void DenseNonNumericTest::testColumn()
 
       reset( col1 );
 
-      if( col1[0] != vec( 0 ) || col1[1] != vec( 0 ) || col1[2] != vec( 0 ) ) {
+      if( !isDefault( col1[0] ) || !isDefault( col1[1] ) || !isDefault( col1[2] ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Column reset failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( ( 0 ) ( 0 ) ( 0 ) )\n";
+             << "   Expected result:\n( ( ) ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 0 ) || sym(0,2) != vec( 7 ) ||
-          sym(1,0) != vec( 0 ) || sym(1,1) != vec( 0 ) || sym(1,2) != vec( 0 ) ||
-          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 0 ) || sym(2,2) != vec( 3 ) ) {
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 7 )   ||
+          !isDefault( sym(1,0) ) || !isDefault( sym(1,1) ) || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec( 7 )   || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Column reset failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( ( 1 ) ( 0 ) ( 7 ) )\n( ( 0 ) ( 0 ) ( 0 ) )\n( ( 7 ) ( 0 ) ( 3 ) )\n";
+             << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n( (   ) (   ) (   ) )\n( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
