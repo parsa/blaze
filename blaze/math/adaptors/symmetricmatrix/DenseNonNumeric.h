@@ -825,10 +825,12 @@ class SymmetricMatrix<MT,true,false>
    /*!\name Utility functions */
    //@{
    template< typename MT2 >
-   typename DisableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
+   inline typename DisableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
 
    template< typename MT2 >
-   typename EnableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
+   inline typename EnableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
+
+   inline bool isLowerOrUpper();
    //@}
    //**********************************************************************************************
 
@@ -942,8 +944,7 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const SymmetricMatrix& m
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -982,8 +983,7 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m 
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1274,8 +1274,7 @@ inline SymmetricMatrix<MT,true,false>&
    assign( rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1312,8 +1311,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
    assign( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1358,8 +1356,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1392,8 +1389,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
    addAssign( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1435,8 +1431,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1469,8 +1464,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
    subAssign( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1512,8 +1506,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -1548,8 +1541,7 @@ inline SymmetricMatrix<MT,true,false>&
    assign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
 
    return *this;
 }
@@ -2052,7 +2044,7 @@ inline void SymmetricMatrix<MT,true,false>::swap( SymmetricMatrix& m ) /* throw(
 */
 template< typename MT >   // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the matrix to be adjusted
-typename DisableIf< IsResizable<MT2> >::Type
+inline typename DisableIf< IsResizable<MT2> >::Type
    SymmetricMatrix<MT,true,false>::adjustSize( MT2& matrix, size_t n )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix ), "Non-square symmetric matrix detected" );
@@ -2077,12 +2069,32 @@ typename DisableIf< IsResizable<MT2> >::Type
 */
 template< typename MT >   // Type of the adapted dense matrix
 template< typename MT2 >  // Type of the matrix to be adjusted
-typename EnableIf< IsResizable<MT2> >::Type
+inline typename EnableIf< IsResizable<MT2> >::Type
    SymmetricMatrix<MT,true,false>::adjustSize( MT2& matrix, size_t n )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix ), "Non-square symmetric matrix detected" );
 
    matrix.resize( n, n, false );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether the adapted matrix is a lower or upper triangular matrix.
+//
+// \return \a true in case the matrix is a lower or upper matrix, \a false if not.
+//
+// This function checks whether the adapted matrix adheres to the structural invariant to be
+// a lower or upper triangular matrix. In case the adapted matrix type \a MT is a row-major
+// matrix type, the matrix is required to be a lower triangular matrix, in case \a MT is a
+// column-major matrix type, the matrix is required to be an upper triangular matrix.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline bool SymmetricMatrix<MT,true,false>::isLowerOrUpper()
+{
+   return ( IsRowMajorMatrix<MT>::value ) ? ( isLower( matrix_ ) ) : ( isUpper( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
