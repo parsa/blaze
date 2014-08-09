@@ -126,7 +126,7 @@ class SymmetricMatrix<MT,false,true>
    */
    template< typename ET >  // Data type of the other matrix
    struct Rebind {
-      //! The type of the other DynamicMatrix.
+      //! The type of the other SymmetricMatrix.
       typedef SymmetricMatrix< typename MT::BLAZE_TEMPLATE Rebind<ET>::Other >  Other;
    };
    //**********************************************************************************************
@@ -1553,24 +1553,24 @@ inline void SymmetricMatrix<MT,false,true>::reset()
 // The following example demonstrates this by means of a \f$ 5 \times 5 \f$ symmetric matrix:
 
    \code
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<int> > A;
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<int> > A;
 
    // Initializing the symmetric matrix A to
    //
    //      (  0  2  5 -4  0 )
    //      (  2  1 -3  7  0 )
-   //  A = (  0 -3  8 -1 -2 )
-   //      (  5  7 -1  0 -6 )
-   //      ( -4  0 -2 -6  1 )
+   //  A = (  5 -3  8 -1 -2 )
+   //      ( -4  7 -1  0 -6 )
+   //      (  0  0 -2 -6  1 )
    // ...
 
    // Resetting the 1st row/column results in the matrix
    //
    //      (  0  0  5 -4  0 )
    //      (  0  0  0  0  0 )
-   //  A = (  0  0  8 -1 -2 )
-   //      (  5  0 -1  0 -6 )
-   //      ( -4  0 -2 -6  1 )
+   //  A = (  5  0  8 -1 -2 )
+   //      ( -4  0 -1  0 -6 )
+   //      (  0  0 -2 -6  1 )
    //
    A.reset( 1UL );
    \endcode
