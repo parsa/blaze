@@ -534,6 +534,9 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
+   if( (~sm).rows() < 2UL )
+      return true;
+
    typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
@@ -605,6 +608,9 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
 
    if( !isSquare( ~sm ) )
       return false;
+
+   if( (~sm).rows() < 2UL )
+      return true;
 
    typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
 
