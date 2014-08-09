@@ -130,7 +130,7 @@ class SymmetricMatrix<MT,true,false>
    */
    template< typename ET >  // Data type of the other matrix
    struct Rebind {
-      //! The type of the other DynamicMatrix.
+      //! The type of the other SymmetricMatrix.
       typedef SymmetricMatrix< typename MT::BLAZE_TEMPLATE Rebind<ET>::Other >  Other;
    };
    //**********************************************************************************************
@@ -921,7 +921,7 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix()
 */
 template< typename MT >  // Type of the adapted dense matrix
 inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( size_t n )
-   : matrix_( n, n, ElementType() )  // The adapted dense matrix
+   : matrix_( n, n )  // The adapted dense matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
 
@@ -942,6 +942,8 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const SymmetricMatrix& m
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -961,12 +963,27 @@ template< typename MT >  // Type of the adapted dense matrix
 template< typename MT2   // Type of the foreign matrix
         , bool SO >      // Storage order of the foreign matrix
 inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
-   : matrix_( ~m )  // The adapted dense matrix
+   : matrix_()  // The adapted dense matrix
 {
-   if( !IsSymmetric<MT2>::value && !isSymmetric( matrix_ ) )
-      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+   typedef typename If< IsComputation<MT2>, MT, const MT2& >::Type  Tmp;
+
+   if( IsSymmetric<MT2>::value ) {
+      adjustSize( matrix_, (~m).rows() );
+      assign( ~m );
+   }
+   else {
+      Tmp tmp( ~m );
+
+      if( !isSymmetric( tmp ) )
+         throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+
+      adjustSize( matrix_, tmp.rows() );
+      assign( tmp );
+   }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1256,6 +1273,10 @@ inline SymmetricMatrix<MT,true,false>&
    adjustSize( matrix_, rhs.rows() );
    assign( rhs );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1290,6 +1311,10 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
       reset();
    assign( ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1321,16 +1346,20 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
       if( IsSparseMatrix<MT2>::value )
          reset();
       assign( ~rhs );
-      return *this;
+   }
+   else {
+      MT tmp( ~rhs );
+
+      if( !isSymmetric( tmp ) )
+         throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
+      adjustSize( matrix_, tmp.rows() );
+      assign( tmp );
    }
 
-   MT tmp( ~rhs );
-
-   if( !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
-
-   adjustSize( matrix_, tmp.rows() );
-   assign( tmp );
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 
    return *this;
 }
@@ -1362,6 +1391,10 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
 
    addAssign( ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1391,15 +1424,19 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
 
    if( IsSymmetric<MT2>::value ) {
       addAssign( ~rhs );
-      return *this;
+   }
+   else {
+      RT tmp( ~rhs );
+
+      if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+         throw std::invalid_argument( "Invalid assignment to static matrix" );
+
+      addAssign( tmp );
    }
 
-   RT tmp( ~rhs );
-
-   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
-
-   addAssign( tmp );
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 
    return *this;
 }
@@ -1431,6 +1468,10 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
 
    subAssign( ~rhs );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1460,15 +1501,19 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
 
    if( IsSymmetric<MT2>::value ) {
       subAssign( ~rhs );
-      return *this;
+   }
+   else {
+      RT tmp( ~rhs );
+
+      if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+         throw std::invalid_argument( "Invalid assignment to static matrix" );
+
+      subAssign( tmp );
    }
 
-   RT tmp( ~rhs );
-
-   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
-
-   subAssign( tmp );
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 
    return *this;
 }
@@ -1501,6 +1546,10 @@ inline SymmetricMatrix<MT,true,false>&
 
    adjustSize( matrix_, tmp.rows() );
    assign( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsColumnMajorMatrix<MT>::value || isLower( matrix_ ), "Non-lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsRowMajorMatrix<MT>::value    || isUpper( matrix_ ), "Non-upper matrix detected" );
 
    return *this;
 }
@@ -1785,6 +1834,35 @@ inline void SymmetricMatrix<MT,true,false>::reset()
 // \exception std::invalid_argument Invalid row/column access index.
 //
 // This function resets the values in the specified row \b and column to their default value.
+// The following example demonstrates this by means of a \f$ 5 \times 5 \f$ symmetric matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StaticVector;
+   using blaze::SymmetricMatrix;
+
+   SymmetricMatrix< DynamicMatrix< StaticVector<int,1UL> > > A;
+
+   // Initializing the symmetric matrix A to
+   //
+   //      ( (    ) (  2 ) (  5 ) ( -4 ) (    ) )
+   //      ( (  2 ) (  1 ) ( -3 ) (  7 ) (    ) )
+   //  A = ( (  5 ) ( -3 ) (  8 ) ( -1 ) ( -2 ) )
+   //      ( ( -4 ) (  7 ) ( -1 ) (    ) ( -6 ) )
+   //      ( (    ) (  0 ) ( -2 ) ( -6 ) (  1 ) )
+   // ...
+
+   // Resetting the 1st row/column results in the matrix
+   //
+   //      ( (    ) (    ) (  5 ) ( -4 ) (    ) )
+   //      ( (    ) (    ) (    ) (    ) (    ) )
+   //  A = ( (  5 ) (    ) (  8 ) ( -1 ) ( -2 ) )
+   //      ( ( -4 ) (    ) ( -1 ) (    ) ( -6 ) )
+   //      ( (    ) (    ) ( -2 ) ( -6 ) (  1 ) )
+   //
+   A.reset( 1UL );
+   \endcode
+
 // Note that the reset() function has no impact on the capacity of the matrix or row/column.
 */
 template< typename MT >  // Type of the adapted dense matrix
