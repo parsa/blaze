@@ -2002,7 +2002,17 @@ template< typename MT >     // Type of the adapted dense matrix
 template< typename Other >  // Data type of the scalar value
 inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::scale( Other scalar )
 {
-   matrix_.scale( scalar );
+   if( IsRowMajorMatrix<MT>::value ) {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            matrix_(i,j) *= scalar;
+   }
+   else {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) *= scalar;
+   }
+
    return *this;
 }
 /*! \endcond */
