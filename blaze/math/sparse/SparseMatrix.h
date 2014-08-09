@@ -498,7 +498,8 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is a lower triangular matrix, \a false if not.
 //
-// This function checks if the given sparse matrix is a lower triangular matrix of the form
+// This function checks if the given sparse matrix is a lower triangular matrix. The matrix is
+// considered to be lower triangular if it is a square matrix of the form
 
                         \f[\left(\begin{array}{*{5}{c}}
                         l_(0,0) & 0       & 0       & \cdots & 0       \\
@@ -508,6 +509,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
                         l_(N,0) & l_(N,1) & l_(N,2) & \cdots & l_(N,N) \\
                         \end{array}\right).\f]
 
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
 // The following code example demonstrates the use of the function:
 
    \code
@@ -573,16 +575,18 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
 // \param sm The sparse matrix to be checked.
 // \return \a true if the matrix is an upper triangular matrix, \a false if not.
 //
-// This function checks if the given sparse matrix is an upper triangular matrix of the form
+// This function checks if the given sparse matrix is an upper triangular matrix. The matrix is
+// considered to be upper triangular if it is a square matrix of the form
 
                         \f[\left(\begin{array}{*{5}{c}}
-                        l_(0,0) & l_(0,1) & l_(0,2) & \cdots & l_(0,N) \\
-                        0       & l_(1,1) & l_(1,2) & \cdots & l_(1,N) \\
-                        0       & 0       & l_(2,2) & \cdots & l_(2,N) \\
+                        u_(0,0) & u_(0,1) & u_(0,2) & \cdots & u_(0,N) \\
+                        0       & u_(1,1) & u_(1,2) & \cdots & u_(1,N) \\
+                        0       & 0       & u_(2,2) & \cdots & u_(2,N) \\
                         \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
-                        0       & 0       & 0       & \cdots & l_(N,N) \\
+                        0       & 0       & 0       & \cdots & u_(N,N) \\
                         \end{array}\right).\f]
 
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
 // The following code example demonstrates the use of the function:
 
    \code
