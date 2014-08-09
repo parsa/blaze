@@ -823,6 +823,9 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
+   if( (~dm).rows() < 2UL )
+      return true;
+
    typename MT::CompositeType A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
@@ -887,6 +890,9 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
    if( !isSquare( ~dm ) )
       return false;
+
+   if( (~dm).rows() < 2UL )
+      return true;
 
    typename MT::CompositeType A( ~dm );  // Evaluation of the dense matrix operand
 
