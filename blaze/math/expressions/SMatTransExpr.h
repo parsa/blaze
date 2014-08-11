@@ -347,6 +347,17 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the specified row/column.
+   //
+   // \param i The index of the row/column.
+   // \return The number of non-zero elements of row/column \a i.
+   */
+   inline size_t nonZeros( size_t i ) const {
+      return sm_.nonZeros( i );
+   }
+   //**********************************************************************************************
+
    //**Find function*******************************************************************************
    /*!\brief Searches for a specific matrix element.
    //
