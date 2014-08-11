@@ -618,7 +618,7 @@ class SymmetricMatrix<MT,false,true>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
