@@ -40,7 +40,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/MakeSigned.h>
+#include <blaze/util/typetraits/MakeUnsigned.h>
 #include <blazetest/utiltest/typetraits/OperationTest.h>
 
 
@@ -65,6 +68,8 @@ OperationTest::OperationTest()
 {
    testHasMember();
    testGetMember();
+   testMakeSigned();
+   testMakeUnsigned();
 }
 //*************************************************************************************************
 
@@ -78,13 +83,13 @@ OperationTest::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the 'HAS_MEMBER' type trait generation macro.
+/*!\brief Test of the \c HAS_MEMBER type trait generation macro.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'HAS_MEMBER' type trait generation macro. In
-// case an error is detected, a compilation error is created.
+// This function performs a compile time test of the \c HAS_MEMBER type trait generation macro.
+// In case an error is detected, a compilation error is created.
 */
 void OperationTest::testHasMember()
 {
@@ -113,19 +118,81 @@ void OperationTest::testHasMember()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'GET_MEMBER' type trait generation macro.
+/*!\brief Test of the \c GET_MEMBER type trait generation macro.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'GET_MEMBER' type trait generation macro. In
-// case an error is detected, a compilation error is created.
+// This function performs a compile time test of the \c GET_MEMBER type trait generation macro.
+// In case an error is detected, a compilation error is created.
 */
 void OperationTest::testGetMember()
 {
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type5>::Type, Type5::DataType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type6>::Type, Type6::DataType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type7>::Type, int             );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c MakeSigned type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c MakeSigned type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testMakeSigned()
+{
+   using blaze::MakeSigned;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<signed char>::Type   , signed char );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<unsigned char>::Type , signed char );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<short>::Type         , short       );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<unsigned short>::Type, short       );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<int>::Type           , int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<unsigned int>::Type  , int         );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<long>::Type          , long        );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<unsigned long>::Type , long        );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<const int>::Type         , const int          );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<volatile int>::Type      , volatile int       );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeSigned<const volatile int>::Type, const volatile int );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_SAME_SIZE( MakeSigned<wchar_t>::Type, wchar_t );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c MakeUnsigned type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the \c MakeUnsigned type trait. In case an error
+// is detected, a compilation error is created.
+*/
+void OperationTest::testMakeUnsigned()
+{
+   using blaze::MakeUnsigned;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<signed char>::Type   , unsigned char  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<unsigned char>::Type , unsigned char  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<short>::Type         , unsigned short );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<unsigned short>::Type, unsigned short );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<int>::Type           , unsigned int   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<unsigned int>::Type  , unsigned int   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<long>::Type          , unsigned long  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<unsigned long>::Type , unsigned long  );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<const int>::Type         , const unsigned int          );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<volatile int>::Type      , volatile unsigned int       );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeUnsigned<const volatile int>::Type, const volatile unsigned int );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_SAME_SIZE( MakeUnsigned<wchar_t>::Type, wchar_t );
 }
 //*************************************************************************************************
 

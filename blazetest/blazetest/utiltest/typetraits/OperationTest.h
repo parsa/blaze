@@ -83,6 +83,8 @@ class OperationTest
    //@{
    void testHasMember();
    void testGetMember();
+   void testMakeSigned();
+   void testMakeUnsigned();
    //@}
    //**********************************************************************************************
 
