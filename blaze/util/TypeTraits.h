@@ -83,6 +83,7 @@
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/IsVolatile.h>
 #include <blaze/util/typetraits/MakeSigned.h>
+#include <blaze/util/typetraits/MakeUnsigned.h>
 #include <blaze/util/typetraits/Rank.h>
 #include <blaze/util/typetraits/RemoveAllExtents.h>
 #include <blaze/util/typetraits/RemoveConst.h>
