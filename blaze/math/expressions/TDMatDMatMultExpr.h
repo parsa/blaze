@@ -96,6 +96,7 @@
 #include <blaze/util/typetraits/IsFloat.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {

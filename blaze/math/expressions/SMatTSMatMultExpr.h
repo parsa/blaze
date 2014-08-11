@@ -81,6 +81,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {

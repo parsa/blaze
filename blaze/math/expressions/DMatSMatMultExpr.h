@@ -83,6 +83,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
