@@ -748,7 +748,7 @@ inline CompressedVector<Type,TF>&
    using blaze::assign;
 
    if( (~rhs).canAlias( this ) ) {
-      CompressedVector tmp( rhs );
+      CompressedVector tmp( ~rhs );
       swap( tmp );
    }
    else {
@@ -780,7 +780,7 @@ inline CompressedVector<Type,TF>&
    using blaze::assign;
 
    if( (~rhs).canAlias( this ) || (~rhs).nonZeros() > capacity_ ) {
-      CompressedVector tmp( rhs );
+      CompressedVector tmp( ~rhs );
       swap( tmp );
    }
    else {

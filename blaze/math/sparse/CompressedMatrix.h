@@ -909,7 +909,7 @@ inline CompressedMatrix<Type,SO>&
    using blaze::assign;
 
    if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( rhs );
+      CompressedMatrix tmp( ~rhs );
       swap( tmp );
    }
    else {
@@ -943,7 +943,7 @@ inline CompressedMatrix<Type,SO>&
    if( (~rhs).canAlias( this ) ||
        (~rhs).rows()     > capacity_ ||
        (~rhs).nonZeros() > capacity() ) {
-      CompressedMatrix tmp( rhs );
+      CompressedMatrix tmp( ~rhs );
       swap( tmp );
    }
    else {
@@ -3061,7 +3061,7 @@ inline CompressedMatrix<Type,true>&
    using blaze::assign;
 
    if( (~rhs).canAlias( this ) ) {
-      CompressedMatrix tmp( rhs );
+      CompressedMatrix tmp( ~rhs );
       swap( tmp );
    }
    else {
@@ -3096,7 +3096,7 @@ inline CompressedMatrix<Type,true>&
    if( (~rhs).canAlias( this ) ||
        (~rhs).columns()  > capacity_ ||
        (~rhs).nonZeros() > capacity() ) {
-      CompressedMatrix tmp( rhs );
+      CompressedMatrix tmp( ~rhs );
       swap( tmp );
    }
    else {
