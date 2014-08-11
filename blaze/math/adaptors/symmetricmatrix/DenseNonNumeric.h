@@ -720,7 +720,7 @@ class SymmetricMatrix<MT,true,false>
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = MT::smpAssignable };
+   enum { smpAssignable = 0 };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -966,7 +966,7 @@ template< typename MT2   // Type of the foreign matrix
 inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
    : matrix_()  // The adapted dense matrix
 {
-   typedef typename If< IsComputation<MT2>, MT, const MT2& >::Type  Tmp;
+   typedef typename If< IsComputation<MT2>, typename MT2::ResultType, const MT2& >::Type  Tmp;
 
    if( IsSymmetric<MT2>::value ) {
       adjustSize( matrix_, (~m).rows() );
