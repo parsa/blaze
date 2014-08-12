@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -370,7 +370,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    // \return Iterator to the element in case the index is found, end() iterator otherwise.
    */
    inline ConstIterator find( size_t i, size_t j ) const {
-      BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
       return sm_.find( j, i );
    }
    //**********************************************************************************************
@@ -383,7 +383,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    // \return Iterator to the first index not less then the given index, end() iterator otherwise.
    */
    inline ConstIterator lowerBound( size_t i, size_t j ) const {
-      BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
       return sm_.lowerBound( j, i );
    }
    //**********************************************************************************************
@@ -396,7 +396,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    // \return Iterator to the first index greater then the given index, end() iterator otherwise.
    */
    inline ConstIterator upperBound( size_t i, size_t j ) const {
-      BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
       return sm_.upperBound( j, i );
    }
    //**********************************************************************************************
