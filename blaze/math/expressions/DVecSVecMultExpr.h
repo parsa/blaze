@@ -43,6 +43,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
@@ -349,6 +350,42 @@ class DVecSVecMultExpr : public SparseVector< DVecSVecMultExpr<VT1,VT2,TF>, TF >
    */
    inline size_t nonZeros() const {
       return rhs_.nonZeros();
+   }
+   //**********************************************************************************************
+
+   //**Find function*******************************************************************************
+   /*!\brief Searches for a specific vector element.
+   //
+   // \param index The index of the search element.
+   // \return Iterator to the element in case the index is found, end() iterator otherwise.
+   */
+   inline ConstIterator find( size_t index ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT2 );
+      return ConstIterator( lhs_, rhs_.find( index ) );
+   }
+   //**********************************************************************************************
+
+   //**LowerBound function*************************************************************************
+   /*!\brief Returns an iterator to the first index not less then the given index.
+   //
+   // \param index The index of the search element.
+   // \return Iterator to the first index not less then the given index, end() iterator otherwise.
+   */
+   inline ConstIterator lowerBound( size_t index ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT2 );
+      return ConstIterator( lhs_, rhs_.lowerBound( index ) );
+   }
+   //**********************************************************************************************
+
+   //**UpperBound function*************************************************************************
+   /*!\brief Returns an iterator to the first index greater then the given index.
+   //
+   // \param index The index of the search element.
+   // \return Iterator to the first index greater then the given index, end() iterator otherwise.
+   */
+   inline ConstIterator upperBound( size_t index ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT2 );
+      return ConstIterator( lhs_, rhs_.upperBound( index ) );
    }
    //**********************************************************************************************
 
