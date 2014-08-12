@@ -6800,6 +6800,32 @@ void DenseNonNumericTest::testRow()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+
+      if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) || sym(0,2) != vec( 7 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 8 ) || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
+                                     "( ( 2 ) ( 8 ) ( 4 ) )\n"
+                                     "( ( 7 ) ( 4 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -6892,6 +6918,32 @@ void DenseNonNumericTest::testRow()
              << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n"
                                      "( (   ) (   ) (   ) )\n"
                                      "( ( 7 ) (   ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+
+      if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) || sym(0,2) != vec( 7 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 8 ) || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
+                                     "( ( 2 ) ( 8 ) ( 4 ) )\n"
+                                     "( ( 7 ) ( 4 ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -7001,6 +7053,32 @@ void DenseNonNumericTest::testColumn()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+
+      if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) || sym(0,2) != vec( 7 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 8 ) || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
+                                     "( ( 2 ) ( 8 ) ( 4 ) )\n"
+                                     "( ( 7 ) ( 4 ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -7093,6 +7171,32 @@ void DenseNonNumericTest::testColumn()
              << "   Expected result:\n( ( 1 ) (   ) ( 7 ) )\n"
                                      "( (   ) (   ) (   ) )\n"
                                      "( ( 7 ) (   ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+
+      if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( ( 2 ) ( 8 ) ( 4 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) || sym(0,2) != vec( 7 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 8 ) || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 7 ) || sym(2,1) != vec( 4 ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) ( 7 ) )\n"
+                                     "( ( 2 ) ( 8 ) ( 4 ) )\n"
+                                     "( ( 7 ) ( 4 ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
