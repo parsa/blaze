@@ -43,6 +43,7 @@
 #include <blaze/math/SparseRow.h>
 #include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/StaticVector.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/symmetricmatrix/SparseNumericTest.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -5529,7 +5530,7 @@ void SparseNumericTest::testErase()
          }
       }
 
-      // Trying to erase a zero element
+      // Trying to erase an empty range
       {
          Iterator pos = sym.erase( 2UL, sym.find( 2UL, 0UL ), sym.find( 2UL, 0UL ) );
 
@@ -6020,7 +6021,7 @@ void SparseNumericTest::testErase()
          }
       }
 
-      // Erasing the element from (2,3) to the row end
+      // Erasing the element from (2,3) to the column end
       {
          Iterator pos = sym.erase( 3UL, sym.find( 2UL, 3UL ), sym.end( 3UL ) );
 
@@ -6056,7 +6057,7 @@ void SparseNumericTest::testErase()
          }
       }
 
-      // Trying to erase a zero element
+      // Trying to erase an empty range
       {
          Iterator pos = sym.erase( 2UL, sym.find( 0UL, 2UL ), sym.find( 0UL, 2UL ) );
 
@@ -8179,6 +8180,30 @@ void SparseNumericTest::testRow()
              << "   Expected result:\n( 1 0 7 )\n( 0 0 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 2, 8, 4 );;
+
+      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 2 8 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 7 ||
+          sym(1,0) != 2 || sym(1,1) != 8 || sym(1,2) != 4 ||
+          sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -8267,6 +8292,30 @@ void SparseNumericTest::testRow()
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 0 7 )\n( 0 0 0 )\n( 7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 2, 8, 4 );;
+
+      if( row1[0] != 2 || row1[1] != 8 || row1[2] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 2 8 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 7 ||
+          sym(1,0) != 2 || sym(1,1) != 8 || sym(1,2) != 4 ||
+          sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -8372,6 +8421,30 @@ void SparseNumericTest::testColumn()
              << "   Expected result:\n( 1 0 7 )\n( 0 0 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+
+      col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( 2, 8, 4 );
+
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 2 8 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 7 ||
+          sym(1,0) != 2 || sym(1,1) != 8 || sym(1,2) != 4 ||
+          sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -8460,6 +8533,30 @@ void SparseNumericTest::testColumn()
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 1 0 7 )\n( 0 0 0 )\n( 7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( 2, 8, 4 );
+
+      if( col1[0] != 2 || col1[1] != 8 || col1[2] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 2 8 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 7 ||
+          sym(1,0) != 2 || sym(1,1) != 8 || sym(1,2) != 4 ||
+          sym(2,0) != 7 || sym(2,1) != 4 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 7 )\n( 2 8 4 )\n( 7 4 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
