@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <iterator>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -388,6 +389,45 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    */
    inline size_t nonZeros( size_t i ) const {
       return sm_.nonZeros(i);
+   }
+   //**********************************************************************************************
+
+   //**Find function*******************************************************************************
+   /*!\brief Searches for a specific matrix element.
+   //
+   // \param i The row index of the search element.
+   // \param j The column index of the search element.
+   // \return Iterator to the element in case the index is found, end() iterator otherwise.
+   */
+   inline ConstIterator find( size_t i, size_t j ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+      return ConstIterator( sm_.find( i, j ) );
+   }
+   //**********************************************************************************************
+
+   //**LowerBound function*************************************************************************
+   /*!\brief Returns an iterator to the first index not less then the given index.
+   //
+   // \param i The row index of the search element.
+   // \param j The column index of the search element.
+   // \return Iterator to the first index not less then the given index, end() iterator otherwise.
+   */
+   inline ConstIterator lowerBound( size_t i, size_t j ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+      return ConstIterator( sm_.lowerBound( i, j ) );
+   }
+   //**********************************************************************************************
+
+   //**UpperBound function*************************************************************************
+   /*!\brief Returns an iterator to the first index greater then the given index.
+   //
+   // \param i The row index of the search element.
+   // \param j The column index of the search element.
+   // \return Iterator to the first index greater then the given index, end() iterator otherwise.
+   */
+   inline ConstIterator upperBound( size_t i, size_t j ) const {
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+      return ConstIterator( sm_.upperBound( i, j ) );
    }
    //**********************************************************************************************
 
