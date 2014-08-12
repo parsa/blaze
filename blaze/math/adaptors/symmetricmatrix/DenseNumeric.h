@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -107,6 +108,7 @@ class SymmetricMatrix<MT,true,true>
    typedef typename MT::OppositeType   OT;  //!< Opposite type of the dense matrix.
    typedef typename MT::TransposeType  TT;  //!< Transpose type of the dense matrix.
    typedef typename MT::ElementType    ET;  //!< Element type of the dense matrix.
+   typedef IntrinsicTrait<ET>          IT;  //!< Intrinsic trait for the matrix element type.
    //**********************************************************************************************
 
  public:
@@ -1069,8 +1071,11 @@ class SymmetricMatrix<MT,true,true>
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu( size_t i, size_t j ) const;
+   inline IntrinsicType load  ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu ( size_t i, size_t j ) const;
+   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
    //@}
    //**********************************************************************************************
 
@@ -2248,6 +2253,117 @@ inline typename SymmetricMatrix<MT,true,true>::IntrinsicType
    SymmetricMatrix<MT,true,true>::loadu( size_t i, size_t j ) const
 {
    return matrix_.loadu( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   matrix_.store( i, j, value );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      const size_t kend( min( j+IT::size, columns() ) );
+      for( size_t k=j; k<kend; ++k )
+         matrix_(k,i) = matrix_(i,k);
+   }
+   else {
+      const size_t kend( min( i+IT::size, rows() ) );
+      for( size_t k=i; k<kend; ++k )
+         matrix_(j,k) = matrix_(k,j);
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an unaligned store of a specific intrinsic element of the dense matrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the column index (in case of a row-major matrix)
+// or the row index (in case of a column-major matrix) must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+{
+   matrix_.storeu( i, j, value );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      const size_t kend( min( j+IT::size, columns() ) );
+      for( size_t k=j; k<kend; ++k )
+         matrix_(k,i) = matrix_(i,k);
+   }
+   else {
+      const size_t kend( min( i+IT::size, rows() ) );
+      for( size_t k=i; k<kend; ++k )
+         matrix_(j,k) = matrix_(k,j);
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned, non-temporal store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned, non-temporal store of a specific intrinsic element of the
+// dense matrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the column index (in case of a row-major
+// matrix) or the row index (in case of a column-major matrix) must be a multiple of the number
+// of values inside the intrinsic element. This function must \b NOT be called explicitly! It
+// is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the adapted dense matrix
+inline void SymmetricMatrix<MT,true,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+{
+   matrix_.stream( i, j, value );
+
+   if( IsRowMajorMatrix<MT>::value ) {
+      const size_t kend( min( j+IT::size, columns() ) );
+      for( size_t k=j; k<kend; ++k )
+         matrix_(k,i) = matrix_(i,k);
+   }
+   else {
+      const size_t kend( min( i+IT::size, rows() ) );
+      for( size_t k=i; k<kend; ++k )
+         matrix_(j,k) = matrix_(k,j);
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
