@@ -441,20 +441,17 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef typename MT::CompositeType  CT;
+   typedef typename CT::ConstIterator  ConstIterator;
 
-   // Early exit in case the matrix is guaranteed to be symmetric at compile time
    if( IsSymmetric<MT>::value )
       return true;
 
-   // Early exit in case the matrix is not square
    if( !isSquare( ~sm ) )
       return false;
 
-   // Evaluation of the sparse matrix operand
-   typename MT::CompositeType A( ~sm );
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
 
-   // Run time evaluation whether the matrix is symmetric
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
@@ -531,7 +528,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isLower( const SparseMatrix<MT,SO>& sm )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef typename MT::CompositeType  CT;
+   typedef typename CT::ConstIterator  ConstIterator;
 
    if( !isSquare( ~sm ) )
       return false;
@@ -539,7 +537,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( (~sm).rows() < 2UL )
       return true;
 
-   typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -608,7 +606,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUpper( const SparseMatrix<MT,SO>& sm )
 {
-   typedef typename MT::ConstIterator  ConstIterator;
+   typedef typename MT::CompositeType  CT;
+   typedef typename CT::ConstIterator  ConstIterator;
 
    if( !isSquare( ~sm ) )
       return false;
@@ -616,7 +615,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    if( (~sm).rows() < 2UL )
       return true;
 
-   typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
+   CT A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {

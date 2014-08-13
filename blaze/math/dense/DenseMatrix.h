@@ -748,6 +748,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
+   typedef typename MT::CompositeType  CT;
+
    // Early exit in case the matrix is guaranteed to be symmetric at compile time
    if( IsSymmetric<MT>::value )
       return true;
@@ -757,7 +759,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
       return false;
 
    // Evaluation of the dense matrix operand
-   typename MT::CompositeType A( ~dm );
+   CT A( ~dm );
 
    // Run time evaluation whether the matrix is symmetric
    if( SO == rowMajor ) {
@@ -822,13 +824,15 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isLower( const DenseMatrix<MT,SO>& dm )
 {
+   typedef typename MT::CompositeType  CT;
+
    if( !isSquare( ~dm ) )
       return false;
 
    if( (~dm).rows() < 2UL )
       return true;
 
-   typename MT::CompositeType A( ~dm );  // Evaluation of the dense matrix operand
+   CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -892,13 +896,15 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
+   typedef typename MT::CompositeType  CT;
+
    if( !isSquare( ~dm ) )
       return false;
 
    if( (~dm).rows() < 2UL )
       return true;
 
-   typename MT::CompositeType A( ~dm );  // Evaluation of the dense matrix operand
+   CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
