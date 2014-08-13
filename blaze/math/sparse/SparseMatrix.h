@@ -46,9 +46,11 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -441,8 +443,11 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 {
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename CT::ConstIterator  ConstIterator;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
    if( IsSymmetric<MT>::value )
       return true;
@@ -450,7 +455,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -528,8 +533,11 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isLower( const SparseMatrix<MT,SO>& sm )
 {
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename CT::ConstIterator  ConstIterator;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
    if( !isSquare( ~sm ) )
       return false;
@@ -606,8 +614,11 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isUpper( const SparseMatrix<MT,SO>& sm )
 {
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
-   typedef typename CT::ConstIterator  ConstIterator;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
    if( !isSquare( ~sm ) )
       return false;
