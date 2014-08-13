@@ -642,7 +642,34 @@ void OperationTest::testIsSymmetric()
          }
       }
 
-      // Non-symmetric matrix
+      // Non-symmetric matrix (addition element in the lower part)
+      {
+         // Initialization check
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,0) = 4;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-symmetric matrix (addition element in the upper part)
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
@@ -777,7 +804,34 @@ void OperationTest::testIsSymmetric()
          }
       }
 
-      // Non-symmetric matrix
+      // Non-symmetric matrix (additional element in the lower part)
+      {
+         // Initialization check
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,0) = 4;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 4UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-symmetric matrix (additional element in the upper part)
       {
          // Initialization check
          blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
