@@ -47,10 +47,12 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -750,18 +752,14 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
    typedef typename MT::CompositeType  CT;
 
-   // Early exit in case the matrix is guaranteed to be symmetric at compile time
    if( IsSymmetric<MT>::value )
       return true;
 
-   // Early exit in case the matrix is not square
    if( !isSquare( ~dm ) )
       return false;
 
-   // Evaluation of the dense matrix operand
-   CT A( ~dm );
+   CT A( ~dm );  // Evaluation of the dense matrix operand
 
-   // Run time evaluation whether the matrix is symmetric
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
@@ -824,7 +822,10 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isLower( const DenseMatrix<MT,SO>& dm )
 {
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
 
    if( !isSquare( ~dm ) )
       return false;
@@ -832,7 +833,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( (~dm).rows() < 2UL )
       return true;
 
-   CT A( ~dm );  // Evaluation of the dense matrix operand
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -896,7 +897,10 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 bool isUpper( const DenseMatrix<MT,SO>& dm )
 {
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
 
    if( !isSquare( ~dm ) )
       return false;
@@ -904,7 +908,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    if( (~dm).rows() < 2UL )
       return true;
 
-   CT A( ~dm );  // Evaluation of the dense matrix operand
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
