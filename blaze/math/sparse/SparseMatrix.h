@@ -459,13 +459,13 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
       for( size_t i=0UL; i<A.rows(); ++i ) {
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
-            const size_t index( element->index() );
+            const size_t j( element->index() );
 
-            if( isDefault( element->value() ) )
+            if( i == j || isDefault( element->value() ) )
                continue;
 
-            const ConstIterator pos( A.lowerBound( index, i ) );
-            if( pos == A.end(index) || pos->index() != i || !equal( pos->value(), element->value() ) )
+            const ConstIterator pos( A.find( j, i ) );
+            if( pos == A.end(j) || !equal( pos->value(), element->value() ) )
                return false;
          }
       }
@@ -474,13 +474,13 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
       for( size_t j=0UL; j<A.columns(); ++j ) {
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
-            const size_t index( element->index() );
+            const size_t i( element->index() );
 
-            if( isDefault( element->value() ) )
+            if( j == i || isDefault( element->value() ) )
                continue;
 
-            const ConstIterator pos( A.lowerBound( j, index ) );
-            if( pos == A.end(index) || pos->index() != j || !equal( pos->value(), element->value() ) )
+            const ConstIterator pos( A.find( j, i ) );
+            if( pos == A.end(i) || !equal( pos->value(), element->value() ) )
                return false;
          }
       }
