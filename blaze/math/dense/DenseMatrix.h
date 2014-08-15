@@ -48,8 +48,10 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
@@ -758,6 +760,12 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
+   if( (~dm).rows() < 2UL )
+      return true;
+
+   if( IsLower<MT>::value || IsUpper<MT>::value )
+      return false;
+
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
@@ -827,11 +835,17 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
 
+   if( IsLower<MT>::value )
+      return true;
+
    if( !isSquare( ~dm ) )
       return false;
 
    if( (~dm).rows() < 2UL )
       return true;
+
+   if( IsSymmetric<MT>::value || IsUpper<MT>::value )
+      return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
 
@@ -902,11 +916,17 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
 
+   if( IsUpper<MT>::value )
+      return true;
+
    if( !isSquare( ~dm ) )
       return false;
 
    if( (~dm).rows() < 2UL )
       return true;
+
+   if( IsSymmetric<MT>::value || IsLower<MT>::value )
+      return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
 
