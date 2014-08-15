@@ -47,8 +47,10 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -455,6 +457,12 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
+   if( (~sm).rows() < 2UL )
+      return true;
+
+   if( IsLower<MT>::value || IsUpper<MT>::value )
+      return false;
+
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
@@ -539,11 +547,17 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
+   if( IsLower<MT>::value )
+      return true;
+
    if( !isSquare( ~sm ) )
       return false;
 
    if( (~sm).rows() < 2UL )
       return true;
+
+   if( IsSymmetric<MT>::value || IsUpper<MT>::value )
+      return false;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -620,11 +634,17 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
+   if( IsUpper<MT>::value )
+      return true;
+
    if( !isSquare( ~sm ) )
       return false;
 
    if( (~sm).rows() < 2UL )
       return true;
+
+   if( IsSymmetric<MT>::value || IsLower<MT>::value )
+      return false;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
