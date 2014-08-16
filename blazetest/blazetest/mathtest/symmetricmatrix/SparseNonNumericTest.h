@@ -118,19 +118,19 @@ class SparseNonNumericTest
    void testColumn      ();
 
    template< typename Type >
-   void checkSize( const Type& vector, size_t expectedSize ) const;
-
-   template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
 
    template< typename Type >
    void checkColumns( const Type& matrix, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& object, size_t minCapacity ) const;
+   void checkCapacity( const Type& matrix, size_t minCapacity ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
+   void checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const;
+
+   template< typename Type >
+   void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
@@ -196,33 +196,6 @@ class SparseNonNumericTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given vector.
-//
-// \param vector The vector to be checked.
-// \param expectedSize The expected size of the vector.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the size of the given vector. In case the actual size does not correspond
-// to the given expected size, a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the vector
-void SparseNonNumericTest::checkSize( const Type& vector, size_t expectedSize ) const
-{
-   if( size( vector ) != expectedSize ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid size detected\n"
-          << " Details:\n"
-          << "   Size         : " << size( vector ) << "\n"
-          << "   Expected size: " << expectedSize << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Checking the number of rows of the given matrix.
 //
 // \param matrix The matrix to be checked.
@@ -279,25 +252,25 @@ void SparseNonNumericTest::checkColumns( const Type& matrix, size_t expectedColu
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given vector/matrix.
+/*!\brief Checking the capacity of the given matrix.
 //
-// \param object The vector/matrix to be checked.
-// \param minCapacity The expected minimum capacity of the vector/matrix.
+// \param matrix The matrix to be checked.
+// \param minCapacity The expected minimum capacity of the matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given vector/matrix. In case the actual capacity is
-// smaller than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
+// This function checks the capacity of the given matrix. In case the actual capacity is smaller
+// than the given expected minimum capacity, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the vector/matrix
-void SparseNonNumericTest::checkCapacity( const Type& object, size_t minCapacity ) const
+template< typename Type >  // Type of the matrix
+void SparseNonNumericTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
-   if( capacity( object ) < minCapacity ) {
+   if( capacity( matrix ) < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << capacity( object ) << "\n"
+          << "   Capacity                 : " << capacity( matrix ) << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -306,37 +279,67 @@ void SparseNonNumericTest::checkCapacity( const Type& object, size_t minCapacity
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given vector/matrix.
+/*!\brief Checking the capacity of a specific row/column of the given matrix.
 //
-// \param object The vector/matrix to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the vector/matrix.
+// \param matrix The matrix to be checked.
+// \param index The row/column to be checked.
+// \param minCapacity The expected minimum capacity of the specified row/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given vector/matrix. In case
-// the actual number of non-zero elements does not correspond to the given expected number,
+// This function checks the capacity of a specific row/column of the given matrix. In case the
+// actual capacity is smaller than the given expected minimum capacity, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename Type >  // Type of the matrix
+void SparseNonNumericTest::checkCapacity( const Type& matrix, size_t index, size_t minCapacity ) const
+{
+   if( capacity( matrix, index ) < minCapacity ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << " Details:\n"
+          << "   Capacity                 : " << capacity( matrix, index ) << "\n"
+          << "   Expected minimum capacity: " << minCapacity << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of non-zero elements of the given matrix.
+//
+// \param matrix The matrix to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the matrix.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of non-zero elements of the given matrix. In case the
+// actual number of non-zero elements does not correspond to the given expected number,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the vector/matrix
-void SparseNonNumericTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the matrix
+void SparseNonNumericTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
-   if( nonZeros( object ) != expectedNonZeros ) {
+   if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << nonZeros( object ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( capacity( object ) < nonZeros( object ) ) {
+   if( capacity( matrix ) < nonZeros( matrix ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << nonZeros( object ) << "\n"
-          << "   Capacity           : " << capacity( object ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix ) << "\n"
+          << "   Capacity           : " << capacity( matrix ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
