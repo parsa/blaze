@@ -1251,16 +1251,14 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,false,true>& >::Type
    SymmetricMatrix<MT,false,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename MT2::ResultType  RT;
-
    if( IsSymmetric<MT2>::value ) {
       matrix_ += ~rhs;
       return *this;
    }
 
-   RT tmp( ~rhs );
+   typename MT2::ResultType tmp( ~rhs );
 
-   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+   if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    matrix_ += tmp;
@@ -1320,16 +1318,14 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,false,true>& >::Type
    SymmetricMatrix<MT,false,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename MT2::ResultType  RT;
-
    if( IsSymmetric<MT2>::value ) {
       matrix_ -= ~rhs;
       return *this;
    }
 
-   RT tmp( ~rhs );
+   typename MT2::ResultType tmp( ~rhs );
 
-   if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+   if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    matrix_ -= tmp;
