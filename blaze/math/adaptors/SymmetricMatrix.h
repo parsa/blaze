@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/constraints/Numeric.h>
 
 
@@ -249,6 +250,25 @@ struct IsResizable< SymmetricMatrix<MT,DF,NF> > : public IsResizable<MT>::Type
 {
    enum { value = IsResizable<MT>::value };
    typedef typename IsResizable<MT>::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REMOVEADAPTOR SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool DF, bool NF >
+struct RemoveAdaptor< SymmetricMatrix<MT,DF,NF> >
+{
+   typedef MT  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
