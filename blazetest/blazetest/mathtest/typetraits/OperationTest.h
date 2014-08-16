@@ -75,6 +75,7 @@ class OperationTest
    //@{
    void testBaseElementType();
    void testNumericElementType();
+   void testRemoveAdaptor();
    //@}
    //**********************************************************************************************
 };

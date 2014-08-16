@@ -41,11 +41,15 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/mathtest/typetraits/OperationTest.h>
@@ -72,6 +76,7 @@ OperationTest::OperationTest()
 {
    testBaseElementType();
    testNumericElementType();
+   testRemoveAdaptor();
 }
 //*************************************************************************************************
 
@@ -140,6 +145,47 @@ void OperationTest::testNumericElementType()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type2>::Type, complex<float> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type3>::Type, int );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( NumericElementType<Type4>::Type, float );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'RemoveAdaptor' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'RemoveAdaptor' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testRemoveAdaptor()
+{
+   using blaze::DynamicVector;
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::RemoveAdaptor;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >              Source1;
+   typedef const SymmetricMatrix< CompressedMatrix<float> >   Source2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<double> >  Source3;
+   typedef int                                                Source4;
+   typedef const DynamicVector<int>                           Source5;
+   typedef volatile DynamicMatrix<int>                        Source6;
+
+   typedef DynamicMatrix<int>              Result1;
+   typedef const CompressedMatrix<float>   Result2;
+   typedef volatile DynamicMatrix<double>  Result3;
+   typedef int                             Result4;
+   typedef const DynamicVector<int>        Result5;
+   typedef volatile DynamicMatrix<int>     Result6;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source1>::Type, Result1 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source2>::Type, Result2 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source3>::Type, Result3 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source4>::Type, Result4 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source5>::Type, Result5 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source6>::Type, Result6 );
 }
 //*************************************************************************************************
 
