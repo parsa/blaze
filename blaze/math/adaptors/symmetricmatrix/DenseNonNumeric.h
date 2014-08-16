@@ -59,11 +59,13 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
@@ -970,6 +972,9 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m 
    typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
    typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
 
+   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+
    if( IsSymmetric<MT2>::value ) {
       adjustSize( matrix_, (~m).rows() );
       assign( ~m );
@@ -1306,7 +1311,8 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value ||
+       ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).isAliased( this ) ) {
@@ -1349,6 +1355,9 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
+   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSymmetric<MT2>::value ) {
       adjustSize( matrix_, (~rhs).rows() );
       if( IsSparseMatrix<MT2>::value )
@@ -1393,7 +1402,8 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value ||
+       ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
    addAssign( ~rhs );
@@ -1426,6 +1436,9 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
+   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSymmetric<MT2>::value ) {
       addAssign( ~rhs );
    }
@@ -1466,7 +1479,8 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value ||
+       ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
    subAssign( ~rhs );
@@ -1499,6 +1513,9 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
+   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSymmetric<MT2>::value ) {
       subAssign( ~rhs );
    }
