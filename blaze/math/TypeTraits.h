@@ -97,6 +97,7 @@
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/typetraits/NumericElementType.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 
 #endif
