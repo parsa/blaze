@@ -56,6 +56,7 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -63,7 +64,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/util/Assert.h>
@@ -966,7 +967,8 @@ template< typename MT2   // Type of the foreign matrix
 inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
    : matrix_()  // The adapted dense matrix
 {
-   typedef typename If< IsComputation<MT2>, typename MT2::ResultType, const MT2& >::Type  Tmp;
+   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
+   typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
 
    if( IsSymmetric<MT2>::value ) {
       adjustSize( matrix_, (~m).rows() );
@@ -1270,6 +1272,8 @@ template< typename MT >  // Type of the adapted dense matrix
 inline SymmetricMatrix<MT,true,false>&
    SymmetricMatrix<MT,true,false>::operator=( const SymmetricMatrix& rhs )
 {
+   if( &rhs == this ) return *this;
+
    adjustSize( matrix_, rhs.rows() );
    assign( rhs );
 
@@ -1305,10 +1309,16 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
    if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   adjustSize( matrix_, (~rhs).rows() );
-   if( IsSparseMatrix<MT2>::value )
-      reset();
-   assign( ~rhs );
+   if( (~rhs).isAliased( this ) ) {
+      SymmetricMatrix tmp( ~rhs );
+      swap( tmp );
+   }
+   else {
+      adjustSize( matrix_, (~rhs).rows() );
+      if( IsSparseMatrix<MT2>::value )
+         reset();
+      assign( ~rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
@@ -1346,7 +1356,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
       assign( ~rhs );
    }
    else {
-      MT tmp( ~rhs );
+      typename MT2::ResultType tmp( ~rhs );
 
       if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
@@ -1416,15 +1426,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename MT2::ResultType  RT;
-
    if( IsSymmetric<MT2>::value ) {
       addAssign( ~rhs );
    }
    else {
-      RT tmp( ~rhs );
+      typename MT2::ResultType tmp( ~rhs );
 
-      if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+      if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid assignment to static matrix" );
 
       addAssign( tmp );
@@ -1491,15 +1499,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   typedef typename MT2::ResultType  RT;
-
    if( IsSymmetric<MT2>::value ) {
       subAssign( ~rhs );
    }
    else {
-      RT tmp( ~rhs );
+      typename MT2::ResultType tmp( ~rhs );
 
-      if( !IsSymmetric<RT>::value && !isSymmetric( tmp ) )
+      if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid assignment to static matrix" );
 
       subAssign( tmp );
@@ -1532,7 +1538,7 @@ template< typename MT2   // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,true,false>&
    SymmetricMatrix<MT,true,false>::operator*=( const Matrix<MT2,SO>& rhs )
 {
-   MT tmp( (*this) * ~rhs );
+   typename MultTrait<MT,typename MT2::ResultType>::Type tmp( (*this) * ~rhs );
 
    if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
