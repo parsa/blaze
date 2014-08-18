@@ -108,7 +108,6 @@ class VectorAccessProxy
 
  public:
    //**Type definitions****************************************************************************
-   typedef VT                        VectorType;       //!< Type of the accessed sparse vector.
    typedef typename VT::ElementType  RepresentedType;  //!< Type of the represented sparse vector element.
    typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
 
