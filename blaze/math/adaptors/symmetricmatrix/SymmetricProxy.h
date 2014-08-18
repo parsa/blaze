@@ -51,13 +51,13 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/Types.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/InvalidType.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/GetMemberType.h>
 
 
@@ -73,7 +73,8 @@ namespace blaze {
 /*!\brief Access proxy for symmetric, square matrices.
 // \ingroup symmetric_matrix
 //
-// The SymmetricProxy provides controlled access to the elements of a non-const symmetric matrix.
+// The SymmetricProxy provides controlled access to the elements of a non-const symmetric matrix
+// with numeric element type (e.g. integral values, floating point values, and complex values).
 // It guarantees that a modification of element \f$ a_{ij} \f$ of the accessed matrix is also
 // applied to element \f$ a_{ji} \f$. The following example illustrates this by means of a
 // \f$ 3 \times 3 \f$ dense symmetric matrix:
@@ -99,7 +100,6 @@ class SymmetricProxy
 
  public:
    //**Type definitions****************************************************************************
-   typedef MT                           MatrixType;       //!< Type of the accessed matrix.
    typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
    typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
    typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
@@ -113,7 +113,7 @@ class SymmetricProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SymmetricProxy( MT& dm, size_t row, size_t column );
+   explicit inline SymmetricProxy( MT& matrix, size_t row, size_t column );
             inline SymmetricProxy( const SymmetricProxy& sp );
    //@}
    //**********************************************************************************************
