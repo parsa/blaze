@@ -113,7 +113,6 @@ class MatrixAccessProxy
 
  public:
    //**Type definitions****************************************************************************
-   typedef MT                        MatrixType;       //!< Type of the accessed sparse matrix.
    typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented sparse matrix element.
    typedef RepresentedType&          RawReference;     //!< Raw reference to the represented element.
 
