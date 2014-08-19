@@ -218,6 +218,8 @@ class MatrixAccessProxy
    inline size_t   nonZeros() const;
    inline size_t   nonZeros( size_t i ) const;
    inline void     reset( size_t i ) const;
+   inline Iterator set( size_t index, const ElementType& value ) const;
+   inline Iterator set( size_t i, size_t j, const ElementType& value ) const;
    inline Iterator insert( size_t index, const ElementType& value ) const;
    inline Iterator insert( size_t i, size_t j, const ElementType& value ) const;
    inline void     append( size_t index, const ElementType& value, bool check=false ) const;
@@ -985,6 +987,51 @@ inline void MatrixAccessProxy<MT>::reset( size_t i ) const
    using blaze::reset;
 
    reset( get(), i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an element of the represented sparse vector.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+// \exception std::invalid_argument Invalid compressed vector access index.
+//
+// In case the access proxy represents a vector-like data structure that provides a set() function,
+// this function sets the value of an element of the sparse vector. In case the sparse vector
+// already contains an element with index \a index its value is modified, else a new element with
+// the given \a value is inserted.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::set( size_t index, const ElementType& value ) const
+{
+   return get().set( index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inserting an element into the represented sparse matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid sparse matrix access index.
+//
+// In case the access proxy represents a matrix-like data structure that provides a set() function,
+// this function sets the value of an element of the sparse matrix. In case the sparse matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename MatrixAccessProxy<MT>::Iterator
+   MatrixAccessProxy<MT>::set( size_t i, size_t j, const ElementType& value ) const
+{
+   return get().set( i, j, value );
 }
 //*************************************************************************************************
 
