@@ -79,8 +79,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testResize();
    testReserve();
@@ -1431,59 +1432,179 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the CompressedVector class template.
+/*!\brief Test of the \c set() member function of the CompressedVector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the CompressedVector
+// This function performs a test of the \c set() member function of the CompressedVector
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAppend()
+void ClassTest::testSet()
 {
-   test_ = "CompressedVector::append()";
+   test_ = "CompressedVector::set()";
+
+   typedef blaze::CompressedVector<int,blaze::rowVector>::Iterator  Iterator;
 
    // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 4UL );
+   blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 4UL );
+   checkSize    ( vec, 7UL );
    checkNonZeros( vec, 0UL );
 
-   // Appending one non-zero element
-   vec.append( 1UL, 1 );
+   // Setting a non-zero element
+   {
+      Iterator pos = vec.set( 4UL, 1 );
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 1UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
 
-   if( vec[1] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 1 || pos->index() != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 1\n"
+             << "   Expected index: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[4] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Appending three more non-zero elements
-   vec.append( 3UL, 2 );
-   vec.append( 4UL, 3 );
-   vec.append( 8UL, 4 );
+   // Setting a second non-zero element
+   {
+      Iterator pos = vec.set( 6UL, 2 );
 
-   checkSize    ( vec, 9UL );
-   checkCapacity( vec, 4UL );
-   checkNonZeros( vec, 4UL );
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
 
-   if( vec[1] != 1 || vec[3] != 2 || vec[4] != 3 || vec[8] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Append operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << vec << "\n"
-          << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 2 || pos->index() != 6UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 2\n"
+             << "   Expected index: 6\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 0 0 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Setting a third non-zero element
+   {
+      Iterator pos = vec.set( 2UL, 3 );
+
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 3UL );
+      checkNonZeros( vec, 3UL );
+
+      if( pos->value() != 3 || pos->index() != 2UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 3\n"
+             << "   Expected index: 2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[2] != 3 || vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 3 0 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Setting a fourth non-zero element
+   {
+      Iterator pos = vec.set( 3UL, 4 );
+
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( pos->value() != 4 || pos->index() != 3UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 4\n"
+             << "   Expected index: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[2] != 3 || vec[3] != 4 || vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 3 4 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Setting an already existing element
+   {
+      Iterator pos = vec.set( 3UL, 5 );
+
+      checkSize    ( vec, 7UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( pos->value() != 5 || pos->index() != 3UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 5\n"
+             << "   Expected index: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec[2] != 3 || vec[3] != 5 || vec[4] != 1 || vec[6] != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 0 3 5 1 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
@@ -1647,6 +1768,65 @@ void ClassTest::testInsert()
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member function of the CompressedVector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member function of the CompressedVector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAppend()
+{
+   test_ = "CompressedVector::append()";
+
+   // Initialization check
+   blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 4UL );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 0UL );
+
+   // Appending one non-zero element
+   vec.append( 1UL, 1 );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 1UL );
+
+   if( vec[1] != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Appending three more non-zero elements
+   vec.append( 3UL, 2 );
+   vec.append( 4UL, 3 );
+   vec.append( 8UL, 4 );
+
+   checkSize    ( vec, 9UL );
+   checkCapacity( vec, 4UL );
+   checkNonZeros( vec, 4UL );
+
+   if( vec[1] != 1 || vec[3] != 2 || vec[4] != 3 || vec[8] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Append operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << vec << "\n"
+          << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 

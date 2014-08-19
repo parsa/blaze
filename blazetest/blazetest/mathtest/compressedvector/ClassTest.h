@@ -97,8 +97,9 @@ class ClassTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
-   void testAppend      ();
+   void testSet         ();
    void testInsert      ();
+   void testAppend      ();
    void testErase       ();
    void testResize      ();
    void testReserve     ();
