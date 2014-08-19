@@ -340,7 +340,8 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              reset();
                               inline void              reset( size_t i );
                               inline void              clear();
-                                     Iterator          insert ( size_t i, size_t j, const Type& value );
+                              inline Iterator          set    ( size_t i, size_t j, const Type& value );
+                              inline Iterator          insert ( size_t i, size_t j, const Type& value );
                               inline void              erase  ( size_t i, size_t j );
                               inline Iterator          erase  ( size_t i, Iterator pos );
                               inline Iterator          erase  ( size_t i, Iterator first, Iterator last );
@@ -398,8 +399,9 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
-          void   reserveElements( size_t nonzeros );
+          Iterator insert( Iterator pos, size_t i, size_t j, const Type& value );
+   inline size_t   extendCapacity() const;
+          void     reserveElements( size_t nonzeros );
    //@}
    //**********************************************************************************************
 
@@ -1270,21 +1272,53 @@ inline void CompressedMatrix<Type,SO>::clear()
 
 
 //*************************************************************************************************
-/*!\brief Inserting an element into the sparse matrix.
+/*!\brief Setting an element of the compressed matrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be inserted.
 // \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse matrix access index.
+// \exception std::invalid_argument Invalid compressed matrix access index.
 //
-// This function inserts a new element into the sparse matrix. However, duplicate elements are
-// not allowed. In case the sparse matrix already contains an element with row index \a i and
-// column index \a j, a \a std::invalid_argument exception is thrown.
+// This function sets the value of an element of the compressed matrix. In case the compressed
+// matrix already contains an element with row index \a i and column index \a j its value is
+// modified, else a new element with the given \a value is inserted.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
-typename CompressedMatrix<Type,SO>::Iterator
+inline typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::set( size_t i, size_t j, const Type& value )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   const Iterator pos( lowerBound( i, j ) );
+
+   if( pos != end_[i] && pos->index_ == j ) {
+       pos->value() = value;
+       return pos;
+   }
+   else return insert( pos, i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inserting an element into the compressed matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid compressed matrix access index.
+//
+// This function inserts a new element into the compressed matrix. However, duplicate elements
+// are not allowed. In case the compressed matrix already contains an element with row index \a i
+// and column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
@@ -1295,6 +1329,26 @@ typename CompressedMatrix<Type,SO>::Iterator
    if( pos != end_[i] && pos->index_ == j )
       throw std::invalid_argument( "Bad access index" );
 
+   return insert( pos, i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inserting an element into the compressed matrix.
+//
+// \param pos The position of the new element.
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid compressed matrix access index.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+typename CompressedMatrix<Type,SO>::Iterator
+   CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
+{
    if( begin_[i+1UL] - end_[i] != 0 ) {
       std::copy_backward( pos, end_[i], end_[i]+1 );
       pos->value_ = value;
@@ -2504,7 +2558,8 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              reset();
                               inline void              reset( size_t j );
                               inline void              clear();
-                                     Iterator          insert ( size_t i, size_t j, const Type& value );
+                              inline Iterator          set    ( size_t i, size_t j, const Type& value );
+                              inline Iterator          insert ( size_t i, size_t j, const Type& value );
                               inline void              erase  ( size_t i, size_t j );
                               inline Iterator          erase  ( size_t j, Iterator pos );
                               inline Iterator          erase  ( size_t j, Iterator first, Iterator last );
@@ -2562,8 +2617,9 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
-          void   reserveElements( size_t nonzeros );
+          Iterator insert( Iterator pos, size_t i, size_t j, const Type& value );
+   inline size_t   extendCapacity() const;
+          void     reserveElements( size_t nonzeros );
    //@}
    //**********************************************************************************************
 
@@ -3426,20 +3482,53 @@ inline void CompressedMatrix<Type,true>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting an element into the sparse matrix.
+/*!\brief Setting an element of the compressed matrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be inserted.
 // \return Iterator to the newly inserted element.
-// \exception std::invalid_argument Invalid sparse matrix access index.
+// \exception std::invalid_argument Invalid compressed matrix access index.
 //
-// This function inserts a new element into the sparse matrix. However, duplicate elements are
-// not allowed. In case the sparse matrix already contains an element with row index \a i and
-// column index \a j, a \a std::invalid_argument exception is thrown.
+// This function sets the value of an element of the compressed matrix. In case the compressed
+// matrix already contains an element with row index \a i and column index \a j its value is
+// modified, else a new element with the given \a value is inserted.
 */
 template< typename Type >  // Data type of the sparse matrix
-typename CompressedMatrix<Type,true>::Iterator
+inline typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::set( size_t i, size_t j, const Type& value )
+{
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+
+   const Iterator pos( lowerBound( i, j ) );
+
+   if( pos != end_[j] && pos->index_ == i ) {
+      pos->value() = value;
+      return pos;
+   }
+   else return insert( pos, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting an element into the compressed matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid compressed matrix access index.
+//
+// This function inserts a new element into the compressed matrix. However, duplicate elements
+// are not allowed. In case the compressed matrix already contains an element with row index \a i
+// and column index \a j, a \a std::invalid_argument exception is thrown.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( size_t i, size_t j, const Type& value )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
@@ -3450,6 +3539,27 @@ typename CompressedMatrix<Type,true>::Iterator
    if( pos != end_[j] && pos->index_ == i )
       throw std::invalid_argument( "Bad access index" );
 
+   return insert( pos, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting an element into the compressed matrix.
+//
+// \param pos The position of the new element.
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Iterator to the newly inserted element.
+// \exception std::invalid_argument Invalid compressed matrix access index.
+*/
+template< typename Type >  // Data type of the sparse matrix
+typename CompressedMatrix<Type,true>::Iterator
+   CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
+{
    if( begin_[j+1UL] - end_[j] != 0 ) {
       std::copy_backward( pos, end_[j], end_[j]+1 );
       pos->value_ = value;
