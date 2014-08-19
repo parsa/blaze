@@ -664,8 +664,8 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2 )
    BLAZE_STATIC_ASSERT( N == 2UL );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   v_[0] = v1;
-   v_[1] = v2;
+   v_[0UL] = v1;
+   v_[1UL] = v2;
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
@@ -695,9 +695,9 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    BLAZE_STATIC_ASSERT( N == 3UL );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   v_[0] = v1;
-   v_[1] = v2;
-   v_[2] = v3;
+   v_[0UL] = v1;
+   v_[1UL] = v2;
+   v_[2UL] = v3;
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
@@ -729,10 +729,10 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2,
    BLAZE_STATIC_ASSERT( N == 4UL );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   v_[0] = v1;
-   v_[1] = v2;
-   v_[2] = v3;
-   v_[3] = v4;
+   v_[0UL] = v1;
+   v_[1UL] = v2;
+   v_[2UL] = v3;
+   v_[3UL] = v4;
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
@@ -765,11 +765,11 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    BLAZE_STATIC_ASSERT( N == 5UL );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   v_[0] = v1;
-   v_[1] = v2;
-   v_[2] = v3;
-   v_[3] = v4;
-   v_[4] = v5;
+   v_[0UL] = v1;
+   v_[1UL] = v2;
+   v_[2UL] = v3;
+   v_[3UL] = v4;
+   v_[4UL] = v5;
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
@@ -803,12 +803,12 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& v1, const Type& v2, co
    BLAZE_STATIC_ASSERT( N == 6UL );
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   v_[0] = v1;
-   v_[1] = v2;
-   v_[2] = v3;
-   v_[3] = v4;
-   v_[4] = v5;
-   v_[5] = v6;
+   v_[0UL] = v1;
+   v_[1UL] = v2;
+   v_[2UL] = v3;
+   v_[3UL] = v4;
+   v_[4UL] = v5;
+   v_[5UL] = v6;
 
    for( size_t i=N; i<NN; ++i )
       v_[i] = Type();
