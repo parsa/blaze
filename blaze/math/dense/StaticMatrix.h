@@ -187,7 +187,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   enum { NN = N + ( IT::size - ( N % IT::size ) ) % IT::size };
+   static const size_t NN = N + ( IT::size - ( N % IT::size ) ) % IT::size;
    //**********************************************************************************************
 
  public:
@@ -3038,7 +3038,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    //**********************************************************************************************
    //! Alignment adjustment
-   enum { MM = M + ( IT::size - ( M % IT::size ) ) % IT::size };
+   static const size_t MM = M + ( IT::size - ( M % IT::size ) ) % IT::size;
    //**********************************************************************************************
 
  public:
