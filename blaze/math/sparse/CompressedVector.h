@@ -318,7 +318,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline size_t            nonZeros() const;
                               inline void              reset();
                               inline void              clear();
-                                     Iterator          insert( size_t index, const Type& value );
+                              inline Iterator          set   ( size_t index, const Type& value );
+                              inline Iterator          insert( size_t index, const Type& value );
                               inline void              erase ( size_t index );
                               inline Iterator          erase ( Iterator pos );
                               inline Iterator          erase ( Iterator first, Iterator last );
@@ -369,7 +370,8 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t extendCapacity() const;
+          Iterator insert( Iterator pos, size_t index, const Type& value );
+   inline size_t   extendCapacity() const;
    //@}
    //**********************************************************************************************
 
@@ -1024,6 +1026,36 @@ inline void CompressedVector<Type,TF>::clear()
 
 
 //*************************************************************************************************
+/*!\brief Setting an element of the compressed vector.
+//
+// \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+// \exception std::invalid_argument Invalid compressed vector access index.
+//
+// This function sets the value of an element of the compressed vector. In case the sparse vector
+// already contains an element with index \a index its value is modified, else a new element with
+// the given \a value is inserted.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::set( size_t index, const Type& value )
+{
+   BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
+
+   const Iterator pos( lowerBound( index ) );
+
+   if( pos != end_ && pos->index_ == index ) {
+      pos->value() = value;
+      return pos;
+   }
+   else return insert( pos, index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Inserting an element into the compressed vector.
 //
 // \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1047,7 +1079,26 @@ typename CompressedVector<Type,TF>::Iterator
    if( pos != end_ && pos->index_ == index )
       throw std::invalid_argument( "Bad access index" );
 
-   if( nonZeros() != capacity_ ) {
+   return insert( pos, index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inserting an element into the compressed vector.
+//
+// \param pos The position of the new element.
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Reference to the inserted value.
+// \exception std::invalid_argument Invalid compressed vector access index.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+typename CompressedVector<Type,TF>::Iterator
+   CompressedVector<Type,TF>::insert( Iterator pos, size_t index, const Type& value )
+{
+    if( nonZeros() != capacity_ ) {
       std::copy_backward( pos, end_, end_+1 );
       pos->value_ = value;
       pos->index_ = index;
