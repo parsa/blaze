@@ -78,8 +78,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testResize();
    testReserve();
@@ -4110,185 +4111,248 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the CompressedMatrix class template.
+/*!\brief Test of the \c set() member function of the CompressedMatrix class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the CompressedMatrix
+// This function performs a test of the \c set() member function of the CompressedMatrix
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAppend()
+void ClassTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major CompressedMatrix::append()";
+      test_ = "Row-major CompressedMatrix::set()";
 
-      // Appending with pre-allocation in each row
+      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::Iterator  Iterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 5UL );
+
+      checkRows    ( mat, 4UL );
+      checkColumns ( mat, 5UL );
+      checkNonZeros( mat, 0UL );
+      checkNonZeros( mat, 0UL, 0UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 0UL );
+      checkNonZeros( mat, 3UL, 0UL );
+
+      // Setting a non-zero element
       {
-         // Initialization check
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 4UL, 5UL );
-         mat.reserve( 0UL, 2UL );
-         mat.reserve( 2UL, 1UL );
-         mat.reserve( 3UL, 2UL );
+         Iterator pos = mat.set( 2UL, 3UL, 1 );
 
          checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         // Appending one non-zero element
-         mat.append( 2UL, 1UL, 1 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 1UL );
          checkNonZeros( mat, 1UL );
          checkNonZeros( mat, 0UL, 0UL );
          checkNonZeros( mat, 1UL, 0UL );
          checkNonZeros( mat, 2UL, 1UL );
          checkNonZeros( mat, 3UL, 0UL );
 
-         if( mat(2,1) != 1 ) {
+         if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
             throw std::runtime_error( oss.str() );
          }
 
-         // Appending two more non-zero elements
-         mat.append( 0UL, 0UL, 2 );
-         mat.append( 0UL, 3UL, 3 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 1UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 ) {
+         if( mat(2,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         // Appending two more non-zero elements
-         mat.append( 3UL, 1UL, 4 );
-         mat.append( 3UL, 2UL, 5 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 1UL );
-         checkNonZeros( mat, 3UL, 2UL );
-
-         if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 4 5 0 )\n";
+                << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 1 0 )\n( 0 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Appending with row finalization
+      // Setting a second non-zero element
       {
-         // Initialization check
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 4UL, 5UL );
-         mat.reserve( 0UL, 2UL );
-         mat.reserve( 2UL, 1UL );
-         mat.reserve( 3UL, 2UL );
-
-         // Appending one non-zero element
-         mat.append( 0UL, 1UL, 1 );
-         mat.finalize( 0UL );
+         Iterator pos = mat.set( 2UL, 4UL, 2 );
 
          checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 1UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(2,3) != 1 || mat(2,4) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 0 1 2 )\n( 0 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a third non-zero element
+      {
+         Iterator pos = mat.set( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a fourth non-zero element
+      {
+         Iterator pos = mat.set( 0UL, 1UL, 4 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
          checkNonZeros( mat, 3UL, 0UL );
 
-         if( mat(0,1) != 1 ) {
+         if( pos->value() != 4 || pos->index() != 1UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 1\n";
             throw std::runtime_error( oss.str() );
          }
 
-         // Appending two more non-zero elements
-         mat.append( 1UL, 1UL, 2 );
-         mat.append( 1UL, 3UL, 3 );
-         mat.finalize( 1UL );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 ) {
+         if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+                << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
 
-         // Appending two more non-zero elements
-         mat.append( 3UL, 0UL, 4 );
-         mat.append( 3UL, 1UL, 5 );
-         mat.finalize( 3UL );
+      // Setting a fifth non-zero element
+      {
+         Iterator pos = mat.set( 3UL, 2UL, 5 );
 
          checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
+         checkColumns ( mat, 5UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 1UL );
 
-         if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 || mat(3,0) != 4 || mat(3,1) != 5 ) {
+         if( pos->value() != 5 || pos->index() != 2UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 4 5 0 0 )\n";
+                << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 5 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         Iterator pos = mat.set( 3UL, 2UL, 6 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 1UL );
+
+         if( pos->value() != 6 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(2,3) != 1 || mat(2,4) != 2 || mat(2,2) != 3 || mat(0,1) != 4 || mat(3,2) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 4 0 0 0 )\n( 0 0 0 0 0 )\n( 0 0 3 1 2 )\n( 0 0 6 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4300,170 +4364,229 @@ void ClassTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major CompressedMatrix::append()";
+      test_ = "Column-major CompressedMatrix::set()";
 
-      // Appending with pre-allocation in each column
+      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::Iterator  Iterator;
+
+      // Initialization check
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 4UL );
+
+      checkRows    ( mat, 5UL );
+      checkColumns ( mat, 4UL );
+      checkNonZeros( mat, 0UL );
+
+      // Setting a non-zero element
       {
-         // Initialization check
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
-         mat.reserve( 0UL, 2UL );
-         mat.reserve( 2UL, 1UL );
-         mat.reserve( 3UL, 2UL );
+         Iterator pos = mat.set( 3UL, 2UL, 1 );
 
-         checkRows    ( mat, 4UL );
+         checkRows    ( mat, 5UL );
          checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 0UL );
-         checkNonZeros( mat, 0UL, 0UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         // Appending one non-zero element
-         mat.append( 1UL, 2UL, 1 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
+         checkCapacity( mat, 1UL );
          checkNonZeros( mat, 1UL );
          checkNonZeros( mat, 0UL, 0UL );
          checkNonZeros( mat, 1UL, 0UL );
          checkNonZeros( mat, 2UL, 1UL );
          checkNonZeros( mat, 3UL, 0UL );
 
-         if( mat(1,2) != 1 ) {
+         if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
             throw std::runtime_error( oss.str() );
          }
 
-         // Appending two more non-zero elements
-         mat.append( 0UL, 0UL, 2 );
-         mat.append( 3UL, 0UL, 3 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 1UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 ) {
+         if( mat(3,2) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 3 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         // Appending two more non-zero elements
-         mat.append( 1UL, 3UL, 4 );
-         mat.append( 2UL, 3UL, 5 );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 5UL );
-         checkNonZeros( mat, 0UL, 2UL );
-         checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 1UL );
-         checkNonZeros( mat, 3UL, 2UL );
-
-         if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 || mat(1,3) != 4 || mat(2,3) != 5 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
-                << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 4 )\n( 0 0 0 5 )\n( 3 0 0 0 )\n";
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Appending with column finalization
+      // Setting a second non-zero element
       {
-         // Initialization check
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
-         mat.reserve( 0UL, 2UL );
-         mat.reserve( 2UL, 1UL );
-         mat.reserve( 3UL, 2UL );
+         Iterator pos = mat.set( 4UL, 2UL, 2 );
 
-         // Appending one non-zero element
-         mat.append( 1UL, 0UL, 1 );
-         mat.finalize( 0UL );
-
-         checkRows    ( mat, 4UL );
+         checkRows    ( mat, 5UL );
          checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 1UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 2UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 4UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(3,2) != 1 || mat(4,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a third non-zero element
+      {
+         Iterator pos = mat.set( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a fourth non-zero element
+      {
+         Iterator pos = mat.set( 1UL, 0UL, 4 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 4UL );
+         checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 0UL );
-         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
          checkNonZeros( mat, 3UL, 0UL );
 
-         if( mat(1,0) != 1 ) {
+         if( pos->value() != 4 || pos->index() != 1UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
                 << " Details:\n"
-                << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 1\n";
             throw std::runtime_error( oss.str() );
          }
 
-         // Appending two more non-zero elements
-         mat.append( 1UL, 1UL, 2 );
-         mat.append( 3UL, 1UL, 3 );
-         mat.finalize( 1UL );
-
-         checkRows    ( mat, 4UL );
-         checkColumns ( mat, 4UL );
-         checkCapacity( mat, 5UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 0UL );
-
-         if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 ) {
+         if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 || mat(1,0) != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
+                << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
 
-         // Appending two more non-zero elements
-         mat.append( 0UL, 3UL, 4 );
-         mat.append( 1UL, 3UL, 5 );
-         mat.finalize( 3UL );
+      // Setting a fifth non-zero element
+      {
+         Iterator pos = mat.set( 2UL, 3UL, 5 );
 
-         checkRows    ( mat, 4UL );
+         checkRows    ( mat, 5UL );
          checkColumns ( mat, 4UL );
          checkCapacity( mat, 5UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 2UL );
-         checkNonZeros( mat, 2UL, 0UL );
-         checkNonZeros( mat, 3UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 1UL );
 
-         if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 || mat(0,3) != 4 || mat(1,3) != 5 ) {
+         if( pos->value() != 5 || pos->index() != 2UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 5\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 || mat(1,0) != 4 || mat(2,3) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
-                << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
+                << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 5 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         Iterator pos = mat.set( 2UL, 3UL, 6 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 3UL );
+         checkNonZeros( mat, 3UL, 1UL );
+
+         if( pos->value() != 6 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 6\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( mat(3,2) != 1 || mat(4,2) != 2 || mat(2,2) != 3 || mat(1,0) != 4 || mat(2,3) != 6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 4 0 0 0 )\n( 0 0 3 6 )\n( 0 0 1 0 )\n( 0 0 2 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4908,6 +5031,369 @@ void ClassTest::testInsert()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member function of the CompressedMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member function of the CompressedMatrix
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAppend()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix::append()";
+
+      // Appending with pre-allocation in each row
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 4UL, 5UL );
+         mat.reserve( 0UL, 2UL );
+         mat.reserve( 2UL, 1UL );
+         mat.reserve( 3UL, 2UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         // Appending one non-zero element
+         mat.append( 2UL, 1UL, 1 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(2,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 0UL, 0UL, 2 );
+         mat.append( 0UL, 3UL, 3 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 3UL, 1UL, 4 );
+         mat.append( 3UL, 2UL, 5 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 2UL );
+
+         if( mat(2,1) != 1 || mat(0,0) != 2 || mat(0,3) != 3 || mat(3,1) != 4 || mat(3,2) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 4 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Appending with row finalization
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 4UL, 5UL );
+         mat.reserve( 0UL, 2UL );
+         mat.reserve( 2UL, 1UL );
+         mat.reserve( 3UL, 2UL );
+
+         // Appending one non-zero element
+         mat.append( 0UL, 1UL, 1 );
+         mat.finalize( 0UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(0,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 1 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 1UL, 1UL, 2 );
+         mat.append( 1UL, 3UL, 3 );
+         mat.finalize( 1UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 3UL, 0UL, 4 );
+         mat.append( 3UL, 1UL, 5 );
+         mat.finalize( 3UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 2UL );
+
+         if( mat(0,1) != 1 || mat(1,1) != 2 || mat(1,3) != 3 || mat(3,0) != 4 || mat(3,1) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 4 5 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix::append()";
+
+      // Appending with pre-allocation in each column
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
+         mat.reserve( 0UL, 2UL );
+         mat.reserve( 2UL, 1UL );
+         mat.reserve( 3UL, 2UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         // Appending one non-zero element
+         mat.append( 1UL, 2UL, 1 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(1,2) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 0UL, 0UL, 2 );
+         mat.append( 3UL, 0UL, 3 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 3 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 1UL, 3UL, 4 );
+         mat.append( 2UL, 3UL, 5 );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 2UL );
+
+         if( mat(1,2) != 1 || mat(0,0) != 2 || mat(3,0) != 3 || mat(1,3) != 4 || mat(2,3) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 4 )\n( 0 0 0 5 )\n( 3 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Appending with column finalization
+      {
+         // Initialization check
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 4UL, 5UL );
+         mat.reserve( 0UL, 2UL );
+         mat.reserve( 2UL, 1UL );
+         mat.reserve( 3UL, 2UL );
+
+         // Appending one non-zero element
+         mat.append( 1UL, 0UL, 1 );
+         mat.finalize( 0UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(1,0) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 1UL, 1UL, 2 );
+         mat.append( 3UL, 1UL, 3 );
+         mat.finalize( 1UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 0UL );
+
+         if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Appending two more non-zero elements
+         mat.append( 0UL, 3UL, 4 );
+         mat.append( 1UL, 3UL, 5 );
+         mat.finalize( 3UL );
+
+         checkRows    ( mat, 4UL );
+         checkColumns ( mat, 4UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 0UL );
+         checkNonZeros( mat, 3UL, 2UL );
+
+         if( mat(1,0) != 1 || mat(1,1) != 2 || mat(3,1) != 3 || mat(0,3) != 4 || mat(1,3) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************

@@ -67,14 +67,20 @@ ProxyTest::ProxyTest()
    testMultAssign();
    testScaling();
    testSubscript();
+   testFunctionCall();
    testIterator();
    testNonZeros();
    testReset();
    testClear();
+   testSet();
+   testInsert();
+   testAppend();
+   testErase();
    testResize();
    testExtend();
    testReserve();
    testTrim();
+   testTranspose();
    testSwap();
    testFind();
    testLowerBound();
@@ -1337,7 +1343,7 @@ void ProxyTest::testFunctionCall()
       checkCapacity( mat(1,1), 1UL );
       checkNonZeros( mat(1,1), 1UL );
 
-      if( mat(1,1)(0,0) != DM( 1UL, 3 ) ) {
+      if( mat(1,1)(0,0) != DM( 1UL, 1UL, 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1376,7 +1382,7 @@ void ProxyTest::testFunctionCall()
       checkCapacity( mat(1,1), 1UL );
       checkNonZeros( mat(1,1), 1UL );
 
-      if( mat(1,1)(0,0) != DM( 1UL, 3 ) ) {
+      if( mat(1,1)(0,0) != DM( 1UL, 1UL, 3 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1889,26 +1895,26 @@ void ProxyTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member functions of the MatrixAccessProxy class template.
+/*!\brief Test of the \c set() member functions of the MatrixAccessProxy class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member functions of the MatrixAccessProxy
+// This function performs a test of the \c set() member functions of the MatrixAccessProxy
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ProxyTest::testAppend()
+void ProxyTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests with vector elements
    //=====================================================================================
 
    {
-      test_ = "Row-major MatrixAccessProxy::append( size_t, ElementType )";
+      test_ = "Row-major MatrixAccessProxy::set( size_t, ElementType )";
 
       SVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SV( 3UL, 1UL );
-      mat(1,1).append( 1UL, 5 );
+      mat(1,1).set( 1UL, 5 );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -1925,7 +1931,7 @@ void ProxyTest::testAppend()
       if( mat(1,1)[1] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
+             << " Error: Setting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat(1,1) << "\n"
              << "   Expected result:\n( 0 5 0 )\n";
@@ -1939,13 +1945,11 @@ void ProxyTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Row-major MatrixAccessProxy::append( size_t, size_t, ElementType )";
+      test_ = "Row-major MatrixAccessProxy::set( size_t, size_t, ElementType )";
 
       SMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SM( 2UL, 2UL, 1UL );
-      mat(1,1).reserve( 0UL, 1UL );
-      mat(1,1).append( 0UL, 1UL, 5 );
-      mat(1,1).finalize( 0UL );
+      mat(1,1).set( 0UL, 1UL, 5 );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -1954,8 +1958,8 @@ void ProxyTest::testAppend()
 
       checkRows    ( mat(0,0), 0UL );
       checkColumns ( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 2UL );
-      checkColumns ( mat(0,1), 2UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
       checkRows    ( mat(1,0), 0UL );
       checkColumns ( mat(1,0), 0UL );
       checkRows    ( mat(1,1), 2UL );
@@ -1966,7 +1970,7 @@ void ProxyTest::testAppend()
       if( mat(1,1)(0,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
+             << " Error: Setting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat(1,1) << "\n"
              << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
@@ -1980,11 +1984,11 @@ void ProxyTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major MatrixAccessProxy::append( size_t, ElementType )";
+      test_ = "Column-major MatrixAccessProxy::set( size_t, ElementType )";
 
       TSVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SV( 3UL, 1UL );
-      mat(1,1).append( 1UL, 5 );
+      mat(1,1).set( 1UL, 5 );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -2001,7 +2005,7 @@ void ProxyTest::testAppend()
       if( mat(1,1)[1] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
+             << " Error: Setting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat(1,1) << "\n"
              << "   Expected result:\n( 0 5 0 )\n";
@@ -2015,13 +2019,11 @@ void ProxyTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major MatrixAccessProxy::append( size_t, size_t, ElementType )";
+      test_ = "Column-major MatrixAccessProxy::set( size_t, size_t, ElementType )";
 
       TSMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SM( 2UL, 2UL, 1UL );
-      mat(1,1).reserve( 0UL, 1UL );
-      mat(1,1).append( 0UL, 1UL, 5 );
-      mat(1,1).finalize( 0UL );
+      mat(1,1).set( 0UL, 1UL, 5 );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -2030,8 +2032,8 @@ void ProxyTest::testAppend()
 
       checkRows    ( mat(0,0), 0UL );
       checkColumns ( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 2UL );
-      checkColumns ( mat(0,1), 2UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
       checkRows    ( mat(1,0), 0UL );
       checkColumns ( mat(1,0), 0UL );
       checkRows    ( mat(1,1), 2UL );
@@ -2042,7 +2044,7 @@ void ProxyTest::testAppend()
       if( mat(1,1)(0,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an element failed\n"
+             << " Error: Setting an element failed\n"
              << " Details:\n"
              << "   Result:\n" << mat(1,1) << "\n"
              << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
@@ -2117,8 +2119,8 @@ void ProxyTest::testInsert()
 
       checkRows    ( mat(0,0), 0UL );
       checkColumns ( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 2UL );
-      checkColumns ( mat(0,1), 2UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
       checkRows    ( mat(1,0), 0UL );
       checkColumns ( mat(1,0), 0UL );
       checkRows    ( mat(1,1), 2UL );
@@ -2191,8 +2193,175 @@ void ProxyTest::testInsert()
 
       checkRows    ( mat(0,0), 0UL );
       checkColumns ( mat(0,0), 0UL );
-      checkRows    ( mat(0,1), 2UL );
-      checkColumns ( mat(0,1), 2UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 2UL );
+      checkColumns ( mat(1,1), 2UL );
+      checkCapacity( mat(1,1), 1UL );
+      checkNonZeros( mat(1,1), 1UL );
+
+      if( mat(1,1)(0,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(1,1) << "\n"
+             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member functions of the MatrixAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member functions of the MatrixAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testAppend()
+{
+   //=====================================================================================
+   // Row-major matrix tests with vector elements
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy::append( size_t, ElementType )";
+
+      SVM mat( 2UL, 2UL, 1UL );
+      mat(1,1) = SV( 3UL );
+      mat(1,1).reserve( 1UL );
+      mat(1,1).append( 1UL, 5 );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 1UL );
+      checkNonZeros( mat(1,1), 1UL );
+
+      if( mat(1,1)[1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(1,1) << "\n"
+             << "   Expected result:\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests with matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy::append( size_t, size_t, ElementType )";
+
+      SMM mat( 2UL, 2UL, 1UL );
+      mat(1,1) = SM( 2UL, 2UL );
+      mat(1,1).reserve( 0UL, 1UL );
+      mat(1,1).append( 0UL, 1UL, 5 );
+      mat(1,1).finalize( 0UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 2UL );
+      checkColumns ( mat(1,1), 2UL );
+      checkCapacity( mat(1,1), 1UL );
+      checkNonZeros( mat(1,1), 1UL );
+
+      if( mat(1,1)(0,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(1,1) << "\n"
+             << "   Expected result:\n( 0 5 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests with vector elements
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy::append( size_t, ElementType )";
+
+      TSVM mat( 2UL, 2UL, 1UL );
+      mat(1,1) = SV( 3UL );
+      mat(1,1).reserve( 1UL );
+      mat(1,1).append( 1UL, 5 );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkSize    ( mat(0,0), 0UL );
+      checkSize    ( mat(0,1), 0UL );
+      checkSize    ( mat(1,0), 0UL );
+      checkSize    ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 1UL );
+      checkNonZeros( mat(1,1), 1UL );
+
+      if( mat(1,1)[1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat(1,1) << "\n"
+             << "   Expected result:\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests with matrix elements
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy::append( size_t, size_t, ElementType )";
+
+      TSMM mat( 2UL, 2UL, 1UL );
+      mat(1,1) = SM( 2UL, 2UL );
+      mat(1,1).reserve( 0UL, 1UL );
+      mat(1,1).append( 0UL, 1UL, 5 );
+      mat(1,1).finalize( 0UL );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
       checkRows    ( mat(1,0), 0UL );
       checkColumns ( mat(1,0), 0UL );
       checkRows    ( mat(1,1), 2UL );
@@ -2243,7 +2412,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2263,7 +2431,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2286,7 +2453,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2313,7 +2479,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -2337,7 +2502,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -2363,7 +2527,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -2392,7 +2555,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2412,7 +2574,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2435,7 +2596,6 @@ void ProxyTest::testErase()
       checkNonZeros( mat, 1UL );
 
       checkSize    ( mat(0,0), 3UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkSize    ( mat(0,1), 0UL );
       checkSize    ( mat(1,0), 0UL );
@@ -2462,7 +2622,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -2486,7 +2645,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -2512,7 +2670,6 @@ void ProxyTest::testErase()
 
       checkRows    ( mat(0,0), 2UL );
       checkColumns ( mat(0,0), 2UL );
-      checkCapacity( mat(0,0), 1UL );
       checkNonZeros( mat(0,0), 0UL );
       checkRows    ( mat(0,1), 0UL );
       checkColumns ( mat(0,1), 0UL );
@@ -3114,7 +3271,7 @@ void ProxyTest::testTranspose()
       checkColumns ( mat(1,0),  0UL );
       checkRows    ( mat(1,1),  3UL );
       checkColumns ( mat(1,1),  5UL );
-      checkCapacity( mat(0,0), 15UL );
+      checkCapacity( mat(1,1), 15UL );
    }
 
 
@@ -3142,7 +3299,7 @@ void ProxyTest::testTranspose()
       checkColumns ( mat(1,0),  0UL );
       checkRows    ( mat(1,1),  3UL );
       checkColumns ( mat(1,1),  5UL );
-      checkCapacity( mat(0,0), 15UL );
+      checkCapacity( mat(1,1), 15UL );
    }
 }
 //*************************************************************************************************
