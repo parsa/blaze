@@ -1014,12 +1014,12 @@ inline typename MatrixAccessProxy<MT>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Inserting an element into the represented sparse matrix.
+/*!\brief Setting an element of the represented sparse matrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
-// \param value The value of the element to be inserted.
-// \return Iterator to the newly inserted element.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
 // \exception std::invalid_argument Invalid sparse matrix access index.
 //
 // In case the access proxy represents a matrix-like data structure that provides a set() function,
