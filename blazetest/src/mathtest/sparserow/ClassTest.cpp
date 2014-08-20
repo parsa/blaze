@@ -77,8 +77,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testReserve();
    testFind();
@@ -3804,62 +3805,157 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the SparseRow class template.
+/*!\brief Test of the \c set() member function of the SparseRow class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the SparseRow class
+// This function performs a test of the \c set() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAppend()
+void ClassTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseRow::append()";
+      test_ = "Row-major SparseRow::set()";
 
-      MT mat( 3UL, 9UL );
+      initialize();
 
-      RT row1 = row( mat, 1UL );
-      row1.reserve( 4UL );
+      RT row0 = row( mat_, 0UL );
 
-      // Appending one non-zero element
-      row1.append( 1UL, 1 );
+      // Setting a non-zero element at the end of the row
+      {
+         RT::Iterator pos = row0.set( 3UL, 1 );
 
-      checkSize    ( row1, 9UL );
-      checkCapacity( row1, 4UL );
-      checkNonZeros( row1, 1UL );
+         checkSize    ( row0,  4UL );
+         checkNonZeros( row0,  1UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 11UL );
 
-      if( row1[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 1 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 0 || row0[1] != 0 || row0[2] != 0 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Appending three more non-zero elements
-      row1.append( 3UL, 2 );
-      row1.append( 4UL, 3 );
-      row1.append( 8UL, 4 );
+      // Setting a non-zero element at the beginning of the row
+      {
+         RT::Iterator pos = row0.set( 0UL, 2 );
 
-      checkSize    ( row1, 9UL );
-      checkCapacity( row1, 4UL );
-      checkNonZeros( row1, 4UL );
+         checkSize    ( row0,  4UL );
+         checkNonZeros( row0,  2UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 12UL );
 
-      if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 2 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 0 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a non-zero element at the center of the row
+      {
+         RT::Iterator pos = row0.set( 2UL, 3 );
+
+         checkSize    ( row0,  4UL );
+         checkNonZeros( row0,  3UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 13UL );
+
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 3 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 3 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         RT::Iterator pos = row0.set( 3UL, 4 );
+
+         checkSize    ( row0,  4UL );
+         checkNonZeros( row0,  3UL );
+         checkRows    ( mat_,  5UL );
+         checkColumns ( mat_,  4UL );
+         checkNonZeros( mat_, 13UL );
+
+         if( pos->value() != 4 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 3 || row0[3] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 3 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -3869,47 +3965,142 @@ void ClassTest::testAppend()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::append()";
+      test_ = "Column-major SparseRow::set()";
 
-      TMT mat( 3UL, 9UL );
+      initialize();
 
-      TRT row1 = row( mat, 1UL );
-      row1.reserve( 4UL );
+      TRT row0 = row( tmat_, 0UL );
 
-      // Appending one non-zero element
-      row1.append( 1UL, 1 );
+      // Setting a non-zero element at the end of the row
+      {
+         TRT::Iterator pos = row0.set( 3UL, 1 );
 
-      checkSize    ( row1, 9UL );
-      checkCapacity( row1, 4UL );
-      checkNonZeros( row1, 1UL );
+         checkSize    ( row0 ,  4UL );
+         checkNonZeros( row0 ,  1UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 11UL );
 
-      if( row1[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 1 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 0 || row0[1] != 0 || row0[2] != 0 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Appending three more non-zero elements
-      row1.append( 3UL, 2 );
-      row1.append( 4UL, 3 );
-      row1.append( 8UL, 4 );
+      // Setting a non-zero element at the beginning of the row
+      {
+         TRT::Iterator pos = row0.set( 0UL, 2 );
 
-      checkSize    ( row1, 9UL );
-      checkCapacity( row1, 4UL );
-      checkNonZeros( row1, 4UL );
+         checkSize    ( row0 ,  4UL );
+         checkNonZeros( row0 ,  2UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 12UL );
 
-      if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
+         if( pos->value() != 2 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 0 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a non-zero element at the center of the row
+      {
+         TRT::Iterator pos = row0.set( 2UL, 3 );
+
+         checkSize    ( row0 ,  4UL );
+         checkNonZeros( row0 ,  3UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 13UL );
+
+         if( pos->value() != 3 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 3 || row0[3] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 3 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         TRT::Iterator pos = row0.set( 3UL, 4 );
+
+         checkSize    ( row0 ,  4UL );
+         checkNonZeros( row0 ,  3UL );
+         checkRows    ( tmat_,  5UL );
+         checkColumns ( tmat_,  4UL );
+         checkNonZeros( tmat_, 13UL );
+
+         if( pos->value() != 4 || pos->index() != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row0[0] != 2 || row0[1] != 0 || row0[2] != 3 || row0[3] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting a non-zero element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row0 << "\n"
+                << "   Expected result:\n( 2 0 3 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
@@ -4176,6 +4367,119 @@ void ClassTest::testInsert()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member function of the SparseRow class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member function of the SparseRow class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAppend()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseRow::append()";
+
+      MT mat( 3UL, 9UL );
+
+      RT row1 = row( mat, 1UL );
+      row1.reserve( 4UL );
+
+      // Appending one non-zero element
+      row1.append( 1UL, 1 );
+
+      checkSize    ( row1, 9UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 1UL );
+
+      if( row1[1] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Appending three more non-zero elements
+      row1.append( 3UL, 2 );
+      row1.append( 4UL, 3 );
+      row1.append( 8UL, 4 );
+
+      checkSize    ( row1, 9UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 4UL );
+
+      if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Append operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseRow::append()";
+
+      TMT mat( 3UL, 9UL );
+
+      TRT row1 = row( mat, 1UL );
+      row1.reserve( 4UL );
+
+      // Appending one non-zero element
+      row1.append( 1UL, 1 );
+
+      checkSize    ( row1, 9UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 1UL );
+
+      if( row1[1] != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Appending three more non-zero elements
+      row1.append( 3UL, 2 );
+      row1.append( 4UL, 3 );
+      row1.append( 8UL, 4 );
+
+      checkSize    ( row1, 9UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 4UL );
+
+      if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Append operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
