@@ -710,6 +710,7 @@ class SymmetricMatrix<MT,false,true>
                               inline void             reset();
                               inline void             reset( size_t i );
                               inline void             clear();
+                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
                               inline Iterator         insert( size_t i, size_t j, const ElementType& value );
                               inline void             erase( size_t i, size_t j );
                               inline Iterator         erase( size_t i, Iterator pos );
@@ -1637,6 +1638,32 @@ inline void SymmetricMatrix<MT,false,true>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting elements of the symmetric matrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+//
+// This function sets the value of both the elements \f$ a_{ij} \f$ and \f$ a_{ji} \f$ of the
+// symmetric matrix and returns an iterator to the successfully set element \f$ a_{ij} \f$. In
+// case the symmetric matrix already contains the two elements with index \a i and \a j their
+// values are modified, else two new elements with the given \a value are inserted.
+*/
+template< typename MT >  // Type of the adapted sparse matrix
+inline typename SymmetricMatrix<MT,false,true>::Iterator
+   SymmetricMatrix<MT,false,true>::set( size_t i, size_t j, const ElementType& value )
+{
+   if( i != j )
+      matrix_.set( j, i, value );
+   return Iterator( matrix_.set( i, j, value ), matrix_, ( rmm ? i : j ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Inserting elements into the symmetric matrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..N-1]\f$.
@@ -1651,7 +1678,7 @@ inline void SymmetricMatrix<MT,false,true>::clear()
 // \a i and column index \a j, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the adapted sparse matrix
-typename SymmetricMatrix<MT,false,true>::Iterator
+inline typename SymmetricMatrix<MT,false,true>::Iterator
    SymmetricMatrix<MT,false,true>::insert( size_t i, size_t j, const ElementType& value )
 {
    if( i != j )
