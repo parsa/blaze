@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAbsExpr.h>
 #include <blaze/math/typetraits/IsAddExpr.h>
 #include <blaze/math/typetraits/IsColumn.h>
