@@ -79,8 +79,9 @@ SparseNumericTest::SparseNumericTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testResize();
    testReserve();
@@ -4341,6 +4342,652 @@ void SparseNumericTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c set() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c set() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNumericTest::testSet()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::set()";
+
+      typedef ST::Iterator  Iterator;
+
+      // Initialization check
+      ST sym( 4UL );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      // Setting a non-zero element
+      {
+         Iterator pos = sym.set( 2UL, 1UL, 1 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 2UL );
+         checkNonZeros( sym, 2UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 1UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 1 || pos->index() != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a second non-zero element
+      {
+         Iterator pos = sym.set( 2UL, 2UL, 2 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 3UL );
+         checkNonZeros( sym, 3UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a third non-zero element
+      {
+         Iterator pos = sym.set( 2UL, 0UL, 3 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         Iterator pos = sym.set( 1UL, 2UL, 4 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 4 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 4 || sym(2,0) != 3 || sym(2,1) != 4 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 4 0 )\n( 3 4 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::set()";
+
+      typedef TST::Iterator  Iterator;
+
+      // Initialization check
+      TST sym( 4UL );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      // Setting a non-zero element
+      {
+         Iterator pos = sym.set( 1UL, 2UL, 1 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 2UL );
+         checkNonZeros( sym, 2UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 1UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 1 || pos->index() != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a second non-zero element
+      {
+         Iterator pos = sym.set( 2UL, 2UL, 2 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 3UL );
+         checkNonZeros( sym, 3UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting a third non-zero element
+      {
+         Iterator pos = sym.set( 0UL, 2UL, 3 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setting an already existing element
+      {
+         Iterator pos = sym.set( 2UL, 1UL, 4 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 4 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 4\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 4 || sym(2,0) != 3 || sym(2,1) != 4 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 4 0 )\n( 3 4 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c insert() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c insert() member function of the SymmetricMatrix
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseNumericTest::testInsert()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SymmetricMatrix::insert()";
+
+      typedef ST::Iterator  Iterator;
+
+      // Initialization check
+      ST sym( 4UL );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      // Inserting a non-zero element
+      {
+         Iterator pos = sym.insert( 2UL, 1UL, 1 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 2UL );
+         checkNonZeros( sym, 2UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 1UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 1 || pos->index() != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Inserting a second non-zero element
+      {
+         Iterator pos = sym.insert( 2UL, 2UL, 2 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 3UL );
+         checkNonZeros( sym, 3UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Inserting a third non-zero element
+      {
+         Iterator pos = sym.insert( 2UL, 0UL, 3 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to insert an already existing element
+      try {
+         sym.insert( 1UL, 2UL, 4 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SymmetricMatrix::insert()";
+
+      typedef TST::Iterator  Iterator;
+
+      // Initialization check
+      TST sym( 4UL );
+
+      checkRows    ( sym, 4UL );
+      checkColumns ( sym, 4UL );
+      checkNonZeros( sym, 0UL );
+      checkNonZeros( sym, 0UL, 0UL );
+      checkNonZeros( sym, 1UL, 0UL );
+      checkNonZeros( sym, 2UL, 0UL );
+      checkNonZeros( sym, 3UL, 0UL );
+
+      // Inserting a non-zero element
+      {
+         Iterator pos = sym.insert( 1UL, 2UL, 1 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 2UL );
+         checkNonZeros( sym, 2UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 1UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 1 || pos->index() != 1UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 1\n"
+                << "   Expected index: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Inserting a second non-zero element
+      {
+         Iterator pos = sym.insert( 2UL, 2UL, 2 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 3UL );
+         checkNonZeros( sym, 3UL );
+         checkNonZeros( sym, 0UL, 0UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 2 || pos->index() != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 2\n"
+                << "   Expected index: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Inserting a third non-zero element
+      {
+         Iterator pos = sym.insert( 0UL, 2UL, 3 );
+
+         checkRows    ( sym, 4UL );
+         checkColumns ( sym, 4UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 1UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+         checkNonZeros( sym, 3UL, 0UL );
+
+         if( pos->value() != 3 || pos->index() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid iterator returned\n"
+                << " Details:\n"
+                << "   Value: " << pos->value() << "\n"
+                << "   Index: " << pos->index() << "\n"
+                << "   Expected value: 3\n"
+                << "   Expected index: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Inserting an element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to insert an already existing element
+      try {
+         sym.insert( 2UL, 1UL, 4 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c append() member function of the SymmetricMatrix specialization.
 //
 // \return void
@@ -4724,307 +5371,6 @@ void SparseNumericTest::testAppend()
             throw std::runtime_error( oss.str() );
          }
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SymmetricMatrix specialization.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c insert() member function of the SymmetricMatrix
-// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void SparseNumericTest::testInsert()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SymmetricMatrix::insert()";
-
-      typedef ST::Iterator  Iterator;
-
-      // Initialization check
-      ST sym( 4UL );
-
-      checkRows    ( sym, 4UL );
-      checkColumns ( sym, 4UL );
-      checkNonZeros( sym, 0UL );
-      checkNonZeros( sym, 0UL, 0UL );
-      checkNonZeros( sym, 1UL, 0UL );
-      checkNonZeros( sym, 2UL, 0UL );
-      checkNonZeros( sym, 3UL, 0UL );
-
-      // Inserting a non-zero element
-      {
-         Iterator pos = sym.insert( 2UL, 1UL, 1 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 2UL );
-         checkNonZeros( sym, 2UL );
-         checkNonZeros( sym, 0UL, 0UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 1UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 1 || pos->index() != 1UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a second non-zero element
-      {
-         Iterator pos = sym.insert( 2UL, 2UL, 2 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 3UL );
-         checkNonZeros( sym, 3UL );
-         checkNonZeros( sym, 0UL, 0UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 2UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 2 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a third non-zero element
-      {
-         Iterator pos = sym.insert( 2UL, 0UL, 3 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 5UL );
-         checkNonZeros( sym, 5UL );
-         checkNonZeros( sym, 0UL, 1UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 3UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 3 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to insert an already existing element
-      try {
-         sym.insert( 1UL, 2UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SymmetricMatrix::insert()";
-
-      typedef TST::Iterator  Iterator;
-
-      // Initialization check
-      TST sym( 4UL );
-
-      checkRows    ( sym, 4UL );
-      checkColumns ( sym, 4UL );
-      checkNonZeros( sym, 0UL );
-      checkNonZeros( sym, 0UL, 0UL );
-      checkNonZeros( sym, 1UL, 0UL );
-      checkNonZeros( sym, 2UL, 0UL );
-      checkNonZeros( sym, 3UL, 0UL );
-
-      // Inserting a non-zero element
-      {
-         Iterator pos = sym.insert( 1UL, 2UL, 1 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 2UL );
-         checkNonZeros( sym, 2UL );
-         checkNonZeros( sym, 0UL, 0UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 1UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 1 || pos->index() != 1UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(1,2) != 1 || sym(2,1) != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a second non-zero element
-      {
-         Iterator pos = sym.insert( 2UL, 2UL, 2 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 3UL );
-         checkNonZeros( sym, 3UL );
-         checkNonZeros( sym, 0UL, 0UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 2UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 2 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(1,2) != 1 || sym(2,1) != 1 || sym(2,2) != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 2 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a third non-zero element
-      {
-         Iterator pos = sym.insert( 0UL, 2UL, 3 );
-
-         checkRows    ( sym, 4UL );
-         checkColumns ( sym, 4UL );
-         checkCapacity( sym, 5UL );
-         checkNonZeros( sym, 5UL );
-         checkNonZeros( sym, 0UL, 1UL );
-         checkNonZeros( sym, 1UL, 1UL );
-         checkNonZeros( sym, 2UL, 3UL );
-         checkNonZeros( sym, 3UL, 0UL );
-
-         if( pos->value() != 3 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( sym(0,2) != 3 || sym(1,2) != 1 || sym(2,0) != 3 || sym(2,1) != 1 || sym(2,2) != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting an element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << sym << "\n"
-                << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to insert an already existing element
-      try {
-         sym.insert( 2UL, 1UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( 0 0 3 0 )\n( 0 0 1 0 )\n( 3 1 2 0 )\n( 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
