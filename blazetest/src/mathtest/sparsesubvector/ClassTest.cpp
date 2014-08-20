@@ -74,8 +74,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testFind();
    testLowerBound();
@@ -1875,59 +1876,152 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c append() member function of the SparseSubvector class template.
+/*!\brief Test of the \c set() member function of the SparseSubvector class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c append() member function of the SparseSubvector
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c set() member function of the SparseSubvector class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAppend()
+void ClassTest::testSet()
 {
-   test_ = "SparseSubvector::append()";
+   test_ = "SparseSubvector::set()";
 
-   VT vec( 10UL );
+   initialize();
 
-   SVT sv = subvector( vec, 2UL, 4UL );
-   sv.reserve( 4UL );
+   SVT sv = subvector( vec_, 0UL, 8UL );
 
-   // Appending one non-zero element
-   sv.append( 0UL, 1 );
+   // Setting a non-zero element at the end of the subvector
+   {
+      SVT::Iterator pos = sv.set( 7UL, 9 );
 
-   checkSize    ( sv , 4UL );
-   checkCapacity( sv , 4UL );
-   checkNonZeros( sv , 1UL );
-   checkNonZeros( vec, 1UL );
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 5UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
 
-   if( sv[0] != 1 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv << "\n"
-          << "   Expected result:\n( 0 0 1 0 0 0 0 0 0 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 9 || pos->index() != 7UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 7\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv[0] !=  0 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 2 0 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Appending three more non-zero elements
-   sv.append( 1UL, 2 );
-   sv.append( 2UL, 3 );
-   sv.append( 3UL, 4 );
+   // Setting a non-zero element at the beginning of the subvector
+   {
+      SVT::Iterator pos = sv.set( 0UL, 9 );
 
-   checkSize    ( sv , 4UL );
-   checkCapacity( sv , 4UL );
-   checkNonZeros( sv , 4UL );
-   checkNonZeros( vec, 4UL );
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 6UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 6UL );
 
-   if( sv[0] != 1 || sv[1] != 2 || sv[2] != 3 || sv[3] != 4 ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Append operation failed\n"
-          << " Details:\n"
-          << "   Result:\n" << sv << "\n"
-          << "   Expected result:\n( 0 0 1 2 3 4 0 0 0 )\n";
-      throw std::runtime_error( oss.str() );
+      if( pos->value() != 9 || pos->index() != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv[0] !=  9 || sv[1] != 1 || sv[2] != 0 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 9 2 0 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Setting a non-zero element at the center of the subvector
+   {
+      SVT::Iterator pos = sv.set( 2UL, 9 );
+
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 7UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 7UL );
+
+      if( pos->value() != 9 || pos->index() != 2UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv[0] !=  9 || sv[1] != 1 || sv[2] != 9 || sv[3] != -2 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] !=  9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 9 2 9 -2 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Setting an already existing element
+   {
+      SVT::Iterator pos = sv.set( 3UL, 9 );
+
+      checkSize    ( sv  , 8UL );
+      checkNonZeros( sv  , 7UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 7UL );
+
+      if( pos->value() != 9 || pos->index() != 3UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid iterator returned\n"
+             << " Details:\n"
+             << "   Value: " << pos->value() << "\n"
+             << "   Index: " << pos->index() << "\n"
+             << "   Expected value: 9\n"
+             << "   Expected index: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( sv[0] !=  9 || sv[1] != 1 || sv[2] != 9 || sv[3] != 9 ||
+          sv[4] != -3 || sv[5] != 0 || sv[6] != 4 || sv[7] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 9 2 9 9 -3 0 4 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 }
 //*************************************************************************************************
@@ -2062,6 +2156,65 @@ void ClassTest::testInsert()
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c append() member function of the SparseSubvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c append() member function of the SparseSubvector
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testAppend()
+{
+   test_ = "SparseSubvector::append()";
+
+   VT vec( 10UL );
+
+   SVT sv = subvector( vec, 2UL, 4UL );
+   sv.reserve( 4UL );
+
+   // Appending one non-zero element
+   sv.append( 0UL, 1 );
+
+   checkSize    ( sv , 4UL );
+   checkCapacity( sv , 4UL );
+   checkNonZeros( sv , 1UL );
+   checkNonZeros( vec, 1UL );
+
+   if( sv[0] != 1 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Initialization failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( 0 0 1 0 0 0 0 0 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Appending three more non-zero elements
+   sv.append( 1UL, 2 );
+   sv.append( 2UL, 3 );
+   sv.append( 3UL, 4 );
+
+   checkSize    ( sv , 4UL );
+   checkCapacity( sv , 4UL );
+   checkNonZeros( sv , 4UL );
+   checkNonZeros( vec, 4UL );
+
+   if( sv[0] != 1 || sv[1] != 2 || sv[2] != 3 || sv[3] != 4 ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Append operation failed\n"
+          << " Details:\n"
+          << "   Result:\n" << sv << "\n"
+          << "   Expected result:\n( 0 0 1 2 3 4 0 0 0 )\n";
+      throw std::runtime_error( oss.str() );
+   }
 }
 //*************************************************************************************************
 
