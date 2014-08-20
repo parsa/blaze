@@ -58,6 +58,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
@@ -2326,6 +2327,25 @@ inline void move( StaticVector<Type,N,TF>& dst, StaticVector<Type,N,TF>& src ) /
 {
    dst = src;
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct Size< StaticVector<T,N,TF> >
+{
+   static const size_t value = N;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
