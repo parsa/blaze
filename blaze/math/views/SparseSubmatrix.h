@@ -791,7 +791,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
                               inline void             reset( size_t i );
-                                     Iterator         insert( size_t i, size_t j, const ElementType& value );
+                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
+                              inline Iterator         insert( size_t i, size_t j, const ElementType& value );
                               inline void             erase( size_t i, size_t j );
                               inline Iterator         erase( size_t i, Iterator pos );
                               inline Iterator         erase( size_t i, Iterator first, Iterator last );
@@ -1587,6 +1588,30 @@ inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
 
 
 //*************************************************************************************************
+/*!\brief Setting an element of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+// \exception std::invalid_argument Invalid sparse submatrix access index.
+//
+// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename SparseSubmatrix<MT,AF,SO>::Iterator
+   SparseSubmatrix<MT,AF,SO>::set( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.set( row_+i, column_+j, value ), column_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Inserting an element into the sparse submatrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
@@ -1602,7 +1627,7 @@ inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-typename SparseSubmatrix<MT,AF,SO>::Iterator
+inline typename SparseSubmatrix<MT,AF,SO>::Iterator
    SparseSubmatrix<MT,AF,SO>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row_+i, column_+j, value ), column_ );
@@ -2841,7 +2866,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
                               inline size_t           nonZeros( size_t i ) const;
                               inline void             reset();
                               inline void             reset( size_t i );
-                                     Iterator         insert( size_t i, size_t j, const ElementType& value );
+                              inline Iterator         set( size_t i, size_t j, const ElementType& value );
+                              inline Iterator         insert( size_t i, size_t j, const ElementType& value );
                               inline void             erase( size_t i, size_t j );
                               inline Iterator         erase( size_t i, Iterator pos );
                               inline Iterator         erase( size_t i, Iterator first, Iterator last );
@@ -3614,6 +3640,31 @@ inline void SparseSubmatrix<MT,AF,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Setting an element of the sparse submatrix.
+//
+// \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
+// \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Iterator to the set element.
+// \exception std::invalid_argument Invalid sparse submatrix access index.
+//
+// This function sets the value of an element of the sparse submatrix. In case the sparse matrix
+// already contains an element with row index \a i and column index \a j its value is modified,
+// else a new element with the given \a value is inserted.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename SparseSubmatrix<MT,AF,true>::Iterator
+   SparseSubmatrix<MT,AF,true>::set( size_t i, size_t j, const ElementType& value )
+{
+   return Iterator( matrix_.set( row_+i, column_+j, value ), row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Inserting an element into the sparse submatrix.
 //
 // \param i The row index of the new element. The index has to be in the range \f$[0..M-1]\f$.
@@ -3628,7 +3679,7 @@ inline void SparseSubmatrix<MT,AF,true>::reset( size_t j )
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
-typename SparseSubmatrix<MT,AF,true>::Iterator
+inline typename SparseSubmatrix<MT,AF,true>::Iterator
    SparseSubmatrix<MT,AF,true>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row_+i, column_+j, value ), row_ );
