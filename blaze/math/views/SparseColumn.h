@@ -440,6 +440,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
                               inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline void          reset();
+                              inline Iterator      set    ( size_t index, const ElementType& value );
                               inline Iterator      insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
@@ -1026,6 +1027,28 @@ template< typename MT  // Type of the sparse matrix
 inline void SparseColumn<MT,SO>::reset()
 {
    matrix_.reset( col_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an element of the sparse column.
+//
+// \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+// \exception std::invalid_argument Invalid sparse column access index.
+//
+// This function sets the value of an element of the sparse column. In case the sparse column
+// already contains an element with index \a index its value is modified, else a new element
+// with the given \a value is inserted.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline typename SparseColumn<MT,SO>::Iterator
+   SparseColumn<MT,SO>::set( size_t index, const ElementType& value )
+{
+   return matrix_.set( index, col_, value );
 }
 //*************************************************************************************************
 
@@ -2028,6 +2051,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
                               inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline void          reset();
+                              inline Iterator      set    ( size_t index, const ElementType& value );
                               inline Iterator      insert ( size_t index, const ElementType& value );
                               inline void          erase  ( size_t index );
                               inline Iterator      erase  ( Iterator pos );
@@ -2570,6 +2594,29 @@ inline void SparseColumn<MT,false>::reset()
    for( size_t i=0UL; i<size(); ++i ) {
       matrix_.erase( i, col_ );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting an element of the sparse column.
+//
+// \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+// \exception std::invalid_argument Invalid sparse column access index.
+//
+// This function sets the value of an element of the sparse column. In case the sparse column
+// already contains an element with index \a index its value is modified, else a new element
+// with the given \a value is inserted.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseColumn<MT,false>::Iterator
+   SparseColumn<MT,false>::set( size_t index, const ElementType& value )
+{
+   return Iterator( matrix_, index, col_, matrix_.set( index, col_, value ) );
 }
 /*! \endcond */
 //*************************************************************************************************
