@@ -787,6 +787,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
                               inline size_t           capacity() const;
                               inline size_t           nonZeros() const;
                               inline void             reset();
+                              inline Iterator         set    ( size_t index, const ElementType& value );
                               inline Iterator         insert ( size_t index, const ElementType& value );
                               inline void             erase  ( size_t index );
                               inline Iterator         erase  ( Iterator pos );
@@ -1431,6 +1432,29 @@ template< typename VT  // Type of the sparse vector
 inline void SparseSubvector<VT,AF,TF>::reset()
 {
    vector_.erase( vector_.lowerBound( offset_ ), vector_.lowerBound( offset_ + size_ ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Setting an element of the sparse subvector.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+// \exception std::invalid_argument Invalid sparse subvector access index.
+//
+// This function sets the value of an element of the sparse subvector. In case the sparse subvector
+// already contains an element with index \a index its value is modified, else a new element with
+// the given \a value is inserted.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename SparseSubvector<VT,AF,TF>::Iterator
+   SparseSubvector<VT,AF,TF>::set( size_t index, const ElementType& value )
+{
+   return Iterator( vector_.set( offset_ + index, value ), offset_ );
 }
 //*************************************************************************************************
 
