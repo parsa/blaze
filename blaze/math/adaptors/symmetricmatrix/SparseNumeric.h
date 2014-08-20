@@ -44,7 +44,7 @@
 #include <stdexcept>
 #include <vector>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/symmetricmatrix/SymmetricProxy.h>
+#include <blaze/math/adaptors/symmetricmatrix/NumericProxy.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -118,7 +118,7 @@ class SymmetricMatrix<MT,false,true>
    typedef ET                              ElementType;     //!< Type of the matrix elements.
    typedef typename MT::ReturnType         ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                     CompositeType;   //!< Data type for composite expression templates.
-   typedef SymmetricProxy<MT>              Reference;       //!< Reference to a non-constant matrix value.
+   typedef NumericProxy<MT>                Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference     ConstReference;  //!< Reference to a constant matrix value.
    typedef typename MT::ConstIterator      ConstIterator;   //!< Iterator over constant elements.
    //**********************************************************************************************

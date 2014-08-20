@@ -44,7 +44,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
-#include <blaze/math/adaptors/symmetricmatrix/SymmetricProxy.h>
+#include <blaze/math/adaptors/symmetricmatrix/NumericProxy.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Lower.h>
@@ -123,7 +123,7 @@ class SymmetricMatrix<MT,true,true>
    typedef typename MT::IntrinsicType     IntrinsicType;   //!< Intrinsic type of the matrix elements.
    typedef typename MT::ReturnType        ReturnType;      //!< Return type for expression template evaluations.
    typedef const This&                    CompositeType;   //!< Data type for composite expression templates.
-   typedef SymmetricProxy<MT>             Reference;       //!< Reference to a non-constant matrix value.
+   typedef NumericProxy<MT>               Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference    ConstReference;  //!< Reference to a constant matrix value.
    typedef typename MT::Pointer           Pointer;         //!< Pointer to a non-constant matrix value.
    typedef typename MT::ConstPointer      ConstPointer;    //!< Pointer to a constant matrix value.
@@ -149,8 +149,8 @@ class SymmetricMatrix<MT,true,true>
       //**Type definitions*************************************************************************
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
-      typedef SymmetricProxy<MT>               PointerType;       //!< Pointer return type.
-      typedef SymmetricProxy<MT>               ReferenceType;     //!< Reference return type.
+      typedef NumericProxy<MT>                 PointerType;       //!< Pointer return type.
+      typedef NumericProxy<MT>                 ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
@@ -556,8 +556,8 @@ class SymmetricMatrix<MT,true,true>
       //**Type definitions*************************************************************************
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
-      typedef SymmetricProxy<MT>               PointerType;       //!< Pointer return type.
-      typedef SymmetricProxy<MT>               ReferenceType;     //!< Reference return type.
+      typedef NumericProxy<MT>                 PointerType;       //!< Pointer return type.
+      typedef NumericProxy<MT>                 ReferenceType;     //!< Reference return type.
       typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
 
       // STL iterator requirements
