@@ -76,8 +76,9 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testAppend();
+   testSet();
    testInsert();
+   testAppend();
    testErase();
    testReserve();
    testTrim();
@@ -5764,6 +5765,413 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c set() member function of the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c set() member function of the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testSet()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseSubmatrix::set()";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 0UL, 1UL, 2UL, 3UL );
+
+      // Setting a non-zero element at the end of the 0th row
+      sm.set( 0UL, 2UL, 1 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting a non-zero element at the beginning of the 0th row
+      sm.set( 0UL, 0UL, 2 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 0 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting a non-zero element at the center of the 0th row
+      sm.set( 0UL, 1UL, 3 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 3 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 3 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting an already existing element
+      sm.set( 1UL, 0UL, 4 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 3 || sm(0,2) != 1 ||
+          sm(1,0) != 4 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 3 1 )\n( 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseSubmatrix::set()";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
+
+      // Setting a non-zero element at the end of the 0th column
+      sm.set( 2UL, 0UL, 1 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting a non-zero element at the beginning of the 0th column
+      sm.set( 0UL, 0UL, 2 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 1 )\n( 0 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting a non-zero element at the center of the 0th column
+      sm.set( 1UL, 0UL, 3 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 3 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 1 )\n( 3 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Setting an already existing element
+      sm.set( 0UL, 1UL, 4 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 4 ||
+          sm(1,0) != 3 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 4 )\n( 3 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c insert() member function of the SparseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c insert() member function of the SparseSubmatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testInsert()
+{
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major SparseSubmatrix::insert()";
+
+      initialize();
+
+      SMT sm = submatrix( mat_, 0UL, 1UL, 2UL, 3UL );
+
+      // Inserting a non-zero element at the end of the 0th row
+      sm.insert( 0UL, 2UL, 1 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 0 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Inserting a non-zero element at the beginning of the 0th row
+      sm.insert( 0UL, 0UL, 2 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 12UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 0 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 0 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Inserting a non-zero element at the center of the 0th row
+      sm.insert( 0UL, 1UL, 3 );
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  4UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 3 || sm(0,2) != 1 ||
+          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 3 1 )\n( 1 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to insert an already existing element
+      try {
+         sm.insert( 1UL, 0UL, 4 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 3 1 )\n( 4 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major SparseSubmatrix::insert()";
+
+      initialize();
+
+      TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
+
+      // Inserting a non-zero element at the end of the 0th column
+      sm.insert( 2UL, 0UL, 1 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  2UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 1 )\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Inserting a non-zero element at the beginning of the 0th column
+      sm.insert( 0UL, 0UL, 2 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 12UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 1 )\n( 0 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Inserting a non-zero element at the center of the 0th column
+      sm.insert( 1UL, 0UL, 3 );
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 13UL );
+
+      if( sm(0,0) != 2 || sm(0,1) != 1 ||
+          sm(1,0) != 3 || sm(1,1) != 0 ||
+          sm(2,0) != 1 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting a non-zero element failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 1 )\n( 3 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Trying to insert an already existing element
+      try {
+         sm.insert( 0UL, 1UL, 4 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inserting an existing element succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 2 4 )\n( 3 0 )\n( 1 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c append() member function of the SparseSubmatrix class template.
 //
 // \return void
@@ -6133,202 +6541,6 @@ void ClassTest::testAppend()
             throw std::runtime_error( oss.str() );
          }
       }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SparseSubmatrix class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c insert() member function of the SparseSubmatrix class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testInsert()
-{
-   //=====================================================================================
-   // Row-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseSubmatrix::insert()";
-
-      initialize();
-
-      SMT sm = submatrix( mat_, 0UL, 1UL, 2UL, 3UL );
-
-      // Inserting a non-zero element at the end of the 0th row
-      sm.insert( 0UL, 2UL, 1 );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != 0 || sm(0,2) != 1 ||
-          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 0 1 )\n( 1 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Inserting a non-zero element at the beginning of the 0th row
-      sm.insert( 0UL, 0UL, 2 );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  3UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 12UL );
-
-      if( sm(0,0) != 2 || sm(0,1) != 0 || sm(0,2) != 1 ||
-          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 0 1 )\n( 1 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Inserting a non-zero element at the center of the 0th row
-      sm.insert( 0UL, 1UL, 3 );
-
-      checkRows    ( sm  ,  2UL );
-      checkColumns ( sm  ,  3UL );
-      checkNonZeros( sm  ,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 13UL );
-
-      if( sm(0,0) != 2 || sm(0,1) != 3 || sm(0,2) != 1 ||
-          sm(1,0) != 1 || sm(1,1) != 0 || sm(1,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 3 1 )\n( 1 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to insert an already existing element
-      try {
-         sm.insert( 1UL, 0UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 3 1 )\n( 4 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major submatrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseSubmatrix::insert()";
-
-      initialize();
-
-      TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
-
-      // Inserting a non-zero element at the end of the 0th column
-      sm.insert( 2UL, 0UL, 1 );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkNonZeros( sm   ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
-
-      if( sm(0,0) != 0 || sm(0,1) != 1 ||
-          sm(1,0) != 0 || sm(1,1) != 0 ||
-          sm(2,0) != 1 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 0 1 )\n( 0 0 )\n( 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Inserting a non-zero element at the beginning of the 0th column
-      sm.insert( 0UL, 0UL, 2 );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkNonZeros( sm   ,  3UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 12UL );
-
-      if( sm(0,0) != 2 || sm(0,1) != 1 ||
-          sm(1,0) != 0 || sm(1,1) != 0 ||
-          sm(2,0) != 1 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 1 )\n( 0 0 )\n( 1 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Inserting a non-zero element at the center of the 0th column
-      sm.insert( 1UL, 0UL, 3 );
-
-      checkRows    ( sm   ,  3UL );
-      checkColumns ( sm   ,  2UL );
-      checkNonZeros( sm   ,  4UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 13UL );
-
-      if( sm(0,0) != 2 || sm(0,1) != 1 ||
-          sm(1,0) != 3 || sm(1,1) != 0 ||
-          sm(2,0) != 1 || sm(2,1) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 1 )\n( 3 0 )\n( 1 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to insert an already existing element
-      try {
-         sm.insert( 0UL, 1UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 2 4 )\n( 3 0 )\n( 1 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
