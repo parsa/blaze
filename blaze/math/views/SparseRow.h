@@ -1036,7 +1036,6 @@ inline void SparseRow<MT,SO>::reset()
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Reference to the set value.
-// \exception std::invalid_argument Invalid sparse row access index.
 //
 // This function sets the value of an element of the sparse row. In case the sparse row already
 // contains an element with index \a index its value is modified, else a new element with the
@@ -2628,7 +2627,6 @@ inline typename SparseRow<MT,false>::Iterator
 // \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Reference to the set value.
-// \exception std::invalid_argument Invalid sparse row access index.
 //
 // This function sets the value of an element of the sparse row. In case the sparse row already
 // contains an element with index \a index its value is modified, else a new element with the

@@ -1594,7 +1594,6 @@ inline void SparseSubmatrix<MT,AF,SO>::reset( size_t i )
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Iterator to the set element.
-// \exception std::invalid_argument Invalid sparse submatrix access index.
 //
 // This function sets the value of an element of the sparse submatrix. In case the sparse matrix
 // already contains an element with row index \a i and column index \a j its value is modified,
@@ -3646,7 +3645,6 @@ inline void SparseSubmatrix<MT,AF,true>::reset( size_t j )
 // \param j The column index of the new element. The index has to be in the range \f$[0..N-1]\f$.
 // \param value The value of the element to be set.
 // \return Iterator to the set element.
-// \exception std::invalid_argument Invalid sparse submatrix access index.
 //
 // This function sets the value of an element of the sparse submatrix. In case the sparse matrix
 // already contains an element with row index \a i and column index \a j its value is modified,
