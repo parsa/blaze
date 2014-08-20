@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/symmetricmatrix/SymmetricProxy.h
-//  \brief Header file for the SymmetricProxy class
+//  \file blaze/math/adaptors/symmetricmatrix/NumericProxy.h
+//  \brief Header file for the NumericProxy class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SYMMETRICPROXY_H_
-#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SYMMETRICPROXY_H_
+#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
+#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
 
 
 //*************************************************************************************************
@@ -70,10 +70,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Access proxy for symmetric, square matrices.
+/*!\brief Access proxy for symmetric, square matrices with numeric element types.
 // \ingroup symmetric_matrix
 //
-// The SymmetricProxy provides controlled access to the elements of a non-const symmetric matrix
+// The NumericProxy provides controlled access to the elements of a non-const symmetric matrix
 // with numeric element type (e.g. integral values, floating point values, and complex values).
 // It guarantees that a modification of element \f$ a_{ij} \f$ of the accessed matrix is also
 // applied to element \f$ a_{ji} \f$. The following example illustrates this by means of a
@@ -89,7 +89,7 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class SymmetricProxy
+class NumericProxy
 {
  private:
    //**Type trait generation***********************************************************************
@@ -103,8 +103,8 @@ class SymmetricProxy
    typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
    typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
    typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef SymmetricProxy               Pointer;          //!< Pointer to the represented element.
-   typedef const SymmetricProxy         ConstPointer;     //!< Pointer-to-const to the represented element.
+   typedef NumericProxy                 Pointer;          //!< Pointer to the represented element.
+   typedef const NumericProxy           ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    typedef typename GetValueType<RepresentedType>::Type  ValueType;
@@ -113,8 +113,8 @@ class SymmetricProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SymmetricProxy( MT& matrix, size_t row, size_t column );
-            inline SymmetricProxy( const SymmetricProxy& sp );
+   explicit inline NumericProxy( MT& matrix, size_t row, size_t column );
+            inline NumericProxy( const NumericProxy& sp );
    //@}
    //**********************************************************************************************
 
@@ -125,12 +125,12 @@ class SymmetricProxy
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline SymmetricProxy& operator= ( const SymmetricProxy& sp );
-   template< typename T > inline SymmetricProxy& operator= ( const T& value );
-   template< typename T > inline SymmetricProxy& operator+=( const T& value );
-   template< typename T > inline SymmetricProxy& operator-=( const T& value );
-   template< typename T > inline SymmetricProxy& operator*=( const T& value );
-   template< typename T > inline SymmetricProxy& operator/=( const T& value );
+                          inline NumericProxy& operator= ( const NumericProxy& sp );
+   template< typename T > inline NumericProxy& operator= ( const T& value );
+   template< typename T > inline NumericProxy& operator+=( const T& value );
+   template< typename T > inline NumericProxy& operator-=( const T& value );
+   template< typename T > inline NumericProxy& operator*=( const T& value );
+   template< typename T > inline NumericProxy& operator/=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -204,14 +204,14 @@ class SymmetricProxy
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization constructor for a SymmetricProxy.
+/*!\brief Initialization constructor for a NumericProxy.
 //
 // \param matrix Reference to the adapted matrix.
 // \param row The row-index of the accessed matrix element.
 // \param column The column-index of the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline SymmetricProxy<MT>::SymmetricProxy( MT& matrix, size_t row, size_t column )
+inline NumericProxy<MT>::NumericProxy( MT& matrix, size_t row, size_t column )
    : matrix_( matrix )  // Reference to the adapted matrix
    , row_   ( row    )  // Row index of the accessed matrix element
    , column_( column )  // Column index of the accessed matrix element
@@ -220,15 +220,15 @@ inline SymmetricProxy<MT>::SymmetricProxy( MT& matrix, size_t row, size_t column
 
 
 //*************************************************************************************************
-/*!\brief The copy constructor for SymmetricProxy.
+/*!\brief The copy constructor for NumericProxy.
 //
-// \param sp Symmetric proxy to be copied.
+// \param np Numeric proxy to be copied.
 */
 template< typename MT >  // Type of the adapted matrix
-inline SymmetricProxy<MT>::SymmetricProxy( const SymmetricProxy& sp )
-   : matrix_( sp.matrix_ )  // Reference to the adapted matrix
-   , row_   ( sp.row_    )  // Row index of the accessed matrix element
-   , column_( sp.column_ )  // Column index of the accessed matrix element
+inline NumericProxy<MT>::NumericProxy( const NumericProxy& np )
+   : matrix_( np.matrix_ )  // Reference to the adapted matrix
+   , row_   ( np.row_    )  // Row index of the accessed matrix element
+   , column_( np.column_ )  // Column index of the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -242,16 +242,16 @@ inline SymmetricProxy<MT>::SymmetricProxy( const SymmetricProxy& sp )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for SymmetricProxy.
+/*!\brief Copy assignment operator for NumericProxy.
 //
-// \param sp Symmetric proxy to be copied.
+// \param np Numeric proxy to be copied.
 // \return Reference to the assigned proxy.
 */
 template< typename MT >  // Type of the adapted matrix
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator=( const SymmetricProxy& sp )
+inline NumericProxy<MT>& NumericProxy<MT>::operator=( const NumericProxy& np )
 {
-   matrix_(row_,column_) = sp.matrix_(sp.row_,sp.column_);
-   matrix_(column_,row_) = sp.matrix_(sp.row_,sp.column_);
+   matrix_(row_,column_) = np.matrix_(np.row_,np.column_);
+   matrix_(column_,row_) = np.matrix_(np.row_,np.column_);
 
    return *this;
 }
@@ -266,7 +266,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator=( const SymmetricProxy& 
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator=( const T& value )
+inline NumericProxy<MT>& NumericProxy<MT>::operator=( const T& value )
 {
    matrix_(row_,column_) = value;
    if( row_ != column_ )
@@ -285,7 +285,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator+=( const T& value )
+inline NumericProxy<MT>& NumericProxy<MT>::operator+=( const T& value )
 {
    matrix_(row_,column_) += value;
    if( row_ != column_ )
@@ -304,7 +304,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator+=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator-=( const T& value )
+inline NumericProxy<MT>& NumericProxy<MT>::operator-=( const T& value )
 {
    matrix_(row_,column_) -= value;
    if( row_ != column_ )
@@ -323,7 +323,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator-=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator*=( const T& value )
+inline NumericProxy<MT>& NumericProxy<MT>::operator*=( const T& value )
 {
    matrix_(row_,column_) *= value;
    if( row_ != column_ )
@@ -342,7 +342,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator*=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator/=( const T& value )
+inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
 {
    matrix_(row_,column_) /= value;
    if( row_ != column_ )
@@ -359,7 +359,7 @@ inline SymmetricProxy<MT>& SymmetricProxy<MT>::operator/=( const T& value )
 // \return Pointer to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricProxy<MT>::Pointer SymmetricProxy<MT>::operator->()
+inline typename NumericProxy<MT>::Pointer NumericProxy<MT>::operator->()
 {
    return this;
 }
@@ -372,7 +372,7 @@ inline typename SymmetricProxy<MT>::Pointer SymmetricProxy<MT>::operator->()
 // \return Pointer to the represented matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricProxy<MT>::ConstPointer SymmetricProxy<MT>::operator->() const
+inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() const
 {
    return this;
 }
@@ -395,7 +395,7 @@ inline typename SymmetricProxy<MT>::ConstPointer SymmetricProxy<MT>::operator->(
 // This function resets the element represented by the proxy to its default initial value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void SymmetricProxy<MT>::reset() const
+inline void NumericProxy<MT>::reset() const
 {
    using blaze::reset;
 
@@ -414,7 +414,7 @@ inline void SymmetricProxy<MT>::reset() const
 // This function clears the element represented by the proxy to its default initial state.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void SymmetricProxy<MT>::clear() const
+inline void NumericProxy<MT>::clear() const
 {
    using blaze::clear;
 
@@ -439,7 +439,7 @@ inline void SymmetricProxy<MT>::clear() const
 // \return Direct/raw reference to the accessed matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline SymmetricProxy<MT>::operator ConstReference() const
+inline NumericProxy<MT>::operator ConstReference() const
 {
    return const_cast<const MT&>( matrix_ )(row_,column_);
 }
@@ -463,7 +463,7 @@ inline SymmetricProxy<MT>::operator ConstReference() const
 // real part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricProxy<MT>::ValueType SymmetricProxy<MT>::real() const
+inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::real() const
 {
    return matrix_(row_,column_).real();
 }
@@ -479,7 +479,7 @@ inline typename SymmetricProxy<MT>::ValueType SymmetricProxy<MT>::real() const
 // In case the proxy represents a complex number, this function sets a new value to its real part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void SymmetricProxy<MT>::real( ValueType value ) const
+inline void NumericProxy<MT>::real( ValueType value ) const
 {
    matrix_(row_,column_).real( value );
    if( row_ != column_ )
@@ -497,7 +497,7 @@ inline void SymmetricProxy<MT>::real( ValueType value ) const
 // imaginary part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename SymmetricProxy<MT>::ValueType SymmetricProxy<MT>::imag() const
+inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::imag() const
 {
    return matrix_(row_,column_).imag();
 }
@@ -514,7 +514,7 @@ inline typename SymmetricProxy<MT>::ValueType SymmetricProxy<MT>::imag() const
 // part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void SymmetricProxy<MT>::imag( ValueType value ) const
+inline void NumericProxy<MT>::imag( ValueType value ) const
 {
    matrix_(row_,column_).imag( value );
    if( row_ != column_ )
@@ -532,392 +532,392 @@ inline void SymmetricProxy<MT>::imag( ValueType value ) const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name SymmetricProxy operators */
+/*!\name NumericProxy operators */
 //@{
 template< typename MT1, typename MT2 >
-inline bool operator==( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator==( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator==( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator==( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator==( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator==( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT1, typename MT2 >
-inline bool operator!=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator!=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator!=( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator!=( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator!=( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator!=( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT1, typename MT2 >
-inline bool operator<( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator<( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator<( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator<( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator<( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator<( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT1, typename MT2 >
-inline bool operator>( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator>( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator>( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator>( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator>( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator>( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT1, typename MT2 >
-inline bool operator<=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator<=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator<=( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator<=( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator<=( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator<=( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT1, typename MT2 >
-inline bool operator>=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs );
+inline bool operator>=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs );
 
 template< typename MT, typename T >
-inline bool operator>=( const SymmetricProxy<MT>& lhs, const T& rhs );
+inline bool operator>=( const NumericProxy<MT>& lhs, const T& rhs );
 
 template< typename T, typename MT >
-inline bool operator>=( const T& lhs, const SymmetricProxy<MT>& rhs );
+inline bool operator>=( const T& lhs, const NumericProxy<MT>& rhs );
 
 template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const SymmetricProxy<MT>& proxy );
+inline std::ostream& operator<<( std::ostream& os, const NumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between two SymmetricProxy objects.
+/*!\brief Equality comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if both referenced values are equal, \a false if they are not.
 */
 template< typename MT1, typename MT2 >
-inline bool operator==( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator==( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) == static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Equality comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are equal, \a false if they are not.
 */
 template< typename MT, typename T >
-inline bool operator==( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator==( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) == rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Equality comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Equality comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the other object and the referenced value are equal, \a false if they are not.
 */
 template< typename T, typename MT >
-inline bool operator==( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator==( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs == static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Inequality comparison between two SymmetricProxy objects.
+/*!\brief Inequality comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if both referenced values are not equal, \a false if they are.
 */
 template< typename MT1, typename MT2 >
-inline bool operator!=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator!=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) != static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Inequality comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Inequality comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the referenced value and the other object are not equal, \a false if they are.
 */
 template< typename MT, typename T >
-inline bool operator!=( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator!=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) != rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Inquality comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Inquality comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the other object and the referenced value are not equal, \a false if they are.
 */
 template< typename T, typename MT >
-inline bool operator!=( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator!=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs != static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between two SymmetricProxy objects.
+/*!\brief Less-than comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
 template< typename MT1, typename MT2 >
-inline bool operator<( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator<( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) < static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Less-than comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller, \a false if not.
 */
 template< typename MT, typename T >
-inline bool operator<( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator<( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) < rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-than comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Less-than comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side other object is smaller, \a false if not.
 */
 template< typename T, typename MT >
-inline bool operator<( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator<( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs < static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between two SymmetricProxy objects.
+/*!\brief Greater-than comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
 template< typename MT1, typename MT2 >
-inline bool operator>( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator>( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) > static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Greater-than comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater, \a false if not.
 */
 template< typename MT, typename T >
-inline bool operator>( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator>( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) > rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-than comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Greater-than comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side other object is greater, \a false if not.
 */
 template< typename T, typename MT >
-inline bool operator>( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator>( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs > static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between two SymmetricProxy objects.
+/*!\brief Less-or-equal-than comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
 template< typename MT1, typename MT2 >
-inline bool operator<=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator<=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) <= static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Less-or-equal-than comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
 */
 template< typename MT, typename T >
-inline bool operator<=( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator<=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) <= rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Less-or-equal-than comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side other object is smaller or equal, \a false if not.
 */
 template< typename T, typename MT >
-inline bool operator<=( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator<=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs <= static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between two SymmetricProxy objects.
+/*!\brief Greater-or-equal-than comparison between two NumericProxy objects.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
 template< typename MT1, typename MT2 >
-inline bool operator>=( const SymmetricProxy<MT1>& lhs, const SymmetricProxy<MT2>& rhs )
+inline bool operator>=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename SymmetricProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename SymmetricProxy<MT2>::ConstReference  RhsConstReference;
+   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
+   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
    return ( static_cast<LhsConstReference>( lhs ) >= static_cast<RhsConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between a SymmetricProxy object and an object of different type.
+/*!\brief Greater-or-equal-than comparison between a NumericProxy object and an object of different type.
 // \ingroup symmetric_matrix
 //
-// \param lhs The left-hand side SymmetricProxy object.
+// \param lhs The left-hand side NumericProxy object.
 // \param rhs The right-hand side object of other type.
 // \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
 */
 template< typename MT, typename T >
-inline bool operator>=( const SymmetricProxy<MT>& lhs, const T& rhs )
+inline bool operator>=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( static_cast<ConstReference>( lhs ) >= rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between an object of different type and a SymmetricProxy object.
+/*!\brief Greater-or-equal-than comparison between an object of different type and a NumericProxy object.
 // \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side SymmetricProxy object.
+// \param rhs The right-hand side NumericProxy object.
 // \return \a true if the left-hand side other object is greater or equal, \a false if not.
 */
 template< typename T, typename MT >
-inline bool operator>=( const T& lhs, const SymmetricProxy<MT>& rhs )
+inline bool operator>=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return ( lhs >= static_cast<ConstReference>( rhs ) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Global output operator for symmetric proxies.
+/*!\brief Global output operator for numeric proxies.
 // \ingroup symmetric_matrix
 //
 // \param os Reference to the output stream.
-// \param proxy Reference to a constant symmetric proxy object.
+// \param proxy Reference to a constant numeric proxy object.
 // \return Reference to the output stream.
 */
 template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const SymmetricProxy<MT>& proxy )
+inline std::ostream& operator<<( std::ostream& os, const NumericProxy<MT>& proxy )
 {
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return os << static_cast<ConstReference>( proxy );
 }
 //*************************************************************************************************
@@ -932,16 +932,16 @@ inline std::ostream& operator<<( std::ostream& os, const SymmetricProxy<MT>& pro
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name SymmetricProxy global functions */
+/*!\name NumericProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const SymmetricProxy<MT>& proxy );
+inline void reset( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const SymmetricProxy<MT>& proxy );
+inline void clear( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isDefault( const SymmetricProxy<MT>& proxy );
+inline bool isDefault( const NumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -953,11 +953,11 @@ inline bool isDefault( const SymmetricProxy<MT>& proxy );
 // \param proxy The given access proxy.
 // \return void
 //
-// This function resets the element represented by the symmetric proxy to its default initial
+// This function resets the element represented by the numeric proxy to its default initial
 // value.
 */
 template< typename MT >
-inline void reset( const SymmetricProxy<MT>& proxy )
+inline void reset( const NumericProxy<MT>& proxy )
 {
    proxy.reset();
 }
@@ -971,11 +971,11 @@ inline void reset( const SymmetricProxy<MT>& proxy )
 // \param proxy The given access proxy.
 // \return void
 //
-// This function clears the element represented by the symmetric proxy to its default initial
+// This function clears the element represented by the numeric proxy to its default initial
 // state.
 */
 template< typename MT >
-inline void clear( const SymmetricProxy<MT>& proxy )
+inline void clear( const NumericProxy<MT>& proxy )
 {
    proxy.clear();
 }
@@ -993,11 +993,11 @@ inline void clear( const SymmetricProxy<MT>& proxy )
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isDefault( const SymmetricProxy<MT>& proxy )
+inline bool isDefault( const NumericProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
-   typedef typename SymmetricProxy<MT>::ConstReference  ConstReference;
+   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
    return isDefault( static_cast<ConstReference>( proxy ) );
 }
 //*************************************************************************************************
