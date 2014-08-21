@@ -80,7 +80,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/Unused.h>
@@ -113,7 +112,7 @@ class SymmetricMatrix<MT,false,false>
    typedef typename MT::ElementType    ET;  //!< Element type of the sparse matrix.
 
    //! Rebound matrix type for shared values.
-   typedef typename MT::BLAZE_TEMPLATE Rebind< SharedValue<ET> >::Other  MatrixType;
+   typedef typename MT::template Rebind< SharedValue<ET> >::Other  MatrixType;
    //**********************************************************************************************
 
  public:
@@ -135,7 +134,7 @@ class SymmetricMatrix<MT,false,false>
    template< typename ET >  // Data type of the other matrix
    struct Rebind {
       //! The type of the other SymmetricMatrix.
-      typedef SymmetricMatrix< typename MT::BLAZE_TEMPLATE Rebind<ET>::Other >  Other;
+      typedef SymmetricMatrix< typename MT::template Rebind<ET>::Other >  Other;
    };
    //**********************************************************************************************
 
