@@ -6507,7 +6507,7 @@ void DenseNonNumericTest::testSubmatrix()
    //=====================================================================================
 
    {
-      test_ = "Row-major submatrix() function";
+      test_ = "Row-major submatrix() function (non-overlapping submatrix)";
 
       typedef blaze::DenseSubmatrix<ST>  SMT;
 
@@ -6550,7 +6550,7 @@ void DenseNonNumericTest::testSubmatrix()
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
-             << "   Result:\n" << sym << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( ( -4 ) (  7 ) )\n"
                                      "( (  2 ) ( -5 ) )\n";
          throw std::runtime_error( oss.str() );
@@ -6578,7 +6578,7 @@ void DenseNonNumericTest::testSubmatrix()
          oss << " Test: " << test_ << "\n"
              << " Error: Submatrix access failed\n"
              << " Details:\n"
-             << "   Result:\n" << sym << "\n"
+             << "   Result:\n" << sm << "\n"
              << "   Expected result:\n( ( ) ( ) )\n( ( ) ( ) )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -6598,13 +6598,485 @@ void DenseNonNumericTest::testSubmatrix()
       }
    }
 
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 1)";
+
+      typedef blaze::DenseSubmatrix<ST>  SMT;
+
+      ST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 15 )
+                                                             , vec( 18 ), vec( 17 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 15 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 17 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec( 12 )  || sym(0,1) != vec( 18 ) || sym(0,2) != vec( 14 )  || sym(0,3) != vec( 15 )  || sym(0,4) != vec(  5 )  || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( 18 )  || sym(1,1) != vec( 17 ) || sym(1,2) != vec( 11 )  || sym(1,3) != vec( 19 )  || sym(1,4) != vec( -1 )  || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 14 )  || sym(2,1) != vec( 11 ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || !isDefault( sym(2,4) ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 15 )  || sym(3,1) != vec( 19 ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec(  7 )  || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || !isDefault( sym(4,2) ) || sym(4,3) != vec(  7 )  || sym(4,4) != vec(  1 )  || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 )  || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 )  || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )\n"
+                                        "( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )\n"
+                                        "( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 15 )
+                                                                , vec( 18 ), vec( 17 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 17 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 15 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) )\n"
+                                        "( ( 18 ) ( 17 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 15 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec( 12 )  || sym(0,1) != vec( 18 ) || sym(0,2) != vec( 14 )  || sym(0,3) != vec( 15 )  || sym(0,4) != vec(  5 )  || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( 18 )  || sym(1,1) != vec( 17 ) || sym(1,2) != vec( 11 )  || sym(1,3) != vec( 19 )  || sym(1,4) != vec( -1 )  || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 14 )  || sym(2,1) != vec( 11 ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || !isDefault( sym(2,4) ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 15 )  || sym(3,1) != vec( 19 ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec(  7 )  || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || !isDefault( sym(4,2) ) || sym(4,3) != vec(  7 )  || sym(4,4) != vec(  1 )  || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 )  || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 )  || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )\n"
+                                        "( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )\n"
+                                        "( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 2)";
+
+      typedef blaze::DenseSubmatrix<ST>  SMT;
+
+      ST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 15 )
+                                                             , vec( 13 ), vec( 14 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 15 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec(  7 ) || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 12 ) || sym(1,3) != vec( 13 )  || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || sym(2,1) != vec( 12 ) || sym(2,2) != vec( 18 ) || sym(2,3) != vec( 14 )  || sym(2,4) != vec( 15 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( -2 )  || sym(3,1) != vec( 13 ) || sym(3,2) != vec( 14 ) || sym(3,3) != vec( 11 )  || sym(3,4) != vec( 19 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || sym(4,2) != vec( 15 ) || sym(4,3) != vec( 19 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )\n"
+                                        "( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 15 )
+                                                                , vec( 13 ), vec( 14 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 15 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) )\n"
+                                        "( ( 18 ) ( 14 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 15 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec(  7 ) || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 12 ) || sym(1,3) != vec( 13 )  || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || sym(2,1) != vec( 12 ) || sym(2,2) != vec( 18 ) || sym(2,3) != vec( 14 )  || sym(2,4) != vec( 15 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( -2 )  || sym(3,1) != vec( 13 ) || sym(3,2) != vec( 14 ) || sym(3,3) != vec( 11 )  || sym(3,4) != vec( 19 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || sym(4,2) != vec( 15 ) || sym(4,3) != vec( 19 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )\n"
+                                        "( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 3)";
+
+      typedef blaze::DenseSubmatrix<ST>  SMT;
+
+      ST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 11 )
+                                                             , vec( 13 ), vec( 14 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 11 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 )  || sym(0,2) != vec(  7 )  || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || !isDefault( sym(2,1) ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( 13 )  ||
+             sym(3,0) != vec( -2 )  || !isDefault( sym(3,1) ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec( 18 ) || sym(3,5) != vec( 14 )  ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 )  || sym(4,2) != vec( 12 )  || sym(4,3) != vec( 18 )  || sym(4,4) != vec( 14 ) || sym(4,5) != vec( 11 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 )  || sym(5,2) != vec( 13 )  || sym(5,3) != vec( 14 )  || sym(5,4) != vec( 11 ) || sym(5,5) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )\n"
+                                        "( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )\n"
+                                        "( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 11 )
+                                                                , vec( 13 ), vec( 14 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 11 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) )\n"
+                                        "( ( 18 ) ( 14 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 )  || sym(0,2) != vec(  7 )  || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || !isDefault( sym(2,1) ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( 13 )  ||
+             sym(3,0) != vec( -2 )  || !isDefault( sym(3,1) ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec( 18 ) || sym(3,5) != vec( 14 )  ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 )  || sym(4,2) != vec( 12 )  || sym(4,3) != vec( 18 )  || sym(4,4) != vec( 14 ) || sym(4,5) != vec( 11 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 )  || sym(5,2) != vec( 13 )  || sym(5,3) != vec( 14 )  || sym(5,4) != vec( 11 ) || sym(5,5) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )\n"
+                                        "( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )\n"
+                                        "( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 4)";
+
+      typedef blaze::DenseSubmatrix<ST>  SMT;
+
+      ST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         blaze::StaticMatrix<VT,3UL,4UL,blaze::rowMajor> tmp;
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+         tmp(2,0) = vec( 19 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(2,3) = vec( 14 );
+         sm = tmp;
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 11 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ||
+             sm(2,0) != vec( 19 ) || sm(2,1) != vec( 11 ) || sm(2,2) != vec( 12 ) || sm(2,3) != vec( 14 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec( 12 ) || sym(0,3) != vec( 13 )  || sym(0,4) != vec( 19 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 18 ) || sym(1,3) != vec( 14 )  || sym(1,4) != vec( 11 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 12 )  || sym(2,1) != vec( 18 ) || sym(2,2) != vec( 14 ) || sym(2,3) != vec( 11 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 13 )  || sym(3,1) != vec( 14 ) || sym(3,2) != vec( 11 ) || sym(3,3) != vec( 19 )  || sym(3,4) != vec( 14 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec( 19 )  || sym(4,1) != vec( 11 ) || sym(4,2) != vec( 12 ) || sym(4,3) != vec( 14 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )\n"
+                                        "( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         blaze::StaticMatrix<VT,4UL,3UL,blaze::rowMajor> tmp;
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(0,2) = vec( 19 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(3,0) = vec( 11 );
+         tmp(3,1) = vec( 19 );
+         tmp(3,2) = vec( 14 );
+         sm = tmp;
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) || sm(0,2) != vec( 19 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) || sm(2,2) != vec( 12 ) ||
+             sm(3,0) != vec( 11 ) || sm(3,1) != vec( 19 ) || sm(3,2) != vec( 14 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) ( 19 ) )\n"
+                                        "( ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 14 ) ( 11 ) ( 12 ) )\n"
+                                        "( ( 11 ) ( 19 ) ( 14 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec( 12 ) || sym(0,3) != vec( 13 )  || sym(0,4) != vec( 19 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 18 ) || sym(1,3) != vec( 14 )  || sym(1,4) != vec( 11 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 12 )  || sym(2,1) != vec( 18 ) || sym(2,2) != vec( 14 ) || sym(2,3) != vec( 11 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 13 )  || sym(3,1) != vec( 14 ) || sym(3,2) != vec( 11 ) || sym(3,3) != vec( 19 )  || sym(3,4) != vec( 14 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec( 19 )  || sym(4,1) != vec( 11 ) || sym(4,2) != vec( 12 ) || sym(4,3) != vec( 14 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )\n"
+                                        "( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major submatrix() function";
+      test_ = "Column-major submatrix() function (non-overlapping submatrix)";
 
       typedef blaze::DenseSubmatrix<TST>  SMT;
 
@@ -6692,6 +7164,478 @@ void DenseNonNumericTest::testSubmatrix()
                                      "( (   ) (   ) (   ) )\n"
                                      "( (   ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 1)";
+
+      typedef blaze::DenseSubmatrix<TST>  SMT;
+
+      TST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 15 )
+                                                             , vec( 18 ), vec( 17 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 15 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 17 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec( 12 )  || sym(0,1) != vec( 18 ) || sym(0,2) != vec( 14 )  || sym(0,3) != vec( 15 )  || sym(0,4) != vec(  5 )  || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( 18 )  || sym(1,1) != vec( 17 ) || sym(1,2) != vec( 11 )  || sym(1,3) != vec( 19 )  || sym(1,4) != vec( -1 )  || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 14 )  || sym(2,1) != vec( 11 ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || !isDefault( sym(2,4) ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 15 )  || sym(3,1) != vec( 19 ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec(  7 )  || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || !isDefault( sym(4,2) ) || sym(4,3) != vec(  7 )  || sym(4,4) != vec(  1 )  || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 )  || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 )  || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )\n"
+                                        "( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )\n"
+                                        "( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 15 )
+                                                                , vec( 18 ), vec( 17 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 17 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 15 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) )\n"
+                                        "( ( 18 ) ( 17 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 15 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec( 12 )  || sym(0,1) != vec( 18 ) || sym(0,2) != vec( 14 )  || sym(0,3) != vec( 15 )  || sym(0,4) != vec(  5 )  || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( 18 )  || sym(1,1) != vec( 17 ) || sym(1,2) != vec( 11 )  || sym(1,3) != vec( 19 )  || sym(1,4) != vec( -1 )  || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 14 )  || sym(2,1) != vec( 11 ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || !isDefault( sym(2,4) ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 15 )  || sym(3,1) != vec( 19 ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec(  7 )  || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || !isDefault( sym(4,2) ) || sym(4,3) != vec(  7 )  || sym(4,4) != vec(  1 )  || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 )  || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 )  || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )\n"
+                                        "( ( 18 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )\n"
+                                        "( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )\n"
+                                        "( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 2)";
+
+      typedef blaze::DenseSubmatrix<TST>  SMT;
+
+      TST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 15 )
+                                                             , vec( 13 ), vec( 14 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 15 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 15 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec(  7 ) || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 12 ) || sym(1,3) != vec( 13 )  || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || sym(2,1) != vec( 12 ) || sym(2,2) != vec( 18 ) || sym(2,3) != vec( 14 )  || sym(2,4) != vec( 15 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( -2 )  || sym(3,1) != vec( 13 ) || sym(3,2) != vec( 14 ) || sym(3,3) != vec( 11 )  || sym(3,4) != vec( 19 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || sym(4,2) != vec( 15 ) || sym(4,3) != vec( 19 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )\n"
+                                        "( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 15 )
+                                                                , vec( 13 ), vec( 14 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 15 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) )\n"
+                                        "( ( 18 ) ( 14 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 15 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec(  7 ) || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 12 ) || sym(1,3) != vec( 13 )  || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || sym(2,1) != vec( 12 ) || sym(2,2) != vec( 18 ) || sym(2,3) != vec( 14 )  || sym(2,4) != vec( 15 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( -2 )  || sym(3,1) != vec( 13 ) || sym(3,2) != vec( 14 ) || sym(3,3) != vec( 11 )  || sym(3,4) != vec( 19 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 ) || sym(4,2) != vec( 15 ) || sym(4,3) != vec( 19 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )\n"
+                                        "( ( -2 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) (    ) )\n"
+                                        "( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 3)";
+
+      typedef blaze::DenseSubmatrix<TST>  SMT;
+
+      TST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         sm = blaze::StaticMatrix<VT,2UL,4UL,blaze::rowMajor>( vec( 12 ), vec( 18 ), vec( 14 ), vec( 11 )
+                                                             , vec( 13 ), vec( 14 ), vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 11 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 )  || sym(0,2) != vec(  7 )  || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || !isDefault( sym(2,1) ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( 13 )  ||
+             sym(3,0) != vec( -2 )  || !isDefault( sym(3,1) ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec( 18 ) || sym(3,5) != vec( 14 )  ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 )  || sym(4,2) != vec( 12 )  || sym(4,3) != vec( 18 )  || sym(4,4) != vec( 14 ) || sym(4,5) != vec( 11 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 )  || sym(5,2) != vec( 13 )  || sym(5,3) != vec( 14 )  || sym(5,4) != vec( 11 ) || sym(5,5) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )\n"
+                                        "( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )\n"
+                                        "( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         sm = blaze::StaticMatrix<VT,4UL,2UL,blaze::columnMajor>( vec( 12 ), vec( 18 )
+                                                                , vec( 14 ), vec( 11 )
+                                                                , vec( 13 ), vec( 14 )
+                                                                , vec( 11 ), vec( 19 ) );
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) ||
+             sm(3,0) != vec( 11 ) || sm(3,1) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) )\n"
+                                        "( ( 18 ) ( 14 ) )\n"
+                                        "( ( 14 ) ( 11 ) )\n"
+                                        "( ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 )  || sym(0,2) != vec(  7 )  || sym(0,3) != vec( -2 )  || sym(0,4) != vec(  5 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) || !isDefault( sym(1,3) ) || sym(1,4) != vec( -1 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec(  7 )  || !isDefault( sym(2,1) ) || sym(2,2) != vec(  3 )  || sym(2,3) != vec(  1 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( 13 )  ||
+             sym(3,0) != vec( -2 )  || !isDefault( sym(3,1) ) || sym(3,2) != vec(  1 )  || sym(3,3) != vec(  5 )  || sym(3,4) != vec( 18 ) || sym(3,5) != vec( 14 )  ||
+             sym(4,0) != vec(  5 )  || sym(4,1) != vec( -1 )  || sym(4,2) != vec( 12 )  || sym(4,3) != vec( 18 )  || sym(4,4) != vec( 14 ) || sym(4,5) != vec( 11 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 )  || sym(5,2) != vec( 13 )  || sym(5,3) != vec( 14 )  || sym(5,4) != vec( 11 ) || sym(5,5) != vec( 19 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )\n"
+                                        "( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )\n"
+                                        "( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )\n"
+                                        "( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( (    ) (  8 ) ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Row-major submatrix() function (assignment test 4)";
+
+      typedef blaze::DenseSubmatrix<TST>  SMT;
+
+      TST sym( 6UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(0,3) = vec( -2 );
+      sym(0,4) = vec(  5 );
+      sym(1,1) = vec(  2 );
+      sym(1,4) = vec( -1 );
+      sym(1,5) = vec(  8 );
+      sym(2,2) = vec(  3 );
+      sym(2,3) = vec(  1 );
+      sym(2,5) = vec( -2 );
+      sym(3,3) = vec(  5 );
+      sym(3,4) = vec(  7 );
+      sym(4,4) = vec(  1 );
+      sym(4,5) = vec( -4 );
+      sym(5,5) = vec(  7 );
+
+      {
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         blaze::StaticMatrix<VT,3UL,4UL,blaze::rowMajor> tmp;
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+         tmp(2,0) = vec( 19 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(2,3) = vec( 14 );
+         sm = tmp;
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 18 ) || sm(0,2) != vec( 14 ) || sm(0,3) != vec( 11 ) ||
+             sm(1,0) != vec( 13 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) || sm(1,3) != vec( 19 ) ||
+             sm(2,0) != vec( 19 ) || sm(2,1) != vec( 11 ) || sm(2,2) != vec( 12 ) || sm(2,3) != vec( 14 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec( 12 ) || sym(0,3) != vec( 13 )  || sym(0,4) != vec( 19 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 18 ) || sym(1,3) != vec( 14 )  || sym(1,4) != vec( 11 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 12 )  || sym(2,1) != vec( 18 ) || sym(2,2) != vec( 14 ) || sym(2,3) != vec( 11 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 13 )  || sym(3,1) != vec( 14 ) || sym(3,2) != vec( 11 ) || sym(3,3) != vec( 19 )  || sym(3,4) != vec( 14 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec( 19 )  || sym(4,1) != vec( 11 ) || sym(4,2) != vec( 12 ) || sym(4,3) != vec( 14 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )\n"
+                                        "( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         blaze::StaticMatrix<VT,4UL,3UL,blaze::rowMajor> tmp;
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(0,2) = vec( 19 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(3,0) = vec( 11 );
+         tmp(3,1) = vec( 19 );
+         tmp(3,2) = vec( 14 );
+         sm = tmp;
+
+         if( sm(0,0) != vec( 12 ) || sm(0,1) != vec( 13 ) || sm(0,2) != vec( 19 ) ||
+             sm(1,0) != vec( 18 ) || sm(1,1) != vec( 14 ) || sm(1,2) != vec( 11 ) ||
+             sm(2,0) != vec( 14 ) || sm(2,1) != vec( 11 ) || sm(2,2) != vec( 12 ) ||
+             sm(3,0) != vec( 11 ) || sm(3,1) != vec( 19 ) || sm(3,2) != vec( 14 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n"
+                << "   Expected result:\n( ( 12 ) ( 13 ) ( 19 ) )\n"
+                                        "( ( 18 ) ( 14 ) ( 11 ) )\n"
+                                        "( ( 14 ) ( 11 ) ( 12 ) )\n"
+                                        "( ( 11 ) ( 19 ) ( 14 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( sym(0,0) != vec(  1 )  || sym(0,1) != vec( -4 ) || sym(0,2) != vec( 12 ) || sym(0,3) != vec( 13 )  || sym(0,4) != vec( 19 ) || !isDefault( sym(0,5) ) ||
+             sym(1,0) != vec( -4 )  || sym(1,1) != vec(  2 ) || sym(1,2) != vec( 18 ) || sym(1,3) != vec( 14 )  || sym(1,4) != vec( 11 ) || sym(1,5) != vec(  8 )  ||
+             sym(2,0) != vec( 12 )  || sym(2,1) != vec( 18 ) || sym(2,2) != vec( 14 ) || sym(2,3) != vec( 11 )  || sym(2,4) != vec( 12 ) || sym(2,5) != vec( -2 )  ||
+             sym(3,0) != vec( 13 )  || sym(3,1) != vec( 14 ) || sym(3,2) != vec( 11 ) || sym(3,3) != vec( 19 )  || sym(3,4) != vec( 14 ) || !isDefault( sym(3,5) ) ||
+             sym(4,0) != vec( 19 )  || sym(4,1) != vec( 11 ) || sym(4,2) != vec( 12 ) || sym(4,3) != vec( 14 )  || sym(4,4) != vec(  1 ) || sym(4,5) != vec( -4 )  ||
+             !isDefault( sym(5,0) ) || sym(5,1) != vec(  8 ) || sym(5,2) != vec( -2 ) || !isDefault( sym(5,3) ) || sym(5,4) != vec( -4 ) || sym(5,5) != vec(  7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to submatrix failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )\n"
+                                        "( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )\n"
+                                        "( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )\n"
+                                        "( ( 13 ) ( 14 ) ( 11 ) ( 19 ) ( 14 ) (    ) )\n"
+                                        "( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )\n"
+                                        "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
@@ -6800,8 +7744,25 @@ void DenseNonNumericTest::testRow()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
 
-      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+   // ( (  1 ) ( -4 ) (  7 ) )      ( (  1 ) (  2 ) (  7 ) )
+   // ( ( -4 ) (  2 ) (    ) )  =>  ( (  2 ) (  8 ) (  4 ) )
+   // ( (  7 ) (    ) (  3 ) )      ( (  7 ) (  4 ) (  3 ) )
+   {
+      test_ = "Row-major row() function (assignment test)";
+
+      typedef blaze::DenseRow<ST>  RT;
+
+      ST sym( 3UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(1,1) = vec(  2 );
+      sym(2,2) = vec(  3 );
+
+      RT row1 = row( sym, 1UL );
+      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );
 
       if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
          std::ostringstream oss;
@@ -6920,8 +7881,25 @@ void DenseNonNumericTest::testRow()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
 
-      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+   // ( (  1 ) ( -4 ) (  7 ) )      ( (  1 ) (  2 ) (  7 ) )
+   // ( ( -4 ) (  2 ) (    ) )  =>  ( (  2 ) (  8 ) (  4 ) )
+   // ( (  7 ) (    ) (  3 ) )      ( (  7 ) (  4 ) (  3 ) )
+   {
+      test_ = "Column-major row() function (assignment test)";
+
+      typedef blaze::DenseRow<TST>  RT;
+
+      TST sym( 3UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(1,1) = vec(  2 );
+      sym(2,2) = vec(  3 );
+
+      RT row1 = row( sym, 1UL );
+      row1 = blaze::StaticVector<VT,3UL,blaze::rowVector>( vec( 2 ), vec( 8 ), vec( 4 ) );
 
       if( row1[0] != vec( 2 ) || row1[1] != vec( 8 ) || row1[2] != vec( 4 ) ) {
          std::ostringstream oss;
@@ -7053,8 +8031,25 @@ void DenseNonNumericTest::testColumn()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
 
-      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+   // ( (  1 ) ( -4 ) (  7 ) )      ( (  1 ) (  2 ) (  7 ) )
+   // ( ( -4 ) (  2 ) (    ) )  =>  ( (  2 ) (  8 ) (  4 ) )
+   // ( (  7 ) (    ) (  3 ) )      ( (  7 ) (  4 ) (  3 ) )
+   {
+      test_ = "Row-major column() function (assignment test)";
+
+      typedef blaze::DenseColumn<ST>  CT;
+
+      ST sym( 3UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(1,1) = vec(  2 );
+      sym(2,2) = vec(  3 );
+
+      CT col1 = column( sym, 1UL );
+      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );
 
       if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
          std::ostringstream oss;
@@ -7173,8 +8168,25 @@ void DenseNonNumericTest::testColumn()
                                      "( ( 7 ) (   ) ( 3 ) )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
 
-      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );;
+   // ( (  1 ) ( -4 ) (  7 ) )      ( (  1 ) (  2 ) (  7 ) )
+   // ( ( -4 ) (  2 ) (    ) )  =>  ( (  2 ) (  8 ) (  4 ) )
+   // ( (  7 ) (    ) (  3 ) )      ( (  7 ) (  4 ) (  3 ) )
+   {
+      test_ = "Column-major column() function (assignment test)";
+
+      typedef blaze::DenseColumn<TST>  CT;
+
+      TST sym( 3UL );
+      sym(0,0) = vec(  1 );
+      sym(0,1) = vec( -4 );
+      sym(0,2) = vec(  7 );
+      sym(1,1) = vec(  2 );
+      sym(2,2) = vec(  3 );
+
+      CT col1 = column( sym, 1UL );
+      col1 = blaze::StaticVector<VT,3UL,blaze::columnVector>( vec( 2 ), vec( 8 ), vec( 4 ) );
 
       if( col1[0] != vec( 2 ) || col1[1] != vec( 8 ) || col1[2] != vec( 4 ) ) {
          std::ostringstream oss;
