@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -67,6 +68,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
@@ -375,6 +377,73 @@ namespace blaze {
 
    // Creating a submatrix view on the dense submatrix sm1
    SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   \endcode
+
+// \n \section dense_submatrix_on_symmetric_matrices Submatrix on Symmetric Matrices
+//
+// Submatrices can also be created on symmetric matrices (see the SymmetricMatrix class template):
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::DenseSubmatrix;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >   SymmetricDynamicType;
+   typedef DenseSubmatrix< SymmetricDynamicType >  SubmatrixType;
+
+   // Setup of a 16x16 symmetric matrix
+   SymmetricDynamicType A( 16UL );
+
+   // Creating a dense submatrix of size 8x12, starting in row 2 and column 4
+   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
+   \endcode
+
+// It is important to note, however, that (compound) assignments to such submatrices have a
+// special restriction: The symmetry of the underlying symmetric matrix must not be broken!
+// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
+// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of the 3x2 dynamic matrix
+   //
+   //       ( 0 9 )
+   //   B = ( 9 8 )
+   //       ( 0 7 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL );
+   B(0,0) = 1;
+   B(0,1) = 2;
+   B(1,0) = 3;
+   B(1,1) = 4;
+   B(2,1) = 5;
+   B(2,2) = 6;
+
+   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
+   //
+   //        ( 0 0 1 2 )
+   //   A1 = ( 0 0 3 4 )
+   //        ( 1 3 5 6 )
+   //        ( 2 4 6 0 )
+   //
+   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
+   //   The elements marked with X cannot be assigned unambiguously!
+   //
+   //        ( 0 1 2 0 )
+   //   A2 = ( 1 3 X 0 )
+   //        ( 2 X 6 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 */
 template< typename MT                                 // Type of the dense matrix
@@ -928,6 +997,13 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -1271,6 +1347,8 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
 //
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
+//
+// This function homogeneously assigns the given value to all dense matrix elements.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
@@ -1295,10 +1373,12 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Elem
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The dense submatrix is initialized as a copy of the given dense submatrix. In case the
-// current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// current sizes of the two submatrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
@@ -1313,6 +1393,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1335,9 +1418,12 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// The dense submatrix is initialized as a copy of the given matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// The dense submatrix is initialized as a copy of the given dense submatrix. In case the
+// current sizes of the two matrices don't match, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the dense matrix
         , bool AF       // Alignment flag
@@ -1350,6 +1436,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -1373,9 +1462,11 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the dense matrix
         , bool AF       // Alignment flag
@@ -1388,6 +1479,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator+=( const Mat
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1408,9 +1502,11 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator+=( const Mat
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the dense matrix
         , bool AF       // Alignment flag
@@ -1423,6 +1519,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator-=( const Mat
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1443,9 +1542,11 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator-=( const Mat
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the dense matrix
         , bool AF       // Alignment flag
@@ -1463,6 +1564,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSparseMatrix<MultType>::value )
       reset();
    smpAssign( *this, tmp );
@@ -1760,6 +1865,40 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::scale( Other scalar )
          matrix_(i,j) *= scalar;
 
    return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT   // Type of the dense matrix
+        , bool AF       // Alignment flag
+        , bool SO >     // Storage order
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool DenseSubmatrix<MT,AF,SO>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
 }
 //*************************************************************************************************
 
@@ -3158,6 +3297,13 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -3472,6 +3618,8 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
 //
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
+//
+// This function homogeneously assigns the given value to all dense matrix elements.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>&
@@ -3497,10 +3645,12 @@ inline DenseSubmatrix<MT,unaligned,true>&
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The dense submatrix is initialized as a copy of the given dense submatrix. In case the
-// current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// current sizes of the two submatrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>&
@@ -3514,6 +3664,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3538,9 +3691,12 @@ inline DenseSubmatrix<MT,unaligned,true>&
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// The dense submatrix is initialized as a copy of the given matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// The dense submatrix is initialized as a copy of the given dense submatrix. In case the
+// current sizes of the two matrices don't match, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -3552,6 +3708,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -3577,9 +3736,11 @@ inline DenseSubmatrix<MT,unaligned,true>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -3591,6 +3752,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -3613,9 +3777,11 @@ inline DenseSubmatrix<MT,unaligned,true>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -3627,6 +3793,9 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -3649,9 +3818,11 @@ inline DenseSubmatrix<MT,unaligned,true>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -3668,6 +3839,10 @@ inline DenseSubmatrix<MT,unaligned,true>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSparseMatrix<MultType>::value )
       reset();
    smpAssign( *this, tmp );
@@ -3948,6 +4123,40 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::sca
          matrix_(i,j) *= scalar;
 
    return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline bool DenseSubmatrix<MT,unaligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5023,6 +5232,13 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -5344,6 +5560,8 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
 //
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
+//
+// This function homogeneously assigns the given value to all dense matrix elements.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>&
@@ -5369,10 +5587,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The dense submatrix is initialized as a copy of the given dense submatrix. In case the
-// current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// current sizes of the two submatrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>&
@@ -5386,6 +5606,9 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -5410,9 +5633,12 @@ inline DenseSubmatrix<MT,aligned,false>&
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// The dense submatrix is initialized as a copy of the given matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// The dense submatrix is initialized as a copy of the given dense submatrix. In case the
+// current sizes of the two matrices don't match, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -5424,6 +5650,9 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -5449,9 +5678,11 @@ inline DenseSubmatrix<MT,aligned,false>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -5463,6 +5694,9 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -5485,9 +5719,11 @@ inline DenseSubmatrix<MT,aligned,false>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -5499,6 +5735,9 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -5521,9 +5760,11 @@ inline DenseSubmatrix<MT,aligned,false>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -5540,6 +5781,10 @@ inline DenseSubmatrix<MT,aligned,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSparseMatrix<MultType>::value )
       reset();
    smpAssign( *this, tmp );
@@ -5837,6 +6082,40 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
          matrix_(i,j) *= scalar;
 
    return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline bool DenseSubmatrix<MT,aligned,false>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6906,6 +7185,13 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -7197,6 +7483,8 @@ inline typename DenseSubmatrix<MT,aligned,true>::ConstIterator
 //
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
+//
+// This function homogeneously assigns the given value to all dense matrix elements.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>&
@@ -7222,10 +7510,12 @@ inline DenseSubmatrix<MT,aligned,true>&
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The dense submatrix is initialized as a copy of the given dense submatrix. In case the
-// current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// current sizes of the two submatrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>&
@@ -7239,6 +7529,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -7263,9 +7556,12 @@ inline DenseSubmatrix<MT,aligned,true>&
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// The dense submatrix is initialized as a copy of the given matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// The dense submatrix is initialized as a copy of the given dense submatrix. In case the
+// current sizes of the two matrices don't match, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -7277,6 +7573,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -7302,9 +7601,11 @@ inline DenseSubmatrix<MT,aligned,true>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -7316,6 +7617,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -7338,9 +7642,11 @@ inline DenseSubmatrix<MT,aligned,true>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -7352,6 +7658,9 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -7374,9 +7683,11 @@ inline DenseSubmatrix<MT,aligned,true>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the dense submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
@@ -7393,6 +7704,10 @@ inline DenseSubmatrix<MT,aligned,true>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    if( IsSparseMatrix<MultType>::value )
       reset();
    smpAssign( *this, tmp );
@@ -7673,6 +7988,40 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( 
          matrix_(i,j) *= scalar;
 
    return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename MT2   // Type of the right-hand side matrix
+        , bool SO2 >     // Storage order of the right-hand side matrix
+inline bool DenseSubmatrix<MT,aligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
