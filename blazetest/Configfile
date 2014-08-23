@@ -40,7 +40,7 @@ CXXFLAGS=
 # Configuration of the boost library
 # The boost library (see www.boost.org) is precondition for the Blaze library and the
 # Blaze benchmark suite, i.e., it is not possible to compile the library without boost.
-# Blaze requires you to have at least the boost version 1.39.0 or higher installed on
+# Blaze requires you to have at least the boost version 1.54.0 or higher installed on
 # your system. In case the boost include directory is not set, it is assumed that the
 # boost headers are installed in standard paths (as for instance '/usr/include/boost').
 # Additionally, it is necessary to specify the library path of the boost libraries and

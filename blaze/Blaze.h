@@ -153,7 +153,7 @@ namespace blaze {}
 //
 // In order for \b Blaze to work properly, the Boost library must be installed on the system. It
 // is recommended to use the newest Boost library available, but \b Blaze requires at minimum the
-// Boost version 1.39. If you don't have Boost installed on your system, you can download it for
+// Boost version 1.54.0. If you don't have Boost installed on your system, you can download it for
 // free from 'http://www.boost.org'.
 //
 // Additionally, for maximum performance \b Blaze expects you to have a BLAS library installed
