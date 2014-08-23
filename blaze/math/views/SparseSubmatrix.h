@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
@@ -67,6 +68,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/util/Assert.h>
@@ -373,6 +375,73 @@ namespace blaze {
 
    // Creating a submatrix view on the sparse submatrix sm1
    SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   \endcode
+
+// \n \section sparse_submatrix_on_symmetric_matrices Submatrix on Symmetric Matrices
+//
+// Submatrices can also be created on symmetric matrices (see the SymmetricMatrix class template):
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::SparseSubmatrix;
+
+   typedef SymmetricMatrix< CompressedMatrix<int> >    SymmetricCompressedType;
+   typedef SparseSubmatrix< SymmetricCompressedType >  SubmatrixType;
+
+   // Setup of a 16x16 symmetric matrix
+   SymmetricCompressedType A( 16UL );
+
+   // Creating a sparse submatrix of size 8x12, starting in row 2 and column 4
+   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
+   \endcode
+
+// It is important to note, however, that (compound) assignments to such submatrices have a
+// special restriction: The symmetry of the underlying symmetric matrix must not be broken!
+// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
+// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< CompressedMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of the 3x2 compressed matrix
+   //
+   //       ( 0 9 )
+   //   B = ( 9 8 )
+   //       ( 0 7 )
+   //
+   CompressedMatrix<int> B( 3UL, 2UL );
+   B(0,0) = 1;
+   B(0,1) = 2;
+   B(1,0) = 3;
+   B(1,1) = 4;
+   B(2,1) = 5;
+   B(2,2) = 6;
+
+   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
+   //
+   //        ( 0 0 1 2 )
+   //   A1 = ( 0 0 3 4 )
+   //        ( 1 3 5 6 )
+   //        ( 2 4 6 0 )
+   //
+   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
+   //   The elements marked with X cannot be assigned unambiguously!
+   //
+   //        ( 0 1 2 0 )
+   //   A2 = ( 1 3 X 0 )
+   //        ( 2 X 6 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 */
 template< typename MT                                 // Type of the sparse matrix
@@ -844,6 +913,13 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -1148,10 +1224,12 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse submatrix. In case the
-// current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// current sizes of the two submatrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
@@ -1169,6 +1247,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1191,9 +1272,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs Dense matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given dense matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also,
+// if the underlying matrix \a MT is a symmetric matrix and the assignment would violate its
+// symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -1210,6 +1294,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1232,9 +1319,12 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs Sparse matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also,
+// if the underlying matrix \a MT is a symmetric matrix and the assignment would violate its
+// symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -1251,6 +1341,9 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1273,9 +1366,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -1290,6 +1385,9 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    addAssign( *this, ~rhs );
 
    return *this;
@@ -1303,9 +1401,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -1320,6 +1420,9 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    subAssign( *this, ~rhs );
 
    return *this;
@@ -1333,9 +1436,11 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -1355,6 +1460,10 @@ inline SparseSubmatrix<MT,AF,SO>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    reset();
    assign( tmp );
 
@@ -1404,7 +1513,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef typename DivTrait<ElementType,Other>::Type     DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -1853,6 +1962,40 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( Other scalar
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT   // Type of the sparse matrix
+        , bool AF       // Alignment flag
+        , bool SO >     // Storage order
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool SparseSubmatrix<MT,AF,SO>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -2215,7 +2358,10 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         append( i, j, (~rhs)(i,j), true );
+         if( IsSymmetric<MT>::value )
+            set( i, j, (~rhs)(i,j) );
+         else
+            append( i, j, (~rhs)(i,j), true );
       }
       finalize( i );
    }
@@ -2247,7 +2393,10 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rh
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         append( i, element->index(), element->value(), true );
+         if( IsSymmetric<MT>::value )
+            set( i, element->index(), element->value() );
+         else
+            append( i, element->index(), element->value(), true );
       }
       finalize( i );
    }
@@ -2292,7 +2441,10 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<n_; ++j ) {
       for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         append( element->index(), j, element->value() );
+         if( IsSymmetric<MT>::value )
+            set( element->index(), j, element->value() );
+         else
+            append( element->index(), j, element->value() );
    }
 }
 //*************************************************************************************************
@@ -2918,6 +3070,13 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -3199,10 +3358,12 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse submatrix. In case the
 // current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
-// thrown.
+// thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
+// would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
@@ -3219,6 +3380,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    if( rows() != rhs.rows() || columns() != rhs.columns() )
       throw std::invalid_argument( "Submatrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3243,9 +3407,12 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs Dense matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given dense matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also,
+// if the underlying matrix \a MT is a symmetric matrix and the assignment would violate its
+// symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -3260,6 +3427,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -3284,9 +3454,12 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs Sparse matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse matrix. In case the current
-// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown.
+// sizes of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also,
+// if the underlying matrix \a MT is a symmetric matrix and the assignment would violate its
+// symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -3302,6 +3475,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( RequiresEvaluation<MT2>::value || (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -3326,9 +3502,11 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -3341,6 +3519,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    addAssign( *this, ~rhs );
 
@@ -3357,9 +3538,11 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -3372,6 +3555,9 @@ inline SparseSubmatrix<MT,AF,true>&
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    subAssign( *this, ~rhs );
 
@@ -3388,9 +3574,11 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
+// is thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment would
+// violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -3409,6 +3597,10 @@ inline SparseSubmatrix<MT,AF,true>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
 
    const MultType tmp( *this * (~rhs) );
+
+   if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    reset();
    assign( tmp );
 
@@ -3460,7 +3652,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef typename DivTrait<ElementType,Other>::Type     DT;
    typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
 
    // Depending on the two involved data types, an integer division is applied or a
@@ -3903,6 +4095,41 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( Other sc
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
+//
+// \param rhs The matrix to be assigned.
+// \return \a true in case the symmetry is preserved, \a false if not.
+//
+// This function checks if the symmetry of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given matrix \a rhs. In case the symmetry invariant is
+// preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT   // Type of the sparse matrix
+        , bool AF >     // Alignment flag
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool SparseSubmatrix<MT,AF,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+{
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return true;
+
+   const bool   lower( row_ > column_ );
+   const size_t size ( min( row_ + m_, column_ + n_ ) - ( lower ? row_ : column_ ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t row   ( lower ? 0UL : column_ - row_ );
+   const size_t column( lower ? row_ - column_ : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, row, column, size, size ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -4276,7 +4503,10 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const DenseMatrix<MT2,SO>& rhs 
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         append( i, j, (~rhs)(i,j), true );
+         if( IsSymmetric<MT>::value )
+            set( i, j, (~rhs)(i,j) );
+         else
+            append( i, j, (~rhs)(i,j), true );
       }
       finalize( j );
    }
@@ -4322,7 +4552,10 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,false>& 
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<m_; ++i ) {
       for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         append( i, element->index(), element->value() );
+         if( IsSymmetric<MT>::value )
+            set( i, element->index(), element->value() );
+         else
+            append( i, element->index(), element->value() );
    }
 }
 /*! \endcond */
@@ -4353,7 +4586,10 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& r
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         append( element->index(), j, element->value(), true );
+         if( IsSymmetric<MT>::value )
+            set( element->index(), j, element->value() );
+         else
+            append( element->index(), j, element->value(), true );
       }
       finalize( j );
    }
