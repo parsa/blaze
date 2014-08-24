@@ -48,12 +48,14 @@ CXX="g++"
 # compilation flags:
 #   g++/clang: -Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3 -DNDEBUG
 #   icpc     : -Werror -Wshadow -w1 -ansi -O3 -DNDEBUG
-# In addition to these general flags, it is possible to specify additional architecture
-# specific flags. In order to achieve maximum performance, it is recommended to specify
-# the available architecture specific instruction set (for instance, -mavx for the GNU
-# C++ compiler to active the AVX instruction set). Also, it is recommended to enable
-# one of the shared memory parallelizations (OpenMP, C++11 threads, or Boost threads).
-# Please consult the Blaze tutorial for the specifics.
+# Please note that in case the 'g++-4.8' compiler is used the flag '-Wno-local-typedefs'
+# is required to suppress warnings about unused local type definitions. In addition to
+# these general flags, it is possible to specify additional architecture specific flags.
+# In order to achieve maximum performance, it is recommended to specify the available
+# architecture specific instruction set (for instance, -mavx for the GNU C++ compiler to
+# active the AVX instruction set). Also, it is recommended to enable one of the shared
+# memory parallelizations (OpenMP, C++11 threads, or Boost threads). Please consult the
+# Blaze tutorial for the specifics.
 CXXFLAGS="-Werror -Wall -Wextra -Wshadow -Woverloaded-virtual -ansi -O3 -DNDEBUG"
 
 # Library configuration
