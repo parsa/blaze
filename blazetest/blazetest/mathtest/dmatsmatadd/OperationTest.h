@@ -102,28 +102,51 @@ class OperationTest
    typedef typename ORE::TransposeType              TORE;  //!< Transpose default result type with opposite storage order
    //**********************************************************************************************
 
+   //**AdaptType class definition******************************************************************
+   /*!\brief Adapts the given type to the default result type.
+   //
+   // The AdaptType type trait adapts the given type to the default result type. In case result
+   // type has an adaptor (SymmetricMatrix, ...), the same adaptor is added to the given type.
+   */
+   template< typename T >  // The type to be adapted
+   struct AdaptType
+   {
+    public:
+      //*******************************************************************************************
+      /*! \cond BLAZE_INTERNAL */
+      typedef typename blaze::If< blaze::IsSymmetric<RE>, blaze::SymmetricMatrix<T>, T >::Type  Type;
+      /*! \endcond */
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //**Type definitions****************************************************************************
-   typedef typename MT1::ElementType           ET1;     //!< Element type 1
-   typedef typename MT2::ElementType           ET2;     //!< Element type 2
-   typedef typename RE::ElementType            RET;     //!< Resulting element type
-   typedef blaze::DynamicMatrix<ET1,false>     RT1;     //!< Reference type 1
-   typedef blaze::DynamicMatrix<ET2,false>     RT2;     //!< Reference type 2
-   typedef blaze::DynamicMatrix<RET,false>     DRRE;    //!< Dense reference result type
-   typedef blaze::CompressedMatrix<RET,false>  SRRE;    //!< Sparse reference result type
-   typedef typename DRRE::OppositeType         ODRRE;   //!< Dense reference result type with opposite storage order
-   typedef typename SRRE::OppositeType         OSRRE;   //!< Sparse reference result type with opposite storage order
-   typedef typename DRRE::TransposeType        TDRRE;   //!< Transpose dense reference result type
-   typedef typename SRRE::TransposeType        TSRRE;   //!< Transpose sparse reference result type
-   typedef typename ODRRE::TransposeType       TODRRE;  //!< Transpose dense reference result type with opposite storage order
-   typedef typename OSRRE::TransposeType       TOSRRE;  //!< Transpose sparse reference result type with opposite storage order
-   typedef RE                                  DRE;     //!< Dense result type
-   typedef SRRE                                SRE;     //!< Sparse result type
-   typedef ORE                                 ODRE;    //!< Dense result type with opposite storage order
-   typedef OSRRE                               OSRE;    //!< Sparse result type with opposite storage order
-   typedef TRE                                 TDRE;    //!< Transpose dense result type
-   typedef TSRRE                               TSRE;    //!< Transpose sparse result type
-   typedef TORE                                TODRE;   //!< Transpose dense result type with opposite storage order
-   typedef TOSRRE                              TOSRE;   //!< Transpose sparse result type with opposite storage order
+   typedef typename MT1::ElementType        ET1;  //!< Element type 1
+   typedef typename MT2::ElementType        ET2;  //!< Element type 2
+   typedef typename RE::ElementType         RET;  //!< Resulting element type
+   typedef blaze::DynamicMatrix<ET1,false>  RT1;  //!< Reference type 1
+   typedef blaze::DynamicMatrix<ET2,false>  RT2;  //!< Reference type 2
+
+   //! Dense reference result type
+   typedef typename AdaptType< blaze::DynamicMatrix<RET,false> >::Type  DRRE;
+
+   //! Sparse reference result type
+   typedef typename AdaptType< blaze::CompressedMatrix<RET,false> >::Type  SRRE;
+
+   typedef typename DRRE::OppositeType    ODRRE;   //!< Dense reference result type with opposite storage order
+   typedef typename SRRE::OppositeType    OSRRE;   //!< Sparse reference result type with opposite storage order
+   typedef typename DRRE::TransposeType   TDRRE;   //!< Transpose dense reference result type
+   typedef typename SRRE::TransposeType   TSRRE;   //!< Transpose sparse reference result type
+   typedef typename ODRRE::TransposeType  TODRRE;  //!< Transpose dense reference result type with opposite storage order
+   typedef typename OSRRE::TransposeType  TOSRRE;  //!< Transpose sparse reference result type with opposite storage order
+   typedef RE                             DRE;     //!< Dense result type
+   typedef SRRE                           SRE;     //!< Sparse result type
+   typedef ORE                            ODRE;    //!< Dense result type with opposite storage order
+   typedef OSRRE                          OSRE;    //!< Sparse result type with opposite storage order
+   typedef TRE                            TDRE;    //!< Transpose dense result type
+   typedef TSRRE                          TSRE;    //!< Transpose sparse result type
+   typedef TORE                           TODRE;   //!< Transpose dense result type with opposite storage order
+   typedef TOSRRE                         TOSRE;   //!< Transpose sparse result type with opposite storage order
 
    //! Type of the matrix/matrix addition expression
    typedef typename blaze::AddExprTrait<MT1,MT2>::Type  MatMatAddExprType;
