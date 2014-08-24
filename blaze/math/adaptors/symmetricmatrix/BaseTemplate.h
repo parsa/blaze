@@ -88,7 +88,7 @@ namespace blaze {
 //        parameter must \b NOT be defined explicitly, it is automatically derived from the first
 //        template parameter. Defining the parameter explicitly may result in a compilation error!
 //
-// The following example give an impression of several possible symmetric matrices:
+// The following examples give an impression of several possible symmetric matrices:
 
    \code
    // Definition of a 3x3 row-major dense symmetric matrix with static memory
@@ -363,7 +363,7 @@ namespace blaze {
    G *= A * E;    // Multiplication assignment
    \endcode
 
-// \n \section Block-Structured Symmetric Matrices
+// \n \section symmetricmatrix_block_structured Block-Structured Symmetric Matrices
 //
 // It is also possible to use block-structured symmetric matrices:
 
