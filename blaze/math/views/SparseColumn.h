@@ -205,7 +205,7 @@ namespace blaze {
 
    \code
    typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
-   MatrixType A( 100UL, 10UL );  // Non-initialized 10x100 matrix
+   MatrixType A( 100UL, 10UL );  // Non-initialized 100x10 matrix
 
    typedef blaze::SparseColumn<MatrixType>  ColumnType;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
@@ -214,6 +214,11 @@ namespace blaze {
    // including the zero elements. In case the subscript operator is used to access an element
    // that is currently not stored in the sparse column, the element is inserted into the column.
    col0[42] = 2.0;
+
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the column it is inserted into the column, if it is already contained
+   // in the column its value is modified.
+   col0.set( 45UL, -1.2 );
 
    // An alternative for inserting elements into the column is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the column.

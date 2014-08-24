@@ -227,6 +227,11 @@ namespace blaze {
    // subvector.
    sv[42] = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element is
+   // not contained in the subvector it is inserted into the subvector, if it is already contained
+   // in the subvector its value is modified.
+   sv.set( 45UL, -1.2 );
+
    // An alternative for inserting elements into the subvector is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the subvector.
    sv.insert( 50UL, 3.7 );

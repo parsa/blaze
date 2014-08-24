@@ -215,6 +215,11 @@ namespace blaze {
    // that is currently not stored in the sparse row, the element is inserted into the row.
    row0[42] = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the row it is inserted into the row, if it is already contained in
+   // the row its value is modified.
+   row0.set( 45UL, -1.2 );
+
    // An alternative for inserting elements into the row is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the row.
    row0.insert( 50UL, 3.7 );

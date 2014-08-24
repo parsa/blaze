@@ -225,6 +225,11 @@ namespace blaze {
    // submatrix.
    sm(2,4) = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element is
+   // not contained in the submatrix it is inserted into the submatrix, if it is already contained
+   // in the submatrix its value is modified.
+   sm.set( 2UL, 5UL, -1.2 );
+
    // An alternative for inserting elements into the submatrix is the \c insert() function. However,
    // it inserts the element only in case the element is not already contained in the submatrix.
    sm.insert( 2UL, 6UL, 3.7 );

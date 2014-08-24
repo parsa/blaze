@@ -122,6 +122,11 @@ namespace blaze {
    // that is currently not stored in the sparse vector, the element is inserted into the vector.
    a[42] = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the vector it is inserted into the vector, if it is already contained
+   // in the vector its value is modified.
+   a.set( 45, -1.2 );
+
    // An alternative for inserting elements into the vector is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the vector.
    a.insert( 50, 3.7 );

@@ -126,6 +126,11 @@ namespace blaze {
    // that is currently not stored in the sparse matrix, the element is inserted into the matrix.
    A(1,2) = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the matrix it is inserted into the matrix, if it is already contained
+   // in the matrix its value is modified.
+   A.set( 2, 0, -1.2 );
+
    // An alternative for inserting elements into the matrix is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the matrix.
    A.insert( 2, 1, 3.7 );
