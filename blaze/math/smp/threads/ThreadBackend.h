@@ -57,6 +57,7 @@
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/ThreadPool.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {

@@ -44,6 +44,7 @@
 #include <omp.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {

@@ -60,6 +60,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 

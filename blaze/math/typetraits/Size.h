@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_TYPETRAITS_SIZE_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -56,7 +63,7 @@ namespace blaze {
    using blaze::StaticVector;
    using blaze::HybridVector;
    using blaze::DynamicVector;
-   
+
    blaze::Size< StaticVector<int,3UL> >::value  // Evaluates to 3
    blaze::Size< HybridVector<int,3UL> >::value  // Evaluates to 0; Only maximum size is fixed!
    blaze::Size< DynamicVector<int> >::value     // Evaluates to 0; Size not fixed at compile time!

@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_TYPETRAITS_ROWS_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -57,7 +64,7 @@ namespace blaze {
    using blaze::StaticMatrix;
    using blaze::HybridMatrix;
    using blaze::DynamicMatrix;
-   
+
    blaze::Rows< StaticMatrix<int,3UL,2UL> >::value  // Evaluates to 3
    blaze::Rows< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to 0; Only maximum number of rows is fixed!
    blaze::Rows< DynamicMatrix<int> >::value         // Evaluates to 0; Number of rows not fixed at compile time!

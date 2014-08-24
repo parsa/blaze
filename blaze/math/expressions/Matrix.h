@@ -42,6 +42,7 @@
 
 #include <blaze/util/Assert.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 

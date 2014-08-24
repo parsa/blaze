@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_TYPETRAITS_COLUMNS_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -57,7 +64,7 @@ namespace blaze {
    using blaze::StaticMatrix;
    using blaze::HybridMatrix;
    using blaze::DynamicMatrix;
-   
+
    blaze::Columns< StaticMatrix<int,3UL,2UL> >::value  // Evaluates to 2
    blaze::Columns< HybridMatrix<int,3UL,2UL> >::value  // Evaluates to 0; Only maximum number of columns is fixed!
    blaze::Columns< DynamicMatrix<int> >::value         // Evaluates to 0; Number of columns not fixed at compile time!

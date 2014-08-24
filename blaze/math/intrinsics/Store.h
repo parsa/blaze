@@ -48,6 +48,7 @@
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
