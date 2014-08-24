@@ -204,6 +204,35 @@ namespace blaze {
    C = D;  // Throws an exception; symmetric invariant would be violated!
    \endcode
 
+// The same restriction also applies to the \c append() function for sparse matrices: Appending
+// the element \f$ a_{ij} \f$ additionally inserts the element \f$ a_{ji} \f$ into the matrix.
+// Despite the additional insertion, the \c append() function still provides the most efficient
+// way to set up a symmetric sparse matrix. In order to achieve the maximum efficiency, the
+// capacity of the individual rows/columns of the matrix should to be specifically prepared with
+// \c reserve() calls:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+
+   // Setup of the symmetric matrix
+   //
+   //       ( 0 1 3 )
+   //   A = ( 1 2 0 )
+   //       ( 3 0 0 )
+
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+
+   A.reserve( 5 );         // Reserving enough space for 5 non-zero elements
+   A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
+   A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
+   A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row
+   A.append( 0, 1, 1.0 );  // Appending the value 1 at position (0,1) and (1,0)
+   A.append( 1, 1, 2.0 );  // Appending the value 2 at position (1,1)
+   A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
+   \endcode
+
 // The symmetry property is also enforced for views (rows, columns, submatrices, ...) on the
 // symmetric matrix. The following example demonstrates that modifying the elements of an entire
 // row of the symmetric matrix also affects the counterpart elements in the according column of
@@ -237,33 +266,51 @@ namespace blaze {
    row( A, 1 ) = 0;
    \endcode
 
-// The same restriction also applies to the \c append() function for sparse matrices: Appending
-// the element \f$ a_{ij} \f$ additionally inserts the element \f$ a_{ji} \f$ into the matrix.
-// Despite the additional insertion, the \c append() function still provides the most efficient
-// way to set up a symmetric sparse matrix. In order to achieve the maximum efficiency, the
-// capacity of the individual rows/columns of the matrix should to be specifically prepared with
-// \c reserve() calls:
+// The next example demonstrates the (compound) assignment to submatrices of symmetric matrices.
+// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
+// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// thrown:
 
    \code
-   using blaze::CompressedMatrix;
+   using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::rowMajor;
 
-   // Setup of the symmetric matrix
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of the 3x2 dynamic matrix
    //
-   //       ( 0 1 3 )
-   //   A = ( 1 2 0 )
-   //       ( 3 0 0 )
+   //       ( 0 9 )
+   //   B = ( 9 8 )
+   //       ( 0 7 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL );
+   B(0,0) = 1;
+   B(0,1) = 2;
+   B(1,0) = 3;
+   B(1,1) = 4;
+   B(2,1) = 5;
+   B(2,2) = 6;
 
-   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
+   //
+   //        ( 0 0 1 2 )
+   //   A1 = ( 0 0 3 4 )
+   //        ( 1 3 5 6 )
+   //        ( 2 4 6 0 )
+   //
+   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
 
-   A.reserve( 5 );         // Reserving enough space for 5 non-zero elements
-   A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
-   A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
-   A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row
-   A.append( 0, 1, 1.0 );  // Appending the value 1 at position (0,1) and (1,0)
-   A.append( 1, 1, 2.0 );  // Appending the value 2 at position (1,1)
-   A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
+   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
+   //   The elements marked with X cannot be assigned unambiguously!
+   //
+   //        ( 0 1 2 0 )
+   //   A2 = ( 1 3 X 0 )
+   //        ( 2 X 6 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 
 // \n \subsection symmetricmatrix_initialization The Elements of a Dense Symmetric Matrix are Always Default Initialized!
