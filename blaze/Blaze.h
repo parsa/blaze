@@ -89,6 +89,11 @@ namespace blaze {}
 //                <li> \ref matrix_operations </li>
 //             </ul>
 //          </li>
+//          <li> Adaptors
+//             <ul>
+//                <li> \ref adaptors_symmetric_matrix </li>
+//             </ul>
+//          </li>
 //          <li> Views
 //             <ul>
 //                <li> \ref views_subvectors </li>
@@ -1413,7 +1418,7 @@ namespace blaze {}
 //**Matrix Operations******************************************************************************
 /*!\page matrix_operations Matrix Operations
 //
-// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref views_subvectors </center>
+// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrix </center>
 //
 //
 // \tableofcontents
@@ -2200,7 +2205,356 @@ namespace blaze {}
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
 
-// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref views_subvectors </center>
+// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrix </center>
+*/
+//*************************************************************************************************
+
+
+//**Symmetric Matrices*****************************************************************************
+/*!\page adaptors_symmetric_matrix Symmetric Matrices
+//
+// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_subvectors </center>
+//
+//
+// \tableofcontents
+//
+//
+// In contrast to plain matrices, which have no restriction in their number of rows and columns
+// and whose elements can have any value, symmetric matrices provide the compile time guarantee
+// to be square matrices with pair-wise identical values. Mathematically, this means that a
+// symmetric matrix is always equal to its transpose (\f$ A = A^T \f$) and that all non-diagonal
+// values have an identical counterpart (\f$ a_{ij} == a_{ji} \f$). This symmetry property can
+// be exploited to provide higher efficiency and/or lower memory consumption. Within the \b Blaze
+// library, symmetric matrices are realized by the \ref adaptors_symmetric_matrix_symmetricmatrix
+// class template.
+//
+//
+// \n \section adaptors_symmetric_matrix_symmetricmatrix SymmetricMatrix
+//
+// The SymmetricMatrix class template is an adapter for existing dense and sparse matrix types.
+// It inherits the properties and the interface of the given matrix type \a MT and extends it
+// by enforcing the additional invariant of symmetry (i.e. the matrix is always equal to its
+// transpose \f$ A = A^T \f$). It can be included via the header file
+
+   \code
+   #include <blaze/math/SymmetricMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via template parameter:
+
+   \code
+   template< typename MT >
+   class SymmetricMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. SymmetricMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Note
+// that the given matrix type must be either resizable (as for instance blaze::HybridMatrix or
+// blaze::DynamicMatrix) or must be square at compile time (as for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible symmetric matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense symmetric matrix with static memory
+   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense symmetric matrix based on HybridMatrix
+   blaze::SymmetricMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense symmetric matrix based on DynamicMatrix
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision symmetric matrix
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a symmetric matrix is depending on the storage order of the adapted matrix
+// type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified as
+// blaze::rowMajor), the symmetric matrix will also be a row-major matrix. Otherwise, if the
+// adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the symmetric matrix
+// will also be a column-major matrix.
+//
+//
+// \n \section adaptors_symmetric_matrix_special_properties Special Properties of Symmetric Matrices
+//
+// A symmetric matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
+// It also provides (nearly) the same interface as the underlying matrix type. However, there are
+// some important exceptions resulting from the symmetry constraint:
+//
+//  -# <b>\ref symmetricmatrix_square</b>
+//  -# <b>\ref symmetricmatrix_symmetry</b>
+//  -# <b>\ref symmetricmatrix_initialization</b>
+//
+// \n \subsection adaptors_symmetric_matrix_square Symmetric Matrices Must Always be Square!
+//
+// In case a resizable matrix is used (as for instance blaze::HybridMatrix, blaze::DynamicMatrix,
+// or blaze::CompressedMatrix), this means that the according constructors, the \c resize() and
+// the \c extend() functions only expect a single parameter, which specifies both the number of
+// rows and columns, instead of two (one for the number of rows and one for the number of columns):
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+
+   // Default constructed, default initialized, row-major 3x3 symmetric dynamic matrix
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 3 );
+
+   // Resizing the matrix to 5x5
+   A.resize( 5 );
+
+   // Extending the number of rows and columns by 2, resulting in a 7x7 matrix
+   A.extend( 2 );
+   \endcode
+
+// In case a matrix with a fixed size is used (as for instance blaze::StaticMatrix), the number
+// of rows and number of columns must be specified equally:
+
+   \code
+   using blaze::StaticMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::columnMajor;
+
+   // Correct setup of a fixed size column-major 3x3 symmetric static matrix
+   SymmetricMatrix< StaticMatrix<int,3UL,3UL,columnMajor> > A;
+
+   // Compilation error: the provided matrix type is not a square matrix type
+   SymmetricMatrix< StaticMatrix<int,3UL,4UL,columnMajor> > B;
+   \endcode
+
+// \n \subsection adaptors_symmetric_matrix_symmetry The Symmetric Property is Always Enforced!
+//
+// This means that modifying the element \f$ a_{ij} \f$ of a symmetric matrix also modifies its
+// counterpart element \f$ a_{ji} \f$. Also, it is only possible to assign matrices that are
+// symmetric themselves:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::StaticMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+
+   // Default constructed, row-major 3x3 symmetric compressed matrix
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+
+   // Initializing three elements via the function call operator
+   A(0,0) = 1.0;  // Initialization of the diagonal element (0,0)
+   A(0,2) = 2.0;  // Initialization of the elements (0,2) and (2,0)
+
+   // Inserting three more elements via the insert() function
+   A.insert( 1, 1, 3.0 );  // Inserting the diagonal element (1,1)
+   A.insert( 1, 2, 4.0 );  // Inserting the elements (1,2) and (2,1)
+
+   // Access via a non-const iterator
+   *A.begin(1UL) = 10.0;  // Modifies both elements (1,0) and (0,1)
+
+   // Erasing elements via the erase() function
+   A.erase( 0, 0 );  // Erasing the diagonal element (0,0)
+   A.erase( 0, 2 );  // Erasing the elements (0,2) and (2,0)
+
+   // Construction from a symmetric dense matrix
+   StaticMatrix<double,3UL,3UL> B(  3.0,  8.0, -2.0,
+                                    8.0,  0.0, -1.0,
+                                   -2.0, -1.0,  4.0 );
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
+
+   // Assignment of a non-symmetric dense matrix
+   StaticMatrix<double,3UL,3UL> D(  3.0,  8.0, -2.0,
+                                    8.0,  0.0, -1.0,
+                                   -2.0, -1.0,  4.0 );
+
+   C = D;  // Throws an exception; symmetric invariant would be violated!
+   \endcode
+
+// The same restriction also applies to the \c append() function for sparse matrices: Appending
+// the element \f$ a_{ij} \f$ additionally inserts the element \f$ a_{ji} \f$ into the matrix.
+// Despite the additional insertion, the \c append() function still provides the most efficient
+// way to set up a symmetric sparse matrix. In order to achieve the maximum efficiency, the
+// capacity of the individual rows/columns of the matrix should to be specifically prepared with
+// \c reserve() calls:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+
+   // Setup of the symmetric matrix
+   //
+   //       ( 0 1 3 )
+   //   A = ( 1 2 0 )
+   //       ( 3 0 0 )
+
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+
+   A.reserve( 5 );         // Reserving enough space for 5 non-zero elements
+   A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
+   A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
+   A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row
+   A.append( 0, 1, 1.0 );  // Appending the value 1 at position (0,1) and (1,0)
+   A.append( 1, 1, 2.0 );  // Appending the value 2 at position (1,1)
+   A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
+   \endcode
+
+// The symmetry property is also enforced for views (rows, columns, submatrices, ...) on the
+// symmetric matrix. The following example demonstrates that modifying the elements of an entire
+// row of the symmetric matrix also affects the counterpart elements in the according column of
+// the matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Setup of the symmetric matrix
+   //
+   //       ( 0 1 0 2 )
+   //   A = ( 1 3 4 0 )
+   //       ( 0 4 0 5 )
+   //       ( 2 0 5 0 )
+   //
+   SymmetricMatrix< DynamicMatrix<int> > A( 4 );
+   A(0,1) = 1;
+   A(0,3) = 2;
+   A(1,1) = 3;
+   A(1,2) = 4;
+   A(2,3) = 5;
+
+   // Setting all elements in the 1st row to 0 results in the matrix
+   //
+   //       ( 0 0 0 2 )
+   //   A = ( 0 0 0 0 )
+   //       ( 0 0 0 5 )
+   //       ( 2 0 5 0 )
+   //
+   row( A, 1 ) = 0;
+   \endcode
+
+// The next example demonstrates the (compound) assignment to submatrices of symmetric matrices.
+// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
+// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of the 3x2 dynamic matrix
+   //
+   //       ( 0 9 )
+   //   B = ( 9 8 )
+   //       ( 0 7 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL );
+   B(0,0) = 1;
+   B(0,1) = 2;
+   B(1,0) = 3;
+   B(1,1) = 4;
+   B(2,1) = 5;
+   B(2,2) = 6;
+
+   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
+   //
+   //        ( 0 0 1 2 )
+   //   A1 = ( 0 0 3 4 )
+   //        ( 1 3 5 6 )
+   //        ( 2 4 6 0 )
+   //
+   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
+   //   The elements marked with X cannot be assigned unambiguously!
+   //
+   //        ( 0 1 2 0 )
+   //   A2 = ( 1 3 X 0 )
+   //        ( 2 X 6 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
+   \endcode
+
+// \n \subsection adaptors_symmetric_matrix_initialization The Elements of a Dense Symmetric Matrix are Always Default Initialized!
+//
+// Although this results in a small loss of efficiency (especially in case all default values are
+// overridden afterwards), this property is important since otherwise the symmetric property of
+// dense symmetric matrices could not be guaranteed:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Uninitialized, 5x5 row-major dynamic matrix
+   DynamicMatrix<int,rowMajor> A( 5, 5 );
+
+   // Default initialized, 5x5 row-major symmetric dynamic matrix
+   SymmetricMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
+   \endcode
+
+// \n \section adaptors_symmetric_matrix_arithmetic_operations Arithmetic Operations
+//
+// A SymmetricMatrix matrix can participate in numerical operations in any way any other dense
+// or sparse matrix can participate. It can also be combined with any other dense or sparse vector
+// or matrix. The following code example gives an impression of the use of SymmetricMatrix within
+// arithmetic operations:
+
+   \code
+   using blaze::SymmetricMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::StaticMatrix;
+   using blaze::CompressedMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   CompressedMatrix<float> E( 3, 3 );  // Empty row-major sparse single precision 3x3 matrix
+
+   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > F;
+   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > G;
+
+   F = A + B;     // Matrix addition and assignment to a row-major symmetric matrix
+   G = A - C;     // Matrix subtraction and assignment to a column-major symmetric matrix
+   G = A * E;     // Matrix multiplication between a dense and a sparse matrix
+
+   A *= 2.0;      // In-place scaling of matrix A
+   F  = 2.0 * B;  // Scaling of matrix B
+   G  = E * 2.0;  // Scaling of matrix E
+
+   F += A - B;    // Addition assignment
+   G -= A + C;    // Subtraction assignment
+   G *= A * E;    // Multiplication assignment
+   \endcode
+
+// \n \section adaptors_symmetric_matrix_block_structured Block-Structured Symmetric Matrices
+//
+// It is also possible to use block-structured symmetric matrices:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::StaticMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Definition of a 3x3 block-structured symmetric matrix based on CompressedMatrix
+   SymmetricMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > A( 3 );
+   \endcode
+
+// Also in this case, the SymmetricMatrix class template enforces the invariant of symmetry and
+// guarantees that a modifications of element \f$ a_{ij} \f$ of the adapted matrix is also
+// applied to element \f$ a_{ji} \f$:
+
+   \code
+   // Inserting the elements (2,4) and (4,2)
+   A.insert( 2, 4, StaticMatrix<int,3UL,3UL>( 1, -4,  5,
+                                              6,  8, -3,
+                                              2, -1,  2 ) );
+
+   // Manipulating the elements (2,4) and (4,2)
+   A(2,4)(1,1) = -5;
+   \endcode
+
+// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_subvectors </center>
 */
 //*************************************************************************************************
 
@@ -2208,7 +2562,7 @@ namespace blaze {}
 //**Subvectors*************************************************************************************
 /*!\page views_subvectors Subvectors
 //
-// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_submatrices </center> \n
+// <center> Previous: \ref adaptors_symmetric_matrix &nbsp; &nbsp; Next: \ref views_submatrices </center> \n
 //
 //
 // \tableofcontents
@@ -2626,7 +2980,7 @@ namespace blaze {}
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 
-// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_submatrices </center>
+// \n <center> Previous: \ref adaptors_symmetric_matrix &nbsp; &nbsp; Next: \ref views_submatrices </center>
 */
 //*************************************************************************************************
 
@@ -3049,6 +3403,73 @@ namespace blaze {}
 
    // Creating a submatrix view on the dense submatrix sm1
    SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   \endcode
+
+// \n \section views_submatrices_on_symmetric_matrices Submatrices on Symmetric Matrices
+//
+// Submatrices can also be created on symmetric matrices (see the SymmetricMatrix class template):
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::DenseSubmatrix;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >   SymmetricDynamicType;
+   typedef DenseSubmatrix< SymmetricDynamicType >  SubmatrixType;
+
+   // Setup of a 16x16 symmetric matrix
+   SymmetricDynamicType A( 16UL );
+
+   // Creating a dense submatrix of size 8x12, starting in row 2 and column 4
+   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
+   \endcode
+
+// It is important to note, however, that (compound) assignments to such submatrices have a
+// special restriction: The symmetry of the underlying symmetric matrix must not be broken!
+// Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
+// element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of the 3x2 dynamic matrix
+   //
+   //       ( 0 9 )
+   //   B = ( 9 8 )
+   //       ( 0 7 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL );
+   B(0,0) = 1;
+   B(0,1) = 2;
+   B(1,0) = 3;
+   B(1,1) = 4;
+   B(2,1) = 5;
+   B(2,2) = 6;
+
+   // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
+   //
+   //        ( 0 0 1 2 )
+   //   A1 = ( 0 0 3 4 )
+   //        ( 1 3 5 6 )
+   //        ( 2 4 6 0 )
+   //
+   submatrix( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the symmetry cannot be preserved!
+   //   The elements marked with X cannot be assigned unambiguously!
+   //
+   //        ( 0 1 2 0 )
+   //   A2 = ( 1 3 X 0 )
+   //        ( 2 X 6 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 
 // \n <center> Previous: \ref views_subvectors &nbsp; &nbsp; Next: \ref views_rows </center>
