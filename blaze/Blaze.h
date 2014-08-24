@@ -917,9 +917,18 @@ namespace blaze {}
 // In case the element at the given index is not yet contained in the vector, it is automatically
 // inserted. Otherwise the old value is replaced by the new value 2. The operator returns a
 // reference to the sparse vector element.\n
+// An alternative is the \c set() function: In case the element is not yet contained in the vector
+// the element is inserted, else the element's value is modified:
+
+   \code
+   // Insert or modify the value at index 3
+   v1.set( 3, 1 );
+   \endcode
+
 // However, insertion of elements can be better controlled via the \c insert() function. In contrast
-// to the subscript operator it emits an exception in case the element is already contained in
-// the matrix. In order to check for this case, the \c find() function can be used:
+// to the subscript operator and the \c set() function it emits an exception in case the element is
+// already contained in the vector. In order to check for this case, the \c find() function can be
+// used:
 
    \code
    // In case the element at index 4 is not yet contained in the matrix it is inserted
@@ -936,7 +945,7 @@ namespace blaze {}
 // behavior!
 
    \code
-   v1.reserve( 5 );     // Reserving space for 5 non-zero elements
+   v1.reserve( 10 );     // Reserving space for 10 non-zero elements
    v1.append( 5, -2 );  // Appending the element -2 at index 5
    v1.append( 6,  4 );  // Appending the element 4 at index 6
    // ...
@@ -1767,9 +1776,18 @@ namespace blaze {}
 // In case the element at the given position is not yet contained in the sparse matrix, it is
 // automatically inserted. Otherwise the old value is replaced by the new value 2. The operator
 // returns a reference to the sparse vector element.\n
+// An alternative is the \c set() function: In case the element is not yet contained in the matrix
+// the element is inserted, else the element's value is modified:
+
+   \code
+   // Insert or modify the value at position (2,0)
+   M1.set( 2, 0, 1 );
+   \endcode
+
 // However, insertion of elements can be better controlled via the \c insert() function. In
-// contrast to the function call operator it emits an exception in case the element is already
-// contained in the matrix. In order to check for this case, the \c find() function can be used:
+// contrast to the function call operator and the \c set() function it emits an exception in case
+// the element is already contained in the matrix. In order to check for this case, the \c find()
+// function can be used:
 
    \code
    // In case the element at position (2,3) is not yet contained in the matrix it is inserted
@@ -2431,6 +2449,11 @@ namespace blaze {}
    // subvector.
    sv[42] = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the vector it is inserted into the vector, if it is already contained
+   // in the vector its value is modified.
+   sv.set( 45UL, -1.2 );
+
    // An alternative for inserting elements into the subvector is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the subvector.
    sv.insert( 50UL, 3.7 );
@@ -2844,6 +2867,11 @@ namespace blaze {}
    // submatrix.
    sm(2,4) = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element is
+   // not contained in the submatrix it is inserted into the submatrix, if it is already contained
+   // in the submatrix its value is modified.
+   sm.set( 2UL, 5UL, -1.2 );
+
    // An alternative for inserting elements into the submatrix is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the submatrix.
    sm.insert( 2UL, 6UL, 3.7 );
@@ -3239,6 +3267,11 @@ namespace blaze {}
    // that is currently not stored in the sparse row, the element is inserted into the row.
    row0[42] = 2.0;
 
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the row it is inserted into the row, if it is already contained in
+   // the row its value is modified.
+   row0.set( 45UL, -1.2 );
+
    // An alternative for inserting elements into the row is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the row.
    row0.insert( 50UL, 3.7 );
@@ -3556,6 +3589,11 @@ namespace blaze {}
    // including the zero elements. In case the subscript operator is used to access an element
    // that is currently not stored in the sparse column, the element is inserted into the column.
    col0[42] = 2.0;
+
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the column it is inserted into the column, if it is already contained
+   // in the column its value is modified.
+   col0.set( 45UL, -1.2 );
 
    // An alternative for inserting elements into the column is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the column.
