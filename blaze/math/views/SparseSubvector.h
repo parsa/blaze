@@ -793,7 +793,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
                               inline Iterator         erase  ( Iterator pos );
                               inline Iterator         erase  ( Iterator first, Iterator last );
                               inline void             reserve( size_t n );
-   template< typename Other > inline SparseSubvector& scale  ( Other scalar );
+   template< typename Other > inline SparseSubvector& scale  ( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1570,7 +1570,7 @@ template< typename VT       // Type of the sparse vector
         , bool AF           // Alignment flag
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline SparseSubvector<VT,AF,TF>& SparseSubvector<VT,AF,TF>::scale( Other scalar )
+inline SparseSubvector<VT,AF,TF>& SparseSubvector<VT,AF,TF>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;

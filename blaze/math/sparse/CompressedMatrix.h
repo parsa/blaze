@@ -351,7 +351,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              trim   ();
                               inline void              trim   ( size_t i );
                               inline CompressedMatrix& transpose();
-   template< typename Other > inline CompressedMatrix& scale( Other scalar );
+   template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
    //@}
@@ -1732,7 +1732,7 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
 template< typename Type     // Data type of the sparse matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( Other scalar )
+inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( Iterator element=begin_[i]; element!=end_[i]; ++element )
@@ -2568,7 +2568,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              trim   ();
                               inline void              trim   ( size_t j );
                               inline CompressedMatrix& transpose();
-   template< typename Other > inline CompressedMatrix& scale( Other scalar );
+   template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
    //@}
@@ -3943,7 +3943,7 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
 */
 template< typename Type >   // Data type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( Other scalar )
+inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( Iterator element=begin_[j]; element!=end_[j]; ++element )

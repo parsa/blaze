@@ -445,7 +445,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
                               inline Iterator   erase  ( Iterator pos );
                               inline Iterator   erase  ( Iterator first, Iterator last );
                               inline void       reserve( size_t n );
-   template< typename Other > inline SparseRow& scale  ( Other scalar );
+   template< typename Other > inline SparseRow& scale  ( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1152,7 +1152,7 @@ void SparseRow<MT,SO>::reserve( size_t n )
 template< typename MT       // Type of the sparse matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::scale( Other scalar )
+inline SparseRow<MT,SO>& SparseRow<MT,SO>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
@@ -2055,7 +2055,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
                               inline Iterator   erase  ( Iterator pos );
                               inline Iterator   erase  ( Iterator first, Iterator last );
                               inline void       reserve( size_t n );
-   template< typename Other > inline SparseRow& scale  ( Other scalar );
+   template< typename Other > inline SparseRow& scale  ( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2735,7 +2735,7 @@ void SparseRow<MT,false>::reserve( size_t n )
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
-inline SparseRow<MT,false>& SparseRow<MT,false>::scale( Other scalar )
+inline SparseRow<MT,false>& SparseRow<MT,false>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;

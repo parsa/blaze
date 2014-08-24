@@ -870,7 +870,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline SparseSubmatrix& transpose();
-   template< typename Other > inline SparseSubmatrix& scale( Other scalar );
+   template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1949,7 +1949,7 @@ template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( Other scalar )
+inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
       const Iterator last( end(i) );
@@ -3027,7 +3027,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
                               inline void             trim();
                               inline void             trim( size_t j );
                               inline SparseSubmatrix& transpose();
-   template< typename Other > inline SparseSubmatrix& scale( Other scalar );
+   template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4081,7 +4081,7 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
 template< typename MT       // Type of the sparse matrix
         , bool AF >         // Alignment flag
 template< typename Other >  // Data type of the scalar value
-inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( Other scalar )
+inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<columns(); ++i ) {
       const Iterator last( end(i) );

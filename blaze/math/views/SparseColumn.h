@@ -446,7 +446,7 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO>, false >
                               inline Iterator      erase  ( Iterator pos );
                               inline Iterator      erase  ( Iterator first, Iterator last );
                               inline void          reserve( size_t n );
-   template< typename Other > inline SparseColumn& scale  ( Other scalar );
+   template< typename Other > inline SparseColumn& scale  ( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1153,7 +1153,7 @@ void SparseColumn<MT,SO>::reserve( size_t n )
 template< typename MT       // Type of the sparse matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::scale( Other scalar )
+inline SparseColumn<MT,SO>& SparseColumn<MT,SO>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
@@ -2056,7 +2056,7 @@ class SparseColumn<MT,false> : public SparseVector< SparseColumn<MT,false>, fals
                               inline Iterator      erase  ( Iterator pos );
                               inline Iterator      erase  ( Iterator first, Iterator last );
                               inline void          reserve( size_t n );
-   template< typename Other > inline SparseColumn& scale  ( Other scalar );
+   template< typename Other > inline SparseColumn& scale  ( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2736,7 +2736,7 @@ void SparseColumn<MT,false>::reserve( size_t n )
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
-inline SparseColumn<MT,false>& SparseColumn<MT,false>::scale( Other scalar )
+inline SparseColumn<MT,false>& SparseColumn<MT,false>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;

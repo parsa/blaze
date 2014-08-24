@@ -278,7 +278,7 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
                               inline void           resize( size_t n, bool preserve=true );
                               inline void           extend( size_t n, bool preserve=true );
                               inline void           reserve( size_t n );
-   template< typename Other > inline DynamicVector& scale( Other scalar );
+   template< typename Other > inline DynamicVector& scale( const Other& scalar );
                               inline void           swap( DynamicVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1264,7 +1264,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( Other scalar )
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] *= scalar;

@@ -535,7 +535,7 @@ class SymmetricMatrix<MT,false,false>
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline SymmetricMatrix& transpose();
-   template< typename Other > inline SymmetricMatrix& scale( Other scalar );
+   template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
    template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
    //@}
@@ -1752,7 +1752,7 @@ inline SymmetricMatrix<MT,false,false>& SymmetricMatrix<MT,false,false>::transpo
 */
 template< typename MT >     // Type of the adapted sparse matrix
 template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,false,false>& SymmetricMatrix<MT,false,false>::scale( Other scalar )
+inline SymmetricMatrix<MT,false,false>& SymmetricMatrix<MT,false,false>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
       const typename MatrixType::Iterator last( matrix_.upperBound(i,i) );

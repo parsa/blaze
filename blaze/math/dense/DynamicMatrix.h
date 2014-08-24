@@ -304,7 +304,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-   template< typename Other > inline DynamicMatrix& scale( Other scalar );
+   template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1553,7 +1553,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::transpose()
 template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::scale( Other scalar )
+inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -2518,7 +2518,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
-   template< typename Other > inline DynamicMatrix& scale( Other scalar );
+   template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -3757,7 +3757,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 */
 template< typename Type >   // Data type of the matrix
 template< typename Other >  // Data type of the scalar value
-inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::scale( Other scalar )
+inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )

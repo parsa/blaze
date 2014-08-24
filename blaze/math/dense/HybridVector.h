@@ -275,7 +275,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
                               inline void          clear();
                               inline void          resize( size_t n, bool preserve=true );
                               inline void          extend( size_t n, bool preserve=true );
-   template< typename Other > inline HybridVector& scale( Other scalar );
+   template< typename Other > inline HybridVector& scale( const Other& scalar );
                               inline void          swap( HybridVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1309,7 +1309,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( Other scalar )
+inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::scale( const Other& scalar )
 {
    for( size_t i=0; i<size_; ++i )
       v_[i] *= scalar;

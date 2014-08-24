@@ -894,7 +894,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
-   template< typename Other > inline DenseSubmatrix& scale( Other scalar );
+   template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -1868,7 +1868,7 @@ template< typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the scalar value
-inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::scale( Other scalar )
+inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::scale( const Other& scalar )
 {
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
@@ -3237,7 +3237,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
-   template< typename Other > inline DenseSubmatrix& scale( Other scalar );
+   template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4163,7 +4163,7 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::scale( Other scalar )
+inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::scale( const Other& scalar )
 {
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
@@ -5209,7 +5209,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
-   template< typename Other > inline DenseSubmatrix& scale( Other scalar );
+   template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -6159,7 +6159,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale( Other scalar )
+inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale( const Other& scalar )
 {
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
@@ -7199,7 +7199,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
-   template< typename Other > inline DenseSubmatrix& scale( Other scalar );
+   template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -8102,7 +8102,7 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
-inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( Other scalar )
+inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( const Other& scalar )
 {
    const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );

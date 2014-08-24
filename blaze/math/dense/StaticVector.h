@@ -285,7 +285,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
                               inline size_t        capacity() const;
                               inline size_t        nonZeros() const;
                               inline void          reset();
-   template< typename Other > inline StaticVector& scale( Other scalar );
+   template< typename Other > inline StaticVector& scale( const Other& scalar );
                               inline void          swap( StaticVector& v ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1363,7 +1363,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( Other scalar )
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::scale( const Other& scalar )
 {
    for( size_t i=0; i<N; ++i )
       v_[i] *= scalar;

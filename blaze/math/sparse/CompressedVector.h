@@ -325,7 +325,7 @@ class CompressedVector : public SparseVector< CompressedVector<Type,TF>, TF >
                               inline Iterator          erase ( Iterator first, Iterator last );
                               inline void              resize( size_t n, bool preserve=true );
                                      void              reserve( size_t n );
-   template< typename Other > inline CompressedVector& scale( Other scalar );
+   template< typename Other > inline CompressedVector& scale( const Other& scalar );
                               inline void              swap( CompressedVector& sv ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -1259,7 +1259,7 @@ void CompressedVector<Type,TF>::reserve( size_t n )
 template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the scalar value
-inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( Other scalar )
+inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other& scalar )
 {
    for( Iterator element=begin_; element!=end_; ++element )
       element->value_ *= scalar;

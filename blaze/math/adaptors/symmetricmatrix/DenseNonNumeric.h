@@ -817,7 +817,7 @@ class SymmetricMatrix<MT,true,false>
                               inline void             extend ( size_t n, bool preserve=true );
                               inline void             reserve( size_t elements );
                               inline SymmetricMatrix& transpose();
-   template< typename Other > inline SymmetricMatrix& scale( Other scalar );
+   template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
    //@}
    //**********************************************************************************************
@@ -2022,7 +2022,7 @@ inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::transpose
 */
 template< typename MT >     // Type of the adapted dense matrix
 template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::scale( Other scalar )
+inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::scale( const Other& scalar )
 {
    if( IsRowMajorMatrix<MT>::value ) {
       for( size_t i=0UL; i<rows(); ++i )
