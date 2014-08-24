@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
@@ -1000,7 +1001,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+                                      inline bool hasOverlap() const;
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const;
    //@}
    //**********************************************************************************************
 
@@ -1402,8 +1404,6 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
-         reset();
       smpAssign( *this, rhs );
    }
 
@@ -1443,7 +1443,8 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( ( IsSymmetric<MT>::value && RequiresEvaluation<MT2>::value ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -1483,9 +1484,15 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator+=( const Mat
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const AddType tmp( *this + (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpAddAssign( *this, ~rhs );
@@ -1523,9 +1530,15 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator-=( const Mat
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SubType tmp( *this - (~rhs ) );
+      smpAssign( *this, tmp );
    }
    else {
       smpSubAssign( *this, ~rhs );
@@ -1870,6 +1883,29 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::scale( Other scalar )
 
 
 //*************************************************************************************************
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool DenseSubmatrix<MT,AF,SO>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
 //
 // \param rhs The matrix to be assigned.
@@ -1884,9 +1920,11 @@ template< typename MT   // Type of the dense matrix
         , bool SO >     // Storage order
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool DenseSubmatrix<MT,AF,SO>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+inline bool DenseSubmatrix<MT,AF,SO>::preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
@@ -3300,7 +3338,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+                                      inline bool hasOverlap() const;
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const;
    //@}
    //**********************************************************************************************
 
@@ -3673,8 +3712,6 @@ inline DenseSubmatrix<MT,unaligned,true>&
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
-         reset();
       smpAssign( *this, rhs );
    }
 
@@ -3715,7 +3752,8 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( ( IsSymmetric<MT>::value && RequiresEvaluation<MT2>::value ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -3756,9 +3794,15 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const AddType tmp( *this + (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpAddAssign( *this, ~rhs );
@@ -3797,9 +3841,15 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SubType tmp( *this - (~rhs ) );
+      smpAssign( *this, tmp );
    }
    else {
       smpSubAssign( *this, ~rhs );
@@ -4130,6 +4180,29 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::sca
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,unaligned,true>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
 //
 // \param rhs The matrix to be assigned.
@@ -4142,9 +4215,11 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::sca
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline bool DenseSubmatrix<MT,unaligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+inline bool DenseSubmatrix<MT,unaligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
@@ -5235,7 +5310,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+                                      inline bool hasOverlap() const;
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const;
    //@}
    //**********************************************************************************************
 
@@ -5615,8 +5691,6 @@ inline DenseSubmatrix<MT,aligned,false>&
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
-         reset();
       smpAssign( *this, rhs );
    }
 
@@ -5657,7 +5731,8 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( ( IsSymmetric<MT>::value && RequiresEvaluation<MT2>::value ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -5698,9 +5773,15 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const AddType tmp( *this + (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpAddAssign( *this, ~rhs );
@@ -5739,9 +5820,15 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SubType tmp( *this - (~rhs ) );
+      smpAssign( *this, tmp );
    }
    else {
       smpSubAssign( *this, ~rhs );
@@ -6089,6 +6176,29 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,false>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
 //
 // \param rhs The matrix to be assigned.
@@ -6101,9 +6211,11 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline bool DenseSubmatrix<MT,aligned,false>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+inline bool DenseSubmatrix<MT,aligned,false>::preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
@@ -7188,7 +7300,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs );
+                                      inline bool hasOverlap() const;
+   template< typename MT2, bool SO2 > inline bool preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const;
    //@}
    //**********************************************************************************************
 
@@ -7538,8 +7651,6 @@ inline DenseSubmatrix<MT,aligned,true>&
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
-         reset();
       smpAssign( *this, rhs );
    }
 
@@ -7580,7 +7691,8 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( ( IsSymmetric<MT>::value && RequiresEvaluation<MT2>::value ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
       smpAssign( *this, tmp );
    }
@@ -7621,9 +7733,15 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const AddType tmp( *this + (~rhs) );
+      smpAssign( *this, tmp );
    }
    else {
       smpAddAssign( *this, ~rhs );
@@ -7662,9 +7780,15 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   if( ( IsSymmetric<MT>::value && ( RequiresEvaluation<MT2>::value || hasOverlap() ) ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
+      const SubType tmp( *this - (~rhs ) );
+      smpAssign( *this, tmp );
    }
    else {
       smpSubAssign( *this, ~rhs );
@@ -7995,6 +8119,29 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT >  // Type of the dense matrix
+inline bool DenseSubmatrix<MT,aligned,true>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking whether the given matrix would violate the symmetry of the underlying matrix.
 //
 // \param rhs The matrix to be assigned.
@@ -8007,9 +8154,11 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( 
 template< typename MT >  // Type of the dense matrix
 template< typename MT2   // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline bool DenseSubmatrix<MT,aligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
+inline bool DenseSubmatrix<MT,aligned,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs ) const
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
