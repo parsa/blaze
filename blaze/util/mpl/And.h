@@ -56,7 +56,7 @@ namespace blaze {
 // \ingroup mpl
 //
 // The And class template performs at compile time a logical and ('&&') evaluation of the up to
-// five given compile time conditions:
+// six given compile time conditions:
 
    \code
    using namespace blaze;
@@ -72,13 +72,14 @@ template< typename T1               // Type of the first operand
         , typename T2               // Type of the second operand
         , typename T3 = NullType    // Type of the third operand
         , typename T4 = NullType    // Type of the fourth operand
-        , typename T5 = NullType >  // Type of the fifth operand
+        , typename T5 = NullType    // Type of the fifth operand
+        , typename T6 = NullType >  // Type of the sixth operand
 struct And
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = T1::value && T2::value && T3::value && T4::value && T5::value };
+   enum { value = T1::value && T2::value && T3::value && T4::value && T5::value && T6::value };
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -90,7 +91,7 @@ struct And
 //! Specialization of the And class template for two operands.
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-struct And<T1,T2,NullType,NullType,NullType>
+struct And<T1,T2,NullType,NullType,NullType,NullType>
 {
  public:
    //**********************************************************************************************
@@ -107,7 +108,7 @@ struct And<T1,T2,NullType,NullType,NullType>
 template< typename T1    // Type of the first operand
         , typename T2    // Type of the second operand
         , typename T3 >  // Type of the third operand
-struct And<T1,T2,T3,NullType,NullType>
+struct And<T1,T2,T3,NullType,NullType,NullType>
 {
  public:
    //**********************************************************************************************
@@ -125,11 +126,30 @@ template< typename T1    // Type of the first operand
         , typename T2    // Type of the second operand
         , typename T3    // Type of the third operand
         , typename T4 >  // Type of the fourth operand
-struct And<T1,T2,T3,T4,NullType>
+struct And<T1,T2,T3,T4,NullType,NullType>
 {
  public:
    //**********************************************************************************************
    enum { value = T1::value && T2::value && T3::value && T4::value };
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+//! Specialization of the And class template for five operands.
+template< typename T1    // Type of the first operand
+        , typename T2    // Type of the second operand
+        , typename T3    // Type of the third operand
+        , typename T4    // Type of the fourth operand
+        , typename T5 >  // Type of the fifth operand
+struct And<T1,T2,T3,T4,T5,NullType>
+{
+ public:
+   //**********************************************************************************************
+   enum { value = T1::value && T2::value && T3::value && T4::value && T5::value };
    //**********************************************************************************************
 };
 /*! \endcond */
