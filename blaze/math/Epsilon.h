@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/Epsilon.h
-//  \brief Numerical epsilon value for floating point data types.
+//  \brief Numerical epsilon value for floating point data types
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

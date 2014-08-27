@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/Accuracy.h
-//  \brief Computation accuracy for floating point data types.
+//  \brief Computation accuracy for floating point data types
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
