@@ -45,7 +45,9 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -80,16 +82,9 @@ struct TDMatTSMatAddExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT1>::value || IsVolatile<MT1>::value || IsReference<MT1>::value ||
-                      IsConst<MT2>::value || IsVolatile<MT2>::value || IsReference<MT2>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsDenseMatrix<MT1>::value  && IsColumnMajorMatrix<MT1>::value &&
-                       IsSparseMatrix<MT2>::value && IsColumnMajorMatrix<MT2>::value
-                     , DMatSMatAddExpr<MT1,MT2,true>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsDenseMatrix<MT1> , IsColumnMajorMatrix<MT1>
+                  , IsSparseMatrix<MT2>, IsColumnMajorMatrix<MT2> >
+             , DMatSMatAddExpr<MT1,MT2,true>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<MT2>::Type >::Type  Type2;
@@ -99,7 +94,9 @@ struct TDMatTSMatAddExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, TDMatTSMatAddExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                      , TDMatTSMatAddExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

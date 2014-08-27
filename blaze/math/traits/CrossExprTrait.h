@@ -48,6 +48,7 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -87,13 +88,6 @@ struct CrossExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<T1>::value || IsVolatile<T1>::value || IsReference<T1>::value ||
-                      IsConst<T2>::value || IsVolatile<T2>::value || IsReference<T2>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsVector<T1>
                       , typename If< IsVector<T2>
                                    , typename If< IsColumnVector<T1>
@@ -125,7 +119,9 @@ struct CrossExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, CrossExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                      , CrossExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

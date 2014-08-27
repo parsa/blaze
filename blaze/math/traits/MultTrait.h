@@ -43,7 +43,8 @@
 #include <cstddef>
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -149,13 +150,6 @@ struct MultTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<T1>::value || IsVolatile<T1>::value || IsReference<T1>::value ||
-                      IsConst<T2>::value || IsVolatile<T2>::value || IsReference<T2>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    typedef typename RemoveReference< typename RemoveCV<T1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<T2>::Type >::Type  Type2;
    /*! \endcond */
@@ -164,7 +158,9 @@ struct MultTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, MultTrait<Type1,Type2>, Failure >::Type::Type  Type;
+   typedef typename If< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
+                          , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
+                      , MultTrait<Type1,Type2>, Failure >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

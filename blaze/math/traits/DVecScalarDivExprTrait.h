@@ -47,7 +47,9 @@
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -80,17 +82,18 @@ struct DVecScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename NumericElementType<VT>::Type  NET;
-   typedef typename SelectType< IsComplex<NET>::value && IsBuiltin<ST>::value
-                              , typename BaseElementType<VT>::Type
-                              , typename DivTrait<NET,ST>::Type
-                              >::Type  ElementType;
+   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
+                      , typename BaseElementType<VT>::Type
+                      , typename DivTrait<NET,ST>::Type
+                      >::Type  ElementType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsFloatingPoint<ElementType>::value
-                              , DVecScalarMultExpr<VT,ElementType,false>
-                              , DVecScalarDivExpr<VT,ElementType,false> >::Type  Type;
+   typedef typename If< IsFloatingPoint<ElementType>
+                      , DVecScalarMultExpr<VT,ElementType,false>
+                      , DVecScalarDivExpr<VT,ElementType,false>
+                      >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -132,9 +135,6 @@ struct DVecScalarDivExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value ||
-                      IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
-
    enum { condition = IsDenseVector<VT>::value && IsColumnVector<VT>::value &&
                       IsNumeric<ST>::value };
    /*! \endcond */
@@ -152,7 +152,9 @@ struct DVecScalarDivExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, DVecScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
+                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                      , DVecScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

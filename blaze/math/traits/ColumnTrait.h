@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -122,12 +123,6 @@ struct ColumnTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
@@ -135,7 +130,8 @@ struct ColumnTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, ColumnTrait<Tmp>, Failure >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                      , ColumnTrait<Tmp>, Failure >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

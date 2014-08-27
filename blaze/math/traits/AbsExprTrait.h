@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -101,12 +102,6 @@ struct AbsExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<T>::value || IsVolatile<T>::value || IsReference<T>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    typedef typename If< IsMatrix<T>
                       , typename If< IsDenseMatrix<T>
                                    , typename If< IsRowMajorMatrix<T>
@@ -143,7 +138,8 @@ struct AbsExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, AbsExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
+                      , AbsExprTrait<Type1>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

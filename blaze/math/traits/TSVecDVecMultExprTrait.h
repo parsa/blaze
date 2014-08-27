@@ -46,7 +46,9 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -115,9 +117,6 @@ struct TSVecDVecMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT1>::value || IsVolatile<VT1>::value || IsReference<VT1>::value ||
-                      IsConst<VT2>::value || IsVolatile<VT2>::value || IsReference<VT2>::value };
-
    enum { valid = IsSparseVector<VT1>::value && IsRowVector<VT1>::value &&
                   IsDenseVector<VT2>::value  && IsColumnVector<VT2>::value };
    /*! \endcond */
@@ -135,7 +134,9 @@ struct TSVecDVecMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, TSVecDVecMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
+                          , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
+                      , TSVecDVecMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

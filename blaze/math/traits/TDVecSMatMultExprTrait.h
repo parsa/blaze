@@ -46,7 +46,9 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -79,16 +81,9 @@ struct TDVecSMatMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value ||
-                      IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsDenseVector<VT>::value  && IsRowVector<VT>::value &&
-                       IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                     , TDVecSMatMultExpr<VT,MT>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsDenseVector<VT> , IsRowVector<VT>
+                  , IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+             , TDVecSMatMultExpr<VT,MT>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type2;
@@ -98,7 +93,9 @@ struct TDVecSMatMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, TDVecSMatMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT>
+                          , IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                      , TDVecSMatMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

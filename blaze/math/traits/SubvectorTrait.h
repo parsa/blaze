@@ -41,7 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -130,12 +131,6 @@ struct SubvectorTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Tmp;
    /*! \endcond */
    //**********************************************************************************************
@@ -143,7 +138,8 @@ struct SubvectorTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, SubvectorTrait<Tmp>, Failure >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                      , SubvectorTrait<Tmp>, Failure >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

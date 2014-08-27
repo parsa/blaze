@@ -44,6 +44,9 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -74,14 +77,8 @@ struct SMatTransExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                     , SMatTransExpr<MT,true>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT> >
+             , SMatTransExpr<MT,true>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    /*! \endcond */
@@ -90,7 +87,8 @@ struct SMatTransExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, SMatTransExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                      , SMatTransExprTrait<Type1>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

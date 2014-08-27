@@ -46,7 +46,9 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -80,15 +82,8 @@ struct TSMatDMatMultExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT1>::value || IsVolatile<MT1>::value || IsReference<MT1>::value ||
-                      IsConst<MT2>::value || IsVolatile<MT2>::value || IsReference<MT2>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseMatrix<MT1>::value && IsColumnMajorMatrix<MT1>::value &&
-                       IsDenseMatrix<MT2>::value  && IsRowMajorMatrix<MT2>::value
+   typedef If< And< IsSparseMatrix<MT1>, IsColumnMajorMatrix<MT1>
+                  , IsDenseMatrix<MT2> , IsRowMajorMatrix<MT2> >
                      , TSMatDMatMultExpr<MT1,MT2>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT1>::Type >::Type  Type1;
@@ -99,7 +94,9 @@ struct TSMatDMatMultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, TSMatDMatMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT1>, IsVolatile<MT1>, IsReference<MT1>
+                          , IsConst<MT2>, IsVolatile<MT2>, IsReference<MT2> >
+                      , TSMatDMatMultExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -44,7 +44,9 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -78,16 +80,9 @@ struct TSVecTSVecSubExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT1>::value || IsVolatile<VT1>::value || IsReference<VT1>::value ||
-                      IsConst<VT2>::value || IsVolatile<VT2>::value || IsReference<VT2>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseVector<VT1>::value && IsRowVector<VT1>::value &&
-                       IsSparseVector<VT2>::value && IsRowVector<VT2>::value
-                     , SVecSVecSubExpr<VT1,VT2,true>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsSparseVector<VT1>, IsRowVector<VT1>
+                  , IsSparseVector<VT2>, IsRowVector<VT2> >
+             , SVecSVecSubExpr<VT1,VT2,true>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT1>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<VT2>::Type >::Type  Type2;
@@ -97,7 +92,9 @@ struct TSVecTSVecSubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, TSVecTSVecSubExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT1>, IsVolatile<VT1>, IsReference<VT1>
+                          , IsConst<VT2>, IsVolatile<VT2>, IsReference<VT2> >
+                      , TSVecTSVecSubExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

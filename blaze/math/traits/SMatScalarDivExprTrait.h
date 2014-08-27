@@ -47,7 +47,9 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/SelectType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -80,17 +82,18 @@ struct SMatScalarDivExprTraitHelper
  private:
    //**********************************************************************************************
    typedef typename NumericElementType<MT>::Type  NET;
-   typedef typename SelectType< IsComplex<NET>::value && IsBuiltin<ST>::value
-                              , typename BaseElementType<MT>::Type
-                              , typename DivTrait<NET,ST>::Type
-                              >::Type  ElementType;
+   typedef typename If< And< IsComplex<NET>, IsBuiltin<ST> >
+                      , typename BaseElementType<MT>::Type
+                      , typename DivTrait<NET,ST>::Type
+                      >::Type  ElementType;
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   typedef typename SelectType< IsFloatingPoint<ElementType>::value
-                              , SMatScalarMultExpr<MT,ElementType,false>
-                              , SMatScalarDivExpr<MT,ElementType,false> >::Type  Type;
+   typedef typename If< IsFloatingPoint<ElementType>
+                      , SMatScalarMultExpr<MT,ElementType,false>
+                      , SMatScalarDivExpr<MT,ElementType,false>
+                      >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -132,9 +135,6 @@ struct SMatScalarDivExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value ||
-                      IsConst<ST>::value || IsVolatile<ST>::value || IsReference<ST>::value };
-
    enum { condition = IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value &&
                       IsNumeric<ST>::value };
    /*! \endcond */
@@ -152,7 +152,9 @@ struct SMatScalarDivExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, SMatScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT>
+                          , IsConst<ST>, IsVolatile<ST>, IsReference<ST> >
+                      , SMatScalarDivExprTrait<Type1,Type2>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

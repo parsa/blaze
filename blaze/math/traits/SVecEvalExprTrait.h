@@ -44,6 +44,9 @@
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -74,14 +77,8 @@ struct SVecEvalExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<VT>::value || IsVolatile<VT>::value || IsReference<VT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
-                     , SVecEvalExpr<VT,false>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsSparseVector<VT>, IsColumnVector<VT> >
+             , SVecEvalExpr<VT,false>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type1;
    /*! \endcond */
@@ -90,7 +87,8 @@ struct SVecEvalExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, SVecEvalExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
+                      , SVecEvalExprTrait<Type1>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };

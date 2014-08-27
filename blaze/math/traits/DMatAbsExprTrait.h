@@ -44,6 +44,9 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -74,14 +77,8 @@ struct DMatAbsExprTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { qualified = IsConst<MT>::value || IsVolatile<MT>::value || IsReference<MT>::value };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   typedef SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                     , DMatAbsExpr<MT,false>, INVALID_TYPE >  Tmp;
+   typedef If< And< IsDenseMatrix<MT>, IsRowMajorMatrix<MT> >
+             , DMatAbsExpr<MT,false>, INVALID_TYPE >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    /*! \endcond */
@@ -90,7 +87,8 @@ struct DMatAbsExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename SelectType< qualified, DMatAbsExprTrait<Type1>, Tmp >::Type::Type  Type;
+   typedef typename If< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
+                      , DMatAbsExprTrait<Type1>, Tmp >::Type::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
