@@ -2071,7 +2071,7 @@ inline void SymmetricMatrix<MT,true,false>::swap( SymmetricMatrix& m ) /* throw(
 //
 // This function tries to adjust the number of rows and columns of a non-resizable matrix. Since
 // the matrix cannot be resized, in case the specified number of rows and columns is not identical
-// the the current number of rows and columns of the matrix, a \a std::invalid_argument exception
+// to the current number of rows and columns of the matrix, a \a std::invalid_argument exception
 // is thrown.
 */
 template< typename MT >   // Type of the adapted dense matrix
