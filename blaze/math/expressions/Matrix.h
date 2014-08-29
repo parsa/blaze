@@ -40,10 +40,18 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -108,40 +116,43 @@ struct Matrix
 /*!\name Matrix global functions */
 //@{
 template< typename MT, bool SO >
-inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i );
+inline typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i );
+inline typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i );
+inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i );
+inline typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i );
+inline typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator cend( const Matrix<MT,SO>& m, size_t i );
+inline typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline size_t rows( const Matrix<MT,SO>& m );
+inline size_t rows( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t columns( const Matrix<MT,SO>& m );
+inline size_t columns( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t capacity( const Matrix<MT,SO>& m );
+inline size_t capacity( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t capacity( const Matrix<MT,SO>& m, size_t i );
+inline size_t capacity( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline size_t nonZeros( const Matrix<MT,SO>& m );
+inline size_t nonZeros( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t nonZeros( const Matrix<MT,SO>& m, size_t i );
+inline size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
+
+template< typename MT, bool SO >
+inline void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
@@ -164,7 +175,7 @@ inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator to the first element of row/column \a i.
 //
@@ -175,9 +186,9 @@ inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i )
+inline typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).begin(i);
+   return (~matrix).begin(i);
 }
 //*************************************************************************************************
 
@@ -185,7 +196,7 @@ inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i )
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator to the first element of row/column \a i.
 //
@@ -196,9 +207,9 @@ inline typename MT::Iterator begin( Matrix<MT,SO>& m, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i )
+inline typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).begin(i);
+   return (~matrix).begin(i);
 }
 //*************************************************************************************************
 
@@ -206,7 +217,7 @@ inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i )
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator to the first element of row/column \a i.
 //
@@ -217,9 +228,9 @@ inline typename MT::ConstIterator begin( const Matrix<MT,SO>& m, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i )
+inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).cbegin(i);
+   return (~matrix).cbegin(i);
 }
 //*************************************************************************************************
 
@@ -227,7 +238,7 @@ inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator just past the last element of row/column \a i.
 //
@@ -238,9 +249,9 @@ inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& m, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i )
+inline typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).end(i);
+   return (~matrix).end(i);
 }
 //*************************************************************************************************
 
@@ -248,7 +259,7 @@ inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator just past the last element of row/column \a i.
 //
@@ -259,9 +270,9 @@ inline typename MT::Iterator end( Matrix<MT,SO>& m, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i )
+inline typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).end(i);
+   return (~matrix).end(i);
 }
 //*************************************************************************************************
 
@@ -269,7 +280,7 @@ inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of row/column \a i.
 //
-// \param m The given dense or sparse matrix.
+// \param matrix The given dense or sparse matrix.
 // \param i The row/column index.
 // \return Iterator just past the last element of row/column \a i.
 //
@@ -280,9 +291,9 @@ inline typename MT::ConstIterator end( const Matrix<MT,SO>& m, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator cend( const Matrix<MT,SO>& m, size_t i )
+inline typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).cend(i);
+   return (~matrix).cend(i);
 }
 //*************************************************************************************************
 
@@ -291,14 +302,14 @@ inline typename MT::ConstIterator cend( const Matrix<MT,SO>& m, size_t i )
 /*!\brief Returns the current number of rows of the matrix.
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \return The number of rows of the matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t rows( const Matrix<MT,SO>& m )
+inline size_t rows( const Matrix<MT,SO>& matrix )
 {
-   return (~m).rows();
+   return (~matrix).rows();
 }
 //*************************************************************************************************
 
@@ -307,14 +318,14 @@ inline size_t rows( const Matrix<MT,SO>& m )
 /*!\brief Returns the current number of columns of the matrix.
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \return The number of columns of the matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t columns( const Matrix<MT,SO>& m )
+inline size_t columns( const Matrix<MT,SO>& matrix )
 {
-   return (~m).columns();
+   return (~matrix).columns();
 }
 //*************************************************************************************************
 
@@ -323,14 +334,14 @@ inline size_t columns( const Matrix<MT,SO>& m )
 /*!\brief Returns the maximum capacity of the matrix.
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \return The capacity of the matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t capacity( const Matrix<MT,SO>& m )
+inline size_t capacity( const Matrix<MT,SO>& matrix )
 {
-   return (~m).capacity();
+   return (~matrix).capacity();
 }
 //*************************************************************************************************
 
@@ -339,7 +350,7 @@ inline size_t capacity( const Matrix<MT,SO>& m )
 /*!\brief Returns the current capacity of the specified row/column.
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \param i The index of the row/column.
 // \return The current capacity of row/column \a i.
 //
@@ -350,9 +361,9 @@ inline size_t capacity( const Matrix<MT,SO>& m )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t capacity( const Matrix<MT,SO>& m, size_t i )
+inline size_t capacity( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).capacity( i );
+   return (~matrix).capacity( i );
 }
 //*************************************************************************************************
 
@@ -361,14 +372,14 @@ inline size_t capacity( const Matrix<MT,SO>& m, size_t i )
 /*!\brief Returns the total number of non-zero elements in the matrix
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \return The number of non-zero elements in the dense matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t nonZeros( const Matrix<MT,SO>& m )
+inline size_t nonZeros( const Matrix<MT,SO>& matrix )
 {
-   return (~m).nonZeros();
+   return (~matrix).nonZeros();
 }
 //*************************************************************************************************
 
@@ -377,7 +388,7 @@ inline size_t nonZeros( const Matrix<MT,SO>& m )
 /*!\brief Returns the number of non-zero elements in the specified row/column.
 // \ingroup matrix
 //
-// \param m The given matrix.
+// \param matrix The given matrix.
 // \param i The index of the row/column.
 // \return The number of non-zero elements of row/column \a i.
 //
@@ -388,9 +399,136 @@ inline size_t nonZeros( const Matrix<MT,SO>& m )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t nonZeros( const Matrix<MT,SO>& m, size_t i )
+inline size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 {
-   return (~m).nonZeros( i );
+   return (~matrix).nonZeros( i );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for non-resizable matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be resized.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \return void
+// \exception std::invalid_argument Matrix cannot be resized.
+//
+// This function tries to change the number of rows and columns of a non-resizable matrix. Since
+// the matrix cannot be resized, in case the specified number of rows and columns is not identical
+// to the current number of rows and columns of the matrix, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename DisableIf< IsResizable<MT> >::Type
+   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+{
+   UNUSED_PARAMETER( preserve );
+
+   if( (~matrix).rows() != m || (~matrix).columns() != n )
+      throw std::invalid_argument( "Matrix cannot be resized" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable, non-square matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be resized.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \return void
+//
+// This function changes the number of rows and columns of the given resizable, non-square matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
+   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+{
+   (~matrix).resize( m, n, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable, square matrices.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be resized.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \return void
+// \exception std::invalid_argument Invalid resize arguments for square matrix.
+//
+// This function changes the number of rows and columns of the given resizable, square matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
+   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+{
+   if( m != n )
+      throw std::invalid_argument( "Invalid resize arguments for square matrix" );
+
+   (~matrix).resize( m, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Changing the size of the matrix.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be resized.
+// \param m The new number of rows of the matrix.
+// \param n The new number of columns of the matrix.
+// \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Invalid resize arguments for square matrix.
+// \exception std::invalid_argument Matrix cannot be resized.
+//
+// This function provides a unified interface to resize dense and sparse matrices. In contrast
+// to the \c resize() member function, which is only available on resizable matrix types, this
+// function can be used on both resizable and non-resizable matrices. In case the given matrix
+// of type \a MT is resizable (i.e. provides a \c resize function) the type-specific \c resize()
+// member function is called. Depending on the type \a MT, this may result in the allocation of
+// new dynamic memory and the invalidation of existing views (submatrices, rows, columns, ...).
+// Note that in case the matrix is a compile time square matrix (as for instance the
+// blaze::SymmetricMatrix adaptor, ...) the specified number of rows must be identical to the
+// number of columns. Otherwise a \a std::invalid_argument exception is thrown. If the matrix
+// type \a MT is non-resizable (i.e. does not provide a \c resize() function) and if the specified
+// number of rows and columns is not identical to the current number of rows and columns of the
+// matrix, a \a std::invalid_argument exception is thrown.
+
+   \code
+   blaze::DynamicMatrix<int> A( 3UL, 3UL );
+   resize( A, 5UL, 2UL );  // OK: regular resize operation
+
+   blaze::SymmetricMatrix< DynamicMatrix<int> > B( 3UL );
+   resize( B, 4UL, 4UL );  // OK: Number of rows and columns is identical
+   resize( B, 3UL, 5UL );  // Error: Invalid arguments for square matrix!
+
+   blaze::StaticMatrix<int,3UL,3UL> C;
+   resize( C, 3UL, 3UL );  // OK: No resize necessary
+   resize( C, 5UL, 2UL );  // Error: Matrix cannot be resized!
+   \endcode
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+{
+   resize_backend( matrix, m, n, preserve );
 }
 //*************************************************************************************************
 
