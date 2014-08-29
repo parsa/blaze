@@ -826,12 +826,6 @@ class SymmetricMatrix<MT,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   template< typename MT2 >
-   inline typename DisableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
-
-   template< typename MT2 >
-   inline typename EnableIf< IsResizable<MT2> >::Type adjustSize( MT2& matrix, size_t n );
-
    inline bool isLowerOrUpper();
    //@}
    //**********************************************************************************************
@@ -968,6 +962,8 @@ template< typename MT2   // Type of the foreign matrix
 inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
    : matrix_()  // The adapted dense matrix
 {
+   using blaze::resize;
+
    typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
    typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
 
@@ -975,7 +971,7 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m 
       throw std::invalid_argument( "Invalid setup of symmetric matrix" );
 
    if( IsSymmetric<MT2>::value ) {
-      adjustSize( matrix_, (~m).rows() );
+      resize( matrix_, (~m).rows(), (~m).columns() );
       assign( ~m );
    }
    else {
@@ -984,7 +980,7 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m 
       if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid setup of symmetric matrix" );
 
-      adjustSize( matrix_, tmp.rows() );
+      resize( matrix_, tmp.rows(), tmp.rows() );
       assign( tmp );
    }
 
@@ -1276,9 +1272,11 @@ template< typename MT >  // Type of the adapted dense matrix
 inline SymmetricMatrix<MT,true,false>&
    SymmetricMatrix<MT,true,false>::operator=( const SymmetricMatrix& rhs )
 {
+   using blaze::resize;
+
    if( &rhs == this ) return *this;
 
-   adjustSize( matrix_, rhs.rows() );
+   resize( matrix_, rhs.rows(), rhs.columns() );
    assign( rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -1310,6 +1308,8 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
+   using blaze::resize;
+
    if( IsLower<MT2>::value || IsUpper<MT2>::value ||
        ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
@@ -1319,7 +1319,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
       swap( tmp );
    }
    else {
-      adjustSize( matrix_, (~rhs).rows() );
+      resize( matrix_, (~rhs).rows(), (~rhs).columns() );
       if( IsSparseMatrix<MT2>::value )
          reset();
       assign( ~rhs );
@@ -1354,11 +1354,13 @@ template< typename MT2   // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
    SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
+   using blaze::resize;
+
    if( IsLower<MT2>::value || IsUpper<MT2>::value )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSymmetric<MT2>::value ) {
-      adjustSize( matrix_, (~rhs).rows() );
+      resize( matrix_, (~rhs).rows(), (~rhs).columns() );
       if( IsSparseMatrix<MT2>::value )
          reset();
       assign( ~rhs );
@@ -1369,7 +1371,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
       if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-      adjustSize( matrix_, tmp.rows() );
+      resize( matrix_, tmp.rows(), tmp.columns() );
       assign( tmp );
    }
 
@@ -1554,12 +1556,14 @@ template< typename MT2   // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,true,false>&
    SymmetricMatrix<MT,true,false>::operator*=( const Matrix<MT2,SO>& rhs )
 {
+   using blaze::resize;
+
    typename MultTrait<MT,typename MT2::ResultType>::Type tmp( (*this) * ~rhs );
 
    if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
-   adjustSize( matrix_, tmp.rows() );
+   resize( matrix_, tmp.rows(), tmp.columns() );
    assign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -2055,58 +2059,6 @@ inline void SymmetricMatrix<MT,true,false>::swap( SymmetricMatrix& m ) /* throw(
    using std::swap;
 
    swap( matrix_, m.matrix_ );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Adjusting the number of rows and columns of a non-resizable matrix.
-//
-// \param matrix The matrix to be adjusted.
-// \param n The new size of the matrix.
-// \return void
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This function tries to adjust the number of rows and columns of a non-resizable matrix. Since
-// the matrix cannot be resized, in case the specified number of rows and columns is not identical
-// to the current number of rows and columns of the matrix, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT >   // Type of the adapted dense matrix
-template< typename MT2 >  // Type of the matrix to be adjusted
-inline typename DisableIf< IsResizable<MT2> >::Type
-   SymmetricMatrix<MT,true,false>::adjustSize( MT2& matrix, size_t n )
-{
-   BLAZE_INTERNAL_ASSERT( isSquare( matrix ), "Non-square symmetric matrix detected" );
-
-   if( matrix.rows() != n )
-      throw std::invalid_argument( "Matrix sizes do not match" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Adjusting the number of rows and columns of a resizable matrix.
-//
-// \param matrix The matrix to be adjusted.
-// \param n The new size of the matrix.
-// \return void
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This function adjusts the number of rows and columns of the given resizable matrix.
-*/
-template< typename MT >   // Type of the adapted dense matrix
-template< typename MT2 >  // Type of the matrix to be adjusted
-inline typename EnableIf< IsResizable<MT2> >::Type
-   SymmetricMatrix<MT,true,false>::adjustSize( MT2& matrix, size_t n )
-{
-   BLAZE_INTERNAL_ASSERT( isSquare( matrix ), "Non-square symmetric matrix detected" );
-
-   matrix.resize( n, n, false );
 }
 /*! \endcond */
 //*************************************************************************************************
