@@ -40,10 +40,15 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
+#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -109,31 +114,34 @@ struct Vector
 /*!\name Vector global functions */
 //@{
 template< typename VT, bool TF >
-inline typename VT::Iterator begin( Vector<VT,TF>& v );
+inline typename VT::Iterator begin( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator begin( const Vector<VT,TF>& v );
+inline typename VT::ConstIterator begin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& v );
+inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::Iterator end( Vector<VT,TF>& v );
+inline typename VT::Iterator end( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator end( const Vector<VT,TF>& v );
+inline typename VT::ConstIterator end( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cend( const Vector<VT,TF>& v );
+inline typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t size( const Vector<VT,TF>& v );
+inline size_t size( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t capacity( const Vector<VT,TF>& v );
+inline size_t capacity( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t nonZeros( const Vector<VT,TF>& v );
+inline size_t nonZeros( const Vector<VT,TF>& vector );
+
+template< typename VT, bool TF >
+inline void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 inline void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
@@ -156,13 +164,13 @@ inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::Iterator begin( Vector<VT,TF>& v )
+inline typename VT::Iterator begin( Vector<VT,TF>& vector )
 {
-   return (~v).begin();
+   return (~vector).begin();
 }
 //*************************************************************************************************
 
@@ -170,13 +178,13 @@ inline typename VT::Iterator begin( Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator begin( const Vector<VT,TF>& v )
+inline typename VT::ConstIterator begin( const Vector<VT,TF>& vector )
 {
-   return (~v).begin();
+   return (~vector).begin();
 }
 //*************************************************************************************************
 
@@ -184,13 +192,13 @@ inline typename VT::ConstIterator begin( const Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& v )
+inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector )
 {
-   return (~v).begin();
+   return (~vector).begin();
 }
 //*************************************************************************************************
 
@@ -198,13 +206,13 @@ inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::Iterator end( Vector<VT,TF>& v )
+inline typename VT::Iterator end( Vector<VT,TF>& vector )
 {
-   return (~v).end();
+   return (~vector).end();
 }
 //*************************************************************************************************
 
@@ -212,13 +220,13 @@ inline typename VT::Iterator end( Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator end( const Vector<VT,TF>& v )
+inline typename VT::ConstIterator end( const Vector<VT,TF>& vector )
 {
-   return (~v).end();
+   return (~vector).end();
 }
 //*************************************************************************************************
 
@@ -226,13 +234,13 @@ inline typename VT::ConstIterator end( const Vector<VT,TF>& v )
 //*************************************************************************************************
 /*!\brief Returns an iterator just past the last element of the given vector.
 //
-// \param v The given dense or sparse vector.
+// \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cend( const Vector<VT,TF>& v )
+inline typename VT::ConstIterator cend( const Vector<VT,TF>& vector )
 {
-   return (~v).end();
+   return (~vector).end();
 }
 //*************************************************************************************************
 
@@ -241,14 +249,14 @@ inline typename VT::ConstIterator cend( const Vector<VT,TF>& v )
 /*!\brief Returns the current size/dimension of the vector.
 // \ingroup vector
 //
-// \param v The given vector.
+// \param vector The given vector.
 // \return The size of the vector.
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t size( const Vector<VT,TF>& v )
+inline size_t size( const Vector<VT,TF>& vector )
 {
-   return (~v).size();
+   return (~vector).size();
 }
 //*************************************************************************************************
 
@@ -257,14 +265,14 @@ inline size_t size( const Vector<VT,TF>& v )
 /*!\brief Returns the maximum capacity of the vector.
 // \ingroup vector
 //
-// \param v The given vector.
+// \param vector The given vector.
 // \return The capacity of the vector.
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t capacity( const Vector<VT,TF>& v )
+inline size_t capacity( const Vector<VT,TF>& vector )
 {
-   return (~v).capacity();
+   return (~vector).capacity();
 }
 //*************************************************************************************************
 
@@ -273,7 +281,7 @@ inline size_t capacity( const Vector<VT,TF>& v )
 /*!\brief Returns the number of non-zero elements in the vector.
 // \ingroup vector
 //
-// \param v The given vector.
+// \param vector The given vector.
 // \return The number of non-zero elements in the vector.
 //
 // Note that the number of non-zero elements is always less than or equal to the current size
@@ -281,9 +289,96 @@ inline size_t capacity( const Vector<VT,TF>& v )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t nonZeros( const Vector<VT,TF>& v )
+inline size_t nonZeros( const Vector<VT,TF>& vector )
 {
-   return (~v).nonZeros();
+   return (~vector).nonZeros();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for non-resizable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be resized.
+// \param n The new size of the vector.
+// \return void
+// \exception std::invalid_argument Vector cannot be resized.
+//
+// This function tries to change the number of rows and columns of a non-resizable vector. Since
+// the vector cannot be resized, in case the specified size is not identical to the current size
+// of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline typename DisableIf< IsResizable<VT> >::Type
+   resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
+{
+   UNUSED_PARAMETER( preserve );
+
+   if( (~vector).size() != n )
+      throw std::invalid_argument( "Vector cannot be resized" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resize() function for resizable vectors.
+// \ingroup vector
+//
+// \param vector The given vector to be resized.
+// \param n The new size of the vector.
+// \return void
+//
+// This function changes the size of the given resizable vector.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline typename EnableIf< IsResizable<VT> >::Type
+   resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
+{
+   (~vector).resize( n, preserve );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Changing the size of the vector.
+// \ingroup vector
+//
+// \param vector The given vector to be resized.
+// \param n The new size of the vector.
+// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
+// \return void
+// \exception std::invalid_argument Vector cannot be resized.
+//
+// This function provides a unified interface to resize dense and sparse vectors. In contrast
+// to the \c resize() member function, which is only available on resizable vector types, this
+// function can be used on both resizable and non-resizable vectors. In case the given vector
+// type \a VT is resizable (i.e. provides a \c resize() function), the type-specific \c resize()
+// member function is called. Depending on the type \a VT, this may result in the allocation of
+// new dynamic memory and the invalidation of existing views (subvectors, ...). In case \a VT is
+// non-resizable (i.e. does not provide a \c resize() function) and if the specified size is not
+// identical to the current size of the vector, a \a std::invalid_argument exception is thrown.
+
+   \code
+   blaze::DynamicVector<int> a( 3UL );
+   resize( a, 5UL );  // OK: regular resize operation
+
+   blaze::StaticVector<int,3UL> b;
+   resize( b, 3UL );  // OK: No resize necessary
+   resize( b, 5UL );  // Error: Vector cannot be resized!
+   \endcode
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+inline void resize( Vector<VT,TF>& vector, size_t n, bool preserve )
+{
+   resize_backend( vector, n, preserve );
 }
 //*************************************************************************************************
 
