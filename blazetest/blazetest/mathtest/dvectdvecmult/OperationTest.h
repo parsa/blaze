@@ -2631,11 +2631,13 @@ void OperationTest<VT1,VT2>::initResults()
    const typename blaze::BaseElementType<RE>::Type min( randmin );
    const typename blaze::BaseElementType<RE>::Type max( randmax );
 
+   resize( dres_, size( lhs_ ), size( rhs_ ) );
    randomize( dres_, min, max );
-   odres_   = dres_;
-   sres_    = dres_;
-   osres_   = dres_;
-   refres_  = dres_;
+
+   odres_  = dres_;
+   sres_   = dres_;
+   osres_  = dres_;
+   refres_ = dres_;
 }
 //*************************************************************************************************
 
@@ -2655,11 +2657,13 @@ void OperationTest<VT1,VT2>::initTransposeResults()
    const typename blaze::BaseElementType<RE>::Type min( randmin );
    const typename blaze::BaseElementType<RE>::Type max( randmax );
 
+   resize( tdres_, size( rhs_ ), size( lhs_ ) );
    randomize( tdres_, min, max );
-   todres_  = tdres_;
-   tsres_   = tdres_;
-   tosres_  = tdres_;
-   refres_  = tdres_;
+
+   todres_ = tdres_;
+   tsres_  = tdres_;
+   tosres_ = tdres_;
+   refres_ = tdres_;
 }
 //*************************************************************************************************
 
