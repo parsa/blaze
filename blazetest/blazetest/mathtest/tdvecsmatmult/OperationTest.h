@@ -3773,7 +3773,7 @@ void OperationTest<VT,MT>::initResults()
    const typename blaze::BaseElementType<RE>::Type min( randmin );
    const typename blaze::BaseElementType<RE>::Type max( randmax );
 
-   resize( dres_, columns( lhs_ ) );
+   resize( dres_, columns( rhs_ ) );
    randomize( dres_, min, max );
 
    sres_   = dres_;
@@ -3797,7 +3797,7 @@ void OperationTest<VT,MT>::initTransposeResults()
    const typename blaze::BaseElementType<RE>::Type min( randmin );
    const typename blaze::BaseElementType<RE>::Type max( randmax );
 
-   resize( tdres_, columns( lhs_ ) );
+   resize( tdres_, columns( rhs_ ) );
    randomize( tdres_, min, max );
 
    tsres_   = tdres_;
