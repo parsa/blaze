@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Bool.h
+//  \brief Header file for the Bool class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_BOOL_H_
+#define _BLAZE_UTIL_MPL_BOOL_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Compile time integral constant wrapper for \a bool.
+// \ingroup mpl
+//
+// The Bool class template represents an integral wrapper for a compile time constant expression
+// of type \a bool. The value of a Bool can be accessed via the nested \a value (which is guaranteed
+// to be of type \a bool), the type can be accessed via the nested type definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   Bool<true>::value       // Evaluates to true
+   Bool<false>::ValueType  // Results in bool
+   \endcode
+*/
+template< bool C >
+struct Bool
+{
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   static const bool value = C;
+   typedef bool  ValueType;
+   /*! \endcond */
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/EqualTo.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
+} // namespace blaze
 
 #endif
