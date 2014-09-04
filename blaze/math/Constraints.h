@@ -67,6 +67,7 @@
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/SerialExpr.h>
+#include <blaze/math/constraints/Size.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/constraints/SparseElement.h>
 #include <blaze/math/constraints/SparseMatrix.h>
