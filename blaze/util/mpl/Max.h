@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Max.h
+//  \brief Header file for the Max class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,27 +32,48 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_MAX_H_
+#define _BLAZE_UTIL_MPL_MAX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
 #include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Max.h>
-#include <blaze/util/mpl/Min.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time value evaluation.
+// \ingroup mpl
+//
+// The Max class template selects the larger of the two given template arguments \a T1 and
+// \a T2. In order for Max to be able to determine the larger type, both arguments are required
+// to have a nested member \a value. In case \a T1::value is larger than \a T2::value, the nested
+// member \a value is set to \a T1::value, otherwise it is set to \a T2::value.
+
+   \code
+   blaze::Max< Int<3> , Int<2>  >::value    // Evaluates to 3
+   blaze::Max< Long<3>, Int<2>  >::value    // Evaluates to 3
+   blaze::Max< Int<3> , Long<2> >::value    // Evaluates to 3
+   blaze::Max< Int<3>, Int<2> >::ValueType  // Results in int
+   \endcode
+*/
+template< typename T1    // Type of the first compile time value
+        , typename T2 >  // Type of the second compile time value
+struct Max : public If< Less<T1,T2>, T2, T1 >::Type
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
