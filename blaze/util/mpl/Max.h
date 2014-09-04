@@ -56,21 +56,20 @@ namespace blaze {
 /*!\brief Compile time value evaluation.
 // \ingroup mpl
 //
-// The Max class template selects the larger of the two given template arguments \a T1 and
-// \a T2. In order for Max to be able to determine the larger type, both arguments are required
-// to have a nested member \a value. In case \a T1::value is larger than \a T2::value, the nested
-// member \a value is set to \a T1::value, otherwise it is set to \a T2::value.
+// The Max class template selects the larger of the two given template arguments \a T1 and \a T2.
+// In order for Max to be able to determine the larger type, both arguments are required to have
+// a nested member \a value. In case \a T1::value is larger than \a T2::value, the nested type
+// definition \a Type is set to \a T1, otherwise it is set to \a T2.
 
    \code
-   blaze::Max< Int<3> , Int<2>  >::value    // Evaluates to 3
-   blaze::Max< Long<3>, Int<2>  >::value    // Evaluates to 3
-   blaze::Max< Int<3> , Long<2> >::value    // Evaluates to 3
-   blaze::Max< Int<3>, Int<2> >::ValueType  // Results in int
+   blaze::Max< Int<3> , Int<2>  >::Type  // Results in Int<3>
+   blaze::Max< Long<3>, Int<2>  >::Type  // Results in Long<3>
+   blaze::Max< Int<3> , Long<2> >::Type  // Results in Int<3>
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Max : public If< Less<T1,T2>, T2, T1 >::Type
+struct Max : public If< Less<T1,T2>, T2, T1 >
 {};
 //*************************************************************************************************
 

@@ -56,21 +56,20 @@ namespace blaze {
 /*!\brief Compile time value evaluation.
 // \ingroup mpl
 //
-// The Min class template selects the smaller of the two given template arguments \a T1 and
-// \a T2. In order for Min to be able to determine the smaller type, both arguments are required
-// to have a nested member \a value. In case \a T1::value is smaller than \a T2::value, the nested
-// member \a value is set to \a T1::value, otherwise it is set to \a T2::value.
+// The Min class template selects the smaller of the two given template arguments \a T1 and \a T2.
+// In order for Min to be able to determine the smaller type, both arguments are required to have
+// a nested member \a value. In case \a T1::value is smaller than \a T2::value, the nested type
+// definition \a Type is set to \a T1, otherwise it is set to \a T2.
 
    \code
-   blaze::Min< Int<3> , Int<2>  >::value    // Evaluates to 2
-   blaze::Min< Long<3>, Int<2>  >::value    // Evaluates to 2
-   blaze::Min< Int<3> , Long<2> >::value    // Evaluates to 2
-   blaze::Min< Int<3>, Int<2> >::ValueType  // Results in int
+   blaze::Min< Int<3> , Int<2>  >::Type  // Results in Int<2>
+   blaze::Min< Long<3>, Int<2>  >::Type  // Results in Int<2>
+   blaze::Min< Int<3> , Long<2> >::Type  // Results in Long<2>
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Min : public If< Less<T1,T2>, T1, T2 >::Type
+struct Min : public If< Less<T1,T2>, T1, T2 >
 {};
 //*************************************************************************************************
 
