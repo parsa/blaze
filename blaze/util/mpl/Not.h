@@ -36,6 +36,13 @@
 #define _BLAZE_UTIL_MPL_NOT_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/mpl/Bool.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -54,20 +61,14 @@ namespace blaze {
    \code
    using namespace blaze;
 
-   Not< IsIntegral<int> >::value  // Evaluates to 0
-   Not< IsDouble<int>   >::value  // Evaluates to 1
+   Not< IsIntegral<int> >::value    // Evaluates to false
+   Not< IsDouble<int>   >::value    // Evaluates to true
+   Not< IsSigned<int> >::ValueType  // Results in bool
    \endcode
 */
 template< typename C >  // Condition to be negated
-struct Not
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = !C::value };
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct Not : public Bool< !C::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze
