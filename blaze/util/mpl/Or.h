@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/NullType.h>
 
 
@@ -75,14 +76,8 @@ template< typename T1               // Type of the first operand
         , typename T5 = NullType    // Type of the fifth operand
         , typename T6 = NullType >  // Type of the sixth operand
 struct Or
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   enum { value = T1::value || T2::value || T3::value || T4::value || T5::value || T6::value };
-   /*! \endcond */
-   //**********************************************************************************************
-};
+   : public Bool< ( T1::value || T2::value || T3::value || T4::value || T5::value || T6::value ) >
+{};
 //*************************************************************************************************
 
 
@@ -92,12 +87,8 @@ struct Or
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
 struct Or<T1,T2,NullType,NullType,NullType,NullType>
-{
- public:
-   //**********************************************************************************************
-   enum { value = T1::value || T2::value };
-   //**********************************************************************************************
-};
+   : public Bool< ( T1::value || T2::value ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -109,12 +100,8 @@ template< typename T1    // Type of the first operand
         , typename T2    // Type of the second operand
         , typename T3 >  // Type of the third operand
 struct Or<T1,T2,T3,NullType,NullType,NullType>
-{
- public:
-   //**********************************************************************************************
-   enum { value = T1::value || T2::value || T3::value };
-   //**********************************************************************************************
-};
+   : public Bool< ( T1::value || T2::value || T3::value ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -127,12 +114,8 @@ template< typename T1    // Type of the first operand
         , typename T3    // Type of the third operand
         , typename T4 >  // Type of the fourth operand
 struct Or<T1,T2,T3,T4,NullType,NullType>
-{
- public:
-   //**********************************************************************************************
-   enum { value = T1::value || T2::value || T3::value || T4::value };
-   //**********************************************************************************************
-};
+   : public Bool< ( T1::value || T2::value || T3::value || T4::value ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -146,12 +129,8 @@ template< typename T1    // Type of the first operand
         , typename T4    // Type of the fourth operand
         , typename T5 >  // Type of the fifth operand
 struct Or<T1,T2,T3,T4,T5,NullType>
-{
- public:
-   //**********************************************************************************************
-   enum { value = T1::value || T2::value || T3::value || T4::value || T5::value };
-   //**********************************************************************************************
-};
+   : public Bool< ( T1::value || T2::value || T3::value || T4::value || T5::value ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
