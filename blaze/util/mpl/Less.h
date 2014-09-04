@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Less.h
+//  \brief Header file for the Less class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,24 +32,49 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_LESS_H_
+#define _BLAZE_UTIL_MPL_LESS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/EqualTo.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time type comparison.
+// \ingroup mpl
+//
+// The Less class template compares the two given types using the less-than operator ('<'). In
+// case \a T1::value is less than \a T2::value, the nested \a value member is set to 1. Otherwise
+// it is set to 0.
+
+   \code
+   using namespace blaze;
+
+   Less< Int<2> , Int<5>  >::value    // Evaluates to true
+   Less< Long<2>, Int<5>  >::value    // Evaluates to true
+   Less< Int<2> , Long<2> >::value    // Evaluates to false
+   Less< Long<5>, Int<2>  >::value    // Evaluates to false
+   Less< Int<2>, Int<5> >::ValueType  // Results in bool
+   \endcode
+*/
+template< typename T1    // The type of the left-hand side operand
+        , typename T2 >  // The type of the right-hand side operand
+struct Less : public Bool< ( T1::value < T2::value ) >
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
