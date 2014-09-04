@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/Types.h>
 
 
@@ -72,15 +73,8 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct Columns
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   static const size_t value = 0UL;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct Columns : public SizeT<0>
+{};
 //*************************************************************************************************
 
 
@@ -90,13 +84,8 @@ struct Columns
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const T >
-{
- public:
-   //**********************************************************************************************
-   static const size_t value = Columns<T>::value;
-   //**********************************************************************************************
-};
+struct Columns< const T > : public SizeT< Columns<T>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -107,13 +96,8 @@ struct Columns< const T >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< volatile T >
-{
- public:
-   //**********************************************************************************************
-   static const size_t value = Columns<T>::value;
-   //**********************************************************************************************
-};
+struct Columns< volatile T > : public SizeT< Columns<T>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -124,13 +108,8 @@ struct Columns< volatile T >
 // \ingroup math_type_traits
 */
 template< typename T >
-struct Columns< const volatile T >
-{
- public:
-   //**********************************************************************************************
-   static const size_t value = Columns<T>::value;
-   //**********************************************************************************************
-};
+struct Columns< const volatile T > : public SizeT< Columns<T>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
