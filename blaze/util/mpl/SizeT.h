@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/SizeT.h
+//  \brief Header file for the SizeT class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,23 +32,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_SIZET_H_
+#define _BLAZE_UTIL_MPL_SIZET_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/EqualTo.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/Types.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a size_t.
+// \ingroup mpl
+//
+// The SizeT class template represents an integral wrapper for a compile time constant expression
+// of type \a size_t. The value of an SizeT can be accessed via the nested \a value (which is
+// guaranteed to be of type \a size_t), the type can be accessed via the nested type definition
+// \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   SizeT<3>::value      // Evaluates to 3
+   SizeT<5>::ValueType  // Results in size_t
+   \endcode
+*/
+template< size_t N >
+struct SizeT
+{
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   static const size_t value = N;
+   typedef size_t  ValueType;
+   /*! \endcond */
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
