@@ -85,8 +85,8 @@ template<> struct CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_COLUMNS_FAILED<true> { en
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_COLUMNS_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0UL> > \
                      , blaze::Equal< blaze::Columns<T1>, blaze::Columns<T2> > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_COLUMNS_TYPEDEF, __LINE__ )
@@ -130,8 +130,8 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_COLUMNS_FAILED<true> 
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_COLUMNS_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Columns<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Columns<T2>, blaze::SizeT<0UL> > \
                      , blaze::Not< blaze::Equal< blaze::Columns<T1>, blaze::Columns<T2> > > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_COLUMNS_TYPEDEF, __LINE__ )

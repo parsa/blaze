@@ -86,8 +86,8 @@ template<> struct CONSTRAINT_MUST_HAVE_EQUAL_SIZE_FAILED<true> { enum { value = 
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_SIZE_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0UL> > \
                      , blaze::Equal< blaze::Size<T1>, blaze::Size<T2> > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_HAVE_EQUAL_SIZE_TYPEDEF, __LINE__ )
@@ -131,8 +131,8 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_EQUAL_SIZE_FAILED<true> { enum { valu
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_SIZE_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Size<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Size<T2>, blaze::SizeT<0UL> > \
                      , blaze::Not< blaze::Equal< blaze::Size<T1>, blaze::Size<T2> > > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_HAVE_EQUAL_SIZE_TYPEDEF, __LINE__ )

@@ -85,8 +85,8 @@ template<> struct CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_ROWS_FAILED<true> { enum 
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_ROWS_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0UL> > \
                      , blaze::Equal< blaze::Rows<T1>, blaze::Rows<T2> > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_ROWS_TYPEDEF, __LINE__ )
@@ -130,8 +130,8 @@ template<> struct CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_ROWS_FAILED<true> { e
    typedef \
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_ROWS_FAILED< ( \
-            blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0> > \
-                     , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0> > \
+            blaze::Or< blaze::Equal< blaze::Rows<T1>, blaze::SizeT<0UL> > \
+                     , blaze::Equal< blaze::Rows<T2>, blaze::SizeT<0UL> > \
                      , blaze::Not< blaze::Equal< blaze::Rows<T1>, blaze::Rows<T2> > > \
                      >::value ) >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_ROWS_TYPEDEF, __LINE__ )

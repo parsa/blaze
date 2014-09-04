@@ -73,7 +73,7 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct Columns : public SizeT<0>
+struct Columns : public SizeT<0UL>
 {};
 //*************************************************************************************************
 
