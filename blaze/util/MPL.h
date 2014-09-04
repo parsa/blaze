@@ -44,7 +44,6 @@
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/Char.h>
 #include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/EqualTo.h>
 #include <blaze/util/mpl/Greater.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Int.h>
