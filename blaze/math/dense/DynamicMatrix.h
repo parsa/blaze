@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -1959,6 +1960,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2021,6 +2024,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2127,6 +2132,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2189,6 +2196,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2295,6 +2304,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2357,6 +2368,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4173,6 +4186,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4210,6 +4225,9 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
@@ -4234,6 +4252,11 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
@@ -4340,6 +4363,8 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4377,6 +4402,9 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
@@ -4401,6 +4429,11 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
@@ -4508,6 +4541,11 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
 inline void DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    const size_t block( 16UL );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
@@ -4542,6 +4580,9 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
       for( typename MT::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
@@ -4566,6 +4607,11 @@ template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
       for( typename MT::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();

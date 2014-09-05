@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Submatrix.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
@@ -2360,6 +2361,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2424,6 +2427,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2530,6 +2535,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2594,6 +2601,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2700,6 +2709,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -2764,6 +2775,8 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4651,6 +4664,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4715,6 +4730,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,unaligned,true>::assign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4821,6 +4838,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4885,6 +4904,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,unaligned,true>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -4991,6 +5012,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -5055,6 +5078,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,unaligned,true>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -6641,6 +6666,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,false>::assign( const DenseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -6705,6 +6732,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,false>::assign( const SparseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -6811,6 +6840,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,false>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -6875,6 +6906,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,false>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -6981,6 +7014,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,false>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -7045,6 +7080,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,false>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8580,6 +8617,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8644,6 +8683,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,true>::assign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8750,6 +8791,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8814,6 +8857,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,true>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8920,6 +8965,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
 inline void DenseSubmatrix<MT,aligned,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
@@ -8984,6 +9031,8 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void DenseSubmatrix<MT,aligned,true>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 

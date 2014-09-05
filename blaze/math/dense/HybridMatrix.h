@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -2306,6 +2307,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;
@@ -2431,6 +2434,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;
@@ -2556,6 +2561,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;
@@ -4715,6 +4722,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;
@@ -4844,6 +4853,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;
@@ -4973,6 +4984,8 @@ template< typename Type  // Data type of the matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void HybridMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
    typedef typename MT::ConstIterator  RhsConstIterator;

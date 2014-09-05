@@ -44,6 +44,7 @@
 #include <functional>
 #include <stdexcept>
 #include <vector>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
@@ -2266,6 +2267,8 @@ template< typename Type  // Data type of the sparse matrix
 template< typename MT >  // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -4482,6 +4485,8 @@ template< typename Type >  // Data type of the sparse matrix
 template< typename MT >    // Type of the right-hand side sparse matrix
 inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
