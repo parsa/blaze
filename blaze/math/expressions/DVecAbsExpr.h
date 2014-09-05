@@ -57,9 +57,10 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -946,6 +947,24 @@ inline const DVecAbsExpr<VT,TF>& abs( const DVecAbsExpr<VT,TF>& dv )
 
    return dv;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< DVecAbsExpr<VT,TF> >
+   : public Size<VT>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

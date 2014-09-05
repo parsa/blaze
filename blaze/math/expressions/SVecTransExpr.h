@@ -53,6 +53,7 @@
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
@@ -789,6 +790,24 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 
    return SVecTransExpr<VT,!TF>( ~sv );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< SVecTransExpr<VT,TF> >
+   : public Size<VT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

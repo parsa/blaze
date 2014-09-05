@@ -59,6 +59,8 @@
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -872,6 +874,24 @@ inline const typename DisableIf< IsMatMatMultExpr<T1>, TSMatSVecMultExpr<T1,T2> 
 
    return TSMatSVecMultExpr<T1,T2>( ~mat, ~vec );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct Size< TSMatSVecMultExpr<MT,VT> >
+   : public Rows<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

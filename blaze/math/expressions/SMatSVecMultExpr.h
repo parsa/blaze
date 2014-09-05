@@ -59,6 +59,8 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -1084,6 +1086,24 @@ inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Ty
 
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct Size< SMatSVecMultExpr<MT,VT> >
+   : public Rows<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

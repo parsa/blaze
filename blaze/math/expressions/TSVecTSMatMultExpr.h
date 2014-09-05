@@ -53,10 +53,12 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -1002,6 +1004,24 @@ inline const typename DisableIf< IsMatMatMultExpr<T2>, TSVecTSMatMultExpr<T1,T2>
 
    return TSVecTSMatMultExpr<T1,T2>( ~vec, ~mat );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct Size< TSVecTSMatMultExpr<MT,VT> >
+   : public Columns<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

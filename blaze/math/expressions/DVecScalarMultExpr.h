@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/FloatingPoint.h>
@@ -1728,6 +1729,24 @@ inline const typename MultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >::Type
 
    return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct Size< DVecScalarMultExpr<VT,ST,TF> >
+   : public Size<VT>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

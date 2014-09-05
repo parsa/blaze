@@ -55,9 +55,11 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 
@@ -455,6 +457,24 @@ inline const DVecDVecCrossExpr<T1,T2>
 
    return DVecDVecCrossExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct Size< DVecDVecCrossExpr<VT1,VT2> >
+   : public SizeT<3UL>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

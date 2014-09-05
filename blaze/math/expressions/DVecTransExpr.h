@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
@@ -900,6 +901,24 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 
    return DVecTransExpr<VT,!TF>( ~dv );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< DVecTransExpr<VT,TF> >
+   : public Size<VT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

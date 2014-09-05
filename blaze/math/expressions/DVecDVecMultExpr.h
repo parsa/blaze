@@ -56,11 +56,13 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -1025,6 +1027,24 @@ inline const DVecDVecMultExpr<T1,T2,TF>
 
    return DVecDVecMultExpr<T1,T2,TF>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct Size< DVecDVecMultExpr<VT1,VT2,TF> >
+   : public Max< Size<VT1>, Size<VT2> >::Type
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

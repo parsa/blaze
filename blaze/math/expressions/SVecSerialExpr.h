@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -672,6 +673,24 @@ inline const SVecSerialExpr<VT,TF> serial( const SVecSerialExpr<VT,TF>& sv )
 {
    return sv;
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< SVecSerialExpr<VT,TF> >
+   : public Size<VT>
+{};
 /*! \endcond */
 //*************************************************************************************************
 

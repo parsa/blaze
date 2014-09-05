@@ -56,10 +56,12 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -786,6 +788,24 @@ inline const typename DisableIf< IsMatMatMultExpr<T2>, TSVecTDMatMultExpr<T1,T2>
 
    return TSVecTDMatMultExpr<T1,T2>( ~vec, ~mat );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct Size< TSVecTDMatMultExpr<MT,VT> >
+   : public Columns<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

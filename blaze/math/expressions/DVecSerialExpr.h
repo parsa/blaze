@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -677,6 +678,23 @@ inline const DVecSerialExpr<VT,TF> serial( const DVecSerialExpr<VT,TF>& dv )
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< DVecSerialExpr<VT,TF> >
+   : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
 
 
 
