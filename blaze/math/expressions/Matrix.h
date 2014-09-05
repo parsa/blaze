@@ -43,6 +43,7 @@
 #include <stdexcept>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -534,6 +535,75 @@ inline void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the assignment of two matrices with the same storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \return void
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of both matrices
+inline void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).assign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the assignment of two matrices with different storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename DisableIf< IsSymmetric<MT2> >::Type
+   assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).assign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the assignment of a symmetric matrix to a matrix with
+//        different storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename EnableIf< IsSymmetric<MT2> >::Type
+   assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).assign( trans( ~rhs ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Default implementation of the assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -558,8 +628,79 @@ inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   (~lhs).assign( ~rhs );
+   assign_backend( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition assignment of two matrices with the same
+//        storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be added.
+// \return void
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of both matrices
+inline void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).addAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition assignment of two matrices with different
+//        storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be added.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename DisableIf< IsSymmetric<MT2> >::Type
+   addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).addAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition assignment of a symmetric matrix to a matrix
+//        with different storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be added.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename EnableIf< IsSymmetric<MT2> >::Type
+   addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).addAssign( trans( ~rhs ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -588,8 +729,79 @@ inline void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   (~lhs).addAssign( ~rhs );
+   addAssign_backend( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction assignment of two matrices with the same
+//        storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \return void
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO >     // Storage order of both matrices
+inline void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).subAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction assignment of two matrices with different
+//        storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename DisableIf< IsSymmetric<MT2> >::Type
+   subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).subAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction assignment of a symmetric matrix to a matrix
+//        with different storage order.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \return void
+*/
+template< typename MT1    // Type of the left-hand side matrix
+        , bool SO         // Storage order of the left-hand side matrix
+        , typename MT2 >  // Type of the right-hand side matrix
+inline typename EnableIf< IsSymmetric<MT2> >::Type
+   subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   (~lhs).subAssign( trans( ~rhs ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -618,7 +830,7 @@ inline void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   (~lhs).subAssign( ~rhs );
+   subAssign_backend( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
