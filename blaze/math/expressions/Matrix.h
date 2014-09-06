@@ -44,6 +44,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -87,7 +88,7 @@ struct Matrix
    //
    // \return Reference of the actual type of the matrix.
    */
-   inline MatrixType& operator~() {
+   BLAZE_ALWAYS_INLINE MatrixType& operator~() {
       return *static_cast<MatrixType*>( this );
    }
    //**********************************************************************************************
@@ -97,7 +98,7 @@ struct Matrix
    //
    // \return Constant reference of the actual type of the matrix.
    */
-   inline const MatrixType& operator~() const {
+   BLAZE_ALWAYS_INLINE const MatrixType& operator~() const {
       return *static_cast<const MatrixType*>( this );
    }
    //**********************************************************************************************
@@ -117,58 +118,58 @@ struct Matrix
 /*!\name Matrix global functions */
 //@{
 template< typename MT, bool SO >
-inline typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline size_t rows( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t columns( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t capacity( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t capacity( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline size_t nonZeros( const Matrix<MT,SO>& matrix );
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-inline void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
+BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+BLAZE_ALWAYS_INLINE void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+BLAZE_ALWAYS_INLINE void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
+BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 //@}
 //*************************************************************************************************
 
@@ -187,7 +188,7 @@ inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).begin(i);
 }
@@ -208,7 +209,7 @@ inline typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).begin(i);
 }
@@ -229,7 +230,7 @@ inline typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).cbegin(i);
 }
@@ -250,7 +251,7 @@ inline typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).end(i);
 }
@@ -271,7 +272,7 @@ inline typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).end(i);
 }
@@ -292,7 +293,7 @@ inline typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).cend(i);
 }
@@ -308,7 +309,7 @@ inline typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t rows( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t rows( const Matrix<MT,SO>& matrix )
 {
    return (~matrix).rows();
 }
@@ -324,7 +325,7 @@ inline size_t rows( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t columns( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t columns( const Matrix<MT,SO>& matrix )
 {
    return (~matrix).columns();
 }
@@ -340,7 +341,7 @@ inline size_t columns( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t capacity( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix )
 {
    return (~matrix).capacity();
 }
@@ -362,7 +363,7 @@ inline size_t capacity( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t capacity( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).capacity( i );
 }
@@ -378,7 +379,7 @@ inline size_t capacity( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t nonZeros( const Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix )
 {
    return (~matrix).nonZeros();
 }
@@ -400,7 +401,7 @@ inline size_t nonZeros( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 {
    return (~matrix).nonZeros( i );
 }
@@ -425,7 +426,7 @@ inline size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename DisableIf< IsResizable<MT> >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -451,7 +452,7 @@ inline typename DisableIf< IsResizable<MT> >::Type
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    (~matrix).resize( m, n, preserve );
@@ -475,7 +476,7 @@ inline typename EnableIf< And< IsResizable<MT>, Not< IsSquare<MT> > > >::Type
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    if( m != n )
@@ -527,7 +528,7 @@ inline typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
    resize_backend( matrix, m, n, preserve );
 }
@@ -546,7 +547,7 @@ inline void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 template< typename MT1  // Type of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of both matrices
-inline void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+BLAZE_ALWAYS_INLINE void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -568,7 +569,7 @@ inline void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
    assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -592,7 +593,7 @@ inline typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -621,7 +622,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+BLAZE_ALWAYS_INLINE void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -646,7 +647,7 @@ inline void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 template< typename MT1  // Type of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of both matrices
-inline void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+BLAZE_ALWAYS_INLINE void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -669,7 +670,7 @@ inline void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -693,7 +694,7 @@ inline typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -722,7 +723,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+BLAZE_ALWAYS_INLINE void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -747,7 +748,7 @@ inline void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 template< typename MT1  // Type of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of both matrices
-inline void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
+BLAZE_ALWAYS_INLINE void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -770,7 +771,7 @@ inline void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,SO>& rhs )
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename DisableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
    subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -794,7 +795,7 @@ inline typename DisableIf< IsSymmetric<MT2> >::Type
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -823,7 +824,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -853,7 +854,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -901,7 +902,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
+BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
 {
    return ( IsSame<MT1,MT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
