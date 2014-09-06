@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
@@ -97,7 +98,7 @@ struct Stream<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void stream( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void stream( T* address, const Type& value )
    {
       BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -134,7 +135,7 @@ struct Stream<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void stream( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void stream( T* address, const Type& value )
    {
       BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -173,7 +174,7 @@ struct Stream<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void stream( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void stream( T* address, const Type& value )
    {
       BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -215,7 +216,7 @@ struct Stream<T,8UL>
 // \return void
 */
 template< typename T >  // Type of the integral value
-inline typename EnableIf< IsIntegral<T> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T> >::Type
    stream( T* address, const typename Stream<T,sizeof(T)>::Type& value )
 {
    Stream<T,sizeof(T)>::stream( address, value );
@@ -231,7 +232,7 @@ inline typename EnableIf< IsIntegral<T> >::Type
 // \param value The 'float' vector to be streamed.
 // \return void
 */
-inline void stream( float* address, const sse_float_t& value )
+BLAZE_ALWAYS_INLINE void stream( float* address, const sse_float_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -256,7 +257,7 @@ inline void stream( float* address, const sse_float_t& value )
 // \param value The 'double' vector to be streamed.
 // \return void
 */
-inline void stream( double* address, const sse_double_t& value )
+BLAZE_ALWAYS_INLINE void stream( double* address, const sse_double_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -281,7 +282,7 @@ inline void stream( double* address, const sse_double_t& value )
 // \param value The 'complex<float>' vector to be streamed.
 // \return void
 */
-inline void stream( complex<float>* address, const sse_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void stream( complex<float>* address, const sse_cfloat_t& value )
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -307,7 +308,7 @@ inline void stream( complex<float>* address, const sse_cfloat_t& value )
 // \param value The 'complex<double>' vector to be streamed.
 // \return void
 */
-inline void stream( complex<double>* address, const sse_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void stream( complex<double>* address, const sse_cdouble_t& value )
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );

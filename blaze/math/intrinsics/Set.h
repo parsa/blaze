@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
@@ -95,7 +96,7 @@ struct Set<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type set( T value )
+   static BLAZE_ALWAYS_INLINE Type set( T value )
    {
 #if BLAZE_AVX2_MODE
       return _mm256_set1_epi16( value );
@@ -130,7 +131,7 @@ struct Set<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type set( T value )
+   static BLAZE_ALWAYS_INLINE Type set( T value )
    {
 #if BLAZE_MIC_MODE
       return _mm512_set1_epi32( value );
@@ -167,7 +168,7 @@ struct Set<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type set( T value )
+   static BLAZE_ALWAYS_INLINE Type set( T value )
    {
 #if BLAZE_MIC_MODE
       return _mm512_set1_epi64( value );
@@ -206,7 +207,7 @@ struct Set<T,8UL>
 // \return The set vector of integral values.
 */
 template< typename T >  // Type of the integral value
-inline typename EnableIf< IsIntegral<T>, Set<T,sizeof(T)> >::Type::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T>, Set<T,sizeof(T)> >::Type::Type
    set( T value )
 {
    return Set<T,sizeof(T)>::set( value );
@@ -221,7 +222,7 @@ inline typename EnableIf< IsIntegral<T>, Set<T,sizeof(T)> >::Type::Type
 // \param value The given 'float' value.
 // \return The set vector of 'float' values.
 */
-inline sse_float_t set( float value )
+BLAZE_ALWAYS_INLINE sse_float_t set( float value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_ps( value );
@@ -243,7 +244,7 @@ inline sse_float_t set( float value )
 // \param value The given 'double' value.
 // \return The set vector of 'double' values.
 */
-inline sse_double_t set( double value )
+BLAZE_ALWAYS_INLINE sse_double_t set( double value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_pd( value );
@@ -265,7 +266,7 @@ inline sse_double_t set( double value )
 // \param value The given 'complex<float>' value.
 // \return The set vector of 'complex<float>' values.
 */
-inline sse_cfloat_t set( const complex<float>& value )
+BLAZE_ALWAYS_INLINE sse_cfloat_t set( const complex<float>& value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
@@ -292,7 +293,7 @@ inline sse_cfloat_t set( const complex<float>& value )
 // \param value The given 'complex<double>' value.
 // \return The set vector of 'complex<double>' values.
 */
-inline sse_cdouble_t set( const complex<double>& value )
+BLAZE_ALWAYS_INLINE sse_cdouble_t set( const complex<double>& value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),

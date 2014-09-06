@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
 
@@ -59,7 +60,7 @@ namespace blaze {
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline int16_t sum( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE int16_t sum( const sse_int16_t& a )
 {
 #if BLAZE_AVX2_MODE
    const sse_int16_t b( _mm256_hadd_epi16( a.value, a.value ) );
@@ -88,7 +89,7 @@ inline int16_t sum( const sse_int16_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline int32_t sum( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE int32_t sum( const sse_int32_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi32( a.value );
@@ -117,7 +118,7 @@ inline int32_t sum( const sse_int32_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline int64_t sum( const sse_int64_t& a )
+BLAZE_ALWAYS_INLINE int64_t sum( const sse_int64_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_epi64( a.value );
@@ -139,7 +140,7 @@ inline int64_t sum( const sse_int64_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline float sum( const sse_float_t& a )
+BLAZE_ALWAYS_INLINE float sum( const sse_float_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_ps( a.value );
@@ -169,7 +170,7 @@ inline float sum( const sse_float_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline double sum( const sse_double_t& a )
+BLAZE_ALWAYS_INLINE double sum( const sse_double_t& a )
 {
 #if BLAZE_MIC_MODE
    return _mm512_reduce_add_pd( a.value );
@@ -197,7 +198,7 @@ inline double sum( const sse_double_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline complex<float> sum( const sse_cfloat_t& a )
+BLAZE_ALWAYS_INLINE complex<float> sum( const sse_cfloat_t& a )
 {
 #if BLAZE_MIC_MODE
    return complex<float>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
@@ -219,7 +220,7 @@ inline complex<float> sum( const sse_cfloat_t& a )
 // \param a The vector to be sumed up.
 // \return The sum of all vector elements.
 */
-inline complex<double> sum( const sse_cdouble_t& a )
+BLAZE_ALWAYS_INLINE complex<double> sum( const sse_cdouble_t& a )
 {
 #if BLAZE_MIC_MODE
    return complex<double>( a[0] + a[1] + a[2] + a[3] );

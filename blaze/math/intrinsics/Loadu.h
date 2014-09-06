@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
@@ -96,7 +97,7 @@ struct Loadu<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type loadu( const T* address )
+   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
    {
 #if BLAZE_AVX2_MODE
       return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
@@ -131,7 +132,7 @@ struct Loadu<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type loadu( const T* address )
+   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
    {
 #if BLAZE_MIC_MODE
       __m512i v1 = _mm512_setzero_epi32();
@@ -171,7 +172,7 @@ struct Loadu<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline Type loadu( const T* address )
+   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
    {
 #if BLAZE_MIC_MODE
       __m512i v1 = _mm512_setzero_epi32();
@@ -216,7 +217,7 @@ struct Loadu<T,8UL>
 // the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-inline typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
    loadu( const T* address )
 {
    return Loadu<T,sizeof(T)>::loadu( address );
@@ -234,7 +235,7 @@ inline typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
 // This function loads a vector of 'float' values. In contrast to the according load function,
 // the given address is not required to be properly aligned.
 */
-inline sse_float_t loadu( const float* address )
+BLAZE_ALWAYS_INLINE sse_float_t loadu( const float* address )
 {
 #if BLAZE_MIC_MODE
    __m512 v1 = _mm512_setzero_ps();
@@ -262,7 +263,7 @@ inline sse_float_t loadu( const float* address )
 // This function loads a vector of 'double' values. In contrast to the according load function,
 // the given address is not required to be properly aligned.
 */
-inline sse_double_t loadu( const double* address )
+BLAZE_ALWAYS_INLINE sse_double_t loadu( const double* address )
 {
 #if BLAZE_MIC_MODE
    __m512d v1 = _mm512_setzero_pd();
@@ -290,7 +291,7 @@ inline sse_double_t loadu( const double* address )
 // This function loads a vector of 'complex<float>' values. In contrast to the according load
 // function, the given address is not required to be properly aligned.
 */
-inline sse_cfloat_t loadu( const complex<float>* address )
+BLAZE_ALWAYS_INLINE sse_cfloat_t loadu( const complex<float>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -320,7 +321,7 @@ inline sse_cfloat_t loadu( const complex<float>* address )
 // This function loads a vector of 'complex<double>' values. In contrast to the according load
 // function, the given address is not required to be properly aligned.
 */
-inline sse_cdouble_t loadu( const complex<double>* address )
+BLAZE_ALWAYS_INLINE sse_cdouble_t loadu( const complex<double>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

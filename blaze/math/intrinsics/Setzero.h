@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
 
@@ -59,7 +60,7 @@ namespace blaze {
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_int8_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_int8_t& value )
 {
 #if BLAZE_AVX2_MODE
    value.value = _mm256_setzero_si256();
@@ -79,7 +80,7 @@ inline void setzero( sse_int8_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_int16_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_int16_t& value )
 {
 #if BLAZE_AVX2_MODE
    value.value = _mm256_setzero_si256();
@@ -99,7 +100,7 @@ inline void setzero( sse_int16_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_int32_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_int32_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
@@ -121,7 +122,7 @@ inline void setzero( sse_int32_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_int64_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_int64_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_epi32();
@@ -143,7 +144,7 @@ inline void setzero( sse_int64_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_float_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_float_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_ps();
@@ -165,7 +166,7 @@ inline void setzero( sse_float_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_double_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_double_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_pd();
@@ -187,7 +188,7 @@ inline void setzero( sse_double_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_cfloat_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_ps();
@@ -209,7 +210,7 @@ inline void setzero( sse_cfloat_t& value )
 // \param value The value to be set to zero.
 // \return void
 */
-inline void setzero( sse_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void setzero( sse_cdouble_t& value )
 {
 #if BLAZE_MIC_MODE
    value.value = _mm512_setzero_pd();

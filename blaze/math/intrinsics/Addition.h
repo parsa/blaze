@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
 
@@ -62,12 +63,12 @@ namespace blaze {
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
+BLAZE_ALWAYS_INLINE sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
 {
    return _mm256_add_epi8( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
+BLAZE_ALWAYS_INLINE sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
 {
    return _mm_add_epi8( a.value, b.value );
 }
@@ -85,12 +86,12 @@ inline sse_int8_t operator+( const sse_int8_t& a, const sse_int8_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_AVX2_MODE
-inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
+BLAZE_ALWAYS_INLINE sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
 {
    return _mm256_add_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
+BLAZE_ALWAYS_INLINE sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
 {
    return _mm_add_epi16( a.value, b.value );
 }
@@ -108,17 +109,17 @@ inline sse_int16_t operator+( const sse_int16_t& a, const sse_int16_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm512_add_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm256_add_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm_add_epi32( a.value, b.value );
 }
@@ -136,17 +137,17 @@ inline sse_int32_t operator+( const sse_int32_t& a, const sse_int32_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
+BLAZE_ALWAYS_INLINE sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
 {
    return _mm512_add_epi64( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
+BLAZE_ALWAYS_INLINE sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
 {
    return _mm256_add_epi64( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
+BLAZE_ALWAYS_INLINE sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
 {
    return _mm_add_epi64( a.value, b.value );
 }
@@ -164,17 +165,17 @@ inline sse_int64_t operator+( const sse_int64_t& a, const sse_int64_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm512_add_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm256_add_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-inline sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
 {
    return _mm_add_ps( a.value, b.value );
 }
@@ -192,17 +193,17 @@ inline sse_float_t operator+( const sse_float_t& a, const sse_float_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm512_add_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm256_add_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm_add_pd( a.value, b.value );
 }
@@ -220,17 +221,17 @@ inline sse_double_t operator+( const sse_double_t& a, const sse_double_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
+BLAZE_ALWAYS_INLINE sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
 {
    return _mm512_add_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
+BLAZE_ALWAYS_INLINE sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
 {
    return _mm256_add_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
+BLAZE_ALWAYS_INLINE sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
 {
    return _mm_add_ps( a.value, b.value );
 }
@@ -248,17 +249,17 @@ inline sse_cfloat_t operator+( const sse_cfloat_t& a, const sse_cfloat_t& b )
 // \return The result of the addition.
 */
 #if BLAZE_MIC_MODE
-inline sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
+BLAZE_ALWAYS_INLINE sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
 {
    return _mm512_add_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-inline sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
+BLAZE_ALWAYS_INLINE sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
 {
    return _mm256_add_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-inline sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
+BLAZE_ALWAYS_INLINE sse_cdouble_t operator+( const sse_cdouble_t& a, const sse_cdouble_t& b )
 {
    return _mm_add_pd( a.value, b.value );
 }

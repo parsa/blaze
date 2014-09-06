@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
 
@@ -61,12 +62,12 @@ namespace blaze {
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-inline sse_int8_t abs( const sse_int8_t& a )
+BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
 {
    return _mm256_abs_epi8( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-inline sse_int8_t abs( const sse_int8_t& a )
+BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
 {
    return _mm_abs_epi8( a.value );
 }
@@ -83,12 +84,12 @@ inline sse_int8_t abs( const sse_int8_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-inline sse_int16_t abs( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
 {
    return _mm256_abs_epi16( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-inline sse_int16_t abs( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
 {
    return _mm_abs_epi16( a.value );
 }
@@ -105,12 +106,12 @@ inline sse_int16_t abs( const sse_int16_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-inline sse_int32_t abs( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE sse_int32_t abs( const sse_int32_t& a )
 {
    return _mm256_abs_epi32( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-inline sse_int32_t abs( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE sse_int32_t abs( const sse_int32_t& a )
 {
    return _mm_abs_epi32( a.value );
 }

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/intrinsics/BasicTypes.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
@@ -96,7 +97,7 @@ struct Storeu<T,2UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void storeu( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
    {
 #if BLAZE_AVX2_MODE
       _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
@@ -131,7 +132,7 @@ struct Storeu<T,4UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void storeu( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
    {
 #if BLAZE_MIC_MODE
       _mm512_packstorelo_epi32( address, value.value );
@@ -169,7 +170,7 @@ struct Storeu<T,8UL>
    //**********************************************************************************************
 
    //**Set function********************************************************************************
-   static inline void storeu( T* address, const Type& value )
+   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
    {
 #if BLAZE_MIC_MODE
       _mm512_packstorelo_epi64( address, value.value );
@@ -213,7 +214,7 @@ struct Storeu<T,8UL>
 // the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-inline typename EnableIf< IsIntegral<T> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T> >::Type
    storeu( T* address, const typename Storeu<T,sizeof(T)>::Type& value )
 {
    Storeu<T,sizeof(T)>::storeu( address, value );
@@ -232,7 +233,7 @@ inline typename EnableIf< IsIntegral<T> >::Type
 // This function stores a vector of 'float' values. In contrast to the according store function,
 // the given address is not required to be properly aligned.
 */
-inline void storeu( float* address, const sse_float_t& value )
+BLAZE_ALWAYS_INLINE void storeu( float* address, const sse_float_t& value )
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_ps( address     , value.value );
@@ -259,7 +260,7 @@ inline void storeu( float* address, const sse_float_t& value )
 // This function stores a vector of 'double' values. In contrast to the according store function,
 // the given address is not required to be properly aligned.
 */
-inline void storeu( double* address, const sse_double_t& value )
+BLAZE_ALWAYS_INLINE void storeu( double* address, const sse_double_t& value )
 {
 #if BLAZE_MIC_MODE
    _mm512_packstorelo_pd( address    , value.value );
@@ -286,7 +287,7 @@ inline void storeu( double* address, const sse_double_t& value )
 // This function stores a vector of 'complex<float>' values. In contrast to the according store
 // function, the given address is not required to be properly aligned.
 */
-inline void storeu( complex<float>* address, const sse_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void storeu( complex<float>* address, const sse_cfloat_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -315,7 +316,7 @@ inline void storeu( complex<float>* address, const sse_cfloat_t& value )
 // This function stores a vector of 'complex<double>' values. In contrast to the according store
 // function, the given address is not required to be properly aligned.
 */
-inline void storeu( complex<double>* address, const sse_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void storeu( complex<double>* address, const sse_cdouble_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
