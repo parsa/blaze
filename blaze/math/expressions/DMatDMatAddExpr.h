@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -908,6 +909,7 @@ class DMatDMatAddExpr : public DenseMatrix< DMatDMatAddExpr<MT1,MT2,SO>, SO >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT1, MT2 );
+   BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATADDEXPR( MT1, MT2 );
    /*! \endcond */
    //**********************************************************************************************
 };

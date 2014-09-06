@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -692,6 +693,7 @@ class TSMatTSMatAddExpr : public SparseMatrix< TSMatTSMatAddExpr<MT1,MT2>, true 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATADDEXPR( MT1, MT2 );
    /*! \endcond */
    //**********************************************************************************************
 };
