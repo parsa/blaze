@@ -863,9 +863,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
       B = trans( trans( A ) );
       \endcode
    */
-   template< typename MT2  // Type of the dense matrix
-           , bool SO2 >    // Storage order of the dense matrix
-   friend inline Operand trans( const DMatTransExpr<MT2,SO2>& dm )
+   friend inline Operand trans( const DMatTransExpr<MT,SO>& dm )
    {
       BLAZE_FUNCTION_TRACE;
 

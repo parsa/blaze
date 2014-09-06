@@ -741,9 +741,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
       B = trans( trans( A ) );
       \endcode
    */
-   template< typename MT2  // Type of the sparse matrix
-           , bool SO2 >    // Storage order of the sparse matrix
-   friend inline Operand trans( const SMatTransExpr<MT2,SO2>& sm )
+   friend inline Operand trans( const SMatTransExpr<MT,SO>& sm )
    {
       BLAZE_FUNCTION_TRACE;
 
