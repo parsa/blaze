@@ -564,9 +564,6 @@ template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
-bool isSquare( const DenseMatrix<MT,SO>& dm );
-
-template< typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -629,25 +626,6 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
    }
 
    return false;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given dense matrix is a square matrix.
-// \ingroup dense_matrix
-//
-// \param dm The dense matrix to be checked.
-// \return \a true if the matrix is a square matrix, \a false if not.
-//
-// This function checks if the number of rows and columns of the given dense matrix are equal.
-// If they are, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-bool isSquare( const DenseMatrix<MT,SO>& dm )
-{
-   return ( IsSquare<MT>::value || (~dm).rows() == (~dm).columns() );
 }
 //*************************************************************************************************
 

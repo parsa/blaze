@@ -256,9 +256,6 @@ template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-bool isSquare( const SparseMatrix<MT,SO>& sm );
-
-template< typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -322,25 +319,6 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    }
 
    return false;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given sparse matrix is a square matrix.
-// \ingroup sparse_matrix
-//
-// \param sm The sparse matrix to be checked.
-// \return \a true if the matrix is a square matrix, \a false if not.
-//
-// This function checks if the number of rows and columns of the given dense matrix are equal.
-// If they are, the function returns \a true, otherwise it returns \a false.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-bool isSquare( const SparseMatrix<MT,SO>& sm )
-{
-   return ( IsSquare<MT>::value || (~sm).rows() == (~sm).columns() );
 }
 //*************************************************************************************************
 

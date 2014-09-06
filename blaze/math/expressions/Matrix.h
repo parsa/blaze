@@ -168,6 +168,9 @@ BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>&
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
+template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix );
+
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b );
 //@}
@@ -598,6 +601,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+
    (~lhs).assign( trans( ~rhs ) );
 }
 /*! \endcond */
@@ -698,6 +703,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
 
    (~lhs).addAssign( trans( ~rhs ) );
 }
@@ -800,6 +807,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
+
    (~lhs).subAssign( trans( ~rhs ) );
 }
 /*! \endcond */
@@ -861,6 +870,25 @@ BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
    (~lhs).multAssign( ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is a square matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be checked.
+// \return \a true if the matrix is a square matrix, \a false if not.
+//
+// This function checks if the number of rows and columns of the given matrix are equal. If
+// they are, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix )
+{
+   return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
 }
 //*************************************************************************************************
 
