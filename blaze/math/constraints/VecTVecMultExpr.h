@@ -40,8 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/util/constraints/ConstraintTest.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Suffix.h>
 
 
@@ -120,6 +124,90 @@ template<> struct CONSTRAINT_MUST_NOT_BE_VECTVECMULTEXPR_TYPE_FAILED<true> { enu
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_NOT_BE_VECTVECMULTEXPR_TYPE_FAILED< !blaze::IsVecTVecMultExpr<T>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_VECTVECMULTEXPR_TYPE_TYPEDEF, __LINE__ )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_FORM_VALID_VECTVECMULTEXPR CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compile time constraint.
+// \ingroup math_constraints
+//
+// Helper template class for the compile time constraint enforcement. Based on the compile time
+// constant expression used for the template instantiation, either the undefined basic template
+// or the specialization is selected. If the undefined basic template is selected, a compilation
+// error is created.
+*/
+template< bool > struct CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR_FAILED;
+template<> struct CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR_FAILED<true> { enum { value = 1 }; };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data types \a T1 and \a T2 do not form a valid vector/vector multiplication,
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR(T1,T2) \
+   typedef \
+      blaze::CONSTRAINT_TEST< \
+         blaze::CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR_FAILED< ( \
+            blaze::And< blaze::IsColumnVector<T1> \
+                      , blaze::IsRowVector<T2> \
+                      >::value ) >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR_TYPEDEF, __LINE__ )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_FORM_VALID_VECTVECMULTEXPR CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compile time constraint.
+// \ingroup math_constraints
+//
+// Helper template class for the compile time constraint enforcement. Based on the compile time
+// constant expression used for the template instantiation, either the undefined basic template
+// or the specialization is selected. If the undefined basic template is selected, a compilation
+// error is created.
+*/
+template< bool > struct CONSTRAINT_MUST_NOT_FORM_VALID_VECTVECMULTEXPR_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_FORM_VALID_VECTVECMULTEXPR_FAILED<true> { enum { value = 1 }; };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data types \a T1 and \a T2 do form a valid vector/vector multiplication,
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_FORM_VALID_VECTVECMULTEXPR(T1,T2) \
+   typedef \
+      blaze::CONSTRAINT_TEST< \
+         blaze::CONSTRAINT_MUST_NOT_FORM_VALID_VECTVECMULTEXPR_FAILED< ( \
+            blaze::Not< blaze::And< blaze::IsColumnVector<T1> \
+                                  , blaze::IsRowVector<T2> > \
+                      >::value ) >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_FORM_VALID_VECTVECMULTEXPR_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
