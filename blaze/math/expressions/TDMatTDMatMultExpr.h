@@ -61,6 +61,7 @@
 #include <blaze/math/traits/TDMatSVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecTDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecTDMatMultExprTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -74,6 +75,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -4358,6 +4360,42 @@ inline const TDMatTDMatMultExpr<T1,T2>
 
    return TDMatTDMatMultExpr<T1,T2>( ~lhs, ~rhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct Rows< TDMatTDMatMultExpr<MT1,MT2> >
+   : public Rows<MT1>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct Columns< TDMatTDMatMultExpr<MT1,MT2> >
+   : public Columns<MT2>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
