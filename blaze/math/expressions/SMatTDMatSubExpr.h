@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -548,6 +549,7 @@ class SMatTDMatSubExpr : public DenseMatrix< SMatTDMatSubExpr<MT1,MT2>, false >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR( MT1, MT2 );
    /*! \endcond */
    //**********************************************************************************************
 };
