@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/VecVecSubExpr.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
@@ -568,6 +569,7 @@ class DVecSVecSubExpr : public DenseVector< DVecSVecSubExpr<VT1,VT2,TF>, TF >
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECSUBEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
 };
