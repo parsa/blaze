@@ -1528,10 +1528,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::
       if( !isSymmetric( tmp ) )
          throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-      if( IsResizable<MT>::value )
-         swap( matrix_, tmp );
-      else
-         matrix_ = tmp;
+      move( matrix_, tmp );
    }
 
    return *this;
@@ -1707,10 +1704,7 @@ inline SymmetricMatrix<MT,true,true>&
    if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to static matrix" );
 
-   if( IsResizable<MT>::value )
-      swap( matrix_, tmp );
-   else
-      matrix_ = tmp;
+   move( matrix_, tmp );
 
    return *this;
 }
