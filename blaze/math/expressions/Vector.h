@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -84,7 +85,7 @@ struct Vector
    //
    // \return Reference of the actual type of the vector.
    */
-   inline VectorType& operator~() {
+   BLAZE_ALWAYS_INLINE VectorType& operator~() {
       return *static_cast<VectorType*>( this );
    }
    //**********************************************************************************************
@@ -94,7 +95,7 @@ struct Vector
    //
    // \return Const reference of the actual type of the vector.
    */
-   inline const VectorType& operator~() const {
+   BLAZE_ALWAYS_INLINE const VectorType& operator~() const {
       return *static_cast<const VectorType*>( this );
    }
    //**********************************************************************************************
@@ -114,49 +115,49 @@ struct Vector
 /*!\name Vector global functions */
 //@{
 template< typename VT, bool TF >
-inline typename VT::Iterator begin( Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator begin( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::Iterator end( Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator end( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t size( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t capacity( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline size_t nonZeros( const Vector<VT,TF>& vector );
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
+BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
+BLAZE_ALWAYS_INLINE void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
+BLAZE_ALWAYS_INLINE void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
+BLAZE_ALWAYS_INLINE void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
+BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
+BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 //@}
 //*************************************************************************************************
 
@@ -168,7 +169,7 @@ inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::Iterator begin( Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector )
 {
    return (~vector).begin();
 }
@@ -182,7 +183,7 @@ inline typename VT::Iterator begin( Vector<VT,TF>& vector )
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator begin( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vector )
 {
    return (~vector).begin();
 }
@@ -196,7 +197,7 @@ inline typename VT::ConstIterator begin( const Vector<VT,TF>& vector )
 // \return Iterator to the first element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector )
 {
    return (~vector).begin();
 }
@@ -210,7 +211,7 @@ inline typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector )
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::Iterator end( Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector )
 {
    return (~vector).end();
 }
@@ -224,7 +225,7 @@ inline typename VT::Iterator end( Vector<VT,TF>& vector )
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator end( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector )
 {
    return (~vector).end();
 }
@@ -238,7 +239,7 @@ inline typename VT::ConstIterator end( const Vector<VT,TF>& vector )
 // \return Iterator just past the last element of the given vector.
 */
 template< typename VT, bool TF >
-inline typename VT::ConstIterator cend( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector )
 {
    return (~vector).end();
 }
@@ -254,7 +255,7 @@ inline typename VT::ConstIterator cend( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t size( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector )
 {
    return (~vector).size();
 }
@@ -270,7 +271,7 @@ inline size_t size( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t capacity( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector )
 {
    return (~vector).capacity();
 }
@@ -289,7 +290,7 @@ inline size_t capacity( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline size_t nonZeros( const Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector )
 {
    return (~vector).nonZeros();
 }
@@ -312,7 +313,7 @@ inline size_t nonZeros( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline typename DisableIf< IsResizable<VT> >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<VT> >::Type
    resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -337,7 +338,7 @@ inline typename DisableIf< IsResizable<VT> >::Type
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline typename EnableIf< IsResizable<VT> >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsResizable<VT> >::Type
    resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    (~vector).resize( n, preserve );
@@ -376,7 +377,7 @@ inline typename EnableIf< IsResizable<VT> >::Type
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-inline void resize( Vector<VT,TF>& vector, size_t n, bool preserve )
+BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    resize_backend( vector, n, preserve );
 }
@@ -401,7 +402,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+BLAZE_ALWAYS_INLINE void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -429,7 +430,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+BLAZE_ALWAYS_INLINE void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -457,7 +458,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+BLAZE_ALWAYS_INLINE void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -485,7 +486,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -532,7 +533,7 @@ template< typename VT1  // Type of the left-hand side vector
         , bool TF1      // Transpose flag of the left-hand side vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b )
+BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b )
 {
    return ( IsSame<VT1,VT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
