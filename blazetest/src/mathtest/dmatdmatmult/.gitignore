@@ -121,6 +121,10 @@ MHbMDa
 MHbMDb
 MHbMHa
 MHbMHb
+S3x3aS3x3a
+S3x3aS3x3b
+S3x3bS3x3a
+S3x3bS3x3b
 SDaMDa
 SDaMDb
 SDaSDa
@@ -129,4 +133,8 @@ SDbMDa
 SDbMDb
 SDbSDa
 SDbSDb
+SHaSHa
+SHaSHb
+SHbSHa
+SHbSHb
 
