@@ -145,26 +145,36 @@ EXE=$PATH_DMATDMATADD/MDbMHb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then
 EXE=$PATH_DMATDMATADD/MDbSDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATDMATADD/MDbSDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-EXE=$PATH_DMATDMATADD/MHaM6x6a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHaM6x6b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHaMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHaMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHaMHa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHaMHb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbM6x6a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbM6x6b;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbMHa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/MHbMHb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaM6x6a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaM6x6b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaMDa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaMDb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaMHa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHaMHb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbM6x6a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbM6x6b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbMDa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbMDb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbMHa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/MHbMHb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
-EXE=$PATH_DMATDMATADD/SDaMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDaMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDaSDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDaSDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDbMDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDbMDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDbSDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DMATDMATADD/SDbSDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/S3x3aS3x3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/S3x3aS3x3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/S3x3bS3x3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/S3x3bS3x3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_DMATDMATADD/SDaMDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDaMDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDaSDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDaSDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDbMDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDbMDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDbSDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SDbSDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_DMATDMATADD/SHaSHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SHaSHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SHbSHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATDMATADD/SHbSHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
 EXE=$PATH_DMATDMATADD/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

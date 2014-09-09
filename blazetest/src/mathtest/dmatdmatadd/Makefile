@@ -290,6 +290,15 @@ MHbMHa: MHbMHa.o
 MHbMHb: MHbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+S3x3aS3x3a: S3x3aS3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+S3x3aS3x3b: S3x3aS3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+S3x3bS3x3a: S3x3bS3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+S3x3bS3x3b: S3x3bS3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 SDaMDa: SDaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDaMDb: SDaMDb.o
@@ -305,6 +314,15 @@ SDbMDb: SDbMDb.o
 SDbSDa: SDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDbSDb: SDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SHaSHa: SHaSHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SHaSHb: SHaSHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SHbSHa: SHbSHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SHbSHb: SHbSHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
