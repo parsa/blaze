@@ -41,6 +41,10 @@ MHaMCa
 MHaMCb
 MHbMCa
 MHbMCb
+S3x3aSCa
+S3x3aSCb
+S3x3bSCa
+S3x3bSCb
 SDaMCa
 SDaMCb
 SDaSCa
@@ -49,4 +53,8 @@ SDbMCa
 SDbMCb
 SDbSCa
 SDbSCb
+SHaSCa
+SHaSCb
+SHbSCa
+SHbSCb
 
