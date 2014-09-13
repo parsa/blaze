@@ -161,6 +161,16 @@ class SymmetricMatrix<MT,true,true>
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
+      /*!\brief Default constructor of the RowIterator class.
+      */
+      inline RowIterator()
+         : matrix_( NULL )  // The dense matrix containing the row.
+         , row_   ( 0UL  )  // The current row index.
+         , column_( 0UL  )  // The current column index.
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
       /*!\brief Constructor for the RowIterator class.
       //
       // \param matrix The adapted matrix.
@@ -565,6 +575,16 @@ class SymmetricMatrix<MT,true,true>
       typedef PointerType       pointer;            //!< Pointer return type.
       typedef ReferenceType     reference;          //!< Reference return type.
       typedef DifferenceType    difference_type;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Default constructor of the ColumnIterator class.
+      */
+      inline ColumnIterator()
+         : matrix_( NULL )  // The dense matrix containing the row.
+         , row_   ( 0UL  )  // The current row index.
+         , column_( 0UL  )  // The current column index.
+      {}
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
