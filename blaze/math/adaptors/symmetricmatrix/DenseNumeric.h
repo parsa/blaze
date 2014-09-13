@@ -1486,9 +1486,9 @@ inline SymmetricMatrix<MT,true,true>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Assignment operator for plain matrices.
+/*!\brief Assignment operator for general matrices.
 //
-// \param rhs The plain matrix to be copied.
+// \param rhs The general matrix to be copied.
 // \return Reference to the assigned matrix.
 // \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
@@ -1559,9 +1559,9 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Addition assignment operator for the addition of a plain matrix (\f$ A+=B \f$).
+/*!\brief Addition assignment operator for the addition of a general matrix (\f$ A+=B \f$).
 //
-// \param rhs The right-hand side plain matrix to be added.
+// \param rhs The right-hand side general matrix to be added.
 // \return Reference to the matrix.
 // \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
@@ -1630,9 +1630,9 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,true>& >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction assignment operator for the subtraction of a plain matrix (\f$ A-=B \f$).
+/*!\brief Subtraction assignment operator for the subtraction of a general matrix (\f$ A-=B \f$).
 //
-// \param rhs The right-hand side plain matrix to be subtracted.
+// \param rhs The right-hand side general matrix to be subtracted.
 // \return Reference to the matrix.
 // \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //

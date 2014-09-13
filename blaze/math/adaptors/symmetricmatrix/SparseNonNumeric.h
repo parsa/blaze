@@ -986,9 +986,9 @@ inline SymmetricMatrix<MT,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Assignment operator for plain matrices.
+/*!\brief Assignment operator for general matrices.
 //
-// \param rhs The plain matrix to be copied.
+// \param rhs The general matrix to be copied.
 // \return Reference to the assigned matrix.
 // \exception std::invalid_argument Invalid assignment to symmetric matrix.
 // \exception std::invalid_argument Matrix sizes do not match.

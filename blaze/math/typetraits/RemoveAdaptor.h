@@ -49,8 +49,8 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // In case the given type is an adaptor type (SymmetricMatrix, LowerMatrix, UpperMatrix, ...),
-// the RemoveAdaptor type trait removes the adaptor and extracts the contained plain matrix type.
-// Else the given type is returned as is. Note that cv-qualifiers are preserved.
+// the RemoveAdaptor type trait removes the adaptor and extracts the contained general matrix
+// type. Else the given type is returned as is. Note that cv-qualifiers are preserved.
 
    \code
    using blaze::DynamicVector;

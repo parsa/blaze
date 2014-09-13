@@ -189,7 +189,7 @@ const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
 /*!\brief SMP dense vector assignment threshold.
 // \ingroup config
 //
-// This threshold specifies when an assignment of a plain dense vector can be executed in
+// This threshold specifies when an assignment of a simple dense vector can be executed in
 // parallel. In case the number of elements of the target vector is larger or equal to this
 // threshold, the operation is executed in parallel. If the number of elements is below this
 // threshold the operation is executed single-threaded.
@@ -672,7 +672,7 @@ const size_t SMP_TSVECTSMATMULT_THRESHOLD = 260UL;
 /*!\brief SMP dense matrix assignment threshold.
 // \ingroup config
 //
-// This threshold specifies when an assignment with a plain dense matrix can be executed in
+// This threshold specifies when an assignment with a simple dense matrix can be executed in
 // parallel. In case the number of rows/columns of the target matrix is larger or equal to this
 // threshold, the operation is executed in parallel. If the number of rows/columns is below this
 // threshold the operation is executed single-threaded.
