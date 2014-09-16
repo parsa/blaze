@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/sparserow/ClassTest.cpp
-//  \brief Source file for the general SparseRow class test
+//  \file src/mathtest/sparserow/SymmetricTest.cpp
+//  \brief Source file for the symmetric SparseRow class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,7 +42,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/sparserow/ClassTest.h>
+#include <blazetest/mathtest/sparserow/SymmetricTest.h>
 
 
 namespace blazetest {
@@ -58,13 +58,13 @@ namespace sparserow {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general SparseRow class test.
+/*!\brief Constructor for the symmetric SparseRow class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ClassTest::ClassTest()
-   : mat_ ( 5UL, 4UL )
-   , tmat_( 5UL, 4UL )
+SymmetricTest::SymmetricTest()
+   : mat_ ( 4UL )
+   , tmat_( 4UL )
 {
    testConstructors();
    testAssignment();
@@ -109,7 +109,7 @@ ClassTest::ClassTest()
 // This function performs a test of all constructors of the SparseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testConstructors()
+void SymmetricTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -143,15 +143,15 @@ void ClassTest::testConstructors()
          RT row1 = row( mat_, 1UL );
 
          checkSize    ( row1, 4UL );
-         checkNonZeros( row1, 1UL );
+         checkNonZeros( row1, 2UL );
 
-         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -163,13 +163,13 @@ void ClassTest::testConstructors()
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
 
-         if( row2[0] != -2 || row2[1] != 0 || row2[2] != -3 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 3 || row2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -181,31 +181,13 @@ void ClassTest::testConstructors()
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 3UL );
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix row
-      {
-         RT row4 = row( mat_, 4UL );
-
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 4UL );
-
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th sparse row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -244,15 +226,15 @@ void ClassTest::testConstructors()
          TRT row1 = row( tmat_, 1UL );
 
          checkSize    ( row1, 4UL );
-         checkNonZeros( row1, 1UL );
+         checkNonZeros( row1, 2UL );
 
-         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -264,13 +246,13 @@ void ClassTest::testConstructors()
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
 
-         if( row2[0] != -2 || row2[1] != 0 || row2[2] != -3 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 3 || row2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -282,31 +264,13 @@ void ClassTest::testConstructors()
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 3UL );
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd sparse row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix row
-      {
-         TRT row4 = row( tmat_, 4UL );
-
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 4UL );
-
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th sparse row failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -324,7 +288,7 @@ void ClassTest::testConstructors()
 // This function performs a test of all assignment operators of the SparseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAssignment()
+void SymmetricTest::testAssignment()
 {
    //=====================================================================================
    // Row-major copy assignment
@@ -338,37 +302,35 @@ void ClassTest::testAssignment()
       RT row1 = row( mat_, 1UL );
       row1 = row( mat_, 2UL );
 
-      checkSize    ( row1,  4UL );
-      checkNonZeros( row1,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( row1[0] != -2 || row1[1] != 0 || row1[2] != -3 || row1[3] != 0 ) {
+      if( row1[0] != 0 || row1[1] != 0 || row1[2] != 3 || row1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != -2 || mat_(1,1) !=  0 || mat_(1,2) != -3 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 0 || mat_(1,2) != 3 || mat_(1,3) != 4 ||
+          mat_(2,0) != 0 || mat_(2,1) != 3 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 4 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -391,11 +353,11 @@ void ClassTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1,  4UL );
-      checkNonZeros( row1,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -407,11 +369,10 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  8 || mat_(1,2) !=  0 || mat_(1,3) !=  9 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -419,9 +380,8 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -436,34 +396,33 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row3 = row( mat_, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
 
-      row4 = vec1;
+      row3 = vec1;
 
-      checkSize    ( row4, 4UL );
-      checkNonZeros( row4, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkSize    ( row3, 4UL );
+      checkNonZeros( row3, 1UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
+      checkNonZeros( mat_, 3UL );
 
-      if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 9 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
+             << "   Result:\n" << row3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) != 4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  0 || mat_(4,1) != 0 || mat_(4,2) !=  0 || mat_(4,3) !=  9 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != 0 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) != 0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  0 || mat_(3,2) != 0 || mat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -471,8 +430,7 @@ void ClassTest::testAssignment()
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
+                                     "(  0  0  3  0 )\n"
                                      "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -491,37 +449,35 @@ void ClassTest::testAssignment()
       TRT row1 = row( tmat_, 1UL );
       row1 = row( tmat_, 2UL );
 
-      checkSize    ( row1 ,  4UL );
-      checkNonZeros( row1 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( row1[0] != -2 || row1[1] != 0 || row1[2] != -3 || row1[3] != 0 ) {
+      if( row1[0] != 0 || row1[1] != 0 || row1[2] != 3 || row1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != -2 || tmat_(1,1) !=  0 || tmat_(1,2) != -3 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) != 3 || tmat_(1,3) != 4 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 3 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 4 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -544,11 +500,11 @@ void ClassTest::testAssignment()
 
       row1 = vec1;
 
-      checkSize    ( row1 ,  4UL );
-      checkNonZeros( row1 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
          std::ostringstream oss;
@@ -560,11 +516,10 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  9 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -572,9 +527,8 @@ void ClassTest::testAssignment()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  8  0  9 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -589,34 +543,33 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TRT row4 = row( tmat_, 4UL );
+      TRT row3 = row( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
 
-      row4 = vec1;
+      row3 = vec1;
 
-      checkSize    ( row4 , 4UL );
-      checkNonZeros( row4 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkSize    ( row3 , 4UL );
+      checkNonZeros( row3 , 1UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 7UL );
+      checkNonZeros( tmat_, 3UL );
 
-      if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 9 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
+             << "   Result:\n" << row3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) != 4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  0 || tmat_(4,1) != 0 || tmat_(4,2) !=  0 || tmat_(4,3) !=  9 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 0 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -624,8 +577,7 @@ void ClassTest::testAssignment()
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
                                      "(  0  1  0  0 )\n"
-                                     "( -2  0 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
+                                     "(  0  0  3  0 )\n"
                                      "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
@@ -643,7 +595,7 @@ void ClassTest::testAssignment()
 // This function performs a test of the addition assignment operators of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAddAssign()
+void SymmetricTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major SparseRow addition assignment
@@ -657,37 +609,35 @@ void ClassTest::testAddAssign()
       RT row2 = row( mat_, 2UL );
       row2 += row( mat_, 3UL );
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( row2  , 4UL );
+      checkNonZeros( row2  , 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 2 || row2[3] != -6 ) {
+      if( row2[0] != 0 || row2[1] != -2 || row2[2] != 7 || row2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) != 2 || mat_(2,3) != -6 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) != -2 || mat_(2,2) !=  7 || mat_(2,3) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  9 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  4  2 -6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -711,36 +661,34 @@ void ClassTest::testAddAssign()
       row2 += vec;
 
       checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) != -4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -764,36 +712,34 @@ void ClassTest::testAddAssign()
       row2 += vec;
 
       checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) != -4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -811,37 +757,35 @@ void ClassTest::testAddAssign()
       TRT row2 = row( tmat_, 2UL );
       row2 += row( tmat_, 3UL );
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  4UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 2 || row2[3] != -6 ) {
+      if( row2[0] != 0 || row2[1] != -2 || row2[2] != 7 || row2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) != 2 || tmat_(2,3) != -6 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != -2 || tmat_(2,2) !=  7 || tmat_(2,3) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  9 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  4  2 -6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -865,36 +809,34 @@ void ClassTest::testAddAssign()
       row2 += vec;
 
       checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -918,36 +860,34 @@ void ClassTest::testAddAssign()
       row2 += vec;
 
       checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0 )\n"
-                                     "( 0  1  0  0 )\n"
-                                     "( 0 -4 -3  0 )\n"
-                                     "( 0  4  5 -6 )\n"
-                                     "( 7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -964,7 +904,7 @@ void ClassTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubAssign()
+void SymmetricTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major SparseRow subtraction assignment
@@ -978,37 +918,35 @@ void ClassTest::testSubAssign()
       RT row2 = row( mat_, 2UL );
       row2 -= row( mat_, 3UL );
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  4UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != -4 || row2[2] != -8 || row2[3] != 6 ) {
+      if( row2[0] != 0 || row2[1] != 2 || row2[2] != -1 || row2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) != -4 || mat_(2,2) != -8 || mat_(2,3) !=  6 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  2 || mat_(2,2) != -1 || mat_(2,3) != -1 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -1 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2 -4 -8  6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1032,36 +970,34 @@ void ClassTest::testSubAssign()
       row2 -= vec;
 
       checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1085,36 +1021,34 @@ void ClassTest::testSubAssign()
       row2 -= vec;
 
       checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  3UL );
-      checkRows    ( mat_,  5UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  4 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1132,37 +1066,35 @@ void ClassTest::testSubAssign()
       TRT row2 = row( tmat_, 2UL );
       row2 -= row( tmat_, 3UL );
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  4UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( row2[0] != -2 || row2[1] != -4 || row2[2] != -8 || row2[3] != 6 ) {
+      if( row2[0] != 0 || row2[1] != 2 || row2[2] != -1 || row2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) != -4 || tmat_(2,2) != -8 || tmat_(2,3) !=  6 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  2 || tmat_(2,2) != -1 || tmat_(2,3) != -1 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -1 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2 -4 -8  6 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1186,36 +1118,34 @@ void ClassTest::testSubAssign()
       row2 -= vec;
 
       checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  3UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1239,36 +1169,34 @@ void ClassTest::testSubAssign()
       row2 -= vec;
 
       checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  3UL );
-      checkRows    ( tmat_,  5UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( row2[0] != -4 || row2[1] != 4 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  4 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  4 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1285,7 +1213,7 @@ void ClassTest::testSubAssign()
 // This function performs a test of the multiplication assignment operators of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMultAssign()
+void SymmetricTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major SparseRow multiplication assignment
@@ -1300,36 +1228,34 @@ void ClassTest::testMultAssign()
       row2 *= row( mat_, 3UL );
 
       checkSize    ( row2, 4UL );
-      checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -15 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 12 || row2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -15 || mat_(2,3) !=  0 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) !=   5 || mat_(3,3) != -6 ||
-          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) !=   9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 12 || mat_(2,3) != 20 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 20 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0   0  0 )\n"
-                                     "(  0  1   0  0 )\n"
-                                     "(  0  0 -15  0 )\n"
-                                     "(  0  4   5 -6 )\n"
-                                     "(  7 -8   9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1348,41 +1274,39 @@ void ClassTest::testMultAssign()
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1401,41 +1325,39 @@ void ClassTest::testMultAssign()
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1454,36 +1376,34 @@ void ClassTest::testMultAssign()
       row2 *= row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
-      checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -15 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 12 || row2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -15 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  4 || tmat_(3,2) !=   5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) != 7 || tmat_(4,1) != -8 || tmat_(4,2) !=   9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 12 || tmat_(2,3) != 20 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 20 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0   0  0 )\n"
-                                     "(  0  1   0  0 )\n"
-                                     "(  0  0 -15  0 )\n"
-                                     "(  0  4   5 -6 )\n"
-                                     "(  7 -8   9 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1502,41 +1422,39 @@ void ClassTest::testMultAssign()
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
       checkSize    ( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1555,41 +1473,39 @@ void ClassTest::testMultAssign()
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       row2 *= vec;
 
       checkSize    ( row2 , 4UL );
       checkNonZeros( row2 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1606,14 +1522,14 @@ void ClassTest::testMultAssign()
 // This function performs a test of all available ways to scale an instance of the SparseRow
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScaling()
+void SymmetricTest::testScaling()
 {
    //=====================================================================================
-   // Row-major self-scaling (v*=s)
+   // Row-major self-scaling (v*=2)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v*=s)";
+      test_ = "Row-major self-scaling (v*=2)";
 
       initialize();
 
@@ -1621,48 +1537,46 @@ void ClassTest::testScaling()
 
       row2 *= 3;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Row-major self-scaling (v=v*s)
+   // Row-major self-scaling (v=v*2)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v=v*s)";
+      test_ = "Row-major self-scaling (v=v*2)";
 
       initialize();
 
@@ -1670,48 +1584,46 @@ void ClassTest::testScaling()
 
       row2 = row2 * 3;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Row-major self-scaling (v=s*v)
+   // Row-major self-scaling (v=2*v)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v=s*v)";
+      test_ = "Row-major self-scaling (v=2*v)";
 
       initialize();
 
@@ -1719,37 +1631,35 @@ void ClassTest::testScaling()
 
       row2 = 3 * row2;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -6 || mat_(2,1) !=  0 || mat_(2,2) != -9 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1768,37 +1678,35 @@ void ClassTest::testScaling()
 
       row2 /= 0.5;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1817,37 +1725,35 @@ void ClassTest::testScaling()
 
       row2 = row2 / 0.5;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -4 || mat_(2,1) !=  0 || mat_(2,2) != -6 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1867,37 +1773,35 @@ void ClassTest::testScaling()
          RT row3 = row( mat_, 3UL );
          row3.scale( 3 );
 
-         checkSize    ( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+         if( row3[0] != 0 || row3[1] != -6 || row3[2] != 12 || row3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=   0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=   0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=   0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 12 || mat_(3,2) != 15 || mat_(3,3) != -18 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) !=  10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -6 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) != 12 ||
+             mat_(3,0) != 0 || mat_(3,1) != -6 || mat_(3,2) != 12 || mat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -6 )\n"
+                                        "( 0  0  3 12 )\n"
+                                        "( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1907,37 +1811,35 @@ void ClassTest::testScaling()
          RT row3 = row( mat_, 3UL );
          row3.scale( 0.5 );
 
-         checkSize    ( row3,  4UL );
-         checkNonZeros( row3,  3UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+         if( row3[0] != 0 || row3[1] != -3 || row3[2] != 6 || row3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  6 || mat_(3,2) !=  7 || mat_(3,3) != -9 ||
-             mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -3 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  6 ||
+             mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 6 || mat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd row failed\n"
+                << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0  3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1957,37 +1859,35 @@ void ClassTest::testScaling()
 
       row2 *= 3;
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2006,37 +1906,35 @@ void ClassTest::testScaling()
 
       row2 = row2 * 3;
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2055,37 +1953,35 @@ void ClassTest::testScaling()
 
       row2 = 3 * row2;
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -6 || row2[1] != 0 || row2[2] != -9 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 9 || row2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -6 || tmat_(2,1) !=  0 || tmat_(2,2) != -9 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -6  0 -9  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2104,37 +2000,35 @@ void ClassTest::testScaling()
 
       row2 /= 0.5;
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != -6 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2153,37 +2047,35 @@ void ClassTest::testScaling()
 
       row2 = row2 / 0.5;
 
-      checkSize    ( row2 ,  4UL );
-      checkNonZeros( row2 ,  2UL );
-      checkRows    ( tmat_,  5UL );
-      checkColumns ( tmat_,  4UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( row2 , 4UL );
+      checkNonZeros( row2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( row2[0] != -4 || row2[1] != 0 || row2[2] != -6 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != 6 || row2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -4 || tmat_(2,1) !=  0 || tmat_(2,2) != -6 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -4  0 -6  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2203,37 +2095,35 @@ void ClassTest::testScaling()
          TRT row3 = row( tmat_, 3UL );
          row3.scale( 3 );
 
-         checkSize    ( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 12 || row3[2] != 15 || row3[3] != -18 ) {
+         if( row3[0] != 0 || row3[1] != -6 || row3[2] != 12 || row3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=   0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=   0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=   0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) != 12 || tmat_(3,2) != 15 || tmat_(3,3) != -18 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) !=  10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) != 12 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -6 || tmat_(3,2) != 12 || tmat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0  12  15 -18 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n(  0  0  0  0 )\n"
+                                        "(  0  1  0 -6 )\n"
+                                        "( -2  0 -3 12 )\n"
+                                        "(  7 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2243,37 +2133,35 @@ void ClassTest::testScaling()
          TRT row3 = row( tmat_, 3UL );
          row3.scale( 0.5 );
 
-         checkSize    ( row3 ,  4UL );
-         checkNonZeros( row3 ,  3UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != -9 ) {
+         if( row3[0] != 0 || row3[1] != -3 || row3[2] != 6 || row3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  6 || tmat_(3,2) !=  7 || tmat_(3,3) != -9 ||
-             tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -3 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  6 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -3 || tmat_(3,2) != 6 || tmat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd row failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0   0   0   0 )\n"
-                                        "(  0   1   0   0 )\n"
-                                        "( -2   0  -3   0 )\n"
-                                        "(  0   6   7  -9 )\n"
-                                        "(  7  -8   9  10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0 -3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2292,7 +2180,7 @@ void ClassTest::testScaling()
 // of the SparseRow class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void ClassTest::testSubscript()
+void SymmetricTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2311,31 +2199,29 @@ void ClassTest::testSubscript()
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) !=  9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2345,31 +2231,29 @@ void ClassTest::testSubscript()
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2377,33 +2261,31 @@ void ClassTest::testSubscript()
       row2[3] = -8;
 
       checkSize    ( row2, 4UL );
-      checkNonZeros( row2, 3UL );
+      checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -2 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2411,34 +2293,31 @@ void ClassTest::testSubscript()
       row2[0] += -3;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2446,34 +2325,31 @@ void ClassTest::testSubscript()
       row2[1] -= 6;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) !=  3 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  3 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  3 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  3  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2481,34 +2357,31 @@ void ClassTest::testSubscript()
       row2[1] *= -3;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -8 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2516,34 +2389,31 @@ void ClassTest::testSubscript()
       row2[3] /= 2;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
-          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
-          mat_(2,0) != -5 || mat_(2,1) != -9 || mat_(2,2) != 0 || mat_(2,3) != -4 ||
-          mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
-          mat_(4,0) !=  7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -4 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2554,7 +2424,7 @@ void ClassTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::operator[]";
+      test_ = "Row-major SparseRow::operator[]";
 
       initialize();
 
@@ -2566,31 +2436,29 @@ void ClassTest::testSubscript()
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != -3 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 3 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) !=  9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9 -3  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2600,31 +2468,29 @@ void ClassTest::testSubscript()
       checkSize    ( row2, 4UL );
       checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != 0 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) !=  0 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0  0 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2632,33 +2498,31 @@ void ClassTest::testSubscript()
       row2[3] = -8;
 
       checkSize    ( row2, 4UL );
-      checkNonZeros( row2, 3UL );
+      checkNonZeros( row2, 2UL );
 
-      if( row2[0] != -2 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != 0 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -2 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -2  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2666,34 +2530,31 @@ void ClassTest::testSubscript()
       row2[0] += -3;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2701,34 +2562,31 @@ void ClassTest::testSubscript()
       row2[1] -= 6;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != 3 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) !=  3 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  3 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  3 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5  3  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2736,34 +2594,31 @@ void ClassTest::testSubscript()
       row2[1] *= -3;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -8 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -8 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2771,34 +2626,31 @@ void ClassTest::testSubscript()
       row2[3] /= 2;
 
       checkSize    ( row2, 4UL );
-      checkCapacity( row2, 4UL );
       checkNonZeros( row2, 3UL );
 
-      if( row2[0] != -5 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
+      if( row2[0] != -3 || row2[1] != -9 || row2[2] != 0 || row2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
-          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) !=  0 ||
-          tmat_(2,0) != -5 || tmat_(2,1) != -9 || tmat_(2,2) != 0 || tmat_(2,3) != -4 ||
-          tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) != 5 || tmat_(3,3) != -6 ||
-          tmat_(4,0) !=  7 || tmat_(4,1) != -8 || tmat_(4,2) != 9 || tmat_(4,3) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n(  0  0  0  0 )\n"
-                                     "(  0  1  0  0 )\n"
-                                     "( -5 -9  0 -4 )\n"
-                                     "(  0  4  5 -6 )\n"
-                                     "(  7 -8  9 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2815,7 +2667,7 @@ void ClassTest::testSubscript()
 // This function performs a test of the iterator implementation of the SparseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIterator()
+void SymmetricTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2859,7 +2711,7 @@ void ClassTest::testIterator()
          RT row2 = row( mat_, 2UL );
          RT::ConstIterator it( begin( row2 ) );
 
-         if( it == end( row2 ) || it->value() != -2 ) {
+         if( it == end( row2 ) || it->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -2867,25 +2719,25 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st column via Iterator
+      // Counting the number of elements in 1st row via Iterator
       {
          test_ = "Row-major Iterator subtraction";
 
          RT row1 = row( mat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
-         if( number != 1UL ) {
+         if( number != 2UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 1\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Counting the number of elements in 2nd column via ConstIterator
+      // Counting the number of elements in 2nd row via ConstIterator
       {
          test_ = "Row-major ConstIterator subtraction";
 
@@ -2898,7 +2750,7 @@ void ClassTest::testIterator()
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2908,10 +2760,10 @@ void ClassTest::testIterator()
          test_ = "Row-major read-only access via ConstIterator";
 
          RT row2 = row( mat_, 2UL );
-         RT::ConstIterator it ( row2.cbegin() );
-         RT::ConstIterator end( row2.cend() );
+         RT::ConstIterator it ( cbegin( row2 ) );
+         RT::ConstIterator end( cend( row2 ) );
 
-         if( it == end || it->value() != -2 ) {
+         if( it == end || it->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid initial iterator detected\n";
@@ -2920,7 +2772,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || it->value() != -3 ) {
+         if( it == end || it->value() != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -2941,38 +2793,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
          int value = 6;
 
-         for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( RT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it = value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 7 || row4[2] != 8 || row4[3] != 9 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 7 8 9 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 8 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  6 || mat_(4,1) != 7 || mat_(4,2) !=  8 || mat_(4,3) !=  9 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 6 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 7 ||
+             mat_(3,0) != 0 || mat_(3,1) != 6 || mat_(3,2) != 7 || mat_(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6  7  8  9 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  6  7  8 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2981,38 +2831,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( RT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it += value++;
          }
 
-         if( row4[0] != 8 || row4[1] != 10 || row4[2] != 12 || row4[3] != 14 ) {
+         if( row3[0] != 0 || row3[1] != 8 || row3[2] != 10 || row3[3] != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 8 10 12 14 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 8 10 12 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  8 || mat_(4,1) != 10 || mat_(4,2) != 12 || mat_(4,3) != 14 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  8 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  3 || mat_(2,3) != 10 ||
+             mat_(3,0) != 0 || mat_(3,1) != 8 || mat_(3,2) != 10 || mat_(3,3) != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  8 10 12 14 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  8 )\n"
+                                        "( 0  0  3 10 )\n"
+                                        "( 0  8 10 12 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3021,38 +2869,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( RT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it -= value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 7 || row4[2] != 8 || row4[3] != 9 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 7 8 9 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 8 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  6 || mat_(4,1) != 7 || mat_(4,2) !=  8 || mat_(4,3) !=  9 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) != 6 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 7 ||
+             mat_(3,0) != 0 || mat_(3,1) != 6 || mat_(3,2) != 7 || mat_(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6  7  8  9 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  6  7  8 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3061,38 +2907,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
          int value = 1;
 
-         for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( RT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it *= value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 14 || row4[2] != 24 || row4[3] != 36 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 14 || row3[3] != 24 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 14 24 36 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 14 24 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) !=  0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) !=  4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  6 || mat_(4,1) != 14 || mat_(4,2) != 24 || mat_(4,3) != 36 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  6 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  3 || mat_(2,3) != 14 ||
+             mat_(3,0) != 0 || mat_(3,1) != 6 || mat_(3,2) != 14 || mat_(3,3) != 24 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6 14 24 36 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3 14 )\n"
+                                        "( 0  6 14 24 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3101,37 +2945,35 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
 
-         for( RT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( RT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it /= 2;
          }
 
-         if( row4[0] != 3 || row4[1] != 7 || row4[2] != 12 || row4[3] != 18 ) {
+         if( row3[0] != 0 || row3[1] != 3 || row3[2] != 7 || row3[3] != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 3 7 12 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
-             mat_(1,0) !=  0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  0 ||
-             mat_(2,0) != -2 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  0 ||
-             mat_(3,0) !=  0 || mat_(3,1) != 4 || mat_(3,2) !=  5 || mat_(3,3) != -6 ||
-             mat_(4,0) !=  3 || mat_(4,1) != 7 || mat_(4,2) != 12 || mat_(4,3) != 18 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != 0 || mat_(1,3) !=  3 ||
+             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) !=  7 ||
+             mat_(3,0) != 0 || mat_(3,1) != 3 || mat_(3,2) != 7 || mat_(3,3) != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  3  7 12 18 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  3 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  3  7 12 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3180,7 +3022,7 @@ void ClassTest::testIterator()
          TRT row2 = row( tmat_, 2UL );
          TRT::ConstIterator it( begin( row2 ) );
 
-         if( it == end( row2 ) || it->value() != -2 ) {
+         if( it == end( row2 ) || it->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -3188,25 +3030,25 @@ void ClassTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st column via Iterator
+      // Counting the number of elements in 1st row via Iterator
       {
          test_ = "Column-major Iterator subtraction";
 
          TRT row1 = row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
-         if( number != 1UL ) {
+         if( number != 2UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 1\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Counting the number of elements in 2nd column via ConstIterator
+      // Counting the number of elements in 2nd row via ConstIterator
       {
          test_ = "Column-major ConstIterator subtraction";
 
@@ -3219,7 +3061,7 @@ void ClassTest::testIterator()
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3229,10 +3071,10 @@ void ClassTest::testIterator()
          test_ = "Column-major read-only access via ConstIterator";
 
          TRT row2 = row( tmat_, 2UL );
-         TRT::ConstIterator it ( row2.cbegin() );
-         TRT::ConstIterator end( row2.cend() );
+         TRT::ConstIterator it ( cbegin( row2 ) );
+         TRT::ConstIterator end( cend( row2 ) );
 
-         if( it == end || it->value() != -2 ) {
+         if( it == end || it->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid initial iterator detected\n";
@@ -3241,7 +3083,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || it->value() != -3 ) {
+         if( it == end || it->value() != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -3262,38 +3104,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
          int value = 6;
 
-         for( TRT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it = value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 7 || row4[2] != 8 || row4[3] != 9 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 7 8 9 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 8 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) != 4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  6 || tmat_(4,1) != 7 || tmat_(4,2) !=  8 || tmat_(4,3) !=  9 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 7 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 6 || tmat_(3,2) != 7 || tmat_(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6  7  8  9 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  6  7  8 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3302,38 +3142,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it += value++;
          }
 
-         if( row4[0] != 8 || row4[1] != 10 || row4[2] != 12 || row4[3] != 14 ) {
+         if( row3[0] != 0 || row3[1] != 8 || row3[2] != 10 || row3[3] != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 8 10 12 14 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 8 10 12 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  8 || tmat_(4,1) != 10 || tmat_(4,2) != 12 || tmat_(4,3) != 14 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  8 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  3 || tmat_(2,3) != 10 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 8 || tmat_(3,2) != 10 || tmat_(3,3) != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  8 10 12 14 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  8 )\n"
+                                        "( 0  0  3 10 )\n"
+                                        "( 0  8 10 12 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3342,38 +3180,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it -= value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 7 || row4[2] != 8 || row4[3] != 9 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 7 || row3[3] != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 7 8 9 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 7 8 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  6 || tmat_(4,1) !=  7 || tmat_(4,2) !=  8 || tmat_(4,3) !=  9 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 7 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 6 || tmat_(3,2) != 7 || tmat_(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6  7  8  9 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  6  7  8 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3382,38 +3218,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
          int value = 1;
 
-         for( TRT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it *= value++;
          }
 
-         if( row4[0] != 6 || row4[1] != 14 || row4[2] != 24 || row4[3] != 36 ) {
+         if( row3[0] != 0 || row3[1] != 6 || row3[2] != 14 || row3[3] != 24 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 6 14 24 36 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 6 14 24 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) !=  0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) !=  4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  6 || tmat_(4,1) != 14 || tmat_(4,2) != 24 || tmat_(4,3) != 36 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  3 || tmat_(2,3) != 14 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 6 || tmat_(3,2) != 14 || tmat_(3,3) != 24 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  6 14 24 36 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  6 )\n"
+                                        "( 0  0  3 14 )\n"
+                                        "( 0  6 14 24 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3422,37 +3256,35 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
 
-         for( TRT::Iterator it=begin( row4 ); it!=end( row4 ); ++it ) {
+         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it /= 2;
          }
 
-         if( row4[0] != 3 || row4[1] != 7 || row4[2] != 12 || row4[3] != 18 ) {
+         if( row3[0] != 0 || row3[1] != 3 || row3[2] != 7 || row3[3] != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 3 7 12 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
-             tmat_(1,0) !=  0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  0 ||
-             tmat_(2,0) != -2 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
-             tmat_(3,0) !=  0 || tmat_(3,1) != 4 || tmat_(3,2) !=  5 || tmat_(3,3) != -6 ||
-             tmat_(4,0) !=  3 || tmat_(4,1) != 7 || tmat_(4,2) != 12 || tmat_(4,3) != 18 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) !=  3 ||
+             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) !=  7 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != 3 || tmat_(3,2) != 7 || tmat_(3,3) != 12 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  0  0  0  0 )\n"
-                                        "(  0  1  0  0 )\n"
-                                        "( -2  0 -3  0 )\n"
-                                        "(  0  4  5 -6 )\n"
-                                        "(  3  7 12 18 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0  3 )\n"
+                                        "( 0  0  3  7 )\n"
+                                        "( 0  3  7 12 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3470,7 +3302,7 @@ void ClassTest::testIterator()
 // This function performs a test of the \c nonZeros() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testNonZeros()
+void SymmetricTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3487,13 +3319,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3503,13 +3335,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 2UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3519,13 +3351,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 5 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 5 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3546,13 +3378,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3562,13 +3394,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 2UL );
 
-      if( row3[0] != 0 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3578,13 +3410,13 @@ void ClassTest::testNonZeros()
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
 
-      if( row3[0] != 5 || row3[1] != 4 || row3[2] != 0 || row3[3] != -6 ) {
+      if( row3[0] != 5 || row3[1] != -2 || row3[2] != 0 || row3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << row3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3601,7 +3433,7 @@ void ClassTest::testNonZeros()
 // This function performs a test of the \c reset() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReset()
+void SymmetricTest::testReset()
 {
    using blaze::reset;
 
@@ -3622,38 +3454,38 @@ void ClassTest::testReset()
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th row
+      // Resetting the 3rd row
       {
-         RT row4 = row( mat_, 4UL );
-         reset( row4 );
+         RT row3 = row( mat_, 3UL );
+         reset( row3 );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 0UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 0UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 5UL );
+         checkNonZeros( mat_, 2UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th row failed\n"
+                << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3677,38 +3509,38 @@ void ClassTest::testReset()
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 9UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th row
+      // Resetting the 3rd row
       {
-         TRT row4 = row( tmat_, 4UL );
-         reset( row4 );
+         TRT row3 = row( tmat_, 3UL );
+         reset( row3 );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 0UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 0UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 5UL );
+         checkNonZeros( tmat_, 2UL );
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th row failed\n"
+                << " Error: Reset operation of 3rd row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3727,7 +3559,7 @@ void ClassTest::testReset()
 // This function performs a test of the \c clear() function with the SparseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testClear()
+void SymmetricTest::testClear()
 {
    using blaze::clear;
 
@@ -3748,17 +3580,17 @@ void ClassTest::testClear()
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3781,17 +3613,17 @@ void ClassTest::testClear()
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 9UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3809,7 +3641,7 @@ void ClassTest::testClear()
 // This function performs a test of the \c set() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSet()
+void SymmetricTest::testSet()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3826,11 +3658,11 @@ void ClassTest::testSet()
       {
          RT::Iterator pos = row0.set( 3UL, 1 );
 
-         checkSize    ( row0,  4UL );
-         checkNonZeros( row0,  1UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 11UL );
+         checkSize    ( row0, 4UL );
+         checkNonZeros( row0, 1UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
 
          if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -3861,9 +3693,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  2UL );
-         checkRows    ( mat_,  5UL );
+         checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 12UL );
+         checkNonZeros( mat_, 10UL );
 
          if( pos->value() != 2 || pos->index() != 0UL ) {
             std::ostringstream oss;
@@ -3894,9 +3726,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  3UL );
-         checkRows    ( mat_,  5UL );
+         checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 13UL );
+         checkNonZeros( mat_, 12UL );
 
          if( pos->value() != 3 || pos->index() != 2UL ) {
             std::ostringstream oss;
@@ -3927,9 +3759,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  3UL );
-         checkRows    ( mat_,  5UL );
+         checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 13UL );
+         checkNonZeros( mat_, 12UL );
 
          if( pos->value() != 4 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -3971,11 +3803,11 @@ void ClassTest::testSet()
       {
          TRT::Iterator pos = row0.set( 3UL, 1 );
 
-         checkSize    ( row0 ,  4UL );
-         checkNonZeros( row0 ,  1UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 11UL );
+         checkSize    ( row0 , 4UL );
+         checkNonZeros( row0 , 1UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 9UL );
 
          if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -4006,9 +3838,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  2UL );
-         checkRows    ( tmat_,  5UL );
+         checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 12UL );
+         checkNonZeros( tmat_, 10UL );
 
          if( pos->value() != 2 || pos->index() != 0UL ) {
             std::ostringstream oss;
@@ -4039,9 +3871,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
-         checkRows    ( tmat_,  5UL );
+         checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 13UL );
+         checkNonZeros( tmat_, 12UL );
 
          if( pos->value() != 3 || pos->index() != 2UL ) {
             std::ostringstream oss;
@@ -4072,9 +3904,9 @@ void ClassTest::testSet()
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
-         checkRows    ( tmat_,  5UL );
+         checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 13UL );
+         checkNonZeros( tmat_, 12UL );
 
          if( pos->value() != 4 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -4112,7 +3944,7 @@ void ClassTest::testSet()
 // This function performs a test of the \c insert() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testInsert()
+void SymmetricTest::testInsert()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4129,11 +3961,11 @@ void ClassTest::testInsert()
       {
          RT::Iterator pos = row0.insert( 3UL, 1 );
 
-         checkSize    ( row0,  4UL );
-         checkNonZeros( row0,  1UL );
-         checkRows    ( mat_,  5UL );
-         checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 11UL );
+         checkSize    ( row0, 4UL );
+         checkNonZeros( row0, 1UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 9UL );
 
          if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -4164,9 +3996,9 @@ void ClassTest::testInsert()
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  2UL );
-         checkRows    ( mat_,  5UL );
+         checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 12UL );
+         checkNonZeros( mat_, 10UL );
 
          if( pos->value() != 2 || pos->index() != 0UL ) {
             std::ostringstream oss;
@@ -4197,9 +4029,9 @@ void ClassTest::testInsert()
 
          checkSize    ( row0,  4UL );
          checkNonZeros( row0,  3UL );
-         checkRows    ( mat_,  5UL );
+         checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  4UL );
-         checkNonZeros( mat_, 13UL );
+         checkNonZeros( mat_, 12UL );
 
          if( pos->value() != 3 || pos->index() != 2UL ) {
             std::ostringstream oss;
@@ -4255,11 +4087,11 @@ void ClassTest::testInsert()
       {
          TRT::Iterator pos = row0.insert( 3UL, 1 );
 
-         checkSize    ( row0 ,  4UL );
-         checkNonZeros( row0 ,  1UL );
-         checkRows    ( tmat_,  5UL );
-         checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 11UL );
+         checkSize    ( row0 , 4UL );
+         checkNonZeros( row0 , 1UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 9UL );
 
          if( pos->value() != 1 || pos->index() != 3UL ) {
             std::ostringstream oss;
@@ -4290,9 +4122,9 @@ void ClassTest::testInsert()
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  2UL );
-         checkRows    ( tmat_,  5UL );
+         checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 12UL );
+         checkNonZeros( tmat_, 10UL );
 
          if( pos->value() != 2 || pos->index() != 0UL ) {
             std::ostringstream oss;
@@ -4323,9 +4155,9 @@ void ClassTest::testInsert()
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
-         checkRows    ( tmat_,  5UL );
+         checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  4UL );
-         checkNonZeros( tmat_, 13UL );
+         checkNonZeros( tmat_, 12UL );
 
          if( pos->value() != 3 || pos->index() != 2UL ) {
             std::ostringstream oss;
@@ -4377,7 +4209,7 @@ void ClassTest::testInsert()
 // This function performs a test of the \c append() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAppend()
+void SymmetricTest::testAppend()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4386,7 +4218,7 @@ void ClassTest::testAppend()
    {
       test_ = "Row-major SparseRow::append()";
 
-      MT mat( 3UL, 9UL );
+      MT mat( 9UL );
 
       RT row1 = row( mat, 1UL );
       row1.reserve( 4UL );
@@ -4397,6 +4229,9 @@ void ClassTest::testAppend()
       checkSize    ( row1, 9UL );
       checkCapacity( row1, 4UL );
       checkNonZeros( row1, 1UL );
+      checkRows    ( mat , 9UL );
+      checkColumns ( mat , 9UL );
+      checkNonZeros( mat , 1UL );
 
       if( row1[1] != 1 ) {
          std::ostringstream oss;
@@ -4408,6 +4243,15 @@ void ClassTest::testAppend()
          throw std::runtime_error( oss.str() );
       }
 
+      if( mat(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
       // Appending three more non-zero elements
       row1.append( 3UL, 2 );
       row1.append( 4UL, 3 );
@@ -4416,6 +4260,9 @@ void ClassTest::testAppend()
       checkSize    ( row1, 9UL );
       checkCapacity( row1, 4UL );
       checkNonZeros( row1, 4UL );
+      checkRows    ( mat , 9UL );
+      checkColumns ( mat , 9UL );
+      checkNonZeros( mat , 7UL );
 
       if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
          std::ostringstream oss;
@@ -4424,6 +4271,16 @@ void ClassTest::testAppend()
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(1,1) != 1 || mat(1,3) != 2 || mat(1,4) != 3 || mat(1,8) != 4 ||
+          mat(3,1) != 2 || mat(4,1) != 3 || mat(8,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4436,7 +4293,7 @@ void ClassTest::testAppend()
    {
       test_ = "Column-major SparseRow::append()";
 
-      TMT mat( 3UL, 9UL );
+      TMT mat( 9UL );
 
       TRT row1 = row( mat, 1UL );
       row1.reserve( 4UL );
@@ -4447,6 +4304,9 @@ void ClassTest::testAppend()
       checkSize    ( row1, 9UL );
       checkCapacity( row1, 4UL );
       checkNonZeros( row1, 1UL );
+      checkRows    ( mat , 9UL );
+      checkColumns ( mat , 9UL );
+      checkNonZeros( mat , 1UL );
 
       if( row1[1] != 1 ) {
          std::ostringstream oss;
@@ -4458,6 +4318,15 @@ void ClassTest::testAppend()
          throw std::runtime_error( oss.str() );
       }
 
+      if( mat(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
       // Appending three more non-zero elements
       row1.append( 3UL, 2 );
       row1.append( 4UL, 3 );
@@ -4466,6 +4335,9 @@ void ClassTest::testAppend()
       checkSize    ( row1, 9UL );
       checkCapacity( row1, 4UL );
       checkNonZeros( row1, 4UL );
+      checkRows    ( mat , 9UL );
+      checkColumns ( mat , 9UL );
+      checkNonZeros( mat , 7UL );
 
       if( row1[1] != 1 || row1[3] != 2 || row1[4] != 3 || row1[8] != 4 ) {
          std::ostringstream oss;
@@ -4474,6 +4346,16 @@ void ClassTest::testAppend()
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat(1,1) != 1 || mat(1,3) != 2 || mat(1,4) != 3 || mat(1,8) != 4 ||
+          mat(3,1) != 2 || mat(4,1) != 3 || mat(8,1) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4490,7 +4372,7 @@ void ClassTest::testAppend()
 // This function performs a test of the \c erase() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testErase()
+void SymmetricTest::testErase()
 {
    //=====================================================================================
    // Row-major index-based erase function
@@ -4501,81 +4383,62 @@ void ClassTest::testErase()
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row3 = row( mat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
-      row4.erase( 3UL );
+      row3.erase( 3UL );
 
-      checkSize    ( row4, 4UL );
-      checkNonZeros( row4, 3UL );
-      checkRows    ( mat_, 5UL );
+      checkSize    ( row3, 4UL );
+      checkNonZeros( row3, 2UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 9UL );
+      checkNonZeros( mat_, 6UL );
 
-      if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 7 -8 9 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 -2 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the row
-      row4.erase( size_t(0) );
+      row3.erase( 1UL );
 
-      checkSize    ( row4, 4UL );
-      checkNonZeros( row4, 2UL );
-      checkRows    ( mat_, 5UL );
+      checkSize    ( row3, 4UL );
+      checkNonZeros( row3, 1UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 8UL );
+      checkNonZeros( mat_, 4UL );
 
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the row
-      row4.erase( 2UL );
-
-      checkSize    ( row4, 4UL );
-      checkNonZeros( row4, 1UL );
-      checkRows    ( mat_, 5UL );
-      checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase an already erased element
-      row4.erase( 3UL );
+      row3.erase( 3UL );
 
-      checkSize    ( row4, 4UL );
-      checkNonZeros( row4, 1UL );
-      checkRows    ( mat_, 5UL );
+      checkSize    ( row3, 4UL );
+      checkNonZeros( row3, 1UL );
+      checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 4UL );
-      checkNonZeros( mat_, 7UL );
+      checkNonZeros( mat_, 4UL );
 
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4590,19 +4453,19 @@ void ClassTest::testErase()
 
       initialize();
 
-      RT row4 = row( mat_, 4UL );
+      RT row3 = row( mat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
       {
-         RT::Iterator pos = row4.erase( row4.find( 3UL ) );
+         RT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 3UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 2UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 9UL );
+         checkNonZeros( mat_, 6UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -4611,91 +4474,61 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 -2 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Erasing the non-zero element at the beginning of the row
       {
-         RT::Iterator pos = row4.erase( row4.find( 0UL ) );
+         RT::Iterator pos = row3.erase( row3.find( 1UL ) );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 1UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 8UL );
+         checkNonZeros( mat_, 4UL );
 
-         if( pos->value() != -8 || pos->index() != 1 ) {
+         if( pos->value() != 4 || pos->index() != 2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
                 << "   Value: " << pos->value() << "\n"
                 << "   Index: " << pos->index() << "\n"
-                << "   Expected value: -8\n"
-                << "   Expected index:  1\n";
+                << "   Expected value: 4n"
+                << "   Expected index: 2\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the row
-      {
-         RT::Iterator pos = row4.erase( row4.find( 2UL ) );
-
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 1UL );
-         checkRows    ( mat_, 5UL );
-         checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Trying to erase an already erased element
       {
-         RT::Iterator pos = row4.erase( row4.find( 3UL ) );
+         RT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 1UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 1UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 7UL );
+         checkNonZeros( mat_, 4UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -4704,13 +4537,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4734,9 +4567,9 @@ void ClassTest::testErase()
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 0UL );
-         checkRows    ( mat_, 5UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 8UL );
+         checkNonZeros( mat_, 4UL );
 
          if( pos != row2.end() ) {
             std::ostringstream oss;
@@ -4747,7 +4580,7 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the row failed\n"
@@ -4758,54 +4591,54 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing the first half of the 4th row
+      // Erasing the first half of the 3th row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
 
-         RT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
+         RT::Iterator pos = row3.erase( row3.begin(), row3.find( 3UL ) );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 2UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 1UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 6UL );
+         checkNonZeros( mat_, 2UL );
 
-         if( pos->value() != 9 || pos->index() != 2 ) {
+         if( pos->value() != 5 || pos->index() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
                 << "   Value: " << pos->value() << "\n"
                 << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
+                << "   Expected value: 5\n"
+                << "   Expected index: 3\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 0 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Erasing the second half of the 4th row
       {
-         RT row4 = row( mat_, 4UL );
+         RT row3 = row( mat_, 3UL );
 
-         RT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
+         RT::Iterator pos = row3.erase( row3.find( 3UL ), row3.end() );
 
-         checkSize    ( row4, 4UL );
-         checkNonZeros( row4, 0UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row3, 4UL );
+         checkNonZeros( row3, 0UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 4UL );
+         checkNonZeros( mat_, 1UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -4814,12 +4647,12 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -4827,17 +4660,17 @@ void ClassTest::testErase()
 
       // Trying to erase an empty range
       {
-         RT row3 = row( mat_, 3UL );
+         RT row1 = row( mat_, 1UL );
 
-         RT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
+         RT::Iterator pos = row1.erase( row1.find( 1UL ), row1.find( 1UL ) );
 
-         checkSize    ( row3, 4UL );
-         checkNonZeros( row3, 3UL );
-         checkRows    ( mat_, 5UL );
+         checkSize    ( row1, 4UL );
+         checkNonZeros( row1, 1UL );
+         checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 4UL );
-         checkNonZeros( mat_, 4UL );
+         checkNonZeros( mat_, 1UL );
 
-         if( pos != row3.find( 1UL ) ) {
+         if( pos != row1.find( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -4846,13 +4679,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
+                << "   Result:\n" << row1 << "\n"
+                << "   Expected result:\n( 0 1 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4868,81 +4701,62 @@ void ClassTest::testErase()
 
       initialize();
 
-      TRT row4 = row( tmat_, 4UL );
+      TRT row3 = row( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
-      row4.erase( 3UL );
+      row3.erase( 3UL );
 
-      checkSize    ( row4 , 4UL );
-      checkNonZeros( row4 , 3UL );
-      checkRows    ( tmat_, 5UL );
+      checkSize    ( row3 , 4UL );
+      checkNonZeros( row3 , 2UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 9UL );
+      checkNonZeros( tmat_, 6UL );
 
-      if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 7 -8 9 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 -2 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Erasing the non-zero element at the beginning of the row
-      row4.erase( 0UL );
+      row3.erase( 1UL );
 
-      checkSize    ( row4 , 4UL );
-      checkNonZeros( row4 , 2UL );
-      checkRows    ( tmat_, 5UL );
+      checkSize    ( row3 , 4UL );
+      checkNonZeros( row3 , 1UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 8UL );
+      checkNonZeros( tmat_, 4UL );
 
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the row
-      row4.erase( 2UL );
-
-      checkSize    ( row4 , 4UL );
-      checkNonZeros( row4 , 1UL );
-      checkRows    ( tmat_, 5UL );
-      checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Trying to erase an already erased element
-      row4.erase( 3UL );
+      row3.erase( 3UL );
 
-      checkSize    ( row4 , 4UL );
-      checkNonZeros( row4 , 1UL );
-      checkRows    ( tmat_, 5UL );
+      checkSize    ( row3 , 4UL );
+      checkNonZeros( row3 , 1UL );
+      checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 7UL );
+      checkNonZeros( tmat_, 4UL );
 
-      if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
+      if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Erasing a zero element failed\n"
              << " Details:\n"
-             << "   Result:\n" << row4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
+             << "   Result:\n" << row3 << "\n"
+             << "   Expected result:\n( 0 0 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -4953,23 +4767,23 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::erase( Iterator )";
+      test_ = "Row-major SparseRow::erase( Iterator )";
 
       initialize();
 
-      TRT row4 = row( tmat_, 4UL );
+      TRT row3 = row( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
       {
-         TRT::Iterator pos = row4.erase( row4.find( 3UL ) );
+         TRT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 3UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 2UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 9UL );
+         checkNonZeros( tmat_, 6UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -4978,91 +4792,61 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 7 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != -2 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 7 -8 9 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 -2 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Erasing the non-zero element at the beginning of the row
       {
-         TRT::Iterator pos = row4.erase( row4.find( 0UL ) );
+         TRT::Iterator pos = row3.erase( row3.find( 1UL ) );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 1UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 8UL );
+         checkNonZeros( tmat_, 4UL );
 
-         if( pos->value() != -8 || pos->index() != 1 ) {
+         if( pos->value() != 4 || pos->index() != 2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
                 << "   Value: " << pos->value() << "\n"
                 << "   Index: " << pos->index() << "\n"
-                << "   Expected value: -8\n"
-                << "   Expected index:  1\n";
+                << "   Expected value: 4n"
+                << "   Expected index: 2\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 9 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the row
-      {
-         TRT::Iterator pos = row4.erase( row4.find( 2UL ) );
-
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 1UL );
-         checkRows    ( tmat_, 5UL );
-         checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != row4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Trying to erase an already erased element
       {
-         TRT::Iterator pos = row4.erase( row4.find( 3UL ) );
+         TRT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 1UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 1UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 7UL );
+         checkNonZeros( tmat_, 4UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5071,13 +4855,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != -8 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 4 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 4 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5089,7 +4873,7 @@ void ClassTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseRow::erase( Iterator, Iterator )";
+      test_ = "Row-major SparseRow::erase( Iterator, Iterator )";
 
       initialize();
 
@@ -5101,9 +4885,9 @@ void ClassTest::testErase()
 
          checkSize    ( row2 , 4UL );
          checkNonZeros( row2 , 0UL );
-         checkRows    ( tmat_, 5UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 8UL );
+         checkNonZeros( tmat_, 4UL );
 
          if( pos != row2.end() ) {
             std::ostringstream oss;
@@ -5114,7 +4898,7 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row2[0] != 0 || row2[1] != -0 || row2[2] != 0 || row2[3] != 0 ) {
+         if( row2[0] != 0 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing the row failed\n"
@@ -5125,54 +4909,54 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing the first half of the 4th row
+      // Erasing the first half of the 3th row
       {
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
 
-         TRT::Iterator pos = row4.erase( row4.begin(), row4.find( 2UL ) );
+         TRT::Iterator pos = row3.erase( row3.begin(), row3.find( 3UL ) );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 2UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 1UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 6UL );
+         checkNonZeros( tmat_, 2UL );
 
-         if( pos->value() != 9 || pos->index() != 2 ) {
+         if( pos->value() != 5 || pos->index() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
                 << " Details:\n"
                 << "   Value: " << pos->value() << "\n"
                 << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
+                << "   Expected value: 5\n"
+                << "   Expected index: 3\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 9 || row4[3] != 10 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
+                << "   Result:\n" << row3 << "\n"
+                << "   Expected result:\n( 0 0 0 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // Erasing the second half of the 4th row
       {
-         TRT row4 = row( tmat_, 4UL );
+         TRT row3 = row( tmat_, 3UL );
 
-         TRT::Iterator pos = row4.erase( row4.find( 2UL ), row4.end() );
+         TRT::Iterator pos = row3.erase( row3.find( 3UL ), row3.end() );
 
-         checkSize    ( row4 , 4UL );
-         checkNonZeros( row4 , 0UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row3 , 4UL );
+         checkNonZeros( row3 , 0UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 4UL );
+         checkNonZeros( tmat_, 1UL );
 
-         if( pos != row4.end() ) {
+         if( pos != row3.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5181,12 +4965,12 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row4[0] != 0 || row4[1] != 0 || row4[2] != 0 || row4[3] != 0 ) {
+         if( row3[0] != 0 || row3[1] != 0 || row3[2] != 0 || row3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing a partial row failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row4 << "\n"
+                << "   Result:\n" << row3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5194,17 +4978,17 @@ void ClassTest::testErase()
 
       // Trying to erase an empty range
       {
-         TRT row3 = row( tmat_, 3UL );
+         TRT row1 = row( tmat_, 1UL );
 
-         TRT::Iterator pos = row3.erase( row3.find( 1UL ), row3.find( 1UL ) );
+         TRT::Iterator pos = row1.erase( row1.find( 1UL ), row1.find( 1UL ) );
 
-         checkSize    ( row3 , 4UL );
-         checkNonZeros( row3 , 3UL );
-         checkRows    ( tmat_, 5UL );
+         checkSize    ( row1 , 4UL );
+         checkNonZeros( row1 , 1UL );
+         checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 4UL );
-         checkNonZeros( tmat_, 4UL );
+         checkNonZeros( tmat_, 1UL );
 
-         if( pos != row3.find( 1UL ) ) {
+         if( pos != row1.find( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid iterator returned\n"
@@ -5213,13 +4997,13 @@ void ClassTest::testErase()
             throw std::runtime_error( oss.str() );
          }
 
-         if( row3[0] != 0 || row3[1] != 4 || row3[2] != 5 || row3[3] != -6 ) {
+         if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
-                << "   Result:\n" << row3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
+                << "   Result:\n" << row1 << "\n"
+                << "   Expected result:\n( 0 1 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5237,7 +5021,7 @@ void ClassTest::testErase()
 // This function performs a test of the \c reserve() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReserve()
+void SymmetricTest::testReserve()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5246,7 +5030,7 @@ void ClassTest::testReserve()
    {
       test_ = "Row-major SparseRow::reserve()";
 
-      MT mat( 3UL, 20UL );
+      MT mat( 20UL );
 
       RT row0 = row( mat, 0UL );
 
@@ -5273,7 +5057,7 @@ void ClassTest::testReserve()
    {
       test_ = "Column-major SparseRow::reserve()";
 
-      TMT mat( 3UL, 20UL );
+      TMT mat( 20UL );
 
       TRT row0 = row( mat, 0UL );
 
@@ -5304,7 +5088,7 @@ void ClassTest::testReserve()
 // This function performs a test of the \c find() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testFind()
+void SymmetricTest::testFind()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5319,33 +5103,6 @@ void ClassTest::testFind()
 
       // Searching for the first element
       {
-         RT::Iterator pos = row2.find( 0UL );
-
-         if( pos == row2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current row:\n" << row2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 0 || pos->value() != -2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current row:\n" << row2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
          RT::Iterator pos = row2.find( 2UL );
 
          if( pos == row2.end() ) {
@@ -5357,14 +5114,41 @@ void ClassTest::testFind()
                 << "   Current row:\n" << row2 << "\n";
             throw std::runtime_error( oss.str() );
          }
-         else if( pos->index() != 2 || pos->value() != -3 ) {
+         else if( pos->index() != 2 || pos->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Wrong element found\n"
                 << " Details:\n"
                 << "   Required index = 2\n"
                 << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -3\n"
+                << "   Expected value = 3\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the second element
+      {
+         RT::Iterator pos = row2.find( 3UL );
+
+         if( pos == row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Current row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 4\n"
                 << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row2 << "\n";
             throw std::runtime_error( oss.str() );
@@ -5404,33 +5188,6 @@ void ClassTest::testFind()
 
       // Searching for the first element
       {
-         TRT::Iterator pos = row2.find( 0UL );
-
-         if( pos == row2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current row:\n" << row2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 0 || pos->value() != -2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current row:\n" << row2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
          TRT::Iterator pos = row2.find( 2UL );
 
          if( pos == row2.end() ) {
@@ -5442,14 +5199,41 @@ void ClassTest::testFind()
                 << "   Current row:\n" << row2 << "\n";
             throw std::runtime_error( oss.str() );
          }
-         else if( pos->index() != 2 || pos->value() != -3 ) {
+         else if( pos->index() != 2 || pos->value() != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Wrong element found\n"
                 << " Details:\n"
                 << "   Required index = 2\n"
                 << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -3\n"
+                << "   Expected value = 3\n"
+                << "   Value at index = " << pos->value() << "\n"
+                << "   Current row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Searching for the second element
+      {
+         TRT::Iterator pos = row2.find( 3UL );
+
+         if( pos == row2.end() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Element could not be found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Current row:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = 4\n"
                 << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row2 << "\n";
             throw std::runtime_error( oss.str() );
@@ -5487,7 +5271,7 @@ void ClassTest::testFind()
 // This function performs a test of the \c lowerBound() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testLowerBound()
+void SymmetricTest::testLowerBound()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5558,12 +5342,24 @@ void ClassTest::testLowerBound()
       {
          RT::Iterator pos = row1.lowerBound( 2UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required index = 2\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5640,12 +5436,24 @@ void ClassTest::testLowerBound()
       {
          TRT::Iterator pos = row1.lowerBound( 2UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required index = 2\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5664,7 +5472,7 @@ void ClassTest::testLowerBound()
 // This function performs a test of the \c upperBound() member function of the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testUpperBound()
+void SymmetricTest::testUpperBound()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5708,12 +5516,24 @@ void ClassTest::testUpperBound()
       {
          RT::Iterator pos = row1.upperBound( 1UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
-                << "   Required index = 1\n"
+                << "   Required index = 0\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5723,12 +5543,24 @@ void ClassTest::testUpperBound()
       {
          RT::Iterator pos = row1.upperBound( 2UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
-                << "   Required index = 2\n"
+                << "   Required index = 0\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5778,12 +5610,24 @@ void ClassTest::testUpperBound()
       {
          TRT::Iterator pos = row1.upperBound( 1UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
-                << "   Required index = 1\n"
+                << "   Required index = 0\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5793,12 +5637,24 @@ void ClassTest::testUpperBound()
       {
          TRT::Iterator pos = row1.upperBound( 2UL );
 
-         if( pos != row1.end() ) {
+         if( pos == row1.end() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Upper bound could not be determined\n"
                 << " Details:\n"
-                << "   Required index = 2\n"
+                << "   Required index = 0\n"
+                << "   Current row:\n" << row1 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         else if( pos->index() != 3 || pos->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Wrong element found\n"
+                << " Details:\n"
+                << "   Required index = 3\n"
+                << "   Found index    = " << pos->index() << "\n"
+                << "   Expected value = -2\n"
+                << "   Value at index = " << pos->value() << "\n"
                 << "   Current row:\n" << row1 << "\n";
             throw std::runtime_error( oss.str() );
          }
@@ -5817,7 +5673,7 @@ void ClassTest::testUpperBound()
 // This function performs a test of the \c isDefault() function with the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsDefault()
+void SymmetricTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -5947,7 +5803,7 @@ void ClassTest::testIsDefault()
 // This function performs a test of the \c isSame() function with the SparseRow class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsSame()
+void SymmetricTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6422,7 +6278,7 @@ void ClassTest::testIsSame()
 // This function performs a test of the \c subvector() function used with the SparseRow class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubvector()
+void SymmetricTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6514,33 +6370,23 @@ void ClassTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void ClassTest::initialize()
+void SymmetricTest::initialize()
 {
-   // Initializing the row-major compressed matrix
+   // Initializing the symmetric row-major matrix
    mat_.reset();
    mat_(1,1) =  1;
-   mat_(2,0) = -2;
-   mat_(2,2) = -3;
-   mat_(3,1) =  4;
-   mat_(3,2) =  5;
-   mat_(3,3) = -6;
-   mat_(4,0) =  7;
-   mat_(4,1) = -8;
-   mat_(4,2) =  9;
-   mat_(4,3) = 10;
+   mat_(1,3) = -2;
+   mat_(2,2) =  3;
+   mat_(2,3) =  4;
+   mat_(3,3) =  5;
 
-   // Initializing the column-major compressed matrix
+   // Initializing the symmetric column-major matrix
    tmat_.reset();
    tmat_(1,1) =  1;
-   tmat_(2,0) = -2;
-   tmat_(2,2) = -3;
-   tmat_(3,1) =  4;
-   tmat_(3,2) =  5;
-   tmat_(3,3) = -6;
-   tmat_(4,0) =  7;
-   tmat_(4,1) = -8;
-   tmat_(4,2) =  9;
-   tmat_(4,3) = 10;
+   tmat_(1,3) = -2;
+   tmat_(2,2) =  3;
+   tmat_(2,3) =  4;
+   tmat_(3,3) =  5;
 }
 //*************************************************************************************************
 
@@ -6562,14 +6408,14 @@ void ClassTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running general SparseRow class test..." << std::endl;
+   std::cout << "   Running symmetric SparseRow class test..." << std::endl;
 
    try
    {
       RUN_SPARSEROW_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during general SparseRow class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during symmetric SparseRow class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
