@@ -37,5 +37,5 @@ PATH_SPARSEROW=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SparseRow tests..."
 
-EXE=$PATH_SPARSEROW/ClassTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEROW/GeneralTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SPARSEROW/SymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

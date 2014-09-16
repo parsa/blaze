@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/sparsecolumn/ClassTest.h
-//  \brief Header file for the general SparseColumn class test
+//  \file blazetest/mathtest/sparserow/GeneralTest.h
+//  \brief Header file for the general SparseRow class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_SPARSECOLUMN_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_SPARSECOLUMN_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SPARSEROW_GENERALTEST_H_
+#define _BLAZETEST_MATHTEST_SPARSEROW_GENERALTEST_H_
 
 
 //*************************************************************************************************
@@ -45,9 +45,8 @@
 #include <string>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/SparseColumn.h>
+#include <blaze/math/SparseRow.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -56,7 +55,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace sparsecolumn {
+namespace sparserow {
 
 //=================================================================================================
 //
@@ -65,18 +64,18 @@ namespace sparsecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the SparseColumn class template.
+/*!\brief Auxiliary class for all tests of the SparseRow class template.
 //
-// This class represents a test suite for the blaze::SparseColumn class template. It performs
+// This class represents a test suite for the blaze::SparseRow class template. It performs
 // a series of both compile time as well as runtime tests.
 */
-class ClassTest
+class GeneralTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit ClassTest();
+   explicit GeneralTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -113,7 +112,7 @@ class ClassTest
    void testSubvector   ();
 
    template< typename Type >
-   void checkSize( const Type& column, size_t expectedSize ) const;
+   void checkSize( const Type& row, size_t expectedSize ) const;
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
@@ -128,7 +127,7 @@ class ClassTest
    void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& column, size_t index, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& row, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -142,28 +141,30 @@ class ClassTest
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
    typedef MT::OppositeType                              TMT;  //!< Column-major compressed matrix type
-   typedef blaze::SparseColumn<MT>                       CT;   //!< Sparse column type for row-major matrices.
-   typedef blaze::SparseColumn<TMT>                      TCT;  //!< Sparse column type for column-major matrices.
+   typedef blaze::SparseRow<MT>                          RT;   //!< Sparse row type for row-major matrices.
+   typedef blaze::SparseRow<TMT>                         TRT;  //!< Sparse row type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
    MT  mat_;   //!< Row-major compressed matrix.
-               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{5}{c}}
-                    0 & 0 & -2 &  0 &  7 \\
-                    0 & 1 &  0 &  4 & -8 \\
-                    0 & 0 & -3 &  5 &  9 \\
-                    0 & 0 &  0 & -6 & 10 \\
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
    TMT tmat_;  //!< Column-major compressed matrix.
-               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{5}{c}}
-                    0 & 0 & -2 &  0 &  7 \\
-                    0 & 1 &  0 &  4 & -8 \\
-                    0 & 0 & -3 &  5 &  9 \\
-                    0 & 0 &  0 & -6 & 10 \\
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
 
    std::string test_;  //!< Label of the currently performed test.
@@ -174,10 +175,10 @@ class ClassTest
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TCT );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TCT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TRT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -193,25 +194,25 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given sparse column.
+/*!\brief Checking the size of the given sparse row.
 //
-// \param column The sparse column to be checked.
-// \param expectedSize The expected size of the sparse column.
+// \param row The sparse row to be checked.
+// \param expectedSize The expected size of the sparse row.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given sparse column. In case the actual size does not
+// This function checks the size of the given sparse row. In case the actual size does not
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the sparse column
-void ClassTest::checkSize( const Type& column, size_t expectedSize ) const
+template< typename Type >  // Type of the sparse row
+void GeneralTest::checkSize( const Type& row, size_t expectedSize ) const
 {
-   if( size( column ) != expectedSize ) {
+   if( size( row ) != expectedSize ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid size detected\n"
           << " Details:\n"
-          << "   Size         : " << size( column ) << "\n"
+          << "   Size         : " << size( row ) << "\n"
           << "   Expected size: " << expectedSize << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -232,7 +233,7 @@ void ClassTest::checkSize( const Type& column, size_t expectedSize ) const
 // \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void GeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
@@ -260,7 +261,7 @@ void ClassTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void GeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
@@ -276,19 +277,19 @@ void ClassTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given sparse column or compressed matrix.
+/*!\brief Checking the capacity of the given sparse row or compressed matrix.
 //
-// \param object The sparse column or compressed matrix to be checked.
+// \param object The sparse row or compressed matrix to be checked.
 // \param minCapacity The expected minimum capacity.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given sparse column or compressed matrix. In case the
+// This function checks the capacity of the given sparse row or compressed matrix. In case the
 // actual capacity is smaller than the given expected minimum capacity, a \a std::runtime_error
 // exception is thrown.
 */
-template< typename Type >  // Type of the sparse column or compressed matrix
-void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
+template< typename Type >  // Type of the sparse row or compressed matrix
+void GeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
       std::ostringstream oss;
@@ -304,19 +305,19 @@ void ClassTest::checkCapacity( const Type& object, size_t minCapacity ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given sparse column or compressed matrix.
+/*!\brief Checking the number of non-zero elements of the given sparse row or compressed matrix.
 //
-// \param object The sparse colum or compressed matrix to be checked.
+// \param object The sparse row or compressed matrix to be checked.
 // \param expectedNonZeros The expected number of non-zero elements.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given sparse column or compressed
+// This function checks the number of non-zero elements of the given sparse row or compressed
 // matrix. In case the actual number of non-zero elements does not correspond to the given
 // expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the sparse column or compressed matrix
-void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the sparse row or compressed matrix
+void GeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -355,7 +356,7 @@ void ClassTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) con
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the compressed matrix
-void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void GeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -391,13 +392,13 @@ void ClassTest::checkNonZeros( const Type& matrix, size_t index, size_t expected
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the SparseColumn class template.
+/*!\brief Testing the functionality of the SparseRow class template.
 //
 // \return void
 */
 void runTest()
 {
-   ClassTest();
+   GeneralTest();
 }
 //*************************************************************************************************
 
@@ -412,14 +413,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the general SparseColumn class test.
+/*!\brief Macro for the execution of the general SparseRow class test.
 */
-#define RUN_SPARSECOLUMN_CLASS_TEST \
-   blazetest::mathtest::sparsecolumn::runTest()
+#define RUN_SPARSEROW_CLASS_TEST \
+   blazetest::mathtest::sparserow::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace sparsecolumn
+} // namespace sparserow
 
 } // namespace mathtest
 

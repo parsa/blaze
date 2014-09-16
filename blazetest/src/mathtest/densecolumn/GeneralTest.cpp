@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/sparsecolumn/ClassTest.cpp
-//  \brief Source file for the general SparseColumn class test
+//  \file src/mathtest/densecolumn/GeneralTest.cpp
+//  \brief Source file for the general DenseColumn class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,14 +42,14 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/sparsecolumn/ClassTest.h>
+#include <blazetest/mathtest/densecolumn/GeneralTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace sparsecolumn {
+namespace densecolumn {
 
 //=================================================================================================
 //
@@ -58,11 +58,11 @@ namespace sparsecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general SparseColumn class test.
+/*!\brief Constructor for the general DenseColumn class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ClassTest::ClassTest()
+GeneralTest::GeneralTest()
    : mat_ ( 4UL, 5UL )
    , tmat_( 4UL, 5UL )
 {
@@ -77,14 +77,6 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testClear();
-   testSet();
-   testInsert();
-   testAppend();
-   testErase();
-   testReserve();
-   testFind();
-   testLowerBound();
-   testUpperBound();
    testIsDefault();
    testIsSame();
    testSubvector();
@@ -101,22 +93,22 @@ ClassTest::ClassTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn constructors.
+/*!\brief Test of the DenseColumn constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the SparseColumn class template.
+// This function performs a test of all constructors of the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testConstructors()
+void GeneralTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn constructor";
+      test_ = "Row-major DenseColumn constructor";
 
       initialize();
 
@@ -125,12 +117,13 @@ void ClassTest::testConstructors()
          CT col0 = column( mat_, 0UL );
 
          checkSize    ( col0, 4UL );
+         checkCapacity( col0, 4UL );
          checkNonZeros( col0, 0UL );
 
          if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 0th sparse column failed\n"
+                << " Error: Setup of 0th dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
@@ -143,12 +136,13 @@ void ClassTest::testConstructors()
          CT col1 = column( mat_, 1UL );
 
          checkSize    ( col1, 4UL );
+         checkCapacity( col1, 4UL );
          checkNonZeros( col1, 1UL );
 
          if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 1st sparse column failed\n"
+                << " Error: Setup of 1st dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col1 << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n";
@@ -161,12 +155,13 @@ void ClassTest::testConstructors()
          CT col2 = column( mat_, 2UL );
 
          checkSize    ( col2, 4UL );
+         checkCapacity( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
          if( col2[0] != -2 || col2[1] != 0 || col2[2] != -3 || col2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 2nd sparse column failed\n"
+                << " Error: Setup of 2nd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col2 << "\n"
                 << "   Expected result:\n( -2 0 -3 0 )\n";
@@ -179,12 +174,13 @@ void ClassTest::testConstructors()
          CT col3 = column( mat_, 3UL );
 
          checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
          checkNonZeros( col3, 3UL );
 
          if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 3rd sparse column failed\n"
+                << " Error: Setup of 3rd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 4 5 -6 )\n";
@@ -197,12 +193,13 @@ void ClassTest::testConstructors()
          CT col4 = column( mat_, 4UL );
 
          checkSize    ( col4, 4UL );
+         checkCapacity( col4, 4UL );
          checkNonZeros( col4, 4UL );
 
          if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th sparse column failed\n"
+                << " Error: Setup of 4th dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col4 << "\n"
                 << "   Expected result:\n( 7 -8 9 10 )\n";
@@ -217,7 +214,7 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn constructor";
+      test_ = "Column-major DenseColumn constructor";
 
       initialize();
 
@@ -226,12 +223,13 @@ void ClassTest::testConstructors()
          TCT col0 = column( tmat_, 0UL );
 
          checkSize    ( col0, 4UL );
+         checkCapacity( col0, 4UL );
          checkNonZeros( col0, 0UL );
 
          if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 0th sparse column failed\n"
+                << " Error: Setup of 0th dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
@@ -244,12 +242,13 @@ void ClassTest::testConstructors()
          TCT col1 = column( tmat_, 1UL );
 
          checkSize    ( col1, 4UL );
+         checkCapacity( col1, 4UL );
          checkNonZeros( col1, 1UL );
 
          if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 1st sparse column failed\n"
+                << " Error: Setup of 1st dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col1 << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n";
@@ -262,12 +261,13 @@ void ClassTest::testConstructors()
          TCT col2 = column( tmat_, 2UL );
 
          checkSize    ( col2, 4UL );
+         checkCapacity( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
          if( col2[0] != -2 || col2[1] != 0 || col2[2] != -3 || col2[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 2nd sparse column failed\n"
+                << " Error: Setup of 2nd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col2 << "\n"
                 << "   Expected result:\n( -2 0 -3 0 )\n";
@@ -280,12 +280,13 @@ void ClassTest::testConstructors()
          TCT col3 = column( tmat_, 3UL );
 
          checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
          checkNonZeros( col3, 3UL );
 
          if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 3rd sparse column failed\n"
+                << " Error: Setup of 3rd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 4 5 -6 )\n";
@@ -298,12 +299,13 @@ void ClassTest::testConstructors()
          TCT col4 = column( tmat_, 4UL );
 
          checkSize    ( col4, 4UL );
+         checkCapacity( col4, 4UL );
          checkNonZeros( col4, 4UL );
 
          if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th sparse column failed\n"
+                << " Error: Setup of 4th dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col4 << "\n"
                 << "   Expected result:\n( 7 -8 9 10 )\n";
@@ -316,22 +318,69 @@ void ClassTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn assignment operators.
+/*!\brief Test of the DenseColumn assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the SparseColumn class template.
+// This function performs a test of all assignment operators of the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAssignment()
+void GeneralTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DenseColumn homogeneous assignment";
+
+      initialize();
+
+      CT col1 = column( mat_, 1UL );
+      col1 = 8;
+
+      checkSize    ( col1,  4UL );
+      checkCapacity( col1,  4UL );
+      checkNonZeros( col1,  4UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  5UL );
+      checkNonZeros( mat_, 13UL );
+
+      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 8 || col1[3] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 8 8 8 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 8 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 8 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != 8 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  8 -2  0  7 )\n"
+                                     "( 0  8  0  4 -8 )\n"
+                                     "( 0  8 -3  5  9 )\n"
+                                     "( 0  8  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn copy assignment";
+      test_ = "Row-major DenseColumn copy assignment";
 
       initialize();
 
@@ -339,6 +388,7 @@ void ClassTest::testAssignment()
       col1 = column( mat_, 2UL );
 
       checkSize    ( col1,  4UL );
+      checkCapacity( col1,  4UL );
       checkNonZeros( col1,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -390,6 +440,7 @@ void ClassTest::testAssignment()
       col1 = vec1;
 
       checkSize    ( col1,  4UL );
+      checkCapacity( col1,  4UL );
       checkNonZeros( col1,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -440,6 +491,7 @@ void ClassTest::testAssignment()
       col4 = vec1;
 
       checkSize    ( col4, 4UL );
+      checkCapacity( col4, 4UL );
       checkNonZeros( col4, 1UL );
       checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 5UL );
@@ -474,11 +526,58 @@ void ClassTest::testAssignment()
 
 
    //=====================================================================================
+   // Column-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DenseColumn homogeneous assignment";
+
+      initialize();
+
+      TCT col1 = column( tmat_, 1UL );
+      col1 = 8;
+
+      checkSize    ( col1 ,  4UL );
+      checkCapacity( col1 ,  4UL );
+      checkNonZeros( col1 ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 13UL );
+
+      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 8 || col1[3] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 8 8 8 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 8 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 8 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 8 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  8 -2  0  7 )\n"
+                                     "( 0  8  0  4 -8 )\n"
+                                     "( 0  8 -3  5  9 )\n"
+                                     "( 0  8  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn copy assignment";
+      test_ = "Column-major DenseColumn copy assignment";
 
       initialize();
 
@@ -486,6 +585,7 @@ void ClassTest::testAssignment()
       col1 = column( tmat_, 2UL );
 
       checkSize    ( col1 ,  4UL );
+      checkCapacity( col1 ,  4UL );
       checkNonZeros( col1 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -537,6 +637,7 @@ void ClassTest::testAssignment()
       col1 = vec1;
 
       checkSize    ( col1 ,  4UL );
+      checkCapacity( col1 ,  4UL );
       checkNonZeros( col1 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -587,6 +688,7 @@ void ClassTest::testAssignment()
       col4 = vec1;
 
       checkSize    ( col4 , 4UL );
+      checkCapacity( col4 , 4UL );
       checkNonZeros( col4 , 1UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 5UL );
@@ -623,22 +725,22 @@ void ClassTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn addition assignment operators.
+/*!\brief Test of the DenseColumn addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the SparseColumn class
+// This function performs a test of the addition assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAddAssign()
+void GeneralTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn addition assignment
+   // Row-major DenseColumn addition assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn addition assignment";
+      test_ = "Row-major DenseColumn addition assignment";
 
       initialize();
 
@@ -646,6 +748,7 @@ void ClassTest::testAddAssign()
       col2 += column( mat_, 3UL );
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -697,6 +800,7 @@ void ClassTest::testAddAssign()
       col2 += vec;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -748,6 +852,7 @@ void ClassTest::testAddAssign()
       col2 += vec;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -782,11 +887,11 @@ void ClassTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn addition assignment
+   // Column-major DenseColumn addition assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn addition assignment";
+      test_ = "Column-major DenseColumn addition assignment";
 
       initialize();
 
@@ -794,6 +899,7 @@ void ClassTest::testAddAssign()
       col2 += column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -845,6 +951,7 @@ void ClassTest::testAddAssign()
       col2 += vec;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -896,10 +1003,11 @@ void ClassTest::testAddAssign()
       col2 += vec;
 
       checkSize    ( col2 ,  4UL );
-      checkNonZeros( col2 ,  3UL );
+      checkCapacity( col2 ,  4UL );
+      checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
+      checkNonZeros( tmat_, 10UL );
 
       if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
          std::ostringstream oss;
@@ -932,22 +1040,22 @@ void ClassTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn subtraction assignment operators.
+/*!\brief Test of the DenseColumn subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the SparseColumn class
+// This function performs a test of the subtraction assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubAssign()
+void GeneralTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn subtraction assignment
+   // Row-major DenseColumn subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn subtraction assignment";
+      test_ = "Row-major DenseColumn subtraction assignment";
 
       initialize();
 
@@ -955,6 +1063,7 @@ void ClassTest::testSubAssign()
       col2 -= column( mat_, 3UL );
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1006,6 +1115,7 @@ void ClassTest::testSubAssign()
       col2 -= vec;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  3UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1057,6 +1167,7 @@ void ClassTest::testSubAssign()
       col2 -= vec;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  3UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1091,11 +1202,11 @@ void ClassTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn subtraction assignment
+   // Column-major DenseColumn subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn subtraction assignment";
+      test_ = "Column-major DenseColumn subtraction assignment";
 
       initialize();
 
@@ -1103,6 +1214,7 @@ void ClassTest::testSubAssign()
       col2 -= column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -1154,6 +1266,7 @@ void ClassTest::testSubAssign()
       col2 -= vec;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  3UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -1205,6 +1318,7 @@ void ClassTest::testSubAssign()
       col2 -= vec;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  3UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -1241,22 +1355,22 @@ void ClassTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn multiplication assignment operators.
+/*!\brief Test of the DenseColumn multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the SparseColumn class
+// This function performs a test of the multiplication assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMultAssign()
+void GeneralTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major SparseColumn multiplication assignment
+   // Row-major DenseColumn multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn multiplication assignment";
+      test_ = "Row-major DenseColumn multiplication assignment";
 
       initialize();
 
@@ -1264,6 +1378,7 @@ void ClassTest::testMultAssign()
       col2 *= column( mat_, 3UL );
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 1UL );
       checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 5UL );
@@ -1315,6 +1430,7 @@ void ClassTest::testMultAssign()
       col2 *= vec;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 1UL );
       checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 5UL );
@@ -1366,6 +1482,7 @@ void ClassTest::testMultAssign()
       col2 *= vec;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 1UL );
       checkRows    ( mat_, 4UL );
       checkColumns ( mat_, 5UL );
@@ -1400,11 +1517,11 @@ void ClassTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major SparseColumn multiplication assignment
+   // Column-major DenseColumn multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn multiplication assignment";
+      test_ = "Column-major DenseColumn multiplication assignment";
 
       initialize();
 
@@ -1412,6 +1529,7 @@ void ClassTest::testMultAssign()
       col2 *= column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
       checkNonZeros( col2 , 1UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 5UL );
@@ -1462,11 +1580,12 @@ void ClassTest::testMultAssign()
 
       col2 *= vec;
 
-      checkSize    ( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 1UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
 
       if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
          std::ostringstream oss;
@@ -1514,6 +1633,7 @@ void ClassTest::testMultAssign()
       col2 *= vec;
 
       checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
       checkNonZeros( col2 , 1UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 5UL );
@@ -1550,15 +1670,15 @@ void ClassTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all SparseColumn (self-)scaling operations.
+/*!\brief Test of all DenseColumn (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the SparseColumn
+// This function performs a test of all available ways to scale an instance of the DenseColumn
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScaling()
+void GeneralTest::testScaling()
 {
    //=====================================================================================
    // Row-major self-scaling (v*=s)
@@ -1574,6 +1694,7 @@ void ClassTest::testScaling()
       col2 *= 3;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1621,6 +1742,7 @@ void ClassTest::testScaling()
       col2 = col2 * 3;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1668,6 +1790,7 @@ void ClassTest::testScaling()
       col2 = 3 * col2;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1715,6 +1838,7 @@ void ClassTest::testScaling()
       col2 /= 0.5;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1762,6 +1886,7 @@ void ClassTest::testScaling()
       col2 = col2 / 0.5;
 
       checkSize    ( col2,  4UL );
+      checkCapacity( col2,  4UL );
       checkNonZeros( col2,  2UL );
       checkRows    ( mat_,  4UL );
       checkColumns ( mat_,  5UL );
@@ -1796,11 +1921,11 @@ void ClassTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major SparseColumn::scale()
+   // Row-major DenseColumn::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::scale()";
+      test_ = "Row-major DenseColumn::scale()";
 
       initialize();
 
@@ -1810,6 +1935,7 @@ void ClassTest::testScaling()
          col3.scale( 3 );
 
          checkSize    ( col3,  4UL );
+         checkCapacity( col3,  4UL );
          checkNonZeros( col3,  3UL );
          checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  5UL );
@@ -1834,7 +1960,7 @@ void ClassTest::testScaling()
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2   0  7 )\n"
+                << "   Expected result:\n( 0  0 -2  0   7 )\n"
                                         "( 0  1  0  12 -8 )\n"
                                         "( 0  0 -3  15  9 )\n"
                                         "( 0  0  0 -18 10 )\n";
@@ -1848,6 +1974,7 @@ void ClassTest::testScaling()
          col3.scale( 0.5 );
 
          checkSize    ( col3,  4UL );
+         checkCapacity( col3,  4UL );
          checkNonZeros( col3,  3UL );
          checkRows    ( mat_,  4UL );
          checkColumns ( mat_,  5UL );
@@ -1856,7 +1983,7 @@ void ClassTest::testScaling()
          if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 6 7 -9 )\n";
@@ -1869,7 +1996,7 @@ void ClassTest::testScaling()
              mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -9 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -1896,6 +2023,7 @@ void ClassTest::testScaling()
       col2 *= 3;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -1943,6 +2071,7 @@ void ClassTest::testScaling()
       col2 = col2 * 3;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -1990,6 +2119,7 @@ void ClassTest::testScaling()
       col2 = 3 * col2;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -2037,6 +2167,7 @@ void ClassTest::testScaling()
       col2 /= 0.5;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -2084,6 +2215,7 @@ void ClassTest::testScaling()
       col2 = col2 / 0.5;
 
       checkSize    ( col2 ,  4UL );
+      checkCapacity( col2 ,  4UL );
       checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
@@ -2118,11 +2250,11 @@ void ClassTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major SparseColumn::scale()
+   // Column-major DenseColumn::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::scale()";
+      test_ = "Column-major DenseColumn::scale()";
 
       initialize();
 
@@ -2132,6 +2264,7 @@ void ClassTest::testScaling()
          col3.scale( 3 );
 
          checkSize    ( col3 ,  4UL );
+         checkCapacity( col3 ,  4UL );
          checkNonZeros( col3 ,  3UL );
          checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  5UL );
@@ -2156,7 +2289,7 @@ void ClassTest::testScaling()
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2   0  7 )\n"
+                << "   Expected result:\n( 0  0 -2  0   7 )\n"
                                         "( 0  1  0  12 -8 )\n"
                                         "( 0  0 -3  15  9 )\n"
                                         "( 0  0  0 -18 10 )\n";
@@ -2170,6 +2303,7 @@ void ClassTest::testScaling()
          col3.scale( 0.5 );
 
          checkSize    ( col3 ,  4UL );
+         checkCapacity( col3 ,  4UL );
          checkNonZeros( col3 ,  3UL );
          checkRows    ( tmat_,  4UL );
          checkColumns ( tmat_,  5UL );
@@ -2178,7 +2312,7 @@ void ClassTest::testScaling()
          if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 6 7 -9 )\n";
@@ -2191,7 +2325,7 @@ void ClassTest::testScaling()
              tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -9 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Floating point scale operation of 3rd column failed\n"
+                << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
                 << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2207,23 +2341,23 @@ void ClassTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn subscript operator.
+/*!\brief Test of the DenseColumn subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the SparseColumn class template. In case an error is detected, a \a std::runtime_error
+// of the DenseColumn class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void ClassTest::testSubscript()
+void GeneralTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::operator[]";
+      test_ = "Row-major DenseColumn::operator[]";
 
       initialize();
 
@@ -2233,6 +2367,7 @@ void ClassTest::testSubscript()
       col2[1] = 9;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != -3 || col2[3] != 0 ) {
@@ -2251,7 +2386,7 @@ void ClassTest::testSubscript()
           mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2265,6 +2400,7 @@ void ClassTest::testSubscript()
       col2[2] = 0;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 2UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != 0 ) {
@@ -2283,7 +2419,7 @@ void ClassTest::testSubscript()
           mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2297,6 +2433,7 @@ void ClassTest::testSubscript()
       col2[3] = -8;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
@@ -2315,7 +2452,7 @@ void ClassTest::testSubscript()
           mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -8 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2464,7 +2601,7 @@ void ClassTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::operator[]";
+      test_ = "Column-major DenseColumn::operator[]";
 
       initialize();
 
@@ -2474,6 +2611,7 @@ void ClassTest::testSubscript()
       col2[1] = 9;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != -3 || col2[3] != 0 ) {
@@ -2492,7 +2630,7 @@ void ClassTest::testSubscript()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2506,6 +2644,7 @@ void ClassTest::testSubscript()
       col2[2] = 0;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 2UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != 0 ) {
@@ -2524,7 +2663,7 @@ void ClassTest::testSubscript()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2538,6 +2677,7 @@ void ClassTest::testSubscript()
       col2[3] = -8;
 
       checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
       if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
@@ -2556,7 +2696,7 @@ void ClassTest::testSubscript()
           tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -8 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
              << "   Expected result:\n( 0  0 -2  0  7 )\n"
@@ -2703,15 +2843,15 @@ void ClassTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SparseColumn iterator implementation.
+/*!\brief Test of the DenseColumn iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the iterator implementation of the DenseColumn class template.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIterator()
+void GeneralTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2755,7 +2895,7 @@ void ClassTest::testIterator()
          CT col2 = column( mat_, 2UL );
          CT::ConstIterator it( begin( col2 ) );
 
-         if( it == end( col2 ) || it->value() != -2 ) {
+         if( it == end( col2 ) || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -2770,13 +2910,13 @@ void ClassTest::testIterator()
          CT col1 = column( mat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
-         if( number != 1UL ) {
+         if( number != 4UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 1\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2788,13 +2928,13 @@ void ClassTest::testIterator()
          CT col2 = column( mat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
-         if( number != 2UL ) {
+         if( number != 4UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2803,11 +2943,11 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         CT col2 = column( mat_, 2UL );
-         CT::ConstIterator it ( cbegin( col2 ) );
-         CT::ConstIterator end( cend( col2 ) );
+         CT col3 = column( mat_, 3UL );
+         CT::ConstIterator it ( cbegin( col3 ) );
+         CT::ConstIterator end( cend( col3 ) );
 
-         if( it == end || it->value() != -2 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid initial iterator detected\n";
@@ -2816,19 +2956,82 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || it->value() != -3 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
+         --it;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          it++;
+
+         if( it == end || *it != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it--;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it -= 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator subtraction assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it + 3UL;
+
+         if( it == end || *it != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it - 3UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar subtraction failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = 4UL + it;
 
          if( it != end ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Iterator post-increment failed\n";
+                << " Error: Scalar/iterator addition failed\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2837,36 +3040,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         CT col4 = column( mat_, 4UL );
+         CT col0 = column( mat_, 0UL );
          int value = 6;
 
-         for( CT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it = value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 7 || col4[2] != 8 || col4[3] != 9 ) {
+         if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) != 6 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != 7 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 8 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 9 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+             mat_(2,0) != 8 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 9 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5  8 )\n"
-                                        "( 0  0  0 -6  9 )\n";
+                << "   Expected result:\n( 6  0 -2  0  7 )\n"
+                                        "( 7  1  0  4 -8 )\n"
+                                        "( 8  0 -3  5  9 )\n"
+                                        "( 9  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2875,36 +3078,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         CT col4 = column( mat_, 4UL );
+         CT col0 = column( mat_, 0UL );
          int value = 2;
 
-         for( CT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it += value++;
          }
 
-         if( col4[0] != 8 || col4[1] != 10 || col4[2] != 12 || col4[3] != 14 ) {
+         if( col0[0] != 8 || col0[1] != 10 || col0[2] != 12 || col0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  8 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != 10 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 12 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 14 ) {
+         if( mat_(0,0) !=  8 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 10 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+             mat_(2,0) != 12 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 14 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  8 )\n"
-                                        "( 0  1  0  4 10 )\n"
-                                        "( 0  0 -3  5 12 )\n"
-                                        "( 0  0  0 -6 14 )\n";
+                << "   Expected result:\n(  8  0 -2  0  7 )\n"
+                                        "( 10  1  0  4 -8 )\n"
+                                        "( 12  0 -3  5  9 )\n"
+                                        "( 14  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2913,36 +3116,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         CT col4 = column( mat_, 4UL );
+         CT col0 = column( mat_, 0UL );
          int value = 2;
 
-         for( CT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it -= value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 7 || col4[2] != 8 || col4[3] != 9 ) {
+         if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) != 6 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != 7 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 8 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 9 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+             mat_(2,0) != 8 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 9 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5  8 )\n"
-                                        "( 0  0  0 -6  9 )\n";
+                << "   Expected result:\n( 6  0 -2  0  7 )\n"
+                                        "( 7  1  0  4 -8 )\n"
+                                        "( 8  0 -3  5  9 )\n"
+                                        "( 9  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2951,36 +3154,36 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         CT col4 = column( mat_, 4UL );
+         CT col0 = column( mat_, 0UL );
          int value = 1;
 
-         for( CT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it *= value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 14 || col4[2] != 24 || col4[3] != 36 ) {
+         if( col0[0] != 6 || col0[1] != 14 || col0[2] != 24 || col0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  6 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != 14 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 24 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 36 ) {
+         if( mat_(0,0) !=  6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) != 14 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+             mat_(2,0) != 24 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 36 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4 14 )\n"
-                                        "( 0  0 -3  5 24 )\n"
-                                        "( 0  0  0 -6 36 )\n";
+                << "   Expected result:\n(  6  0 -2  0  7 )\n"
+                                        "( 14  1  0  4 -8 )\n"
+                                        "( 24  0 -3  5  9 )\n"
+                                        "( 36  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2989,35 +3192,35 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         CT col4 = column( mat_, 4UL );
+         CT col0 = column( mat_, 0UL );
 
-         for( CT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( CT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
          }
 
-         if( col4[0] != 3 || col4[1] != 7 || col4[2] != 12 || col4[3] != 18 ) {
+         if( col0[0] != 3 || col0[1] != 7 || col0[2] != 12 || col0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 3 7 12 18 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  3 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) !=  7 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 12 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 18 ) {
+         if( mat_(0,0) !=  3 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
+             mat_(1,0) !=  7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
+             mat_(2,0) != 12 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
+             mat_(3,0) != 18 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  3 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5 12 )\n"
-                                        "( 0  0  0 -6 18 )\n";
+                << "   Expected result:\n(  3  0 -2  0  7 )\n"
+                                        "(  7  1  0  4 -8 )\n"
+                                        "( 12  0 -3  5  9 )\n"
+                                        "( 18  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3066,7 +3269,7 @@ void ClassTest::testIterator()
          TCT col2 = column( tmat_, 2UL );
          TCT::ConstIterator it( begin( col2 ) );
 
-         if( it == end( col2 ) || it->value() != -2 ) {
+         if( it == end( col2 ) || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -3081,13 +3284,13 @@ void ClassTest::testIterator()
          TCT col1 = column( tmat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
-         if( number != 1UL ) {
+         if( number != 4UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 1\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3099,13 +3302,13 @@ void ClassTest::testIterator()
          TCT col2 = column( tmat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
-         if( number != 2UL ) {
+         if( number != 4UL ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
-                << "   Expected number of elements: 2\n";
+                << "   Expected number of elements: 4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3114,11 +3317,11 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TCT col2 = column( tmat_, 2UL );
-         TCT::ConstIterator it ( cbegin( col2 ) );
-         TCT::ConstIterator end( cend( col2 ) );
+         TCT col3 = column( tmat_, 3UL );
+         TCT::ConstIterator it ( cbegin( col3 ) );
+         TCT::ConstIterator end( cend( col3 ) );
 
-         if( it == end || it->value() != -2 ) {
+         if( it == end || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid initial iterator detected\n";
@@ -3127,19 +3330,82 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || it->value() != -3 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
             throw std::runtime_error( oss.str() );
          }
 
+         --it;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
          it++;
+
+         if( it == end || *it != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it--;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 2UL;
+
+         if( it == end || *it != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it -= 2UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator subtraction assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it + 3UL;
+
+         if( it == end || *it != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it - 3UL;
+
+         if( it == end || *it != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar subtraction failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = 4UL + it;
 
          if( it != end ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Iterator post-increment failed\n";
+                << " Error: Scalar/iterator addition failed\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3148,36 +3414,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         TCT col4 = column( tmat_, 4UL );
+         TCT col0 = column( tmat_, 0UL );
          int value = 6;
 
-         for( TCT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it = value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 7 || col4[2] != 8 || col4[3] != 9 ) {
+         if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) != 6 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != 7 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 8 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 9 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 8 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5  8 )\n"
-                                        "( 0  0  0 -6  9 )\n";
+                << "   Expected result:\n( 6  0 -2  0  7 )\n"
+                                        "( 7  1  0  4 -8 )\n"
+                                        "( 8  0 -3  5  9 )\n"
+                                        "( 9  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3186,36 +3452,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         TCT col4 = column( tmat_, 4UL );
+         TCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it += value++;
          }
 
-         if( col4[0] != 8 || col4[1] != 10 || col4[2] != 12 || col4[3] != 14 ) {
+         if( col0[0] != 8 || col0[1] != 10 || col0[2] != 12 || col0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  8 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != 10 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 12 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 14 ) {
+         if( tmat_(0,0) !=  8 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 10 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 12 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 14 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Assignment via iterator failed\n"
+                << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  8 )\n"
-                                        "( 0  1  0  4 10 )\n"
-                                        "( 0  0 -3  5 12 )\n"
-                                        "( 0  0  0 -6 14 )\n";
+                << "   Expected result:\n(  8  0 -2  0  7 )\n"
+                                        "( 10  1  0  4 -8 )\n"
+                                        "( 12  0 -3  5  9 )\n"
+                                        "( 14  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3224,36 +3490,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         TCT col4 = column( tmat_, 4UL );
+         TCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it -= value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 7 || col4[2] != 8 || col4[3] != 9 ) {
+         if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) != 6 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != 7 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 8 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 9 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 8 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5  8 )\n"
-                                        "( 0  0  0 -6  9 )\n";
+                << "   Expected result:\n( 6  0 -2  0  7 )\n"
+                                        "( 7  1  0  4 -8 )\n"
+                                        "( 8  0 -3  5  9 )\n"
+                                        "( 9  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3262,36 +3528,36 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         TCT col4 = column( tmat_, 4UL );
+         TCT col0 = column( tmat_, 0UL );
          int value = 1;
 
-         for( TCT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it *= value++;
          }
 
-         if( col4[0] != 6 || col4[1] != 14 || col4[2] != 24 || col4[3] != 36 ) {
+         if( col0[0] != 6 || col0[1] != 14 || col0[2] != 24 || col0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  6 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != 14 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 24 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 36 ) {
+         if( tmat_(0,0) !=  6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) != 14 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 24 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 36 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  6 )\n"
-                                        "( 0  1  0  4 14 )\n"
-                                        "( 0  0 -3  5 24 )\n"
-                                        "( 0  0  0 -6 36 )\n";
+                << "   Expected result:\n(  6  0 -2  0  7 )\n"
+                                        "( 14  1  0  4 -8 )\n"
+                                        "( 24  0 -3  5  9 )\n"
+                                        "( 36  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3300,35 +3566,35 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         TCT col4 = column( tmat_, 4UL );
+         TCT col0 = column( tmat_, 0UL );
 
-         for( TCT::Iterator it=begin( col4 ); it!=end( col4 ); ++it ) {
+         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
          }
 
-         if( col4[0] != 3 || col4[1] != 7 || col4[2] != 12 || col4[3] != 18 ) {
+         if( col0[0] != 3 || col0[1] != 7 || col0[2] != 12 || col0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 3 7 12 18 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  3 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) !=  7 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 12 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 18 ) {
+         if( tmat_(0,0) !=  3 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+             tmat_(1,0) !=  7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+             tmat_(2,0) != 12 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+             tmat_(3,0) != 18 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  3 )\n"
-                                        "( 0  1  0  4  7 )\n"
-                                        "( 0  0 -3  5 12 )\n"
-                                        "( 0  0  0 -6 18 )\n";
+                << "   Expected result:\n(  3  0 -2  0  7 )\n"
+                                        "(  7  1  0  4 -8 )\n"
+                                        "( 12  0 -3  5  9 )\n"
+                                        "( 18  0  0 -6 10 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3338,22 +3604,22 @@ void ClassTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the SparseColumn class template.
+/*!\brief Test of the \c nonZeros() member function of the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the SparseColumn class
+// This function performs a test of the \c nonZeros() member function of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testNonZeros()
+void GeneralTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::nonZeros()";
+      test_ = "Row-major DenseColumn::nonZeros()";
 
       initialize();
 
@@ -3361,6 +3627,7 @@ void ClassTest::testNonZeros()
       CT col3 = column( mat_, 3UL );
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
       if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
@@ -3373,10 +3640,11 @@ void ClassTest::testNonZeros()
          throw std::runtime_error( oss.str() );
       }
 
-      // Changing the number of non-zeros via the sparse column
+      // Changing the number of non-zeros via the dense column
       col3[2] = 0;
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 2UL );
 
       if( col3[0] != 0 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
@@ -3389,10 +3657,11 @@ void ClassTest::testNonZeros()
          throw std::runtime_error( oss.str() );
       }
 
-      // Changing the number of non-zeros via the sparse matrix
+      // Changing the number of non-zeros via the dense matrix
       mat_(0,3) = 5;
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
       if( col3[0] != 5 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
@@ -3412,7 +3681,7 @@ void ClassTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::nonZeros()";
+      test_ = "Column-major DenseColumn::nonZeros()";
 
       initialize();
 
@@ -3420,6 +3689,7 @@ void ClassTest::testNonZeros()
       TCT col3 = column( tmat_, 3UL );
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
       if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
@@ -3432,10 +3702,11 @@ void ClassTest::testNonZeros()
          throw std::runtime_error( oss.str() );
       }
 
-      // Changing the number of non-zeros via the sparse column
+      // Changing the number of non-zeros via the dense column
       col3[2] = 0;
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 2UL );
 
       if( col3[0] != 0 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
@@ -3448,10 +3719,11 @@ void ClassTest::testNonZeros()
          throw std::runtime_error( oss.str() );
       }
 
-      // Changing the number of non-zeros via the sparse matrix
+      // Changing the number of non-zeros via the dense matrix
       tmat_(0,3) = 5;
 
       checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
       if( col3[0] != 5 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
@@ -3469,15 +3741,15 @@ void ClassTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the SparseColumn class template.
+/*!\brief Test of the \c reset() member function of the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the SparseColumn class
+// This function performs a test of the \c reset() member function of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReset()
+void GeneralTest::testReset()
 {
    using blaze::reset;
 
@@ -3487,7 +3759,7 @@ void ClassTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Row-major SparseColumn::reset()";
+      test_ = "Row-major DenseColumn::reset()";
 
       initialize();
 
@@ -3520,6 +3792,7 @@ void ClassTest::testReset()
          reset( col4 );
 
          checkSize    ( col4, 4UL );
+         checkCapacity( col4, 4UL );
          checkNonZeros( col4, 0UL );
          checkRows    ( mat_, 4UL );
          checkColumns ( mat_, 5UL );
@@ -3543,7 +3816,7 @@ void ClassTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "Column-major SparseColumn::reset()";
+      test_ = "Column-major DenseColumn::reset()";
 
       initialize();
 
@@ -3576,6 +3849,7 @@ void ClassTest::testReset()
          reset( col4 );
 
          checkSize    ( col4 , 4UL );
+         checkCapacity( col4 , 4UL );
          checkNonZeros( col4 , 0UL );
          checkRows    ( tmat_, 4UL );
          checkColumns ( tmat_, 5UL );
@@ -3597,15 +3871,15 @@ void ClassTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the SparseColumn class template.
+/*!\brief Test of the \c clear() function with the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the SparseColumn class template.
+// This function performs a test of the \c clear() function with the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testClear()
+void GeneralTest::testClear()
 {
    using blaze::clear;
 
@@ -3681,2023 +3955,15 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c set() member function of the SparseColumn class template.
+/*!\brief Test of the \c isDefault() function with the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c set() member function of the SparseColumn class
+// This function performs a test of the \c isDefault() function with the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSet()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::set()";
-
-      initialize();
-
-      CT col0 = column( mat_, 0UL );
-
-      // Setting a non-zero element at the end of the column
-      {
-         CT::Iterator pos = col0.set( 3UL, 1 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  1UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 11UL );
-
-         if( pos->value() != 1 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting a non-zero element at the beginning of the column
-      {
-         CT::Iterator pos = col0.set( 0UL, 2 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  2UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 12UL );
-
-         if( pos->value() != 2 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting a non-zero element at the center of the column
-      {
-         CT::Iterator pos = col0.set( 2UL, 3 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 13UL );
-
-         if( pos->value() != 3 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting an already existing element
-      {
-         CT::Iterator pos = col0.set( 3UL, 4 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 13UL );
-
-         if( pos->value() != 4 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 4\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 4 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 4 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::set()";
-
-      initialize();
-
-      TCT col0 = column( tmat_, 0UL );
-
-      // Setting a non-zero element at the end of the column
-      {
-         TCT::Iterator pos = col0.set( 3UL, 1 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  1UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 11UL );
-
-         if( pos->value() != 1 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting a non-zero element at the beginning of the column
-      {
-         TCT::Iterator pos = col0.set( 0UL, 2 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  2UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 12UL );
-
-         if( pos->value() != 2 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting a non-zero element at the center of the column
-      {
-         TCT::Iterator pos = col0.set( 2UL, 3 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 13UL );
-
-         if( pos->value() != 3 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Setting an already existing element
-      {
-         TCT::Iterator pos = col0.set( 3UL, 4 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 13UL );
-
-         if( pos->value() != 4 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 4\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 4 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 4 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c insert() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testInsert()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::insert()";
-
-      initialize();
-
-      CT col0 = column( mat_, 0UL );
-
-      // Inserting a non-zero element at the end of the column
-      {
-         CT::Iterator pos = col0.insert( 3UL, 1 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  1UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 11UL );
-
-         if( pos->value() != 1 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a non-zero element at the beginning of the column
-      {
-         CT::Iterator pos = col0.insert( 0UL, 2 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  2UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 12UL );
-
-         if( pos->value() != 2 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a non-zero element at the center of the column
-      {
-         CT::Iterator pos = col0.insert( 2UL, 3 );
-
-         checkSize    ( col0,  4UL );
-         checkNonZeros( col0,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 13UL );
-
-         if( pos->value() != 3 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to insert an already existing element
-      try {
-         col0.insert( 3UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::insert()";
-
-      initialize();
-
-      TCT col0 = column( tmat_, 0UL );
-
-      // Inserting a non-zero element at the end of the column
-      {
-         TCT::Iterator pos = col0.insert( 3UL, 1 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  1UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 11UL );
-
-         if( pos->value() != 1 || pos->index() != 3UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 1\n"
-                << "   Expected index: 3\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 0 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 0 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a non-zero element at the beginning of the column
-      {
-         TCT::Iterator pos = col0.insert( 0UL, 2 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  2UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 12UL );
-
-         if( pos->value() != 2 || pos->index() != 0UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 2\n"
-                << "   Expected index: 0\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 0 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 0 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Inserting a non-zero element at the center of the column
-      {
-         TCT::Iterator pos = col0.insert( 2UL, 3 );
-
-         checkSize    ( col0 ,  4UL );
-         checkNonZeros( col0 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 13UL );
-
-         if( pos->value() != 3 || pos->index() != 2UL ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 3\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col0[0] != 2 || col0[1] != 0 || col0[2] != 3 || col0[3] != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Inserting a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 2 0 3 1 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to insert an already existing element
-      try {
-         col0.insert( 3UL, 4 );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Inserting an existing element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << col0 << "\n"
-             << "   Expected result:\n( 2 0 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c append() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c append() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testAppend()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::append()";
-
-      MT mat( 9UL, 3UL );
-
-      CT col1 = column( mat, 1UL );
-      col1.reserve( 4UL );
-
-      // Appending one non-zero element
-      col1.append( 1UL, 1 );
-
-      checkSize    ( col1, 9UL );
-      checkCapacity( col1, 4UL );
-      checkNonZeros( col1, 1UL );
-
-      if( col1[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Appending three more non-zero elements
-      col1.append( 3UL, 2 );
-      col1.append( 4UL, 3 );
-      col1.append( 8UL, 4 );
-
-      checkSize    ( col1, 9UL );
-      checkCapacity( col1, 4UL );
-      checkNonZeros( col1, 4UL );
-
-      if( col1[1] != 1 || col1[3] != 2 || col1[4] != 3 || col1[8] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::append()";
-
-      TMT mat( 9UL, 3UL );
-
-      TCT col1 = column( mat, 1UL );
-      col1.reserve( 4UL );
-
-      // Appending one non-zero element
-      col1.append( 1UL, 1 );
-
-      checkSize    ( col1, 9UL );
-      checkCapacity( col1, 4UL );
-      checkNonZeros( col1, 1UL );
-
-      if( col1[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Appending three more non-zero elements
-      col1.append( 3UL, 2 );
-      col1.append( 4UL, 3 );
-      col1.append( 8UL, 4 );
-
-      checkSize    ( col1, 9UL );
-      checkCapacity( col1, 4UL );
-      checkNonZeros( col1, 4UL );
-
-      if( col1[1] != 1 || col1[3] != 2 || col1[4] != 3 || col1[8] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Append operation failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 0 1 0 2 3 0 0 0 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c erase() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testErase()
-{
-   //=====================================================================================
-   // Row-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::erase( size_t )";
-
-      initialize();
-
-      CT col4 = column( mat_, 4UL );
-
-      // Erasing the non-zero element at the end of the column
-      col4.erase( 3UL );
-
-      checkSize    ( col4, 4UL );
-      checkNonZeros( col4, 3UL );
-      checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 9UL );
-
-      if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 7 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      col4.erase( 0UL );
-
-      checkSize    ( col4, 4UL );
-      checkNonZeros( col4, 2UL );
-      checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 8UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      col4.erase( 2UL );
-
-      checkSize    ( col4, 4UL );
-      checkNonZeros( col4, 1UL );
-      checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase an already erased element
-      col4.erase( 3UL );
-
-      checkSize    ( col4, 4UL );
-      checkNonZeros( col4, 1UL );
-      checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 7UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::erase( Iterator )";
-
-      initialize();
-
-      CT col4 = column( mat_, 4UL );
-
-      // Erasing the non-zero element at the end of the column
-      {
-         CT::Iterator pos = col4.erase( col4.find( 3UL ) );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 3UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 9UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 7 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      {
-         CT::Iterator pos = col4.erase( col4.find( 0UL ) );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 2UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 8UL );
-
-         if( pos->value() != -8 || pos->index() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: -8\n"
-                << "   Expected index:  1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      {
-         CT::Iterator pos = col4.erase( col4.find( 2UL ) );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 1UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an already erased element
-      {
-         CT::Iterator pos = col4.erase( col4.find( 3UL ) );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 1UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 7UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Row-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::erase( Iterator, Iterator )";
-
-      initialize();
-
-      // Erasing the 2nd column
-      {
-         CT col2 = column( mat_, 2UL );
-
-         CT::Iterator pos = col2.erase( col2.begin(), col2.end() );
-
-         checkSize    ( col2, 4UL );
-         checkNonZeros( col2, 0UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 8UL );
-
-         if( pos != col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col2[0] != 0 || col2[1] != -0 || col2[2] != 0 || col2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the first half of the 4th column
-      {
-         CT col4 = column( mat_, 4UL );
-
-         CT::Iterator pos = col4.erase( col4.begin(), col4.find( 2UL ) );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 2UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 6UL );
-
-         if( pos->value() != 9 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 9 || col4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the second half of the 4th column
-      {
-         CT col4 = column( mat_, 4UL );
-
-         CT::Iterator pos = col4.erase( col4.find( 2UL ), col4.end() );
-
-         checkSize    ( col4, 4UL );
-         checkNonZeros( col4, 0UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 4UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         CT col3 = column( mat_, 3UL );
-
-         CT::Iterator pos = col3.erase( col3.find( 1UL ), col3.find( 1UL ) );
-
-         checkSize    ( col3, 4UL );
-         checkNonZeros( col3, 3UL );
-         checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 4UL );
-
-         if( pos != col3.find( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the given end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing an empty range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major index-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::erase( size_t )";
-
-      initialize();
-
-      TCT col4 = column( tmat_, 4UL );
-
-      // Erasing the non-zero element at the end of the column
-      col4.erase( 3UL );
-
-      checkSize    ( col4 , 4UL );
-      checkNonZeros( col4 , 3UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 9UL );
-
-      if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 7 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      col4.erase( size_t(0) );
-
-      checkSize    ( col4 , 4UL );
-      checkNonZeros( col4 , 2UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 8UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 9 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      col4.erase( 2UL );
-
-      checkSize    ( col4 , 4UL );
-      checkNonZeros( col4 , 1UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a non-zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to erase an already erased element
-      col4.erase( 3UL );
-
-      checkSize    ( col4 , 4UL );
-      checkNonZeros( col4 , 1UL );
-      checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
-
-      if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Erasing a zero element failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
-             << "   Expected result:\n( 0 -8 0 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::erase( size_t )";
-
-      initialize();
-
-      TCT col4 = column( tmat_, 4UL );
-
-      // Erasing the non-zero element at the end of the column
-      {
-         TCT::Iterator pos = col4.erase( col4.find( 3UL ) );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 3UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 9UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 7 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      {
-         TCT::Iterator pos = col4.erase( col4.find( 0UL ) );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 2UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 8UL );
-
-         if( pos->value() != -8 || pos->index() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: -8\n"
-                << "   Expected index:  1\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 9 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 9 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the non-zero element at the beginning of the column
-      {
-         TCT::Iterator pos = col4.erase( col4.find( 2UL ) );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 1UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an already erased element
-      {
-         TCT::Iterator pos = col4.erase( col4.find( 3UL ) );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 1UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 7UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != -8 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 -8 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major iterator-range-based erase function
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::erase( Iterator, Iterator )";
-
-      initialize();
-
-      // Erasing the 2nd column
-      {
-         TCT col2 = column( tmat_, 2UL );
-
-         TCT::Iterator pos = col2.erase( col2.begin(), col2.end() );
-
-         checkSize    ( col2 , 4UL );
-         checkNonZeros( col2 , 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 8UL );
-
-         if( pos != col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col2[0] != 0 || col2[1] != -0 || col2[2] != 0 || col2[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing the column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the first half of the 4th column
-      {
-         TCT col4 = column( tmat_, 4UL );
-
-         TCT::Iterator pos = col4.erase( col4.begin(), col4.find( 2UL ) );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 2UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 6UL );
-
-         if( pos->value() != 9 || pos->index() != 2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Value: " << pos->value() << "\n"
-                << "   Index: " << pos->index() << "\n"
-                << "   Expected value: 9\n"
-                << "   Expected index: 2\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 9 || col4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 9 10 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Erasing the second half of the 4th column
-      {
-         TCT col4 = column( tmat_, 4UL );
-
-         TCT::Iterator pos = col4.erase( col4.find( 2UL ), col4.end() );
-
-         checkSize    ( col4 , 4UL );
-         checkNonZeros( col4 , 0UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 4UL );
-
-         if( pos != col4.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a partial column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 0 0 0 0 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Trying to erase an empty range
-      {
-         TCT col3 = column( tmat_, 3UL );
-
-         TCT::Iterator pos = col3.erase( col3.find( 1UL ), col3.find( 1UL ) );
-
-         checkSize    ( col3 , 4UL );
-         checkNonZeros( col3 , 3UL );
-         checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 4UL );
-
-         if( pos != col3.find( 1UL ) ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid iterator returned\n"
-                << " Details:\n"
-                << "   Expected result: the given end() iterator\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Erasing an empty range failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c reserve() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testReserve()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::reserve()";
-
-      MT mat( 20UL, 3UL );
-
-      CT col0 = column( mat, 0UL );
-
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
-
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::reserve()";
-
-      TMT mat( 20UL, 3UL );
-
-      TCT col0 = column( mat, 0UL );
-
-      // Increasing the capacity of the column
-      col0.reserve( 10UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 10UL );
-      checkNonZeros( col0,  0UL );
-
-      // Further increasing the capacity of the column
-      col0.reserve( 15UL );
-
-      checkSize    ( col0, 20UL );
-      checkCapacity( col0, 15UL );
-      checkNonZeros( col0,  0UL );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c find() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c find() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testFind()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::find()";
-
-      initialize();
-
-      CT col2 = column( mat_, 2UL );
-
-      // Searching for the first element
-      {
-         CT::Iterator pos = col2.find( 0UL );
-
-         if( pos == col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 0 || pos->value() != -2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
-         CT::Iterator pos = col2.find( 2UL );
-
-         if( pos == col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 2 || pos->value() != -3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -3\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for a non-existing non-zero element
-      {
-         CT::Iterator pos = col2.find( 1UL );
-
-         if( pos != col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Non-existing element could be found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 0\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::find()";
-
-      initialize();
-
-      TCT col2 = column( tmat_, 2UL );
-
-      // Searching for the first element
-      {
-         TCT::Iterator pos = col2.find( 0UL );
-
-         if( pos == col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 0 || pos->value() != -2 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -2\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for the second element
-      {
-         TCT::Iterator pos = col2.find( 2UL );
-
-         if( pos == col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Element could not be found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 2 || pos->value() != -3 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = -3\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Searching for a non-existing non-zero element
-      {
-         TCT::Iterator pos = col2.find( 1UL );
-
-         if( pos != col2.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Non-existing element could be found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 0\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c lowerBound() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c lowerBound() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testLowerBound()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::lowerBound()";
-
-      initialize();
-
-      CT col1 = column( mat_, 1UL );
-
-      // Determining the lower bound for index 0
-      {
-         CT::Iterator pos = col1.lowerBound( 0UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the lower bound for index 1
-      {
-         CT::Iterator pos = col1.lowerBound( 1UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the lower bound for index 2
-      {
-         CT::Iterator pos = col1.lowerBound( 2UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::lowerBound()";
-
-      initialize();
-
-      TCT col1 = column( tmat_, 1UL );
-
-      // Determining the lower bound for index 0
-      {
-         TCT::Iterator pos = col1.lowerBound( 0UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the lower bound for index 1
-      {
-         TCT::Iterator pos = col1.lowerBound( 1UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the lower bound for index 2
-      {
-         TCT::Iterator pos = col1.lowerBound( 2UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Lower bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c upperBound() member function of the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c upperBound() member function of the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testUpperBound()
-{
-   //=====================================================================================
-   // Row-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Row-major SparseColumn::upperBound()";
-
-      initialize();
-
-      CT col1 = column( mat_, 1UL );
-
-      // Determining the upper bound for index 0
-      {
-         CT::Iterator pos = col1.upperBound( 0UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the upper bound for index 1
-      {
-         CT::Iterator pos = col1.upperBound( 1UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the upper bound for index 2
-      {
-         CT::Iterator pos = col1.upperBound( 2UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-
-
-   //=====================================================================================
-   // Column-major matrix tests
-   //=====================================================================================
-
-   {
-      test_ = "Column-major SparseColumn::upperBound()";
-
-      initialize();
-
-      TCT col1 = column( tmat_, 1UL );
-
-      // Determining the upper bound for index 0
-      {
-         TCT::Iterator pos = col1.upperBound( 0UL );
-
-         if( pos == col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 0\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-         else if( pos->index() != 1 || pos->value() != 1 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Wrong element found\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Found index    = " << pos->index() << "\n"
-                << "   Expected value = 1\n"
-                << "   Value at index = " << pos->value() << "\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the upper bound for index 1
-      {
-         TCT::Iterator pos = col1.upperBound( 1UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 1\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // Determining the upper bound for index 2
-      {
-         TCT::Iterator pos = col1.upperBound( 2UL );
-
-         if( pos != col1.end() ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
-                << " Details:\n"
-                << "   Required index = 2\n"
-                << "   Current column:\n" << col1 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the SparseColumn class template.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c isDefault() function with the SparseColumn class
-// template. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void ClassTest::testIsDefault()
+void GeneralTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -5819,15 +4085,15 @@ void ClassTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the SparseColumn class template.
+/*!\brief Test of the \c isSame() function with the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the SparseColumn class template.
+// This function performs a test of the \c isSame() function with the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsSame()
+void GeneralTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -5870,7 +4136,7 @@ void ClassTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::SparseSubvector<CT>  SubvectorType;
+         typedef blaze::DenseSubvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -5880,8 +4146,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -5890,15 +4156,15 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::SparseSubvector<CT>  SubvectorType;
+         typedef blaze::DenseSubvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
@@ -5908,8 +4174,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -5918,15 +4184,15 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::SparseSubvector<CT>  SubvectorType;
+         typedef blaze::DenseSubvector<CT>  SubvectorType;
 
          CT col1 = column( mat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
@@ -5936,8 +4202,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -5946,16 +4212,16 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -5974,8 +4240,8 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 0UL );
@@ -5994,9 +4260,9 @@ void ClassTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6016,9 +4282,9 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6038,9 +4304,9 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::SparseSubmatrix<MT>          SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6101,7 +4367,7 @@ void ClassTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<TCT>  SubvectorType;
 
          TCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -6111,8 +4377,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -6121,15 +4387,15 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<TCT>  SubvectorType;
 
          TCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
@@ -6139,8 +4405,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -6149,15 +4415,15 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::SparseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<TCT>  SubvectorType;
 
          TCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
@@ -6167,8 +4433,8 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -6177,16 +4443,16 @@ void ClassTest::testIsSame()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Sparse column:\n" << col1 << "\n"
-                << "   Sparse subvector:\n" << sv << "\n";
+                << "   Dense column:\n" << col1 << "\n"
+                << "   Dense subvector:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6205,8 +4471,8 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 0UL );
@@ -6225,9 +4491,9 @@ void ClassTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6247,9 +4513,9 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6269,9 +4535,9 @@ void ClassTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::SparseSubmatrix<TMT>         SubmatrixType;
-         typedef blaze::SparseColumn<SubmatrixType>  ColumnType;
-         typedef blaze::SparseSubvector<ColumnType>  SubvectorType;
+         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
+         typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
          ColumnType col1 = column( sm, 1UL );
@@ -6294,15 +4560,15 @@ void ClassTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c subvector() function with the SparseColumn class template.
+/*!\brief Test of the \c subvector() function with the DenseColumn class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c subvector() function used with the SparseColumn class
+// This function performs a test of the \c subvector() function used with the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubvector()
+void GeneralTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -6313,7 +4579,7 @@ void ClassTest::testSubvector()
 
       initialize();
 
-      typedef blaze::SparseSubvector<CT>  SubvectorType;
+      typedef blaze::DenseSubvector<CT>  SubvectorType;
 
       CT col1 = column( mat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -6328,13 +4594,13 @@ void ClassTest::testSubvector()
          throw std::runtime_error( oss.str() );
       }
 
-      if( sv.begin()->value() != 1 ) {
+      if( *sv.begin() != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Iterator access failed\n"
              << " Details:\n"
-             << "   Result: " << sv.begin()->value() << "\n"
-             << "   Expected result: 1\n";
+             << "   Result: " << *sv.begin() << "\n"
+             << "   Expected result: 0\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6349,7 +4615,7 @@ void ClassTest::testSubvector()
 
       initialize();
 
-      typedef blaze::SparseSubvector<TCT>  SubvectorType;
+      typedef blaze::DenseSubvector<TCT>  SubvectorType;
 
       TCT col1 = column( tmat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
@@ -6364,13 +4630,13 @@ void ClassTest::testSubvector()
          throw std::runtime_error( oss.str() );
       }
 
-      if( sv.begin()->value() != 1 ) {
+      if( *sv.begin() != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Iterator access failed\n"
              << " Details:\n"
-             << "   Result: " << sv.begin()->value() << "\n"
-             << "   Expected result: 1\n";
+             << "   Result: " << *sv.begin() << "\n"
+             << "   Expected result: 0\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -6394,9 +4660,9 @@ void ClassTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void ClassTest::initialize()
+void GeneralTest::initialize()
 {
-   // Initializing the row-major compressed matrix
+   // Initializing the row-major dynamic matrix
    mat_.reset();
    mat_(1,1) =  1;
    mat_(0,2) = -2;
@@ -6409,7 +4675,7 @@ void ClassTest::initialize()
    mat_(2,4) =  9;
    mat_(3,4) = 10;
 
-   // Initializing the column-major compressed matrix
+   // Initializing the column-major dynamic matrix
    tmat_.reset();
    tmat_(1,1) =  1;
    tmat_(0,2) = -2;
@@ -6424,7 +4690,7 @@ void ClassTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace sparsecolumn
+} // namespace densecolumn
 
 } // namespace mathtest
 
@@ -6442,14 +4708,14 @@ void ClassTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running general SparseColumn class test..." << std::endl;
+   std::cout << "   Running general DenseColumn class test..." << std::endl;
 
    try
    {
-      RUN_SPARSECOLUMN_CLASS_TEST;
+      RUN_DENSECOLUMN_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during general SparseColumn class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during general DenseColumn class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

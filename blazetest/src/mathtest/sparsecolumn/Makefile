@@ -54,7 +54,7 @@ noop: $(BIN)
 
 
 # Build rules
-ClassTest: ClassTest.o
+GeneralTest: GeneralTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SymmetricTest: SymmetricTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
