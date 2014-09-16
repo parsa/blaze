@@ -37,4 +37,5 @@ PATH_DENSEROW=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseRow tests..."
 
-EXE=$PATH_DENSEROW/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEROW/ClassTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEROW/SymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
