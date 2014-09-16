@@ -37,4 +37,5 @@ PATH_DENSECOLUMN=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseColumn tests..."
 
-EXE=$PATH_DENSECOLUMN/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSECOLUMN/ClassTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSECOLUMN/SymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densecolumn/ClassTest.cpp
-//  \brief Source file for the general DenseColumn class test
+//  \file src/mathtest/densecolumn/SymmetricTest.cpp
+//  \brief Source file for the symmetric DenseColumn class test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -42,7 +42,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
-#include <blazetest/mathtest/densecolumn/ClassTest.h>
+#include <blazetest/mathtest/densecolumn/SymmetricTest.h>
 
 
 namespace blazetest {
@@ -58,13 +58,13 @@ namespace densecolumn {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the general DenseColumn class test.
+/*!\brief Constructor for the symmetric DenseColumn class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-ClassTest::ClassTest()
-   : mat_ ( 4UL, 5UL )
-   , tmat_( 4UL, 5UL )
+SymmetricTest::SymmetricTest()
+   : mat_ ( 4UL )
+   , tmat_( 4UL )
 {
    testConstructors();
    testAssignment();
@@ -101,7 +101,7 @@ ClassTest::ClassTest()
 // This function performs a test of all constructors of the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testConstructors()
+void SymmetricTest::testConstructors()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -137,15 +137,15 @@ void ClassTest::testConstructors()
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
-         checkNonZeros( col1, 1UL );
+         checkNonZeros( col1, 2UL );
 
-         if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
+         if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -158,13 +158,13 @@ void ClassTest::testConstructors()
          checkCapacity( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
-         if( col2[0] != -2 || col2[1] != 0 || col2[2] != -3 || col2[3] != 0 ) {
+         if( col2[0] != 0 || col2[1] != 0 || col2[2] != 3 || col2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -177,32 +177,13 @@ void ClassTest::testConstructors()
          checkCapacity( col3, 4UL );
          checkNonZeros( col3, 3UL );
 
-         if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != -2 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix column
-      {
-         CT col4 = column( mat_, 4UL );
-
-         checkSize    ( col4, 4UL );
-         checkCapacity( col4, 4UL );
-         checkNonZeros( col4, 4UL );
-
-         if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th dense column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -243,15 +224,15 @@ void ClassTest::testConstructors()
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
-         checkNonZeros( col1, 1UL );
+         checkNonZeros( col1, 2UL );
 
-         if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
+         if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 1st dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col1 << "\n"
-                << "   Expected result:\n( 0 1 0 0 )\n";
+                << "   Expected result:\n( 0 1 0 -2 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -264,13 +245,13 @@ void ClassTest::testConstructors()
          checkCapacity( col2, 4UL );
          checkNonZeros( col2, 2UL );
 
-         if( col2[0] != -2 || col2[1] != 0 || col2[2] != -3 || col2[3] != 0 ) {
+         if( col2[0] != 0 || col2[1] != 0 || col2[2] != 3 || col2[3] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 2nd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col2 << "\n"
-                << "   Expected result:\n( -2 0 -3 0 )\n";
+                << "   Expected result:\n( 0 0 3 4 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -283,32 +264,13 @@ void ClassTest::testConstructors()
          checkCapacity( col3, 4UL );
          checkNonZeros( col3, 3UL );
 
-         if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != -2 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of 3rd dense column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 4 5 -6 )\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // 4th matrix column
-      {
-         TCT col4 = column( tmat_, 4UL );
-
-         checkSize    ( col4, 4UL );
-         checkCapacity( col4, 4UL );
-         checkNonZeros( col4, 4UL );
-
-         if( col4[0] != 7 || col4[1] != -8 || col4[2] != 9 || col4[3] != 10 ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 4th dense column failed\n"
-                << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
-                << "   Expected result:\n( 7 -8 9 10 )\n";
+                << "   Expected result:\n( 0 -2 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -326,7 +288,7 @@ void ClassTest::testConstructors()
 // This function performs a test of all assignment operators of the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAssignment()
+void SymmetricTest::testAssignment()
 {
    //=====================================================================================
    // Row-major homogeneous assignment
@@ -344,8 +306,8 @@ void ClassTest::testAssignment()
       checkCapacity( col1,  4UL );
       checkNonZeros( col1,  4UL );
       checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 13UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
       if( col1[0] != 8 || col1[1] != 8 || col1[2] != 8 || col1[3] != 8 ) {
          std::ostringstream oss;
@@ -357,19 +319,19 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 8 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 8 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 8 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 8 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 8 || mat_(1,1) != 8 || mat_(1,2) != 8 || mat_(1,3) != 8 ||
+          mat_(2,0) != 0 || mat_(2,1) != 8 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 8 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  8 -2  0  7 )\n"
-                                     "( 0  8  0  4 -8 )\n"
-                                     "( 0  8 -3  5  9 )\n"
-                                     "( 0  8  0 -6 10 )\n";
+             << "   Expected result:\n(  0  8  0  0 )\n"
+                                     "(  8  8  8  8 )\n"
+                                     "(  0  8  3  4 )\n"
+                                     "(  0  8  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -387,36 +349,36 @@ void ClassTest::testAssignment()
       CT col1 = column( mat_, 1UL );
       col1 = column( mat_, 2UL );
 
-      checkSize    ( col1,  4UL );
-      checkCapacity( col1,  4UL );
-      checkNonZeros( col1,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( col1, 4UL );
+      checkCapacity( col1, 4UL );
+      checkNonZeros( col1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 8UL );
 
-      if( col1[0] != -2 || col1[1] != 0 || col1[2] != -3 || col1[3] != 0 ) {
+      if( col1[0] != 0 || col1[1] != 0 || col1[2] != 3 || col1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != -2 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) !=  0 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != -3 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) !=  0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 0 || mat_(1,2) != 3 || mat_(1,3) != 4 ||
+          mat_(2,0) != 0 || mat_(2,1) != 3 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 4 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0 -2 -2  0  7 )\n"
-                                     "( 0  0  0  4 -8 )\n"
-                                     "( 0 -3 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -439,12 +401,12 @@ void ClassTest::testAssignment()
 
       col1 = vec1;
 
-      checkSize    ( col1,  4UL );
-      checkCapacity( col1,  4UL );
-      checkNonZeros( col1,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 11UL );
+      checkSize    ( col1, 4UL );
+      checkCapacity( col1, 4UL );
+      checkNonZeros( col1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
       if( col1[0] != 0 || col1[1] != 8 || col1[2] != 0 || col1[3] != 9 ) {
          std::ostringstream oss;
@@ -456,19 +418,19 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  8  0  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  9  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -483,43 +445,43 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      CT col4 = column( mat_, 4UL );
+      CT col3 = column( mat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
 
-      col4 = vec1;
+      col3 = vec1;
 
-      checkSize    ( col4, 4UL );
-      checkCapacity( col4, 4UL );
-      checkNonZeros( col4, 1UL );
+      checkSize    ( col3, 4UL );
+      checkCapacity( col3, 4UL );
+      checkNonZeros( col3, 1UL );
       checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 7UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 3UL );
 
-      if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 9 ) {
+      if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
+             << "   Result:\n" << col3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) != 0 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != 0 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) != 0 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 9 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != 0 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) != 0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  0 || mat_(3,2) != 0 || mat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  0 )\n"
-                                     "( 0  1  0  4  0 )\n"
-                                     "( 0  0 -3  5  0 )\n"
-                                     "( 0  0  0 -6  9 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -541,8 +503,8 @@ void ClassTest::testAssignment()
       checkCapacity( col1 ,  4UL );
       checkNonZeros( col1 ,  4UL );
       checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 13UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
 
       if( col1[0] != 8 || col1[1] != 8 || col1[2] != 8 || col1[3] != 8 ) {
          std::ostringstream oss;
@@ -554,19 +516,19 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 8 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 8 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 8 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 8 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 8 || tmat_(1,1) != 8 || tmat_(1,2) != 8 || tmat_(1,3) != 8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 8 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 8 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  8 -2  0  7 )\n"
-                                     "( 0  8  0  4 -8 )\n"
-                                     "( 0  8 -3  5  9 )\n"
-                                     "( 0  8  0 -6 10 )\n";
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  8  0  0 )\n"
+                                     "(  8  8  8  8 )\n"
+                                     "(  0  8  3  4 )\n"
+                                     "(  0  8  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -584,36 +546,36 @@ void ClassTest::testAssignment()
       TCT col1 = column( tmat_, 1UL );
       col1 = column( tmat_, 2UL );
 
-      checkSize    ( col1 ,  4UL );
-      checkCapacity( col1 ,  4UL );
-      checkNonZeros( col1 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( col1 , 4UL );
+      checkCapacity( col1 , 4UL );
+      checkNonZeros( col1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 8UL );
 
-      if( col1[0] != -2 || col1[1] != 0 || col1[2] != -3 || col1[3] != 0 ) {
+      if( col1[0] != 0 || col1[1] != 0 || col1[2] != 3 || col1[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( -2 0 -3 0 )\n";
+             << "   Expected result:\n( 0 0 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != -2 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) !=  0 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != -3 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) !=  0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) != 3 || tmat_(1,3) != 4 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 3 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 4 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0 -2 -2  0  7 )\n"
-                                     "( 0  0  0  4 -8 )\n"
-                                     "( 0 -3 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  3  3  4 )\n"
+                                     "(  0  4  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -636,12 +598,12 @@ void ClassTest::testAssignment()
 
       col1 = vec1;
 
-      checkSize    ( col1 ,  4UL );
-      checkCapacity( col1 ,  4UL );
-      checkNonZeros( col1 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
+      checkSize    ( col1 , 4UL );
+      checkCapacity( col1 , 4UL );
+      checkNonZeros( col1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
       if( col1[0] != 0 || col1[1] != 8 || col1[2] != 0 || col1[3] != 9 ) {
          std::ostringstream oss;
@@ -653,19 +615,19 @@ void ClassTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  8  0  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  9  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -680,43 +642,43 @@ void ClassTest::testAssignment()
 
       initialize();
 
-      TCT col4 = column( tmat_, 4UL );
+      TCT col3 = column( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
 
-      col4 = vec1;
+      col3 = vec1;
 
-      checkSize    ( col4 , 4UL );
-      checkCapacity( col4 , 4UL );
-      checkNonZeros( col4 , 1UL );
+      checkSize    ( col3 , 4UL );
+      checkCapacity( col3 , 4UL );
+      checkNonZeros( col3 , 1UL );
       checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 7UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 3UL );
 
-      if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 9 ) {
+      if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << col4 << "\n"
+             << "   Result:\n" << col3 << "\n"
              << "   Expected result:\n( 0 0 0 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) != 0 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != 0 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) != 0 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 9 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != 0 || tmat_(1,3) != 0 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  0 )\n"
-                                     "( 0  1  0  4  0 )\n"
-                                     "( 0  0 -3  5  0 )\n"
-                                     "( 0  0  0 -6  9 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0  0 )\n"
+                                     "(  0  0  3  0 )\n"
+                                     "(  0  0  0  9 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -733,7 +695,7 @@ void ClassTest::testAssignment()
 // This function performs a test of the addition assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testAddAssign()
+void SymmetricTest::testAddAssign()
 {
    //=====================================================================================
    // Row-major DenseColumn addition assignment
@@ -747,36 +709,36 @@ void ClassTest::testAddAssign()
       CT col2 = column( mat_, 2UL );
       col2 += column( mat_, 3UL );
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  4UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 2 || col2[3] != -6 ) {
+      if( col2[0] != 0 || col2[1] != -2 || col2[2] != 7 || col2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  2 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -6 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) != -2 || mat_(2,2) !=  7 || mat_(2,3) !=  9 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  9 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0  2  5  9 )\n"
-                                     "( 0  0 -6 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -801,34 +763,34 @@ void ClassTest::testAddAssign()
 
       checkSize    ( col2,  4UL );
       checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
+      checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 2 || col2[1] != -4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -853,34 +815,34 @@ void ClassTest::testAddAssign()
 
       checkSize    ( col2,  4UL );
       checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
+      checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
 
-      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 2 || col2[1] != -4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -898,36 +860,36 @@ void ClassTest::testAddAssign()
       TCT col2 = column( tmat_, 2UL );
       col2 += column( tmat_, 3UL );
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  4UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 2 || col2[3] != -6 ) {
+      if( col2[0] != 0 || col2[1] != -2 || col2[2] != 7 || col2[3] != 9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 4 2 -6 )\n";
+             << "   Expected result:\n( 0 -2 7 9 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  2 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -6 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != -2 || tmat_(2,2) !=  7 || tmat_(2,3) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  9 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0  2  5  9 )\n"
-                                     "( 0  0 -6 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1 -2 -2 )\n"
+                                     "(  0 -2  7  9 )\n"
+                                     "(  0 -2  9  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -952,34 +914,34 @@ void ClassTest::testAddAssign()
 
       checkSize    ( col2 ,  4UL );
       checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
+      checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 2 || col2[1] != -4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1004,34 +966,34 @@ void ClassTest::testAddAssign()
 
       checkSize    ( col2 ,  4UL );
       checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
+      checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
 
-      if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 2 || col2[1] != -4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 -4 -3 0 )\n";
+             << "   Expected result:\n( 2 -4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0  0  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1048,7 +1010,7 @@ void ClassTest::testAddAssign()
 // This function performs a test of the subtraction assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubAssign()
+void SymmetricTest::testSubAssign()
 {
    //=====================================================================================
    // Row-major DenseColumn subtraction assignment
@@ -1062,36 +1024,36 @@ void ClassTest::testSubAssign()
       CT col2 = column( mat_, 2UL );
       col2 -= column( mat_, 3UL );
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  4UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 12UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 3UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
-      if( col2[0] != -2 || col2[1] != -4 || col2[2] != -8 || col2[3] != 6 ) {
+      if( col2[0] != 0 || col2[1] != 2 || col2[2] != -1 || col2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -8 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  6 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  2 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  2 || mat_(2,2) != -1 || mat_(2,3) != -1 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -1 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -8  5  9 )\n"
-                                     "( 0  0  6 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1116,34 +1078,34 @@ void ClassTest::testSubAssign()
 
       checkSize    ( col2,  4UL );
       checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  3UL );
+      checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1168,34 +1130,34 @@ void ClassTest::testSubAssign()
 
       checkSize    ( col2,  4UL );
       checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  3UL );
+      checkNonZeros( col2,  4UL );
       checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
       checkNonZeros( mat_, 11UL );
 
-      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  4 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1213,36 +1175,36 @@ void ClassTest::testSubAssign()
       TCT col2 = column( tmat_, 2UL );
       col2 -= column( tmat_, 3UL );
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  4UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 12UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 3UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
 
-      if( col2[0] != -2 || col2[1] != -4 || col2[2] != -8 || col2[3] != 6 ) {
+      if( col2[0] != 0 || col2[1] != 2 || col2[2] != -1 || col2[3] != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 -4 -8 6 )\n";
+             << "   Expected result:\n( 0 2 -1 -1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -8 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  6 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  2 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  2 || tmat_(2,2) != -1 || tmat_(2,3) != -1 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -1 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1 -4  4 -8 )\n"
-                                     "( 0  0 -8  5  9 )\n"
-                                     "( 0  0  6 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  2 -2 )\n"
+                                     "(  0  2 -1 -1 )\n"
+                                     "(  0 -2 -1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1267,34 +1229,34 @@ void ClassTest::testSubAssign()
 
       checkSize    ( col2 ,  4UL );
       checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  3UL );
+      checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1319,34 +1281,34 @@ void ClassTest::testSubAssign()
 
       checkSize    ( col2 ,  4UL );
       checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  3UL );
+      checkNonZeros( col2 ,  4UL );
       checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
+      checkColumns ( tmat_,  4UL );
       checkNonZeros( tmat_, 11UL );
 
-      if( col2[0] != -4 || col2[1] != 4 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != -2 || col2[1] != 4 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 4 -3 0 )\n";
+             << "   Expected result:\n( -2 4 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  4  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1363,7 +1325,7 @@ void ClassTest::testSubAssign()
 // This function performs a test of the multiplication assignment operators of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testMultAssign()
+void SymmetricTest::testMultAssign()
 {
    //=====================================================================================
    // Row-major DenseColumn multiplication assignment
@@ -1379,34 +1341,34 @@ void ClassTest::testMultAssign()
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
-      checkNonZeros( col2, 1UL );
+      checkNonZeros( col2, 2UL );
       checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 9UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -15 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 12 || col2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=   0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -15 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=   0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 12 || mat_(2,3) != 20 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 20 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0   0  0  7 )\n"
-                                     "( 0  1   0  4 -8 )\n"
-                                     "( 0  0 -15  5  9 )\n"
-                                     "( 0  0   0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1425,7 +1387,7 @@ void ClassTest::testMultAssign()
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       col2 *= vec;
 
@@ -1433,32 +1395,32 @@ void ClassTest::testMultAssign()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 1UL );
       checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 9UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -12 || col2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1477,7 +1439,7 @@ void ClassTest::testMultAssign()
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       col2 *= vec;
 
@@ -1485,32 +1447,32 @@ void ClassTest::testMultAssign()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 1UL );
       checkRows    ( mat_, 4UL );
-      checkColumns ( mat_, 5UL );
-      checkNonZeros( mat_, 9UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 5UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -12 || col2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1530,34 +1492,34 @@ void ClassTest::testMultAssign()
 
       checkSize    ( col2 , 4UL );
       checkCapacity( col2 , 4UL );
-      checkNonZeros( col2 , 1UL );
+      checkNonZeros( col2 , 2UL );
       checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 9UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -15 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 12 || col2[3] != 20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( 0 0 -15 0 )\n";
+             << "   Expected result:\n( 0 0 12 20 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=   0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -15 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=   0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 12 || tmat_(2,3) != 20 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 20 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0   0  0  7 )\n"
-                                     "( 0  1   0  4 -8 )\n"
-                                     "( 0  0 -15  5  9 )\n"
-                                     "( 0  0   0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0 12 20 )\n"
+                                     "(  0 -2 20  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1576,7 +1538,7 @@ void ClassTest::testMultAssign()
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       col2 *= vec;
 
@@ -1584,32 +1546,32 @@ void ClassTest::testMultAssign()
       checkCapacity( col2 , 4UL );
       checkNonZeros( col2 , 1UL );
       checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 9UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -12 || col2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1628,7 +1590,7 @@ void ClassTest::testMultAssign()
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
-      vec[1] = -4;
+      vec[2] = -4;
 
       col2 *= vec;
 
@@ -1636,32 +1598,32 @@ void ClassTest::testMultAssign()
       checkCapacity( col2 , 4UL );
       checkNonZeros( col2 , 1UL );
       checkRows    ( tmat_, 4UL );
-      checkColumns ( tmat_, 5UL );
-      checkNonZeros( tmat_, 9UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 5UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != -12 || col2[3] != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 0 0 )\n";
+             << "   Expected result:\n( 0 0 -12 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1678,14 +1640,14 @@ void ClassTest::testMultAssign()
 // This function performs a test of all available ways to scale an instance of the DenseColumn
 // class template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testScaling()
+void SymmetricTest::testScaling()
 {
    //=====================================================================================
-   // Row-major self-scaling (v*=s)
+   // Row-major self-scaling (v*=2)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v*=s)";
+      test_ = "Row-major self-scaling (v*=2)";
 
       initialize();
 
@@ -1693,47 +1655,47 @@ void ClassTest::testScaling()
 
       col2 *= 3;
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -6 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -9 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Row-major self-scaling (v=v*s)
+   // Row-major self-scaling (v=v*2)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v=v*s)";
+      test_ = "Row-major self-scaling (v=v*2)";
 
       initialize();
 
@@ -1741,47 +1703,47 @@ void ClassTest::testScaling()
 
       col2 = col2 * 3;
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -6 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -9 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
 
    //=====================================================================================
-   // Row-major self-scaling (v=s*v)
+   // Row-major self-scaling (v=2*v)
    //=====================================================================================
 
    {
-      test_ = "Row-major self-scaling (v=s*v)";
+      test_ = "Row-major self-scaling (v=2*v)";
 
       initialize();
 
@@ -1789,36 +1751,36 @@ void ClassTest::testScaling()
 
       col2 = 3 * col2;
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -6 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -9 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  9 || mat_(2,3) != 12 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 12 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  9 12 )\n"
+                                     "(  0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1837,36 +1799,36 @@ void ClassTest::testScaling()
 
       col2 /= 0.5;
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != -6 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 6 || col2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -6 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -6  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1885,36 +1847,36 @@ void ClassTest::testScaling()
 
       col2 = col2 / 0.5;
 
-      checkSize    ( col2,  4UL );
-      checkCapacity( col2,  4UL );
-      checkNonZeros( col2,  2UL );
-      checkRows    ( mat_,  4UL );
-      checkColumns ( mat_,  5UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( col2, 4UL );
+      checkCapacity( col2, 4UL );
+      checkNonZeros( col2, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != -6 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 6 || col2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -4 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -6 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -6  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  1  0 -2 )\n"
+                                     "(  0  0  6  8 )\n"
+                                     "(  0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1934,36 +1896,36 @@ void ClassTest::testScaling()
          CT col3 = column( mat_, 3UL );
          col3.scale( 3 );
 
-         checkSize    ( col3,  4UL );
-         checkCapacity( col3,  4UL );
-         checkNonZeros( col3,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+         if( col3[0] != 0 || col3[1] != -6 || col3[2] != 12 || col3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=   0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  12 || mat_(1,4) != -8 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  15 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -18 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -6 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) != 12 ||
+             mat_(3,0) != 0 || mat_(3,1) != -6 || mat_(3,2) != 12 || mat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0   7 )\n"
-                                        "( 0  1  0  12 -8 )\n"
-                                        "( 0  0 -3  15  9 )\n"
-                                        "( 0  0  0 -18 10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -6 )\n"
+                                        "( 0  0  3 12 )\n"
+                                        "( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1973,36 +1935,36 @@ void ClassTest::testScaling()
          CT col3 = column( mat_, 3UL );
          col3.scale( 0.5 );
 
-         checkSize    ( col3,  4UL );
-         checkCapacity( col3,  4UL );
-         checkNonZeros( col3,  3UL );
-         checkRows    ( mat_,  4UL );
-         checkColumns ( mat_,  5UL );
-         checkNonZeros( mat_, 10UL );
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 3UL );
+         checkRows    ( mat_, 4UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 7UL );
 
-         if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
+         if( col3[0] != 0 || col3[1] != -3 || col3[2] != 6 || col3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  6 || mat_(1,4) != -8 ||
-             mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  7 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -9 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+             mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -3 ||
+             mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  6 ||
+             mat_(3,0) != 0 || mat_(3,1) != -3 || mat_(3,2) != 6 || mat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                        "( 0  1  0  6 -8 )\n"
-                                        "( 0  0 -3  7  9 )\n"
-                                        "( 0  0  0 -9 10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0  3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2022,36 +1984,36 @@ void ClassTest::testScaling()
 
       col2 *= 3;
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2070,36 +2032,36 @@ void ClassTest::testScaling()
 
       col2 = col2 * 3;
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2118,36 +2080,36 @@ void ClassTest::testScaling()
 
       col2 = 3 * col2;
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != -6 || col2[1] != 0 || col2[2] != -9 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 9 || col2[3] != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -6 0 -9 0 )\n";
+             << "   Expected result:\n( 0 0 9 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -6 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -9 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  9 || tmat_(2,3) != 12 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 12 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -6  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -9  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  9 12 )\n"
+                                     "( 0 -2 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2166,36 +2128,36 @@ void ClassTest::testScaling()
 
       col2 /= 0.5;
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != -6 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 6 || col2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -6 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -6  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2214,36 +2176,36 @@ void ClassTest::testScaling()
 
       col2 = col2 / 0.5;
 
-      checkSize    ( col2 ,  4UL );
-      checkCapacity( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkCapacity( col2 , 4UL );
+      checkNonZeros( col2 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
 
-      if( col2[0] != -4 || col2[1] != 0 || col2[2] != -6 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 0 || col2[2] != 6 || col2[3] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -4 0 -6 0 )\n";
+             << "   Expected result:\n( 0 0 6 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -4 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -6 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 6 || tmat_(2,3) !=  8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -4  0  7 )\n"
-                                     "( 0  1  0  4 -8 )\n"
-                                     "( 0  0 -6  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  0 -2 )\n"
+                                     "( 0  0  6  8 )\n"
+                                     "( 0 -2  8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2263,36 +2225,36 @@ void ClassTest::testScaling()
          TCT col3 = column( tmat_, 3UL );
          col3.scale( 3 );
 
-         checkSize    ( col3 ,  4UL );
-         checkCapacity( col3 ,  4UL );
-         checkNonZeros( col3 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( col3[0] != 0 || col3[1] != 12 || col3[2] != 15 || col3[3] != -18 ) {
+         if( col3[0] != 0 || col3[1] != -6 || col3[2] != 12 || col3[3] != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 12 15 -18 )\n";
+                << "   Expected result:\n( 0 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=   0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  12 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  15 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -18 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -6 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) != 12 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -6 || tmat_(3,2) != 12 || tmat_(3,3) != 15 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0   7 )\n"
-                                        "( 0  1  0  12 -8 )\n"
-                                        "( 0  0 -3  15  9 )\n"
-                                        "( 0  0  0 -18 10 )\n";
+                << "   Expected result:\n(  0  0  0  0 )\n"
+                                        "(  0  1  0 -6 )\n"
+                                        "( -2  0 -3 12 )\n"
+                                        "(  7 -6 12 15 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2302,36 +2264,36 @@ void ClassTest::testScaling()
          TCT col3 = column( tmat_, 3UL );
          col3.scale( 0.5 );
 
-         checkSize    ( col3 ,  4UL );
-         checkCapacity( col3 ,  4UL );
-         checkNonZeros( col3 ,  3UL );
-         checkRows    ( tmat_,  4UL );
-         checkColumns ( tmat_,  5UL );
-         checkNonZeros( tmat_, 10UL );
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 3UL );
+         checkRows    ( tmat_, 4UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 7UL );
 
-         if( col3[0] != 0 || col3[1] != 6 || col3[2] != 7 || col3[3] != -9 ) {
+         if( col3[0] != 0 || col3[1] != -3 || col3[2] != 6 || col3[3] != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 6 7 -9 )\n";
+                << "   Expected result:\n( 0 -3 6 7 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  6 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  7 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -9 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+             tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -3 ||
+             tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  6 ||
+             tmat_(3,0) != 0 || tmat_(3,1) != -3 || tmat_(3,2) != 6 || tmat_(3,3) !=  7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Integral scale operation of 3rd column failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                        "( 0  1  0  6 -8 )\n"
-                                        "( 0  0 -3  7  9 )\n"
-                                        "( 0  0  0 -9 10 )\n";
+                << "   Expected result:\n( 0  0  0  0 )\n"
+                                        "( 0  1  0 -3 )\n"
+                                        "( 0  0 -3  6 )\n"
+                                        "( 0 -3  6  7 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2350,7 +2312,7 @@ void ClassTest::testScaling()
 // of the DenseColumn class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
-void ClassTest::testSubscript()
+void SymmetricTest::testSubscript()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2370,29 +2332,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2403,29 +2365,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 2UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 0 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != 9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) != 0 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2434,31 +2396,31 @@ void ClassTest::testSubscript()
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
-      checkNonZeros( col2, 3UL );
+      checkNonZeros( col2, 2UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -8 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2469,29 +2431,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -5 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -8 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2502,29 +2464,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != 3 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != 3 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -5 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) !=  3 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -8 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  3 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) !=  3 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1  3  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2535,29 +2497,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != -9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != -9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -5 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -8 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -8 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -8 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1 -9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2568,29 +2530,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != -9 || col2[2] != 0 || col2[3] != -4 ) {
+      if( col2[0] != -3 || col2[1] != -9 || col2[2] != 0 || col2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != -5 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-          mat_(1,0) != 0 || mat_(1,1) != 1 || mat_(1,2) != -9 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) !=  0 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-          mat_(3,0) != 0 || mat_(3,1) != 0 || mat_(3,2) != -4 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -3 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) != -9 || mat_(1,3) != -2 ||
+          mat_(2,0) != -3 || mat_(2,1) != -9 || mat_(2,2) !=  0 || mat_(2,3) != -4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) != -4 || mat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << mat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1 -9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -4 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2601,7 +2563,7 @@ void ClassTest::testSubscript()
    //=====================================================================================
 
    {
-      test_ = "Column-major DenseColumn::operator[]";
+      test_ = "Row-major DenseColumn::operator[]";
 
       initialize();
 
@@ -2614,29 +2576,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != -3 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 3 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 -3 0 )\n";
+             << "   Expected result:\n( 0 9 3 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0 -3  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2647,29 +2609,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 2UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != 0 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 0 || col2[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 0 0 )\n";
+             << "   Expected result:\n( 0 9 0 4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != 9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) != 0 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0  0 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0  4 )\n"
+                                     "( 0 -2  4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2678,31 +2640,31 @@ void ClassTest::testSubscript()
 
       checkSize    ( col2, 4UL );
       checkCapacity( col2, 4UL );
-      checkNonZeros( col2, 3UL );
+      checkNonZeros( col2, 2UL );
 
-      if( col2[0] != -2 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != 0 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -2 9 0 -8 )\n";
+             << "   Expected result:\n( 0 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -8 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -2  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 0  1  9 -2 )\n"
+                                     "( 0  9  0 -8 )\n"
+                                     "( 0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2713,29 +2675,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != 9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 9 0 -8 )\n";
+             << "   Expected result:\n( -3 9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -5 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -8 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1  9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  9 -2 )\n"
+                                     "( -3  9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2746,29 +2708,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != 3 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != 3 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 3 0 -8 )\n";
+             << "   Expected result:\n( -3 3 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -5 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) !=  3 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -8 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  3 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) !=  3 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1  3  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1  3 -2 )\n"
+                                     "( -3  3  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2779,29 +2741,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != -9 || col2[2] != 0 || col2[3] != -8 ) {
+      if( col2[0] != -3 || col2[1] != -9 || col2[2] != 0 || col2[3] != -8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -8 )\n";
+             << "   Expected result:\n( -3 -9 0 -8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -5 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -8 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -8 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -8 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1 -9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -8 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -8 )\n"
+                                     "(  0 -2 -8  5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2812,29 +2774,29 @@ void ClassTest::testSubscript()
       checkCapacity( col2, 4UL );
       checkNonZeros( col2, 3UL );
 
-      if( col2[0] != -5 || col2[1] != -9 || col2[2] != 0 || col2[3] != -4 ) {
+      if( col2[0] != -3 || col2[1] != -9 || col2[2] != 0 || col2[3] != -4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col2 << "\n"
-             << "   Expected result:\n( -5 -9 0 -4 )\n";
+             << "   Expected result:\n( -3 -9 0 -4 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != -5 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-          tmat_(1,0) != 0 || tmat_(1,1) != 1 || tmat_(1,2) != -9 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) !=  0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != -4 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -3 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) != -9 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -3 || tmat_(2,1) != -9 || tmat_(2,2) !=  0 || tmat_(2,3) != -4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) != -4 || tmat_(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << tmat_ << "\n"
-             << "   Expected result:\n( 0  0 -5  0  7 )\n"
-                                     "( 0  1 -9  4 -8 )\n"
-                                     "( 0  0  0  5  9 )\n"
-                                     "( 0  0 -4 -6 10 )\n";
+             << "   Expected result:\n(  0  0 -3  0 )\n"
+                                     "(  0  1 -9 -2 )\n"
+                                     "( -3 -9  0 -4 )\n"
+                                     "(  0 -2 -4  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2851,7 +2813,7 @@ void ClassTest::testSubscript()
 // This function performs a test of the iterator implementation of the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIterator()
+void SymmetricTest::testIterator()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -2895,7 +2857,7 @@ void ClassTest::testIterator()
          CT col2 = column( mat_, 2UL );
          CT::ConstIterator it( begin( col2 ) );
 
-         if( it == end( col2 ) || *it != -2 ) {
+         if( it == end( col2 ) || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -2956,7 +2918,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -2974,7 +2936,7 @@ void ClassTest::testIterator()
 
          it++;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator post-increment failed\n";
@@ -2992,7 +2954,7 @@ void ClassTest::testIterator()
 
          it += 2UL;
 
-         if( it == end || *it != 5 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator addition assignment failed\n";
@@ -3010,7 +2972,7 @@ void ClassTest::testIterator()
 
          it = it + 3UL;
 
-         if( it == end || *it != -6 ) {
+         if( it == end || *it != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator/scalar addition failed\n";
@@ -3057,19 +3019,19 @@ void ClassTest::testIterator()
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-             mat_(2,0) != 8 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 9 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) !=  7 || mat_(0,2) != 8 || mat_(0,3) !=  9 ||
+             mat_(1,0) != 7 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 8 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 9 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 6  0 -2  0  7 )\n"
-                                        "( 7  1  0  4 -8 )\n"
-                                        "( 8  0 -3  5  9 )\n"
-                                        "( 9  0  0 -6 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3088,26 +3050,26 @@ void ClassTest::testIterator()
          if( col0[0] != 8 || col0[1] != 10 || col0[2] != 12 || col0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  8 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 10 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-             mat_(2,0) != 12 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 14 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) !=  8 || mat_(0,1) != 10 || mat_(0,2) != 12 || mat_(0,3) != 14 ||
+             mat_(1,0) != 10 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 12 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 14 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  8  0 -2  0  7 )\n"
-                                        "( 10  1  0  4 -8 )\n"
-                                        "( 12  0 -3  5  9 )\n"
-                                        "( 14  0  0 -6 10 )\n";
+                << "   Expected result:\n(  8 10 12 14 )\n"
+                                        "( 10  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 14 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3126,26 +3088,26 @@ void ClassTest::testIterator()
          if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) != 6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-             mat_(2,0) != 8 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 9 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) != 6 || mat_(0,1) !=  7 || mat_(0,2) != 8 || mat_(0,3) !=  9 ||
+             mat_(1,0) != 7 || mat_(1,1) !=  1 || mat_(1,2) != 0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 8 || mat_(2,1) !=  0 || mat_(2,2) != 3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 9 || mat_(3,1) != -2 || mat_(3,2) != 4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n( 6  0 -2  0  7 )\n"
-                                        "( 7  1  0  4 -8 )\n"
-                                        "( 8  0 -3  5  9 )\n"
-                                        "( 9  0  0 -6 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3164,26 +3126,26 @@ void ClassTest::testIterator()
          if( col0[0] != 6 || col0[1] != 14 || col0[2] != 24 || col0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  6 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) != 14 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-             mat_(2,0) != 24 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 36 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) !=  6 || mat_(0,1) != 14 || mat_(0,2) != 24 || mat_(0,3) != 36 ||
+             mat_(1,0) != 14 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 24 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 36 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  6  0 -2  0  7 )\n"
-                                        "( 14  1  0  4 -8 )\n"
-                                        "( 24  0 -3  5  9 )\n"
-                                        "( 36  0  0 -6 10 )\n";
+                << "   Expected result:\n(  6 14 24 36 )\n"
+                                        "( 14  1  0 -2 )\n"
+                                        "( 24  0  3  4 )\n"
+                                        "( 36 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3201,26 +3163,26 @@ void ClassTest::testIterator()
          if( col0[0] != 3 || col0[1] != 7 || col0[2] != 12 || col0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat_(0,0) !=  3 || mat_(0,1) != 0 || mat_(0,2) != -2 || mat_(0,3) !=  0 || mat_(0,4) !=  7 ||
-             mat_(1,0) !=  7 || mat_(1,1) != 1 || mat_(1,2) !=  0 || mat_(1,3) !=  4 || mat_(1,4) != -8 ||
-             mat_(2,0) != 12 || mat_(2,1) != 0 || mat_(2,2) != -3 || mat_(2,3) !=  5 || mat_(2,4) !=  9 ||
-             mat_(3,0) != 18 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) != -6 || mat_(3,4) != 10 ) {
+         if( mat_(0,0) !=  3 || mat_(0,1) !=  7 || mat_(0,2) != 12 || mat_(0,3) != 18 ||
+             mat_(1,0) !=  7 || mat_(1,1) !=  1 || mat_(1,2) !=  0 || mat_(1,3) != -2 ||
+             mat_(2,0) != 12 || mat_(2,1) !=  0 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+             mat_(3,0) != 18 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
-                << "   Expected result:\n(  3  0 -2  0  7 )\n"
-                                        "(  7  1  0  4 -8 )\n"
-                                        "( 12  0 -3  5  9 )\n"
-                                        "( 18  0  0 -6 10 )\n";
+                << "   Expected result:\n(  3  7 12 18 )\n"
+                                        "(  7  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 18 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3269,7 +3231,7 @@ void ClassTest::testIterator()
          TCT col2 = column( tmat_, 2UL );
          TCT::ConstIterator it( begin( col2 ) );
 
-         if( it == end( col2 ) || *it != -2 ) {
+         if( it == end( col2 ) || *it != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -3330,7 +3292,7 @@ void ClassTest::testIterator()
 
          ++it;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator pre-increment failed\n";
@@ -3348,7 +3310,7 @@ void ClassTest::testIterator()
 
          it++;
 
-         if( it == end || *it != 4 ) {
+         if( it == end || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator post-increment failed\n";
@@ -3366,7 +3328,7 @@ void ClassTest::testIterator()
 
          it += 2UL;
 
-         if( it == end || *it != 5 ) {
+         if( it == end || *it != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator addition assignment failed\n";
@@ -3384,7 +3346,7 @@ void ClassTest::testIterator()
 
          it = it + 3UL;
 
-         if( it == end || *it != -6 ) {
+         if( it == end || *it != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator/scalar addition failed\n";
@@ -3431,19 +3393,19 @@ void ClassTest::testIterator()
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 8 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 9 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) !=  7 || tmat_(0,2) != 8 || tmat_(0,3) !=  9 ||
+             tmat_(1,0) != 7 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 8 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 6  0 -2  0  7 )\n"
-                                        "( 7  1  0  4 -8 )\n"
-                                        "( 8  0 -3  5  9 )\n"
-                                        "( 9  0  0 -6 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3462,26 +3424,26 @@ void ClassTest::testIterator()
          if( col0[0] != 8 || col0[1] != 10 || col0[2] != 12 || col0[3] != 14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 8 10 12 14 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  8 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 10 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 12 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 14 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) !=  8 || tmat_(0,1) != 10 || tmat_(0,2) != 12 || tmat_(0,3) != 14 ||
+             tmat_(1,0) != 10 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 12 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 14 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  8  0 -2  0  7 )\n"
-                                        "( 10  1  0  4 -8 )\n"
-                                        "( 12  0 -3  5  9 )\n"
-                                        "( 14  0  0 -6 10 )\n";
+                << "   Expected result:\n(  8 10 12 14 )\n"
+                                        "( 10  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 14 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3500,26 +3462,26 @@ void ClassTest::testIterator()
          if( col0[0] != 6 || col0[1] != 7 || col0[2] != 8 || col0[3] != 9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Subtraction assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 7 8 9 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) != 6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 8 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 9 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) != 6 || tmat_(0,1) !=  7 || tmat_(0,2) != 8 || tmat_(0,3) !=  9 ||
+             tmat_(1,0) != 7 || tmat_(1,1) !=  1 || tmat_(1,2) != 0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 8 || tmat_(2,1) !=  0 || tmat_(2,2) != 3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 9 || tmat_(3,1) != -2 || tmat_(3,2) != 4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n( 6  0 -2  0  7 )\n"
-                                        "( 7  1  0  4 -8 )\n"
-                                        "( 8  0 -3  5  9 )\n"
-                                        "( 9  0  0 -6 10 )\n";
+                << "   Expected result:\n( 6  7  8  9 )\n"
+                                        "( 7  1  0 -2 )\n"
+                                        "( 8  0  3  4 )\n"
+                                        "( 9 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3538,26 +3500,26 @@ void ClassTest::testIterator()
          if( col0[0] != 6 || col0[1] != 14 || col0[2] != 24 || col0[3] != 36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Multiplication assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
                 << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  6 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) != 14 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 24 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 36 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) !=  6 || tmat_(0,1) != 14 || tmat_(0,2) != 24 || tmat_(0,3) != 36 ||
+             tmat_(1,0) != 14 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 24 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 36 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  6  0 -2  0  7 )\n"
-                                        "( 14  1  0  4 -8 )\n"
-                                        "( 24  0 -3  5  9 )\n"
-                                        "( 36  0  0 -6 10 )\n";
+                << "   Expected result:\n(  6 14 24 36 )\n"
+                                        "( 14  1  0 -2 )\n"
+                                        "( 24  0  3  4 )\n"
+                                        "( 36 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3575,26 +3537,26 @@ void ClassTest::testIterator()
          if( col0[0] != 3 || col0[1] != 7 || col0[2] != 12 || col0[3] != 18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Division assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col0 << "\n"
-                << "   Expected result:\n( 3 7 12 18 )\n";
+                << "   Expected result:\n( 6 14 24 36 )\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( tmat_(0,0) !=  3 || tmat_(0,1) != 0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
-             tmat_(1,0) !=  7 || tmat_(1,1) != 1 || tmat_(1,2) !=  0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
-             tmat_(2,0) != 12 || tmat_(2,1) != 0 || tmat_(2,2) != -3 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
-             tmat_(3,0) != 18 || tmat_(3,1) != 0 || tmat_(3,2) !=  0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         if( tmat_(0,0) !=  3 || tmat_(0,1) !=  7 || tmat_(0,2) != 12 || tmat_(0,3) != 18 ||
+             tmat_(1,0) !=  7 || tmat_(1,1) !=  1 || tmat_(1,2) !=  0 || tmat_(1,3) != -2 ||
+             tmat_(2,0) != 12 || tmat_(2,1) !=  0 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+             tmat_(3,0) != 18 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << tmat_ << "\n"
-                << "   Expected result:\n(  3  0 -2  0  7 )\n"
-                                        "(  7  1  0  4 -8 )\n"
-                                        "( 12  0 -3  5  9 )\n"
-                                        "( 18  0  0 -6 10 )\n";
+                << "   Expected result:\n(  3  7 12 18 )\n"
+                                        "(  7  1  0 -2 )\n"
+                                        "( 12  0  3  4 )\n"
+                                        "( 18 -2  4  5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3612,7 +3574,7 @@ void ClassTest::testIterator()
 // This function performs a test of the \c nonZeros() member function of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testNonZeros()
+void SymmetricTest::testNonZeros()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -3630,13 +3592,13 @@ void ClassTest::testNonZeros()
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
-      if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
+      if( col3[0] != 0 || col3[1] != -2 || col3[2] != 4 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3647,30 +3609,30 @@ void ClassTest::testNonZeros()
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 2UL );
 
-      if( col3[0] != 0 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
+      if( col3[0] != 0 || col3[1] != -2 || col3[2] != 0 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Changing the number of non-zeros via the dense matrix
-      mat_(0,3) = 5;
+      mat_(3,0) = 5;
 
       checkSize    ( col3, 4UL );
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
-      if( col3[0] != 5 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
+      if( col3[0] != 5 || col3[1] != -2 || col3[2] != 0 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3692,13 +3654,13 @@ void ClassTest::testNonZeros()
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
-      if( col3[0] != 0 || col3[1] != 4 || col3[2] != 5 || col3[3] != -6 ) {
+      if( col3[0] != 0 || col3[1] != -2 || col3[2] != 4 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 0 4 5 -6 )\n";
+             << "   Expected result:\n( 0 -2 4 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -3709,30 +3671,30 @@ void ClassTest::testNonZeros()
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 2UL );
 
-      if( col3[0] != 0 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
+      if( col3[0] != 0 || col3[1] != -2 || col3[2] != 0 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 0 4 0 -6 )\n";
+             << "   Expected result:\n( 0 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
 
       // Changing the number of non-zeros via the dense matrix
-      tmat_(0,3) = 5;
+      tmat_(3,0) = 5;
 
       checkSize    ( col3, 4UL );
       checkCapacity( col3, 4UL );
       checkNonZeros( col3, 3UL );
 
-      if( col3[0] != 5 || col3[1] != 4 || col3[2] != 0 || col3[3] != -6 ) {
+      if( col3[0] != 5 || col3[1] != -2 || col3[2] != 0 || col3[3] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
              << "   Result:\n" << col3 << "\n"
-             << "   Expected result:\n( 5 4 0 -6 )\n";
+             << "   Expected result:\n( 5 -2 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -3749,7 +3711,7 @@ void ClassTest::testNonZeros()
 // This function performs a test of the \c reset() member function of the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testReset()
+void SymmetricTest::testReset()
 {
    using blaze::reset;
 
@@ -3772,38 +3734,38 @@ void ClassTest::testReset()
          checkCapacity( col3, 4UL );
          checkNonZeros( col3, 2UL );
          checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 9UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th column
+      // Resetting the 3rd column
       {
-         CT col4 = column( mat_, 4UL );
-         reset( col4 );
+         CT col3 = column( mat_, 3UL );
+         reset( col3 );
 
-         checkSize    ( col4, 4UL );
-         checkCapacity( col4, 4UL );
-         checkNonZeros( col4, 0UL );
+         checkSize    ( col3, 4UL );
+         checkCapacity( col3, 4UL );
+         checkNonZeros( col3, 0UL );
          checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 5UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 2UL );
 
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th column failed\n"
+                << " Error: Reset operation of 3rd column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3829,38 +3791,38 @@ void ClassTest::testReset()
          checkCapacity( col3 , 4UL );
          checkNonZeros( col3 , 2UL );
          checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 9UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 4th column
+      // Resetting the 3rd column
       {
-         TCT col4 = column( tmat_, 4UL );
-         reset( col4 );
+         TCT col3 = column( tmat_, 3UL );
+         reset( col3 );
 
-         checkSize    ( col4 , 4UL );
-         checkCapacity( col4 , 4UL );
-         checkNonZeros( col4 , 0UL );
+         checkSize    ( col3 , 4UL );
+         checkCapacity( col3 , 4UL );
+         checkNonZeros( col3 , 0UL );
          checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 5UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 2UL );
 
-         if( col4[0] != 0 || col4[1] != 0 || col4[2] != 0 || col4[3] != 0 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 0 || col3[3] != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 4th column failed\n"
+                << " Error: Reset operation of 3rd column failed\n"
                 << " Details:\n"
-                << "   Result:\n" << col4 << "\n"
+                << "   Result:\n" << col3 << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3879,7 +3841,7 @@ void ClassTest::testReset()
 // This function performs a test of the \c clear() function with the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testClear()
+void SymmetricTest::testClear()
 {
    using blaze::clear;
 
@@ -3902,16 +3864,16 @@ void ClassTest::testClear()
          checkCapacity( col3, 4UL );
          checkNonZeros( col3, 2UL );
          checkRows    ( mat_, 4UL );
-         checkColumns ( mat_, 5UL );
-         checkNonZeros( mat_, 9UL );
+         checkColumns ( mat_, 4UL );
+         checkNonZeros( mat_, 5UL );
 
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3936,16 +3898,16 @@ void ClassTest::testClear()
          checkCapacity( col3 , 4UL );
          checkNonZeros( col3 , 2UL );
          checkRows    ( tmat_, 4UL );
-         checkColumns ( tmat_, 5UL );
-         checkNonZeros( tmat_, 9UL );
+         checkColumns ( tmat_, 4UL );
+         checkNonZeros( tmat_, 5UL );
 
-         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 5 || col3[3] != -6 ) {
+         if( col3[0] != 0 || col3[1] != 0 || col3[2] != 4 || col3[3] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << col3 << "\n"
-                << "   Expected result:\n( 0 0 5 -6 )\n";
+                << "   Expected result:\n( 0 0 4 5 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -3963,7 +3925,7 @@ void ClassTest::testClear()
 // This function performs a test of the \c isDefault() function with the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsDefault()
+void SymmetricTest::testIsDefault()
 {
    using blaze::isDefault;
 
@@ -4093,7 +4055,7 @@ void ClassTest::testIsDefault()
 // This function performs a test of the \c isSame() function with the DenseColumn class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testIsSame()
+void SymmetricTest::testIsSame()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4223,7 +4185,7 @@ void ClassTest::testIsSame()
          typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
          ColumnType col1 = column( sm, 1UL );
          ColumnType col2 = column( sm, 1UL );
 
@@ -4243,7 +4205,7 @@ void ClassTest::testIsSame()
          typedef blaze::DenseSubmatrix<MT>          SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
          ColumnType col1 = column( sm, 0UL );
          ColumnType col2 = column( sm, 1UL );
 
@@ -4454,7 +4416,7 @@ void ClassTest::testIsSame()
          typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          ColumnType col1 = column( sm, 1UL );
          ColumnType col2 = column( sm, 1UL );
 
@@ -4474,7 +4436,7 @@ void ClassTest::testIsSame()
          typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          ColumnType col1 = column( sm, 0UL );
          ColumnType col2 = column( sm, 1UL );
 
@@ -4568,7 +4530,7 @@ void ClassTest::testIsSame()
 // This function performs a test of the \c subvector() function used with the DenseColumn class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void ClassTest::testSubvector()
+void SymmetricTest::testSubvector()
 {
    //=====================================================================================
    // Row-major matrix tests
@@ -4660,33 +4622,23 @@ void ClassTest::testSubvector()
 //
 // This function initializes all member matrices to specific predetermined values.
 */
-void ClassTest::initialize()
+void SymmetricTest::initialize()
 {
-   // Initializing the row-major dynamic matrix
+   // Initializing the symmetric row-major matrix
    mat_.reset();
    mat_(1,1) =  1;
-   mat_(0,2) = -2;
-   mat_(2,2) = -3;
-   mat_(1,3) =  4;
-   mat_(2,3) =  5;
-   mat_(3,3) = -6;
-   mat_(0,4) =  7;
-   mat_(1,4) = -8;
-   mat_(2,4) =  9;
-   mat_(3,4) = 10;
+   mat_(1,3) = -2;
+   mat_(2,2) =  3;
+   mat_(2,3) =  4;
+   mat_(3,3) =  5;
 
-   // Initializing the column-major dynamic matrix
+   // Initializing the symmetric column-major matrix
    tmat_.reset();
    tmat_(1,1) =  1;
-   tmat_(0,2) = -2;
-   tmat_(2,2) = -3;
-   tmat_(1,3) =  4;
-   tmat_(2,3) =  5;
-   tmat_(3,3) = -6;
-   tmat_(0,4) =  7;
-   tmat_(1,4) = -8;
-   tmat_(2,4) =  9;
-   tmat_(3,4) = 10;
+   tmat_(1,3) = -2;
+   tmat_(2,2) =  3;
+   tmat_(2,3) =  4;
+   tmat_(3,3) =  5;
 }
 //*************************************************************************************************
 
@@ -4708,14 +4660,14 @@ void ClassTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running general DenseColumn class test..." << std::endl;
+   std::cout << "   Running symmetric DenseColumn class test..." << std::endl;
 
    try
    {
       RUN_DENSECOLUMN_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during general DenseColumn class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during symmetric DenseColumn class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
