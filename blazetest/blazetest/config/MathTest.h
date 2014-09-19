@@ -94,7 +94,7 @@ typedef double  TypeB;
 //   - 1: The negation tests are included in the compilation process, but not executed
 //   - 2: The negation tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_NEGATED_OPERATION 0
 //*************************************************************************************************
 
 
@@ -119,7 +119,7 @@ typedef double  TypeB;
 //   - 1: The scaling tests are included in the compilation process, but not executed
 //   - 2: The scaling tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_SCALED_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_SCALED_OPERATION 0
 //*************************************************************************************************
 
 
@@ -142,7 +142,7 @@ typedef double  TypeB;
 //   - 1: The transpose tests are included in the compilation process, but not executed
 //   - 2: The transpose tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_TRANSPOSE_OPERATION 0
 //*************************************************************************************************
 
 
@@ -164,7 +164,7 @@ typedef double  TypeB;
 //   - 1: The abs tests are included in the compilation process, but not executed
 //   - 2: The abs tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
 //*************************************************************************************************
 
 
@@ -186,7 +186,7 @@ typedef double  TypeB;
 //   - 1: The eval tests are included in the compilation process, but not executed
 //   - 2: The eval tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 0
 //*************************************************************************************************
 
 
@@ -208,7 +208,7 @@ typedef double  TypeB;
 //   - 1: The serial tests are included in the compilation process, but not executed
 //   - 2: The serial tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION 0
 //*************************************************************************************************
 
 
@@ -232,7 +232,7 @@ typedef double  TypeB;
 //   - 1: The subvector tests are included in the compilation process, but not executed
 //   - 2: The subvector tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION 0
 //*************************************************************************************************
 
 
@@ -257,7 +257,7 @@ typedef double  TypeB;
 //   - 1: The submatrix tests are included in the compilation process, but not executed
 //   - 2: The submatrix tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION 0
 //*************************************************************************************************
 
 
@@ -280,7 +280,7 @@ typedef double  TypeB;
 //   - 1: The row tests are included in the compilation process, but not executed
 //   - 2: The row tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_ROW_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_ROW_OPERATION 0
 //*************************************************************************************************
 
 
@@ -303,7 +303,7 @@ typedef double  TypeB;
 //   - 1: The column tests are included in the compilation process, but not executed
 //   - 2: The column tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION 0
 //*************************************************************************************************
 
 
