@@ -72,12 +72,12 @@ double tsmatsmatadd( size_t N, size_t F, size_t steps )
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::matrix::parameters<row_major>  row_parameters;
-   typedef ::mtl::matrix::parameters<col_major>  col_parameters;
+   typedef ::mtl::mat::parameters<row_major>  row_parameters;
+   typedef ::mtl::mat::parameters<col_major>  col_parameters;
    typedef ::mtl::compressed2D<element_t,row_parameters>  row_compressed2D;
    typedef ::mtl::compressed2D<element_t,col_parameters>  col_compressed2D;
-   typedef ::mtl::matrix::inserter<row_compressed2D>  row_inserter;
-   typedef ::mtl::matrix::inserter<col_compressed2D>  col_inserter;
+   typedef ::mtl::mat::inserter<row_compressed2D>  row_inserter;
+   typedef ::mtl::mat::inserter<col_compressed2D>  col_inserter;
 
    ::blaze::setSeed( seed );
 

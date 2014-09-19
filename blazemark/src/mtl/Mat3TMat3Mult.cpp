@@ -72,8 +72,8 @@ double mat3tmat3mult( size_t N, size_t steps )
 
    typedef ::mtl::tag::row_major  row_major;
    typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::matrix::parameters<row_major>  row_parameters;
-   typedef ::mtl::matrix::parameters<col_major>  col_parameters;
+   typedef ::mtl::mat::parameters<row_major>  row_parameters;
+   typedef ::mtl::mat::parameters<col_major>  col_parameters;
    typedef ::mtl::dense2D<element_t,row_parameters>  row_dense2D;
    typedef ::mtl::dense2D<element_t,col_parameters>  col_dense2D;
 

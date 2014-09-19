@@ -62,11 +62,11 @@ namespace mtl {
 /*!\name MTL initialization functions */
 //@{
 template< typename Type >
-void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row_major > >& m
+void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::row_major > >& m
          , size_t nonzeros );
 
 template< typename Type >
-void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col_major > >& m
+void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::col_major > >& m
          , size_t nonzeros );
 //@}
 //*************************************************************************************************
@@ -83,13 +83,13 @@ void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col
 // will be filled with \a nonzeros non-zero elements, whose indices are randomly determined.
 */
 template< typename Type >  // Data type of the matrix
-void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row_major > >& m
+void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::row_major > >& m
          , size_t nonzeros )
 {
    typedef ::mtl::tag::row_major                      row_major;
-   typedef ::mtl::matrix::parameters<row_major>       row_parameters;
+   typedef ::mtl::mat::parameters<row_major>       row_parameters;
    typedef ::mtl::compressed2D<Type,row_parameters>   row_compressed2D;
-   typedef ::mtl::matrix::inserter<row_compressed2D>  row_inserter;
+   typedef ::mtl::mat::inserter<row_compressed2D>  row_inserter;
 
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );
@@ -136,13 +136,13 @@ void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row
 // determined.
 */
 template< typename Type >  // Data type of the matrix
-void init( ::mtl::compressed2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col_major > >& m
+void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::col_major > >& m
          , size_t nonzeros )
 {
    typedef ::mtl::tag::col_major                      col_major;
-   typedef ::mtl::matrix::parameters<col_major>       col_parameters;
+   typedef ::mtl::mat::parameters<col_major>       col_parameters;
    typedef ::mtl::compressed2D<Type,col_parameters>   col_compressed2D;
-   typedef ::mtl::matrix::inserter<col_compressed2D>  col_inserter;
+   typedef ::mtl::mat::inserter<col_compressed2D>  col_inserter;
 
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );

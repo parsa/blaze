@@ -71,7 +71,7 @@ double dmatdvecmult( size_t N, size_t steps )
    using ::blazemark::element_t;
 
    typedef ::mtl::tag::row_major  row_major;
-   typedef ::mtl::matrix::parameters<row_major>  parameters;
+   typedef ::mtl::mat::parameters<row_major>  parameters;
    typedef ::mtl::dense2D<element_t,parameters>  dense2D;
    typedef ::mtl::dense_vector<element_t>  dense_vector;
 

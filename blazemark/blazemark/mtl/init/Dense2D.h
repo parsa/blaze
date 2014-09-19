@@ -59,10 +59,10 @@ namespace mtl {
 /*!\name MTL initialization functions */
 //@{
 template< typename Type >
-void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row_major > >& m );
+void init( ::mtl::dense2D< Type, ::mtl::mat::parameters< ::mtl::tag::row_major > >& m );
 
 template< typename Type >
-void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col_major > >& m );
+void init( ::mtl::dense2D< Type, ::mtl::mat::parameters< ::mtl::tag::col_major > >& m );
 //@}
 //*************************************************************************************************
 
@@ -76,7 +76,7 @@ void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col_majo
 // This function initializes the given row-major dense matrix with random values.
 */
 template< typename Type >  // Data type of the matrix
-void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row_major > >& m )
+void init( ::mtl::dense2D< Type, ::mtl::mat::parameters< ::mtl::tag::row_major > >& m )
 {
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );
@@ -99,7 +99,7 @@ void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::row_majo
 // This function initializes the given column-major dense matrix with random values.
 */
 template< typename Type >  // Data type of the matrix
-void init( ::mtl::dense2D< Type, ::mtl::matrix::parameters< ::mtl::tag::col_major > >& m )
+void init( ::mtl::dense2D< Type, ::mtl::mat::parameters< ::mtl::tag::col_major > >& m )
 {
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );

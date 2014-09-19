@@ -72,7 +72,7 @@ double tmat6vec6mult( size_t N, size_t steps )
    using ::blazemark::element_t;
 
    typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::matrix::parameters<col_major>  parameters;
+   typedef ::mtl::mat::parameters<col_major>  parameters;
    typedef ::mtl::dense2D<element_t,parameters>  dense2D;
    typedef ::mtl::dense_vector<element_t>  dense_vector;
 

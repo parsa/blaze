@@ -70,7 +70,7 @@ double complex7( size_t N, size_t steps )
    using ::blazemark::element_t;
 
    typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::matrix::parameters<col_major>  parameters;
+   typedef ::mtl::mat::parameters<col_major>  parameters;
    typedef ::mtl::dense2D<element_t,parameters>  dense2D;
 
    ::blaze::setSeed( seed );
