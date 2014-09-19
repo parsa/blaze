@@ -2219,7 +2219,7 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// In contrast to plain matrices, which have no restriction in their number of rows and columns
+// In contrast to general matrices, which have no restriction in their number of rows and columns
 // and whose elements can have any value, symmetric matrices provide the compile time guarantee
 // to be square matrices with pair-wise identical values. Mathematically, this means that a
 // symmetric matrix is always equal to its transpose (\f$ A = A^T \f$) and that all non-diagonal
