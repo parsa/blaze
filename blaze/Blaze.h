@@ -2230,6 +2230,7 @@ namespace blaze {}
 //
 //
 // \n \section adaptors_symmetric_matrix_symmetricmatrix SymmetricMatrix
+// <hr>
 //
 // The SymmetricMatrix class template is an adapter for existing dense and sparse matrix types.
 // It inherits the properties and the interface of the given matrix type \a MT and extends it
@@ -2276,6 +2277,7 @@ namespace blaze {}
 //
 //
 // \n \section adaptors_symmetric_matrix_special_properties Special Properties of Symmetric Matrices
+// <hr>
 //
 // A symmetric matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
@@ -2495,6 +2497,7 @@ namespace blaze {}
    \endcode
 
 // \n \section adaptors_symmetric_matrix_arithmetic_operations Arithmetic Operations
+// <hr>
 //
 // A SymmetricMatrix matrix can participate in numerical operations in any way any other dense
 // or sparse matrix can participate. It can also be combined with any other dense or sparse vector
@@ -2528,6 +2531,7 @@ namespace blaze {}
    \endcode
 
 // \n \section adaptors_symmetric_matrix_block_structured Block-Structured Symmetric Matrices
+// <hr>
 //
 // It is also possible to use block-structured symmetric matrices:
 
@@ -2552,6 +2556,107 @@ namespace blaze {}
 
    // Manipulating the elements (2,4) and (4,2)
    A(2,4)(1,1) = -5;
+   \endcode
+
+// \n \section adaptors_symmetric_matrix_performance Performance Considerations
+// <hr>
+//
+// When the symmetric property of a matrix is know beforehands using the SymmetricMatrix adaptor
+// instead of a general matrix can be a considerable performance advantage. The \b Blaze library
+// tries to exploit the properties of symmetric matrices whenever possible. However, there are
+// also situations when using a symmetric matrix introduces some overhead. The following examples
+// demonstrate several situations, where symmetric matrices can positively or negatively impact
+// performance.
+//
+// \n \subsection adaptors_symmetric_matrix_matrix_multiplication Positive Impact: Matrix Multiplication
+//
+// When multiplying two matrices, at least one of which is symmetric, \b Blaze can exploit the fact
+// that \f$ A = A^T \f$ and choose the fastest and most suited combination of storage orders for the
+// multiplication. The following example demonstrates this by means of a dense matrix/sparse matrix
+// multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A;
+   SymmetricMatrix< CompressedMatrix<double,columnMajor> > B;
+   DynamicMatrix<double,columnMajor> C;
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// Intuitively, the chosen combination of a row-major and a column-major matrix is the most suited
+// for maximum performance. However, \b Blaze evaluates the multiplication as
+
+   \code
+   C = A * trans( B );
+   \endcode
+
+// which significantly increases the performance since in contrast to the original formulation the
+// optimized form can be vectorized. Therefore, in the context of matrix multiplications, using the
+// SymmetricMatrix adapter is obviously an advantage.
+//
+// \n \subsection adaptors_symmetric_matrix_views Positive Impact: Row/Column Views on Column/Row-Major Matrices
+//
+// Another example is the optimization of a row view on a column-major symmetric matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   typedef SymmetricMatrix< DynamicMatrix<double,columnMajor> >  DynamicSymmetric;
+
+   DynamicSymmetric A( 10UL );
+   DenseRow<DynamicSymmetric> row5 = row( A, 5UL );
+   \endcode
+
+// Usually, a row view on a column-major matrix results in a considerable performance decrease in
+// comparison to a row view on a row-major matrix due to the non-contiguous storage of the matrix
+// elements. However, in case of symmetric matrices, \b Blaze instead uses the according column of
+// the matrix, which provides the same performance as if the matrix would be row-major. Note that
+// this also works for column views on row-major matrices, where \b Blaze can use the according
+// row instead of a column in order to provide maximum performance.
+//
+// \n \subsection adaptors_symmetric_matrix_assignment Negative Impact: Assignment of a General Matrix
+//
+// In contrast to using a symmetric matrix on the right-hand side of an assignment (i.e. for read
+// access), which introduces absolutely no performance penalty, using a symmetric matrix on the
+// left-hand side of an assignment (i.e. for write access) may introduce additional overhead when
+// it is assigned a general matrix, which is not symmetric at compile time:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   SymmetricMatrix< DynamicMatrix<double> > A, C;
+   DynamicMatrix<double> B;
+
+   B = A;  // Only read-access to the symmetric matrix; no performance penalty
+   C = A;  // Assignment of a symmetric matrix to another symmetric matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to a symmetric matrix; some runtime overhead
+   \endcode
+
+// When assigning a general, potentially not symmetric matrix to a symmetric matrix it is necessary
+// to check whether the matrix is symmetric at runtime in order to guarantee the symmetry property
+// of the symmetric matrix. In case it turns out to be symmetric, it is assigned as efficiently as
+// possible, if it is not, an exception is thrown. In order to prevent this runtime overhead it is
+// therefore generally advisable to assign symmetric matrices to other symmetric matrices.\n
+// In this context it is especially noteworthy that in contrast to additions and subtractions the
+// multiplication of two symmetric matrices does not necessarily result in another symmetric matrix:
+
+   \code
+   SymmetricMatrix< DynamicMatrix<double> > A, B, C;
+
+   C = A + B;  // Results in a symmetric matrix; no runtime overhead
+   C = A - B;  // Results in a symmetric matrix; no runtime overhead
+   C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 
 // \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_subvectors </center>
