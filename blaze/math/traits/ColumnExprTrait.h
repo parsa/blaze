@@ -88,14 +88,18 @@ struct ColumnExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type; };
+   struct DenseResult {
+      typedef DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseColumn<T,IsColumnMajorMatrix<T>::value>  Type; };
+   struct SparseResult {
+      typedef SparseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+   };
    /*! \endcond */
    //**********************************************************************************************
 
