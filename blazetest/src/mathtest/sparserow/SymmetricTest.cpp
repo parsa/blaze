@@ -1427,10 +1427,10 @@ void SymmetricTest::testMultAssign()
       row2 *= vec;
 
       checkSize    ( row2 , 4UL );
-      checkNonZeros( row2 , 1UL );
+      checkNonZeros( row2 , 2UL );
       checkRows    ( tmat_, 4UL );
       checkColumns ( tmat_, 4UL );
-      checkNonZeros( tmat_, 5UL );
+      checkNonZeros( tmat_, 7UL );
 
       if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
          std::ostringstream oss;
