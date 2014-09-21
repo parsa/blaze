@@ -89,7 +89,7 @@ namespace blaze {
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
+class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, true >
                        , private MatMatSubExpr
                        , private Computation
 {
@@ -307,12 +307,12 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
+      typedef typename SelectType< SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
 
@@ -453,12 +453,12 @@ class TDMatSMatSubExpr : public DenseMatrix< TDMatSMatSubExpr<MT1,MT2>, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      typedef typename SelectType< SO2, OppositeType, ResultType >::Type  TmpType;
+      typedef typename SelectType< SO2, ResultType, OppositeType >::Type  TmpType;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType );
       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT, TmpType );
       BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( typename TmpType::CompositeType );
 
