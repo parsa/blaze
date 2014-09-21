@@ -44,6 +44,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
@@ -86,7 +87,7 @@ struct RowExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseRow<T,IsRowMajorMatrix<T>::value>  Type; };
+   struct DenseResult { typedef DenseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
