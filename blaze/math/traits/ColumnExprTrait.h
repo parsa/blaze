@@ -44,6 +44,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
@@ -87,7 +88,7 @@ struct ColumnExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseColumn<T,IsColumnMajorMatrix<T>::value>  Type; };
+   struct DenseResult { typedef DenseColumn<T,IsColumnMajorMatrix<T>::value,IsSymmetric<T>::value>  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
