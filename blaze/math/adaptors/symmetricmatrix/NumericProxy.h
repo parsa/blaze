@@ -137,8 +137,8 @@ class NumericProxy
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline Pointer      operator->();
-   inline ConstPointer operator->() const;
+   inline Pointer      operator->()       { return this; }
+   inline ConstPointer operator->() const { return this; }
    //@}
    //**********************************************************************************************
 
@@ -353,29 +353,37 @@ inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  ACCESS OPERATORS
+//
+//=================================================================================================
+
 //*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
+/*!\fn NumericProxy<MT>::operator->()
+// \brief Direct access to the represented matrix element.
 //
 // \return Pointer to the represented matrix element.
+//
+// Due to a bug in the Visual Studio compiler, the function has to be defined within the
+// NumericProxy class body. Otherwise the compiler is not able to match the declaration
+// and the definition.
 */
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::Pointer NumericProxy<MT>::operator->()
-{
-   return this;
-}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
+/*!\fn NumericProxy<MT>::operator->() const
+// \brief Direct access to the represented matrix element.
 //
 // \return Pointer to the represented matrix element.
+//
+// Due to a bug in the Visual Studio compiler, the function has to be defined within the
+// NumericProxy class body. Otherwise the compiler is not able to match the declaration
+// and the definition.
 */
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() const
-{
-   return this;
-}
 //*************************************************************************************************
 
 
