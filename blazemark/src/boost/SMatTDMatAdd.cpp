@@ -78,8 +78,7 @@ double smattdmatadd( size_t N, size_t F, size_t steps )
    ::blaze::setSeed( seed );
 
    ::boost::numeric::ublas::compressed_matrix<element_t,row_major> A( N, N );
-   ::boost::numeric::ublas::matrix<element_t,column_major> B( N, N );
-   ::boost::numeric::ublas::matrix<element_t,row_major> C( N, N );
+   ::boost::numeric::ublas::matrix<element_t,column_major> B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
    init( A, F );

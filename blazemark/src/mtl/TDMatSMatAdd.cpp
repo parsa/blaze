@@ -78,9 +78,8 @@ double tdmatsmatadd( size_t N, size_t F, size_t steps )
 
    ::blaze::setSeed( seed );
 
-   ::mtl::dense2D<element_t,col_parameters> A( N, N );
+   ::mtl::dense2D<element_t,col_parameters> A( N, N ), C( N, N );
    ::mtl::compressed2D<element_t,row_parameters> B( N, N );
-   ::mtl::dense2D<element_t,row_parameters> C( N, N );
    ::blaze::timing::WcTimer timer;
 
    init( A );

@@ -76,15 +76,13 @@ double smattdmatadd( size_t N, size_t F, size_t steps )
    typedef ::mtl::mat::parameters<row_major>  row_parameters;
    typedef ::mtl::mat::parameters<col_major>  col_parameters;
    typedef ::mtl::compressed2D<element_t,row_parameters>  compressed2D;
-   typedef ::mtl::dense2D<element_t,row_parameters>  row_dense2D;
-   typedef ::mtl::dense2D<element_t,col_parameters>  col_dense2D;
+   typedef ::mtl::dense2D<element_t,col_parameters>  dense2D;
    typedef ::mtl::mat::inserter<compressed2D>  inserter;
 
    ::blaze::setSeed( seed );
 
    compressed2D A( N, N );
-   col_dense2D B( N, N );
-   row_dense2D C( N, N );
+   dense2D B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
    init( A, F );

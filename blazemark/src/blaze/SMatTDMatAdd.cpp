@@ -77,8 +77,7 @@ double smattdmatadd( size_t N, size_t F, size_t steps )
    ::blaze::setSeed( seed );
 
    ::blaze::CompressedMatrix<element_t,rowMajor> A( N, N, N*F );
-   ::blaze::DynamicMatrix<element_t,columnMajor> B( N, N );
-   ::blaze::DynamicMatrix<element_t,rowMajor> C( N, N );
+   ::blaze::DynamicMatrix<element_t,columnMajor> B( N, N ), C( N, N );
    ::blaze::timing::WcTimer timer;
 
    init( A, F );
