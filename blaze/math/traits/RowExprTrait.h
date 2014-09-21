@@ -87,14 +87,18 @@ struct RowExprTrait
    //**struct DenseResult**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct DenseResult { typedef DenseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type; };
+   struct DenseResult {
+      typedef DenseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**struct SparseResult*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename T >
-   struct SparseResult { typedef SparseRow<T,IsRowMajorMatrix<T>::value>  Type; };
+   struct SparseResult {
+      typedef SparseRow<T,IsRowMajorMatrix<T>::value,IsSymmetric<T>::value>  Type;
+   };
    /*! \endcond */
    //**********************************************************************************************
 

@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -65,6 +66,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -108,6 +110,9 @@ namespace blaze {
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the sparse matrix.
 //        This template parameter doesn't have to be explicitly defined, but is automatically
 //        derived from the first template parameter.
+//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
+//        doesn't have to be explicitly defined, but is automatically derived from the first
+//        template parameter.
 //
 //
 // \n \section sparse_row_setup Setup of Sparse Rows
@@ -342,9 +347,10 @@ namespace blaze {
 // Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible
 // using a row-major storage order for matrix A would result in a more efficient evaluation.
 */
-template< typename MT                              // Type of the sparse matrix
-        , bool SO = IsRowMajorMatrix<MT>::value >  // Storage order
-class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
+template< typename MT                            // Type of the sparse matrix
+        , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
+        , bool SF = IsSymmetric<MT>::value >     // Symmetry flag
+class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
                 , private Row
 {
  private:
@@ -366,7 +372,7 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseRow<MT,SO>                    This;           //!< Type of this SparseRow instance.
+   typedef SparseRow<MT,SO,SF>                 This;           //!< Type of this SparseRow instance.
    typedef typename RowTrait<MT>::Type         ResultType;     //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;    //!< Type of the row elements.
@@ -506,8 +512,8 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
 
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   template< typename MT2, bool SO2 >
-   friend bool isSame( const SparseRow<MT2,SO2>& a, const SparseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -539,8 +545,9 @@ class SparseRow : public SparseVector< SparseRow<MT,SO>, true >
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline SparseRow<MT,SO>::SparseRow( MT& matrix, size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline SparseRow<MT,SO,SF>::SparseRow( MT& matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -565,8 +572,9 @@ inline SparseRow<MT,SO>::SparseRow( MT& matrix, size_t index )
 // \return Reference to the accessed value.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Reference SparseRow<MT,SO>::operator[]( size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Reference SparseRow<MT,SO,SF>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row_,index);
@@ -581,8 +589,10 @@ inline typename SparseRow<MT,SO>::Reference SparseRow<MT,SO>::operator[]( size_t
 // \return Reference to the accessed value.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstReference SparseRow<MT,SO>::operator[]( size_t index ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstReference
+   SparseRow<MT,SO,SF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row_,index);
@@ -598,8 +608,9 @@ inline typename SparseRow<MT,SO>::ConstReference SparseRow<MT,SO>::operator[]( s
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::begin()
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::begin()
 {
    return matrix_.begin( row_ );
 }
@@ -614,8 +625,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::begin()
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::begin() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::begin() const
 {
    return matrix_.cbegin( row_ );
 }
@@ -630,8 +642,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::begin() const
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::cbegin() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::cbegin() const
 {
    return matrix_.cbegin( row_ );
 }
@@ -646,8 +659,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::cbegin() const
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::end()
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::end()
 {
    return matrix_.end( row_ );
 }
@@ -662,8 +676,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::end()
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::end() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::end() const
 {
    return matrix_.cend( row_ );
 }
@@ -678,8 +693,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::end() const
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::cend() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::cend() const
 {
    return matrix_.cend( row_ );
 }
@@ -705,8 +721,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::cend() const
 // exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseRow& rhs )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseRow& rhs )
 {
    using blaze::assign;
 
@@ -748,9 +765,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseRow& rhs )
 // exception is thrown.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const DenseVector<VT,true>& rhs )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const DenseVector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -787,9 +805,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const DenseVector<VT,true>
 // exception is thrown.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseVector<VT,true>& rhs )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseVector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -828,9 +847,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator=( const SparseVector<VT,true
 // is thrown.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator+=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const Vector<VT,true>& rhs )
 {
    using blaze::addAssign;
 
@@ -855,9 +875,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator+=( const Vector<VT,true>& rh
 // is thrown.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator-=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const Vector<VT,true>& rhs )
 {
    using blaze::subAssign;
 
@@ -883,9 +904,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator-=( const Vector<VT,true>& rh
 // is thrown.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator*=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator*=( const Vector<VT,true>& rhs )
 {
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -916,10 +938,11 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::operator*=( const Vector<VT,true>& rh
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO> >::Type&
-   SparseRow<MT,SO>::operator*=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO,SF> >::Type&
+   SparseRow<MT,SO,SF>::operator*=( Other rhs )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= rhs;
@@ -941,10 +964,11 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO> >::Type&
 // type.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO> >::Type&
-   SparseRow<MT,SO>::operator/=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO,SF> >::Type&
+   SparseRow<MT,SO,SF>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -982,8 +1006,9 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,SO> >::Type&
 // \return The size of the sparse row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline size_t SparseRow<MT,SO>::size() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline size_t SparseRow<MT,SO,SF>::size() const
 {
    return matrix_.columns();
 }
@@ -996,8 +1021,9 @@ inline size_t SparseRow<MT,SO>::size() const
 // \return The capacity of the sparse row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline size_t SparseRow<MT,SO>::capacity() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline size_t SparseRow<MT,SO,SF>::capacity() const
 {
    return matrix_.capacity( row_ );
 }
@@ -1013,8 +1039,9 @@ inline size_t SparseRow<MT,SO>::capacity() const
 // of columns of the matrix containing the row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline size_t SparseRow<MT,SO>::nonZeros() const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline size_t SparseRow<MT,SO,SF>::nonZeros() const
 {
    return matrix_.nonZeros( row_ );
 }
@@ -1027,8 +1054,9 @@ inline size_t SparseRow<MT,SO>::nonZeros() const
 // \return void
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void SparseRow<MT,SO>::reset()
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void SparseRow<MT,SO,SF>::reset()
 {
    matrix_.reset( row_ );
 }
@@ -1047,9 +1075,10 @@ inline void SparseRow<MT,SO>::reset()
 // given \a value is inserted.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator
-   SparseRow<MT,SO>::set( size_t index, const ElementType& value )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator
+   SparseRow<MT,SO,SF>::set( size_t index, const ElementType& value )
 {
    return matrix_.set( row_, index, value );
 }
@@ -1069,9 +1098,10 @@ inline typename SparseRow<MT,SO>::Iterator
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator
-   SparseRow<MT,SO>::insert( size_t index, const ElementType& value )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator
+   SparseRow<MT,SO,SF>::insert( size_t index, const ElementType& value )
 {
    return matrix_.insert( row_, index, value );
 }
@@ -1087,8 +1117,9 @@ inline typename SparseRow<MT,SO>::Iterator
 // This function erases an element from the sparse row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void SparseRow<MT,SO>::erase( size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void SparseRow<MT,SO,SF>::erase( size_t index )
 {
    matrix_.erase( row_, index );
 }
@@ -1104,8 +1135,9 @@ inline void SparseRow<MT,SO>::erase( size_t index )
 // This function erases an element from the sparse row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::erase( Iterator pos )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::erase( Iterator pos )
 {
    return matrix_.erase( row_, pos );
 }
@@ -1122,8 +1154,10 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::erase( Iterator pos
 // This function erases a range of elements from the sparse row.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::erase( Iterator first, Iterator last )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator
+   SparseRow<MT,SO,SF>::erase( Iterator first, Iterator last )
 {
    return matrix_.erase( row_, first, last );
 }
@@ -1140,8 +1174,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::erase( Iterator fir
 // current values of the row elements are preserved.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-void SparseRow<MT,SO>::reserve( size_t n )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+void SparseRow<MT,SO,SF>::reserve( size_t n )
 {
    matrix_.reserve( row_, n );
 }
@@ -1155,9 +1190,10 @@ void SparseRow<MT,SO>::reserve( size_t n )
 // \return Reference to the sparse row.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the scalar value
-inline SparseRow<MT,SO>& SparseRow<MT,SO>::scale( const Other& scalar )
+inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
@@ -1174,9 +1210,10 @@ inline SparseRow<MT,SO>& SparseRow<MT,SO>::scale( const Other& scalar )
 // This function calculates a new row capacity based on the current capacity of the sparse
 // row. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
 */
-template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
-inline size_t SparseRow<MT,SO>::extendCapacity() const
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline size_t SparseRow<MT,SO,SF>::extendCapacity() const
 {
    using blaze::max;
    using blaze::min;
@@ -1214,8 +1251,9 @@ inline size_t SparseRow<MT,SO>::extendCapacity() const
 // via the subscript operator or the insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::find( size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::find( size_t index )
 {
    return matrix_.find( row_, index );
 }
@@ -1236,8 +1274,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::find( size_t index 
 // via the subscript operator or the insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::find( size_t index ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::find( size_t index ) const
 {
    return matrix_.find( row_, index );
 }
@@ -1257,8 +1296,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::find( size_t i
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::lowerBound( size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::lowerBound( size_t index )
 {
    return matrix_.lowerBound( row_, index );
 }
@@ -1278,8 +1318,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::lowerBound( size_t 
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::lowerBound( size_t index ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::lowerBound( size_t index ) const
 {
    return matrix_.lowerBound( row_, index );
 }
@@ -1299,8 +1340,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::lowerBound( si
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::upperBound( size_t index )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::Iterator SparseRow<MT,SO,SF>::upperBound( size_t index )
 {
    return matrix_.upperBound( row_, index );
 }
@@ -1320,8 +1362,9 @@ inline typename SparseRow<MT,SO>::Iterator SparseRow<MT,SO>::upperBound( size_t 
 // insert() function!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::upperBound( size_t index ) const
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline typename SparseRow<MT,SO,SF>::ConstIterator SparseRow<MT,SO,SF>::upperBound( size_t index ) const
 {
    return matrix_.upperBound( row_, index );
 }
@@ -1361,8 +1404,9 @@ inline typename SparseRow<MT,SO>::ConstIterator SparseRow<MT,SO>::upperBound( si
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void SparseRow<MT,SO>::append( size_t index, const ElementType& value, bool check )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void SparseRow<MT,SO,SF>::append( size_t index, const ElementType& value, bool check )
 {
    matrix_.append( row_, index, value, check );
 }
@@ -1387,10 +1431,11 @@ inline void SparseRow<MT,SO>::append( size_t index, const ElementType& value, bo
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,SO>::canAlias( const Other* alias ) const
+inline bool SparseRow<MT,SO,SF>::canAlias( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -1408,9 +1453,10 @@ inline bool SparseRow<MT,SO>::canAlias( const Other* alias ) const
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , bool SF >         // Symmetry flag
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,SO>::isAliased( const Other* alias ) const
+inline bool SparseRow<MT,SO,SF>::isAliased( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -1429,9 +1475,10 @@ inline bool SparseRow<MT,SO>::isAliased( const Other* alias ) const
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline void SparseRow<MT,SO>::assign( const DenseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1459,9 +1506,10 @@ inline void SparseRow<MT,SO>::assign( const DenseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void SparseRow<MT,SO>::assign( const SparseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1485,9 +1533,10 @@ inline void SparseRow<MT,SO>::assign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline void SparseRow<MT,SO>::addAssign( const DenseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
@@ -1516,9 +1565,10 @@ inline void SparseRow<MT,SO>::addAssign( const DenseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void SparseRow<MT,SO>::addAssign( const SparseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::addAssign( const SparseVector<VT,true>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
@@ -1548,9 +1598,10 @@ inline void SparseRow<MT,SO>::addAssign( const SparseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side dense vector
-inline void SparseRow<MT,SO>::subAssign( const DenseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
@@ -1579,9 +1630,10 @@ inline void SparseRow<MT,SO>::subAssign( const DenseVector<VT,true>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the sparse matrix
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void SparseRow<MT,SO>::subAssign( const SparseVector<VT,true>& rhs )
+inline void SparseRow<MT,SO,SF>::subAssign( const SparseVector<VT,true>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
@@ -1607,21 +1659,21 @@ inline void SparseRow<MT,SO>::subAssign( const SparseVector<VT,true>& rhs )
 
 //=================================================================================================
 //
-//  CLASS TEMPLATE SPECIALIZATION FOR COLUMN-MAJOR MATRICES
+//  CLASS TEMPLATE SPECIALIZATION FOR GENERAL COLUMN-MAJOR MATRICES
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SparseRow for column-major matrices.
+/*!\brief Specialization of SparseRow for general column-major matrices.
 // \ingroup sparse_row
 //
-// This specialization of SparseRow adapts the class template to the requirements of
+// This specialization of SparseRow adapts the class template to the requirements of general
 // column-major matrices.
 */
 template< typename MT >  // Type of the sparse matrix
-class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
-                          , private Row
+class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>, true >
+                                , private Row
 {
  private:
    //**Type definitions****************************************************************************
@@ -1642,7 +1694,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
 
  public:
    //**Type definitions****************************************************************************
-   typedef SparseRow<MT,false>                 This;            //!< Type of this SparseRow instance.
+   typedef SparseRow<MT,false,false>           This;            //!< Type of this SparseRow instance.
    typedef typename RowTrait<MT>::Type         ResultType;      //!< Result type for expression template evaluations.
    typedef typename ResultType::TransposeType  TransposeType;   //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType            ElementType;     //!< Type of the row elements.
@@ -1984,7 +2036,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
 
       //**Friend declarations**********************************************************************
       template< typename MatrixType2, typename IteratorType2 > friend class RowIterator;
-      template< typename MT2, bool SO2 > friend class SparseRow;
+      template< typename MT2, bool SO2, bool SF2 > friend class SparseRow;
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2106,15 +2158,16 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2 >
-   friend bool isSame( const SparseRow<MT2,SO2>& a, const SparseRow<MT2,SO2>& b );
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE       ( MT );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2138,7 +2191,7 @@ class SparseRow<MT,false> : public SparseVector< SparseRow<MT,false>, true >
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT >  // Type of the sparse matrix
-inline SparseRow<MT,false>::SparseRow( MT& matrix, size_t index )
+inline SparseRow<MT,false,false>::SparseRow( MT& matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
@@ -2165,7 +2218,8 @@ inline SparseRow<MT,false>::SparseRow( MT& matrix, size_t index )
 // \return Reference to the accessed value.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Reference SparseRow<MT,false>::operator[]( size_t index )
+inline typename SparseRow<MT,false,false>::Reference
+   SparseRow<MT,false,false>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row_,index);
@@ -2182,7 +2236,8 @@ inline typename SparseRow<MT,false>::Reference SparseRow<MT,false>::operator[]( 
 // \return Reference to the accessed value.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstReference SparseRow<MT,false>::operator[]( size_t index ) const
+inline typename SparseRow<MT,false,false>::ConstReference
+   SparseRow<MT,false,false>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row_,index);
@@ -2200,7 +2255,7 @@ inline typename SparseRow<MT,false>::ConstReference SparseRow<MT,false>::operato
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::begin()
+inline typename SparseRow<MT,false,false>::Iterator SparseRow<MT,false,false>::begin()
 {
    return Iterator( matrix_, row_, 0UL );
 }
@@ -2217,7 +2272,7 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::begin()
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::begin() const
+inline typename SparseRow<MT,false,false>::ConstIterator SparseRow<MT,false,false>::begin() const
 {
    return ConstIterator( matrix_, row_, 0UL );
 }
@@ -2234,7 +2289,7 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::begin() 
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::cbegin() const
+inline typename SparseRow<MT,false,false>::ConstIterator SparseRow<MT,false,false>::cbegin() const
 {
    return ConstIterator( matrix_, row_, 0UL );
 }
@@ -2251,7 +2306,7 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::cbegin()
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::end()
+inline typename SparseRow<MT,false,false>::Iterator SparseRow<MT,false,false>::end()
 {
    return Iterator( matrix_, row_, size() );
 }
@@ -2268,7 +2323,7 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::end()
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::end() const
+inline typename SparseRow<MT,false,false>::ConstIterator SparseRow<MT,false,false>::end() const
 {
    return ConstIterator( matrix_, row_, size() );
 }
@@ -2285,7 +2340,7 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::end() co
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::cend() const
+inline typename SparseRow<MT,false,false>::ConstIterator SparseRow<MT,false,false>::cend() const
 {
    return ConstIterator( matrix_, row_, size() );
 }
@@ -2313,7 +2368,7 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::cend() c
 // exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
-inline SparseRow<MT,false>& SparseRow<MT,false>::operator=( const SparseRow& rhs )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const SparseRow& rhs )
 {
    using blaze::assign;
 
@@ -2354,7 +2409,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator=( const SparseRow& rhs
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,false>& SparseRow<MT,false>::operator=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -2383,7 +2438,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator=( const Vector<VT,true
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,false>& SparseRow<MT,false>::operator+=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator+=( const Vector<VT,true>& rhs )
 {
    using blaze::addAssign;
 
@@ -2411,7 +2466,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator+=( const Vector<VT,tru
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,false>& SparseRow<MT,false>::operator-=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator-=( const Vector<VT,true>& rhs )
 {
    using blaze::subAssign;
 
@@ -2440,7 +2495,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator-=( const Vector<VT,tru
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline SparseRow<MT,false>& SparseRow<MT,false>::operator*=( const Vector<VT,true>& rhs )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator*=( const Vector<VT,true>& rhs )
 {
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
@@ -2473,8 +2528,8 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::operator*=( const Vector<VT,tru
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false> >::Type&
-   SparseRow<MT,false>::operator*=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
+   SparseRow<MT,false,false>::operator*=( Other rhs )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= rhs;
@@ -2499,8 +2554,8 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false> >::Type&
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false> >::Type&
-   SparseRow<MT,false>::operator/=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,false> >::Type&
+   SparseRow<MT,false,false>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -2540,7 +2595,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false> >::Type&
 // \return The size of the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false>::size() const
+inline size_t SparseRow<MT,false,false>::size() const
 {
    return matrix_.columns();
 }
@@ -2555,7 +2610,7 @@ inline size_t SparseRow<MT,false>::size() const
 // \return The capacity of the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false>::capacity() const
+inline size_t SparseRow<MT,false,false>::capacity() const
 {
    return matrix_.columns();
 }
@@ -2573,7 +2628,7 @@ inline size_t SparseRow<MT,false>::capacity() const
 // of columns of the matrix containing the row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline size_t SparseRow<MT,false>::nonZeros() const
+inline size_t SparseRow<MT,false,false>::nonZeros() const
 {
    size_t counter( 0UL );
    for( ConstIterator element=begin(); element!=end(); ++element ) {
@@ -2592,7 +2647,7 @@ inline size_t SparseRow<MT,false>::nonZeros() const
 // \return void
 */
 template< typename MT >  // Type of the sparse matrix
-inline void SparseRow<MT,false>::reset()
+inline void SparseRow<MT,false,false>::reset()
 {
    for( size_t j=0UL; j<size(); ++j ) {
       matrix_.erase( row_, j );
@@ -2616,8 +2671,8 @@ inline void SparseRow<MT,false>::reset()
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator
-   SparseRow<MT,false>::insert( size_t index, const ElementType& value )
+inline typename SparseRow<MT,false,false>::Iterator
+   SparseRow<MT,false,false>::insert( size_t index, const ElementType& value )
 {
    return Iterator( matrix_, row_, index, matrix_.insert( row_, index, value ) );
 }
@@ -2638,8 +2693,8 @@ inline typename SparseRow<MT,false>::Iterator
 // given \a value is inserted.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator
-   SparseRow<MT,false>::set( size_t index, const ElementType& value )
+inline typename SparseRow<MT,false,false>::Iterator
+   SparseRow<MT,false,false>::set( size_t index, const ElementType& value )
 {
    return Iterator( matrix_, row_, index, matrix_.set( row_, index, value ) );
 }
@@ -2657,7 +2712,7 @@ inline typename SparseRow<MT,false>::Iterator
 // This function erases an element from the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline void SparseRow<MT,false>::erase( size_t index )
+inline void SparseRow<MT,false,false>::erase( size_t index )
 {
    matrix_.erase( row_, index );
 }
@@ -2675,7 +2730,7 @@ inline void SparseRow<MT,false>::erase( size_t index )
 // This function erases an element from the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterator pos )
+inline typename SparseRow<MT,false,false>::Iterator SparseRow<MT,false,false>::erase( Iterator pos )
 {
    const size_t column( pos.column_ );
 
@@ -2700,7 +2755,8 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterat
 // This function erases a range of elements from the sparse row.
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterator first, Iterator last )
+inline typename SparseRow<MT,false,false>::Iterator
+   SparseRow<MT,false,false>::erase( Iterator first, Iterator last )
 {
    for( ; first!=last; ++first ) {
       matrix_.erase( first.column_, first.pos_ );
@@ -2722,7 +2778,7 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::erase( Iterat
 // current values of the row elements are preserved.
 */
 template< typename MT >  // Type of the sparse matrix
-void SparseRow<MT,false>::reserve( size_t n )
+void SparseRow<MT,false,false>::reserve( size_t n )
 {
    UNUSED_PARAMETER( n );
    return;
@@ -2740,7 +2796,7 @@ void SparseRow<MT,false>::reserve( size_t n )
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
-inline SparseRow<MT,false>& SparseRow<MT,false>::scale( const Other& scalar )
+inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::scale( const Other& scalar )
 {
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
@@ -2773,7 +2829,7 @@ inline SparseRow<MT,false>& SparseRow<MT,false>::scale( const Other& scalar )
 // via the subscript operator or the insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::find( size_t index )
+inline typename SparseRow<MT,false,false>::Iterator SparseRow<MT,false,false>::find( size_t index )
 {
    const typename MT::Iterator pos( matrix_.find( row_, index ) );
 
@@ -2801,7 +2857,8 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::find( size_t 
 // via the subscript operator or the insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::find( size_t index ) const
+inline typename SparseRow<MT,false,false>::ConstIterator
+   SparseRow<MT,false,false>::find( size_t index ) const
 {
    const typename MT::ConstIterator pos( matrix_.find( row_, index ) );
 
@@ -2828,7 +2885,8 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::find( si
 // insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::lowerBound( size_t index )
+inline typename SparseRow<MT,false,false>::Iterator
+   SparseRow<MT,false,false>::lowerBound( size_t index )
 {
    for( size_t i=index; i<size(); ++i )
    {
@@ -2858,7 +2916,8 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::lowerBound( s
 // insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::lowerBound( size_t index ) const
+inline typename SparseRow<MT,false,false>::ConstIterator
+   SparseRow<MT,false,false>::lowerBound( size_t index ) const
 {
    for( size_t i=index; i<size(); ++i )
    {
@@ -2888,7 +2947,8 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::lowerBou
 // insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::upperBound( size_t index )
+inline typename SparseRow<MT,false,false>::Iterator
+   SparseRow<MT,false,false>::upperBound( size_t index )
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
@@ -2918,7 +2978,8 @@ inline typename SparseRow<MT,false>::Iterator SparseRow<MT,false>::upperBound( s
 // insert() function!
 */
 template< typename MT >  // Type of the sparse matrix
-inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::upperBound( size_t index ) const
+inline typename SparseRow<MT,false,false>::ConstIterator
+   SparseRow<MT,false,false>::upperBound( size_t index ) const
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
@@ -2968,7 +3029,7 @@ inline typename SparseRow<MT,false>::ConstIterator SparseRow<MT,false>::upperBou
 // returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
-inline void SparseRow<MT,false>::append( size_t index, const ElementType& value, bool check )
+inline void SparseRow<MT,false,false>::append( size_t index, const ElementType& value, bool check )
 {
    if( !check || !isDefault( value ) )
       matrix_.insert( row_, index, value );
@@ -2998,7 +3059,7 @@ inline void SparseRow<MT,false>::append( size_t index, const ElementType& value,
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false>::canAlias( const Other* alias ) const
+inline bool SparseRow<MT,false,false>::canAlias( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -3015,7 +3076,7 @@ inline bool SparseRow<MT,false>::canAlias( const Other* alias ) const
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SparseRow<MT,false>::isAliased( const Other* alias ) const
+inline bool SparseRow<MT,false,false>::isAliased( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -3037,7 +3098,7 @@ inline bool SparseRow<MT,false>::isAliased( const Other* alias ) const
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
-inline void SparseRow<MT,false>::assign( const DenseVector<VT,true>& rhs )
+inline void SparseRow<MT,false,false>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3063,7 +3124,7 @@ inline void SparseRow<MT,false>::assign( const DenseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
-inline void SparseRow<MT,false>::assign( const SparseVector<VT,true>& rhs )
+inline void SparseRow<MT,false,false>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3096,7 +3157,7 @@ inline void SparseRow<MT,false>::assign( const SparseVector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline void SparseRow<MT,false>::addAssign( const Vector<VT,true>& rhs )
+inline void SparseRow<MT,false,false>::addAssign( const Vector<VT,true>& rhs )
 {
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
@@ -3126,7 +3187,7 @@ inline void SparseRow<MT,false>::addAssign( const Vector<VT,true>& rhs )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
-inline void SparseRow<MT,false>::subAssign( const Vector<VT,true>& rhs )
+inline void SparseRow<MT,false,false>::subAssign( const Vector<VT,true>& rhs )
 {
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
@@ -3150,6 +3211,1339 @@ inline void SparseRow<MT,false>::subAssign( const Vector<VT,true>& rhs )
 
 //=================================================================================================
 //
+//  CLASS TEMPLATE SPECIALIZATION FOR SYMMETRIC COLUMN-MAJOR MATRICES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of SparseRow for symmetric column-major matrices.
+// \ingroup sparse_row
+//
+// This specialization of SparseRow adapts the class template to the requirements of symmetric
+// column-major matrices.
+*/
+template< typename MT >  // Type of the sparse matrix
+class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, true >
+                              , private Row
+{
+ private:
+   //**Type definitions****************************************************************************
+   //! Composite data type of the dense matrix expression.
+   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the non-const reference and iterator types.
+   /*! The \a useConst compile time constant expression represents a compilation switch for
+       the non-const reference and iterator types. In case the given sparse matrix of type
+       \a MT is const qualified, \a useConst will be set to 1 and the sparse row will return
+       references and iterators to const. Otherwise \a useConst will be set to 0 and the
+       sparse row will offer write access to the sparse matrix elements both via the subscript
+       operator and iterators. */
+   enum { useConst = IsConst<MT>::value };
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef SparseRow<MT,false,true>            This;           //!< Type of this SparseRow instance.
+   typedef typename RowTrait<MT>::Type         ResultType;     //!< Result type for expression template evaluations.
+   typedef typename ResultType::TransposeType  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef typename MT::ElementType            ElementType;    //!< Type of the row elements.
+   typedef typename MT::ReturnType             ReturnType;     //!< Return type for expression template evaluations
+   typedef const SparseRow&                    CompositeType;  //!< Data type for composite expression templates.
+
+   //! Reference to a constant row value.
+   typedef typename MT::ConstReference  ConstReference;
+
+   //! Reference to a non-constant row value.
+   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+
+   //! Iterator over constant elements.
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   //! Iterator over non-constant elements.
+   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template assignment strategy.
+   enum { smpAssignable = 0 };
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline SparseRow( MT& matrix, size_t index );
+   // No explicitly declared copy constructor.
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   // No explicitly declared destructor.
+   //**********************************************************************************************
+
+   //**Data access functions***********************************************************************
+   /*!\name Data access functions */
+   //@{
+   inline Reference      operator[]( size_t index );
+   inline ConstReference operator[]( size_t index ) const;
+   inline Iterator       begin ();
+   inline ConstIterator  begin () const;
+   inline ConstIterator  cbegin() const;
+   inline Iterator       end   ();
+   inline ConstIterator  end   () const;
+   inline ConstIterator  cend  () const;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+                           inline SparseRow& operator= ( const SparseRow& rhs );
+   template< typename VT > inline SparseRow& operator= ( const DenseVector <VT,true>& rhs );
+   template< typename VT > inline SparseRow& operator= ( const SparseVector<VT,true>& rhs );
+   template< typename VT > inline SparseRow& operator+=( const Vector<VT,true>& rhs );
+   template< typename VT > inline SparseRow& operator-=( const Vector<VT,true>& rhs );
+   template< typename VT > inline SparseRow& operator*=( const Vector<VT,true>& rhs );
+
+   template< typename Other >
+   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
+      operator*=( Other rhs );
+
+   template< typename Other >
+   inline typename EnableIf< IsNumeric<Other>, SparseRow >::Type&
+      operator/=( Other rhs );
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+                              inline size_t     size() const;
+                              inline size_t     capacity() const;
+                              inline size_t     nonZeros() const;
+                              inline void       reset();
+                              inline Iterator   set    ( size_t index, const ElementType& value );
+                              inline Iterator   insert ( size_t index, const ElementType& value );
+                              inline void       erase  ( size_t index );
+                              inline Iterator   erase  ( Iterator pos );
+                              inline Iterator   erase  ( Iterator first, Iterator last );
+                              inline void       reserve( size_t n );
+   template< typename Other > inline SparseRow& scale  ( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Lookup functions****************************************************************************
+   /*!\name Lookup functions */
+   //@{
+   inline Iterator      find      ( size_t index );
+   inline ConstIterator find      ( size_t index ) const;
+   inline Iterator      lowerBound( size_t index );
+   inline ConstIterator lowerBound( size_t index ) const;
+   inline Iterator      upperBound( size_t index );
+   inline ConstIterator upperBound( size_t index ) const;
+   //@}
+   //**********************************************************************************************
+
+   //**Low-level utility functions*****************************************************************
+   /*!\name Low-level utility functions */
+   //@{
+   inline void append( size_t index, const ElementType& value, bool check=false );
+   //@}
+   //**********************************************************************************************
+
+   //**Expression template evaluation functions****************************************************
+   /*!\name Expression template evaluation functions */
+   //@{
+   template< typename Other > inline bool canAlias ( const Other* alias ) const;
+   template< typename Other > inline bool isAliased( const Other* alias ) const;
+
+   template< typename VT >    inline void assign   ( const DenseVector <VT,true>& rhs );
+   template< typename VT >    inline void assign   ( const SparseVector<VT,true>& rhs );
+   template< typename VT >    inline void addAssign( const DenseVector <VT,true>& rhs );
+   template< typename VT >    inline void addAssign( const SparseVector<VT,true>& rhs );
+   template< typename VT >    inline void subAssign( const DenseVector <VT,true>& rhs );
+   template< typename VT >    inline void subAssign( const SparseVector<VT,true>& rhs );
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline size_t extendCapacity() const;
+   //@}
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   Operand      matrix_;  //!< The sparse matrix containing the row.
+   const size_t row_;     //!< The index of the row in the matrix.
+   //@}
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
+   //**********************************************************************************************
+
+   //**Compile time checks*************************************************************************
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE   ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for SparseRow.
+//
+// \param matrix The matrix containing the row.
+// \param index The index of the row.
+// \exception std::invalid_argument Invalid row access index.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline SparseRow<MT,false,true>::SparseRow( MT& matrix, size_t index )
+   : matrix_( matrix )  // The sparse matrix containing the row
+   , row_   ( index  )  // The index of the row in the matrix
+{
+   if( matrix_.rows() <= index )
+      throw std::invalid_argument( "Invalid row access index" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DATA ACCESS FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subscript operator for the direct access to the row elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Reference
+   SparseRow<MT,false,true>::operator[]( size_t index )
+{
+   BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
+   return matrix_(index,row_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subscript operator for the direct access to the row elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstReference
+   SparseRow<MT,false,true>::operator[]( size_t index ) const
+{
+   BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
+   return const_cast<const MT&>( matrix_ )(index,row_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the row.
+//
+// \return Iterator to the first element of the row.
+//
+// This function returns an iterator to the first element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator SparseRow<MT,false,true>::begin()
+{
+   return matrix_.begin( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the row.
+//
+// \return Iterator to the first element of the row.
+//
+// This function returns an iterator to the first element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator SparseRow<MT,false,true>::begin() const
+{
+   return matrix_.cbegin( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the row.
+//
+// \return Iterator to the first element of the row.
+//
+// This function returns an iterator to the first element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator SparseRow<MT,false,true>::cbegin() const
+{
+   return matrix_.cbegin( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the row.
+//
+// \return Iterator just past the last element of the row.
+//
+// This function returns an iterator just past the last element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator SparseRow<MT,false,true>::end()
+{
+   return matrix_.end( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the row.
+//
+// \return Iterator just past the last element of the row.
+//
+// This function returns an iterator just past the last element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator SparseRow<MT,false,true>::end() const
+{
+   return matrix_.cend( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the row.
+//
+// \return Iterator just past the last element of the row.
+//
+// This function returns an iterator just past the last element of the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator SparseRow<MT,false,true>::cend() const
+{
+   return matrix_.cend( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ASSIGNMENT OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for SparseRow.
+//
+// \param rhs Sparse row to be copied.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Row sizes do not match.
+//
+// In case the current sizes of the two rows don't match, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline SparseRow<MT,false,true>& SparseRow<MT,false,true>::operator=( const SparseRow& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ ) )
+      return *this;
+
+   if( size() != rhs.size() )
+      throw std::invalid_argument( "Row sizes do not match" );
+
+   if( rhs.canAlias( &matrix_ ) ) {
+      const ResultType tmp( rhs );
+      matrix_.reset  ( row_ );
+      matrix_.reserve( row_, tmp.nonZeros() );
+      assign( *this, tmp );
+   }
+   else {
+      matrix_.reset  ( row_ );
+      matrix_.reserve( row_, rhs.nonZeros() );
+      assign( *this, rhs );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different dense vectors.
+//
+// \param rhs Dense vector to be assigned.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline SparseRow<MT,false,true>&
+   SparseRow<MT,false,true>::operator=( const DenseVector<VT,true>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   if( (~rhs).canAlias( &matrix_ ) ) {
+      const typename VT::ResultType tmp( ~rhs );
+      matrix_.reset( row_ );
+      assign( *this, tmp );
+   }
+   else {
+      matrix_.reset( row_ );
+      assign( *this, ~rhs );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different sparse vectors.
+//
+// \param rhs Sparse vector to be assigned.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline SparseRow<MT,false,true>&
+   SparseRow<MT,false,true>::operator=( const SparseVector<VT,true>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   if( (~rhs).canAlias( &matrix_ ) ) {
+      const typename VT::ResultType tmp( ~rhs );
+      matrix_.reset  ( row_ );
+      matrix_.reserve( row_, tmp.nonZeros() );
+      assign( *this, tmp );
+   }
+   else {
+      matrix_.reset  ( row_ );
+      matrix_.reserve( row_, (~rhs).nonZeros() );
+      assign( *this, ~rhs );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition assignment operator for the addition of a vector (\f$ \vec{a}+=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector to be added to the sparse row.
+// \return Reference to the sparse row.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side vector
+inline SparseRow<MT,false,true>&
+   SparseRow<MT,false,true>::operator+=( const Vector<VT,true>& rhs )
+{
+   using blaze::addAssign;
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   addAssign( *this, ~rhs );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction assignment operator for the subtraction of a vector (\f$ \vec{a}-=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector to be subtracted from the sparse row.
+// \return Reference to the sparse row.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side vector
+inline SparseRow<MT,false,true>&
+   SparseRow<MT,false,true>::operator-=( const Vector<VT,true>& rhs )
+{
+   using blaze::subAssign;
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   subAssign( *this, ~rhs );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector to be multiplied with the sparse row.
+// \return Reference to the sparse row.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side vector
+inline SparseRow<MT,false,true>&
+   SparseRow<MT,false,true>::operator*=( const Vector<VT,true>& rhs )
+{
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   typedef typename MultTrait<ResultType,typename VT::ResultType>::Type  MultType;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( MultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
+
+   const MultType tmp( *this * (~rhs) );
+   matrix_.reset( row_ );
+   assign( tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication between a sparse row
+//        and a scalar value (\f$ \vec{a}*=s \f$).
+//
+// \param rhs The right-hand side scalar value for the multiplication.
+// \return Reference to the sparse row.
+//
+// This operator can only be used for built-in data types. Additionally, the elements of
+// the sparse row must support the multiplication assignment operator for the given scalar
+// built-in data type.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the right-hand side scalar
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
+   SparseRow<MT,false,true>::operator*=( Other rhs )
+{
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= rhs;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a sparse row by a scalar value
+//        (\f$ \vec{a}/=s \f$).
+//
+// \param rhs The right-hand side scalar value for the division.
+// \return Reference to the sparse row.
+//
+// This operator can only be used for built-in data types. Additionally, the elements of the
+// sparse row must either support the multiplication assignment operator for the given
+// floating point data type or the division assignment operator for the given integral data
+// type.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the right-hand side scalar
+inline typename EnableIf< IsNumeric<Other>, SparseRow<MT,false,true> >::Type&
+   SparseRow<MT,false,true>::operator/=( Other rhs )
+{
+   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+   typedef typename DivTrait<ElementType,Other>::Type  DT;
+   typedef typename If< IsNumeric<DT>, DT, Other >::Type  Tmp;
+
+   // Depending on the two involved data types, an integer division is applied or a
+   // floating point division is selected.
+   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
+      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
+      for( Iterator element=begin(); element!=end(); ++element )
+         element->value() *= tmp;
+   }
+   else {
+      for( Iterator element=begin(); element!=end(); ++element )
+         element->value() /= rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current size/dimension of the sparse row.
+//
+// \return The size of the sparse row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline size_t SparseRow<MT,false,true>::size() const
+{
+   return matrix_.columns();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the maximum capacity of the sparse row.
+//
+// \return The capacity of the sparse row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline size_t SparseRow<MT,false,true>::capacity() const
+{
+   return matrix_.capacity( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of non-zero elements in the row.
+//
+// \return The number of non-zero elements in the row.
+//
+// Note that the number of non-zero elements is always less than or equal to the current number
+// of columns of the matrix containing the row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline size_t SparseRow<MT,false,true>::nonZeros() const
+{
+   return matrix_.nonZeros( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void SparseRow<MT,false,true>::reset()
+{
+   matrix_.reset( row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting an element of the sparse row.
+//
+// \param index The index of the element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be set.
+// \return Reference to the set value.
+//
+// This function sets the value of an element of the sparse row. In case the sparse row already
+// contains an element with index \a index its value is modified, else a new element with the
+// given \a value is inserted.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::set( size_t index, const ElementType& value )
+{
+   return matrix_.set( index, row_, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Inserting an element into the sparse row.
+//
+// \param index The index of the new element. The index has to be in the range \f$[0..N-1]\f$.
+// \param value The value of the element to be inserted.
+// \return Reference to the inserted value.
+// \exception std::invalid_argument Invalid sparse row access index.
+//
+// This function inserts a new element into the sparse row. However, duplicate elements
+// are not allowed. In case the sparse row already contains an element at index \a index,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::insert( size_t index, const ElementType& value )
+{
+   return matrix_.insert( index, row_, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse row.
+//
+// \param index The index of the element to be erased. The index has to be in the range \f$[0..N-1]\f$.
+// \return void
+//
+// This function erases an element from the sparse row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void SparseRow<MT,false,true>::erase( size_t index )
+{
+   matrix_.erase( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing an element from the sparse row.
+//
+// \param pos Iterator to the element to be erased.
+// \return void
+//
+// This function erases an element from the sparse row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::erase( Iterator pos )
+{
+   return matrix_.erase( row_, pos );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a range of elements from the sparse row.
+//
+// \param first Iterator to first element to be erased.
+// \param last Iterator just past the last element to be erased.
+// \return Iterator to the element after the erased element.
+//
+// This function erases a range of elements from the sparse row.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::erase( Iterator first, Iterator last )
+{
+   return matrix_.erase( row_, first, last );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Setting the minimum capacity of the sparse row.
+//
+// \param n The new minimum capacity of the sparse row.
+// \return void
+//
+// This function increases the capacity of the sparse row to at least \a n elements. The
+// current values of the row elements are preserved.
+*/
+template< typename MT >  // Type of the sparse matrix
+void SparseRow<MT,false,true>::reserve( size_t n )
+{
+   matrix_.reserve( row_, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the sparse row by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the row scaling.
+// \return Reference to the sparse row.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the scalar value
+inline SparseRow<MT,false,true>& SparseRow<MT,false,true>::scale( const Other& scalar )
+{
+   for( Iterator element=begin(); element!=end(); ++element )
+      element->value() *= scalar;
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating a new sparse row capacity.
+//
+// \return The new sparse row capacity.
+//
+// This function calculates a new row capacity based on the current capacity of the sparse
+// row. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline size_t SparseRow<MT,false,true>::extendCapacity() const
+{
+   using blaze::max;
+   using blaze::min;
+
+   size_t nonzeros( 2UL*capacity()+1UL );
+   nonzeros = max( nonzeros, 7UL    );
+   nonzeros = min( nonzeros, size() );
+
+   BLAZE_INTERNAL_ASSERT( nonzeros > capacity(), "Invalid capacity value" );
+
+   return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOOKUP FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Searches for a specific row element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// row. It specifically searches for the element with index \a index. In case the element is
+// found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
+// the returned sparse row iterator is subject to invalidation due to inserting operations
+// via the subscript operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::find( size_t index )
+{
+   return matrix_.find( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Searches for a specific row element.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the element in case the index is found, end() iterator otherwise.
+//
+// This function can be used to check whether a specific element is contained in the sparse
+// row. It specifically searches for the element with index \a index. In case the element is
+// found, the function returns an iterator to the element. Otherwise an iterator just past
+// the last non-zero element of the sparse row (the end() iterator) is returned. Note that
+// the returned sparse row iterator is subject to invalidation due to inserting operations
+// via the subscript operator or the insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator
+   SparseRow<MT,false,true>::find( size_t index ) const
+{
+   return matrix_.find( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::lowerBound( size_t index )
+{
+   return matrix_.lowerBound( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index not less then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index not less then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator
+   SparseRow<MT,false,true>::lowerBound( size_t index ) const
+{
+   return matrix_.lowerBound( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::Iterator
+   SparseRow<MT,false,true>::upperBound( size_t index )
+{
+   return matrix_.upperBound( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first index greater then the given index.
+//
+// \param index The index of the search element. The index has to be in the range \f$[0..N-1]\f$.
+// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+//
+// This function returns an iterator to the first element with an index greater then the given
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned sparse row iterator
+// is subject to invalidation due to inserting operations via the subscript operator or the
+// insert() function!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline typename SparseRow<MT,false,true>::ConstIterator
+   SparseRow<MT,false,true>::upperBound( size_t index ) const
+{
+   return matrix_.upperBound( index, row_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  LOW-LEVEL UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Appending an element to the sparse row.
+//
+// \param index The index of the new element. The index must be smaller than the number of matrix columns.
+// \param value The value of the element to be appended.
+// \param check \a true if the new value should be checked for default values, \a false if not.
+// \return void
+//
+// This function provides a very efficient way to fill a sparse row with elements. It appends
+// a new element to the end of the sparse row without any memory allocation. Therefore it is
+// strictly necessary to keep the following preconditions in mind:
+//
+//  - the index of the new element must be strictly larger than the largest index of non-zero
+//    elements in the sparse row
+//  - the current number of non-zero elements must be smaller than the capacity of the row
+//
+// Ignoring these preconditions might result in undefined behavior! The optional \a check
+// parameter specifies whether the new value should be tested for a default value. If the new
+// value is a default value (for instance 0 in case of an integral element type) the value is
+// not appended. Per default the values are not tested.
+//
+// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// returned by the end() functions!
+*/
+template< typename MT >  // Type of the sparse matrix
+inline void SparseRow<MT,false,true>::append( size_t index, const ElementType& value, bool check )
+{
+   matrix_.append( index, row_, value, check );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the sparse row can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this sparse row, \a false if not.
+//
+// This function returns whether the given address can alias with the sparse row. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool SparseRow<MT,false,true>::canAlias( const Other* alias ) const
+{
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the sparse row is aliased with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this sparse row, \a false if not.
+//
+// This function returns whether the given address is aliased with the sparse row. In contrast
+// to the canAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT >     // Type of the sparse matrix
+template< typename Other >  // Data type of the foreign expression
+inline bool SparseRow<MT,false,true>::isAliased( const Other* alias ) const
+{
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline void SparseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
+   for( size_t i=0UL; i<size(); ++i )
+   {
+      if( matrix_.nonZeros( row_ ) == matrix_.capacity( row_ ) )
+         matrix_.reserve( row_, extendCapacity() );
+
+      matrix_.append( i, row_, (~rhs)[i], true );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline void SparseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+
+   for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      matrix_.append( element->index(), row_, element->value() );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the addition assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline void SparseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
+{
+   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const AddType tmp( serial( *this + (~rhs) ) );
+   matrix_.reset( row_ );
+   assign( tmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the addition assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline void SparseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs )
+{
+   typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const AddType tmp( serial( *this + (~rhs) ) );
+   matrix_.reset  ( row_ );
+   matrix_.reserve( row_, tmp.nonZeros() );
+   assign( tmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the subtraction assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side dense vector
+inline void SparseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
+{
+   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const SubType tmp( serial( *this - (~rhs) ) );
+   matrix_.reset  ( row_ );
+   assign( tmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the subtraction assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline void SparseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs )
+{
+   typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
+
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const SubType tmp( serial( *this - (~rhs) ) );
+   matrix_.reset  ( row_ );
+   matrix_.reserve( row_, tmp.nonZeros() );
+   assign( tmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+
+
+
+
+//=================================================================================================
+//
 //  SPARSEROW OPERATORS
 //
 //=================================================================================================
@@ -3157,17 +4551,17 @@ inline void SparseRow<MT,false>::subAssign( const Vector<VT,true>& rhs )
 //*************************************************************************************************
 /*!\name SparseRow operators */
 //@{
-template< typename MT, bool SO >
-inline void reset( SparseRow<MT,SO>& row );
+template< typename MT, bool SO, bool SF >
+inline void reset( SparseRow<MT,SO,SF>& row );
 
-template< typename MT, bool SO >
-inline void clear( SparseRow<MT,SO>& row );
+template< typename MT, bool SO, bool SF >
+inline void clear( SparseRow<MT,SO,SF>& row );
 
-template< typename MT, bool SO >
-inline bool isDefault( const SparseRow<MT,SO>& row );
+template< typename MT, bool SO, bool SF >
+inline bool isDefault( const SparseRow<MT,SO,SF>& row );
 
-template< typename MT, bool SO >
-inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b );
+template< typename MT, bool SO, bool SF >
+inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b );
 //@}
 //*************************************************************************************************
 
@@ -3180,8 +4574,9 @@ inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b );
 // \return void
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void reset( SparseRow<MT,SO>& row )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void reset( SparseRow<MT,SO,SF>& row )
 {
    row.reset();
 }
@@ -3198,8 +4593,9 @@ inline void reset( SparseRow<MT,SO>& row )
 // Clearing a sparse row is equivalent to resetting it via the reset() function.
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline void clear( SparseRow<MT,SO>& row )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline void clear( SparseRow<MT,SO,SF>& row )
 {
    row.reset();
 }
@@ -3225,10 +4621,11 @@ inline void clear( SparseRow<MT,SO>& row )
    \endcode
 */
 template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline bool isDefault( const SparseRow<MT,SO>& row )
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isDefault( const SparseRow<MT,SO,SF>& row )
 {
-   typedef typename SparseRow<MT,SO>::ConstIterator  ConstIterator;
+   typedef typename SparseRow<MT,SO,SF>::ConstIterator  ConstIterator;
 
    const ConstIterator end( row.end() );
    for( ConstIterator element=row.begin(); element!=end; ++element )
@@ -3250,8 +4647,10 @@ inline bool isDefault( const SparseRow<MT,SO>& row )
 // same range of the same sparse matrix. In case both rows represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT, bool SO >
-inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b )
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
@@ -3268,10 +4667,10 @@ inline bool isSame( const SparseRow<MT,SO>& a, const SparseRow<MT,SO>& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubvectorTrait< SparseRow<MT,SO> >
+template< typename MT, bool SO, bool SF >
+struct SubvectorTrait< SparseRow<MT,SO,SF> >
 {
-   typedef typename SubvectorTrait< typename SparseRow<MT,SO>::ResultType >::Type  Type;
+   typedef typename SubvectorTrait< typename SparseRow<MT,SO,SF>::ResultType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

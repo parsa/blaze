@@ -49,7 +49,7 @@ template< typename, bool, bool > class DenseRow;
 template< typename, bool, bool > class DenseSubmatrix;
 template< typename, bool, bool > class DenseSubvector;
 template< typename, bool > class SparseColumn;
-template< typename, bool > class SparseRow;
+template< typename, bool, bool > class SparseRow;
 template< typename, bool, bool > class SparseSubmatrix;
 template< typename, bool, bool > class SparseSubvector;
 
