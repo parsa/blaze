@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -68,6 +69,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -1044,7 +1046,8 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
 */
 template< typename T1    // Type of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse vector
-inline const typename DisableIf< IsMatMatMultExpr<T1>, SMatSVecMultExpr<T1,T2> >::Type
+inline const typename DisableIf< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >
+                               , SMatSVecMultExpr<T1,T2> >::Type
    operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1066,6 +1069,37 @@ inline const typename DisableIf< IsMatMatMultExpr<T1>, SMatSVecMultExpr<T1,T2> >
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a symmetric row-major sparse matrix
+//        and a sparse vector (\f$ \vec{a}=B*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param mat The left-hand side sparse matrix for the multiplication.
+// \param vec The right-hand side sparse vector for the multiplication.
+// \return The resulting vector.
+// \exception std::invalid_argument Matrix and vector sizes do not match.
+//
+// This operator implements the performance optimized treatment of the multiplication of a
+// symmetric row-major sparse matrix and a sparse vector.
+*/
+template< typename T1    // Type of the left-hand side sparse matrix
+        , typename T2 >  // Type of the right-hand side sparse vector
+inline const typename EnableIf< IsSymmetric<T1>, MultExprTrait<T1,T2> >::Type::Type
+   operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~mat).columns() != (~vec).size() )
+      throw std::invalid_argument( "Matrix and vector sizes do not match" );
+
+   return trans( ~mat ) * (~vec);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication operator for the multiplication of a sparse matrix-matrix
 //        multiplication expression and a sparse vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
 // \ingroup sparse_vector
@@ -1088,6 +1122,7 @@ inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Ty
 
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
