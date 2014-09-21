@@ -41,11 +41,13 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <vector>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
+#include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -64,6 +66,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/Byte.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -404,6 +407,42 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).size()     , "Invalid vector size"       );
 
       // Performing the sparse vector-sparse matrix multiplication
+      DynamicVector<ElementType> tmp( (~lhs).size() );
+      std::vector<byte> indices( (~lhs).size(), 0 );
+      size_t nonzeros( 0UL );
+
+      const VectorIterator vend( x.end() );
+      VectorIterator velem( x.begin() );
+
+      for( ; velem!=vend; ++velem )
+      {
+         const MatrixIterator mend ( A.end  ( velem->index() ) );
+         MatrixIterator       melem( A.begin( velem->index() ) );
+
+         for( ; melem!=mend; ++melem ) {
+            if( !indices[melem->index()] ) {
+               indices[melem->index()] = 1;
+               ++nonzeros;
+               tmp[melem->index()] = velem->value() * melem->value();
+            }
+            else {
+               tmp[melem->index()] += velem->value() * melem->value();
+            }
+         }
+      }
+
+      (~lhs).reserve( nonzeros );
+
+      for( size_t i=0UL; i<(~lhs).size(); ++i ) {
+         if( indices[i] ) {
+            (~lhs).append( i, tmp[i] );
+         }
+      }
+
+
+
+      // Performing the sparse vector-sparse matrix multiplication
+      /*
       const VectorIterator vend( x.end() );
       VectorIterator velem( x.begin() );
 
@@ -421,6 +460,7 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
                (~lhs).insert( melem->index(), velem->value() * melem->value() );
          }
       }
+      */
    }
    /*! \endcond */
    //**********************************************************************************************

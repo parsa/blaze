@@ -46,7 +46,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatVecMultExpr.h>
@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/Byte.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -404,7 +405,7 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       DynamicVector<ElementType> tmp( (~lhs).size() );
-      std::vector<bool> indices( (~lhs).size(), false );
+      std::vector<byte> indices( (~lhs).size(), 0 );
       size_t nonzeros( 0UL );
 
       const VectorIterator vend ( x.end() );
@@ -412,12 +413,12 @@ class TSMatSVecMultExpr : public SparseVector< TSMatSVecMultExpr<MT,VT>, false >
 
       for( ; velem!=vend; ++velem )
       {
-         const MatrixIterator mend ( A.end( velem->index() )   );
+         const MatrixIterator mend ( A.end  ( velem->index() ) );
          MatrixIterator       melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
             if( !indices[melem->index()] ) {
-               indices[melem->index()] = true;
+               indices[melem->index()] = 1;
                ++nonzeros;
                tmp[melem->index()] = melem->value() * velem->value();
             }
