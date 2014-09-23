@@ -41,10 +41,12 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Forward.h>
+#include <blaze/math/traits/TSMatTransExprTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -84,7 +86,12 @@ struct TSMatDVecMultExprTrait
    /*! \cond BLAZE_INTERNAL */
    typedef If< And< IsSparseMatrix<MT>, IsColumnMajorMatrix<MT>
                   , IsDenseVector<VT> , IsColumnVector<VT> >
-             , TSMatDVecMultExpr<MT,VT>, INVALID_TYPE >  Tmp;
+             , typename If< IsSymmetric<MT>
+                          , SMatDVecMultExpr< typename TSMatTransExprTrait<MT>::Type, VT >
+                          , TSMatDVecMultExpr<MT,VT>
+                          >::Type
+             , INVALID_TYPE
+             >  Tmp;
 
    typedef typename RemoveReference< typename RemoveCV<MT>::Type >::Type  Type1;
    typedef typename RemoveReference< typename RemoveCV<VT>::Type >::Type  Type2;
