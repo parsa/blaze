@@ -86,7 +86,7 @@ struct SMatSVecMultExprTrait
    typedef If< And< IsSparseMatrix<MT>, IsRowMajorMatrix<MT>
                   , IsSparseVector<VT>, IsColumnVector<VT> >
              , typename If< IsSymmetric<MT>
-                          , TSMatSVecMultExpr< typename SMatTransExprTrait<MT>::Type ,VT >
+                          , TSMatSVecMultExpr< typename SMatTransExprTrait<MT>::Type, VT >
                           , SMatSVecMultExpr<MT,VT>
                           >::Type
              , INVALID_TYPE
