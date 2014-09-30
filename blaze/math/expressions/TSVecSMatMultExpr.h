@@ -438,29 +438,6 @@ class TSVecSMatMultExpr : public SparseVector< TSVecSMatMultExpr<VT,MT>, true >
             (~lhs).append( i, tmp[i] );
          }
       }
-
-
-
-      // Performing the sparse vector-sparse matrix multiplication
-      /*
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
-
-      for( ; velem!=vend; ++velem )
-      {
-         const MatrixIterator mend( A.end( velem->index() ) );
-         MatrixIterator melem( A.begin( velem->index() ) );
-
-         for( ; melem!=mend; ++melem )
-         {
-            typename VT1::Iterator pos( (~lhs).find( melem->index() ) );
-            if( pos != (~lhs).end() )
-               pos->value() += velem->value() * melem->value();
-            else
-               (~lhs).insert( melem->index(), velem->value() * melem->value() );
-         }
-      }
-      */
    }
    /*! \endcond */
    //**********************************************************************************************
