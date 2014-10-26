@@ -66,6 +66,8 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
@@ -116,6 +118,21 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
 
    //! Expression return type for the subscript operator.
    typedef typename AddExprTrait<RN1,RN2>::Type  ExprReturnType;
+   //**********************************************************************************************
+
+   //**Serial evaluation strategy******************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSymmetricKernel struct is a helper struct for the selection of the serial
+       evaluation strategy. In case the target matrix is column-major and both matrix
+       operands are symmetric, \a value is set to 1 and an optimized evaluation strategy
+       is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   template< typename T1, typename T2, typename T3 >
+   struct UseSymmetricKernel {
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( T1 );
+      enum { value = IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+   };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
@@ -416,11 +433,12 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
    // \param rhs The right-hand side addition expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a sparse matrix-sparse
-   // matrix addition expression to a column-major sparse matrix.
+   // This function implements the default assignment of a sparse matrix-sparse matrix addition
+   // expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT,true>& lhs, const SMatSMatAddExpr& rhs )
+   friend inline typename DisableIf< UseSymmetricKernel<MT,MT1,MT2> >::Type
+      assign( SparseMatrix<MT,true>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -440,8 +458,8 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
-      const size_t m( rhs.rows()    );
-      const size_t n( rhs.columns() );
+      const size_t m( A.rows()    );
+      const size_t n( A.columns() );
 
       // Counting the number of elements per column
       std::vector<size_t> nonzeros( n, 0UL );
@@ -522,6 +540,32 @@ class SMatSMatAddExpr : public SparseMatrix< SMatSMatAddExpr<MT1,MT2>, false >
             ++r;
          }
       }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to column-major sparse matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a sparse matrix-sparse matrix addition to a column-major sparse matrix.
+   // \ingroup sparse_matrix
+   //
+   // \param lhs The target left-hand side sparse matrix.
+   // \param rhs The right-hand side addition expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a sparse matrix-sparse
+   // matrix addition expression to a column-major sparse matrix.
+   */
+   template< typename MT >  // Type of the target sparse matrix
+   friend inline typename EnableIf< UseSymmetricKernel<MT,MT1,MT2> >::Type
+      assign( SparseMatrix<MT,true>& lhs, const SMatSMatAddExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      assign( ~lhs, trans( rhs.lhs_ ) + trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
