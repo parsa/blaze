@@ -788,7 +788,8 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline const DMatTDMatAddExpr<T1,T2>
+inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
+                        , const DMatTDMatAddExpr<T1,T2> >::Type
    operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -832,7 +833,8 @@ inline const DMatTDMatAddExpr<T1,T2>
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense matrix
-inline const DMatTDMatAddExpr<T2,T1>
+inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
+                        , const DMatTDMatAddExpr<T2,T1> >::Type
    operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -842,6 +844,138 @@ inline const DMatTDMatAddExpr<T2,T1>
 
    return DMatTDMatAddExpr<T2,T1>( ~rhs, ~lhs );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for the addition of a symmetric row-major and a colum-major dense
+//        matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the matrix addition.
+// \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
+// \return The sum of the two matrices.
+// \exception std::invalid_argument Matrix sizes do not match
+//
+// This operator implements a performance optimized treatment of the addition of a symmetric
+// row-major dense matrix and a column-major dense matrix.
+*/
+template< typename T1    // Type of the left-hand side dense matrix
+        , typename T2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >
+                        , const typename AddExprTrait<T1,T2>::Type >::Type
+   operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   return trans( ~lhs ) + ~rhs;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for the addition of a row-major and a symmetric column-major dense
+//        matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the matrix addition.
+// \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
+// \return The sum of the two matrices.
+// \exception std::invalid_argument Matrix sizes do not match
+//
+// This operator implements a performance optimized treatment of the addition of a (potentially
+// symmetric) row-major dense matrix and a symmetric column-major dense matrix.
+*/
+template< typename T1    // Type of the left-hand side dense matrix
+        , typename T2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< IsSymmetric<T2>
+                        , const typename AddExprTrait<T1,T2>::Type >::Type
+   operator+( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   return (~lhs) + trans( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for the addition of a column-major and a symmetric row-major dense
+//        matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the matrix addition.
+// \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
+// \return The sum of the two matrices.
+// \exception std::invalid_argument Matrix sizes do not match
+//
+// This operator implements a performance optimized treatment of the addition of a column-major
+// dense matrix and a symmetric row-major dense matrix.
+*/
+template< typename T1    // Type of the left-hand side dense matrix
+        , typename T2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >
+                        , const typename AddExprTrait<T2,T1>::Type >::Type
+   operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   return trans( ~rhs ) + (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition operator for the addition of a symmetric column-major and a row-major dense
+//        matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the matrix addition.
+// \param rhs The right-hand side dense matrix to be added to the left-hand side matrix.
+// \return The sum of the two matrices.
+// \exception std::invalid_argument Matrix sizes do not match
+//
+// This operator implements a performance optimized treatment of the addition of a symmetric
+// column-major dense matrix and a (potentially symmetric) row-major dense matrix.
+*/
+template< typename T1    // Type of the left-hand side dense matrix
+        , typename T2 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< IsSymmetric<T1>
+                        , const typename AddExprTrait<T2,T1>::Type >::Type
+   operator+( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      throw std::invalid_argument( "Matrix sizes do not match" );
+
+   return (~rhs) + trans( ~lhs );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
