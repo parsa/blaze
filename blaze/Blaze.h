@@ -2568,7 +2568,7 @@ namespace blaze {}
 // demonstrate several situations, where symmetric matrices can positively or negatively impact
 // performance.
 //
-// \n \subsection adaptors_symmetric_matrix_matrix_multiplication Positive Impact: Matrix Multiplication
+// \n \subsection adaptors_symmetric_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
 //
 // When multiplying two matrices, at least one of which is symmetric, \b Blaze can exploit the fact
 // that \f$ A = A^T \f$ and choose the fastest and most suited combination of storage orders for the
@@ -2600,6 +2600,38 @@ namespace blaze {}
 // which significantly increases the performance since in contrast to the original formulation the
 // optimized form can be vectorized. Therefore, in the context of matrix multiplications, using the
 // SymmetricMatrix adapter is obviously an advantage.
+//
+// \n \subsection adaptors_symmetric_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
+//
+// A similar optimization is possible in case of matrix/vector multiplications:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A;
+   CompressedVector<double,columnVector> x;
+   DynamicVector<double,columnVector> y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// In this example it is not intuitively apparent that using a row-major matrix is not the best
+// possible choice in terms of performance since the computation cannot be vectorized. Choosing
+// a column-major matrix instead, however, would enable a vectorized computation. Therefore
+// \b Blaze exploits the fact that \c A is symmetric, selects the best suited storage order and
+// evaluates the multiplication as
+
+   \code
+   y = trans( A ) * x;
+   \endcode
+
+// which also significantly increases the performance.
 //
 // \n \subsection adaptors_symmetric_matrix_views Positive Impact: Row/Column Views on Column/Row-Major Matrices
 //
