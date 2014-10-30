@@ -1447,16 +1447,16 @@ namespace blaze {}
    // a StaticMatrix is fixed via the second and third template
    // parameter, the initial size of a constructed DynamicMatrix
    // or CompressedMatrix is 0.
-   StaticMatrix<int,2UL,2UL> M1;           // Instantiation of a 2x2 single precision row-major
-                                           // matrix. All elements are initialized to 0.
-   DynamicMatrix<float> M2;                // Instantiation of a single precision dynamic
-                                           // row-major matrix with 0 rows and 0 columns.
-   DynamicMatrix<double,columnMajor> M3;   // Instantiation of a double precision dynamic
-                                           // column-major matrix with 0 rows and 0 columns.
-   CompressedMatrix<int> M4;               // Instantiation of a compressed integer
-                                           // row-major matrix of size 0x0.
-   CompressedMatrix<double,rowVector> M5;  // Instantiation of a compressed double precision
-                                           // column-major matrix of size 0x0.
+   StaticMatrix<int,2UL,2UL> M1;             // Instantiation of a 2x2 integer row-major
+                                             // matrix. All elements are initialized to 0.
+   DynamicMatrix<float> M2;                  // Instantiation of a single precision dynamic
+                                             // row-major matrix with 0 rows and 0 columns.
+   DynamicMatrix<double,columnMajor> M3;     // Instantiation of a double precision dynamic
+                                             // column-major matrix with 0 rows and 0 columns.
+   CompressedMatrix<int> M4;                 // Instantiation of a compressed integer
+                                             // row-major matrix of size 0x0.
+   CompressedMatrix<double,columnMajor> M5;  // Instantiation of a compressed double precision
+                                             // column-major matrix of size 0x0.
    \endcode
 
 // \n \subsection matrix_operations_size_construction Construction with Specific Size
@@ -1465,12 +1465,12 @@ namespace blaze {}
 // that allows to immediately give the matrices a specific number of rows and columns:
 
    \code
-   DynamicMatrix<int> M6( 5UL, 4UL );                    // Instantiation of a 5x4 dynamic row-major
-                                                         // matrix. The elements are not initialized.
-   HybridMatrix<double,5UL,9UL> M7( 3UL, 7UL );          // Instantiation of a 3x7 dynamic row-major
-                                                         // matrix. The elements are not initialized.
-   CompressedMatrix<float,columnMajor> M8( 8UL, 6UL );   // Instantiation of a 8x6 compressed column-major
-                                                         // matrix. The elements are not initialized.
+   DynamicMatrix<int> M6( 5UL, 4UL );                   // Instantiation of a 5x4 dynamic row-major
+                                                        // matrix. The elements are not initialized.
+   HybridMatrix<double,5UL,9UL> M7( 3UL, 7UL );         // Instantiation of a 3x7 hybrid row-major
+                                                        // matrix. The elements are not initialized.
+   CompressedMatrix<float,columnMajor> M8( 8UL, 6UL );  // Instantiation of an empty 8x6 compressed
+                                                        // column-major matrix.
    \endcode
 
 // Note that dense matrices (in this case \c DynamicMatrix and \c HybridMatrix) immediately
@@ -1485,16 +1485,16 @@ namespace blaze {}
 // can be specified.
 
    \code
-   StaticMatrix<int,4UL,3UL,columnMajor> M9( 7 );  // Instantiation of a 4x3 integer row-major
-                                                    // matrix. All elements are initialized to 7.
-   DynamicMatrix<float> M10( 2UL, 5UL, 2.0F );      // Instantiation of a 2x5 single precision row-major
-                                                    // matrix. All elements are initialized to 2.0F.
-   CompressedMatrix<int> M11( 3UL, 4UL, 4 );        // Instantiation of a 3x4 integer column-major
-                                                    // matrix. All elements are initialized to 4.
+   StaticMatrix<int,4UL,3UL,columnMajor> M9( 7 );  // Instantiation of a 4x3 integer column-major
+                                                   // matrix. All elements are initialized to 7.
+   DynamicMatrix<float> M10( 2UL, 5UL, 2.0F );     // Instantiation of a 2x5 single precision row-major
+                                                   // matrix. All elements are initialized to 2.0F.
+   CompressedMatrix<int> M11( 3UL, 4UL, 4 );       // Instantiation of a 3x4 integer row-major
+                                                   // matrix with capacity for 4 non-zero elements.
    \endcode
 
 // The \c StaticMatrix class offers a special initialization constructor. For \c StaticMatrix of
-// up to 10 elements the vector elements can be individually specified in the constructor:
+// up to 10 elements the matrix elements can be individually specified in the constructor:
 
    \code
    using blaze::StaticMatrix;
@@ -1531,14 +1531,14 @@ namespace blaze {}
 // All dense and sparse matrices can be created as a copy of another dense or sparse matrix.
 
    \code
-   StaticMatrix<int,5UL,4UL,rowMajor> M15( M6 );  // Instantiation of the dense row-major matrix M15
-                                                  // as copy of the dense row-major matrix M7.
-   DynamicMatrix<int,columnMajor> M16( M8 );      // Instantiation of the dense column-major matrix M16
-                                                  // as copy of the sparse row-major matrix M9.
-   CompressedMatrix<double,rowMajor> M17( M7 );   // Instantiation of the compressed row-major matrix
-                                                  // M17 as copy of the dense column-major matrix M8.
-   CompressedMatrix<float,rowMajor> M18( M8 );    // Instantiation of the compressed row-major matrix
-                                                  // M18 as copy of the compressed row-major matrix M9.
+   StaticMatrix<int,5UL,4UL,rowMajor> M15( M6 );    // Instantiation of the dense row-major matrix M15
+                                                    // as copy of the dense row-major matrix M6.
+   DynamicMatrix<float,columnMajor> M16( M8 );      // Instantiation of the dense column-major matrix M16
+                                                    // as copy of the sparse column-major matrix M8.
+   CompressedMatrix<double,columnMajor> M17( M7 );  // Instantiation of the compressed column-major matrix
+                                                    // M17 as copy of the dense row-major matrix M7.
+   CompressedMatrix<float,rowMajor> M18( M8 );      // Instantiation of the compressed row-major matrix
+                                                    // M18 as copy of the compressed column-major matrix M8.
    \endcode
 
 // Note that it is not possible to create a \c StaticMatrix as a copy of a matrix with a different
