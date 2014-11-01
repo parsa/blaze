@@ -44,7 +44,7 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool, bool > class SymmetricMatrix;
+template< typename, bool, bool, bool > class SymmetricMatrix;
 
 } // namespace blaze
 

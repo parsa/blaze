@@ -57,11 +57,9 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -101,9 +99,10 @@ namespace blaze {
 // This specialization of SymmetricMatrix adapts the class template to the requirements of dense
 // matrices with non-numeric data type.
 */
-template< typename MT >  // Type of the adapted dense matrix
-class SymmetricMatrix<MT,true,false>
-   : public DenseMatrix< SymmetricMatrix<MT,true,false>, IsColumnMajorMatrix<MT>::value >
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+class SymmetricMatrix<MT,SO,true,false>
+   : public DenseMatrix< SymmetricMatrix<MT,SO,true,false>, SO >
 {
  private:
    //**Type definitions****************************************************************************
@@ -114,17 +113,17 @@ class SymmetricMatrix<MT,true,false>
 
  public:
    //**Type definitions****************************************************************************
-   typedef SymmetricMatrix<MT,true,false>  This;            //!< Type of this SymmetricMatrix instance.
-   typedef This                            ResultType;      //!< Result type for expression template evaluations.
-   typedef SymmetricMatrix<OT,true,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef SymmetricMatrix<TT,true,false>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef ET                              ElementType;     //!< Type of the matrix elements.
-   typedef typename MT::ReturnType         ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                     CompositeType;   //!< Data type for composite expression templates.
-   typedef typename MT::Reference          Reference;       //!< Reference to a non-constant matrix value.
-   typedef typename MT::ConstReference     ConstReference;  //!< Reference to a constant matrix value.
-   typedef typename MT::Pointer            Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef typename MT::ConstPointer       ConstPointer;    //!< Pointer to a constant matrix value.
+   typedef SymmetricMatrix<MT,SO,true,false>   This;            //!< Type of this SymmetricMatrix instance.
+   typedef This                                ResultType;      //!< Result type for expression template evaluations.
+   typedef SymmetricMatrix<OT,!SO,true,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef SymmetricMatrix<TT,!SO,true,false>  TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef ET                                  ElementType;     //!< Type of the matrix elements.
+   typedef typename MT::ReturnType             ReturnType;      //!< Return type for expression template evaluations.
+   typedef const This&                         CompositeType;   //!< Data type for composite expression templates.
+   typedef typename MT::Reference              Reference;       //!< Reference to a non-constant matrix value.
+   typedef typename MT::ConstReference         ConstReference;  //!< Reference to a constant matrix value.
+   typedef typename MT::Pointer                Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef typename MT::ConstPointer           ConstPointer;    //!< Pointer to a constant matrix value.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -731,10 +730,10 @@ class SymmetricMatrix<MT,true,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over non-constant elements.
-   typedef typename If< IsRowMajorMatrix<MT>, RowIterator<MT>, ColumnIterator<MT> >::Type  Iterator;
+   typedef typename IfTrue< SO, ColumnIterator<MT>, RowIterator<MT> >::Type  Iterator;
 
    //! Iterator over constant elements.
-   typedef typename If< IsRowMajorMatrix<MT>, RowIterator<const MT>, ColumnIterator<const MT> >::Type  ConstIterator;
+   typedef typename IfTrue< SO, ColumnIterator<const MT>, RowIterator<const MT> >::Type  ConstIterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -753,8 +752,8 @@ class SymmetricMatrix<MT,true,false>
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
 
-   template< typename MT2, bool SO >
-   inline SymmetricMatrix( const Matrix<MT2,SO>& m );
+   template< typename MT2, bool SO2 >
+   inline SymmetricMatrix( const Matrix<MT2,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -783,32 +782,32 @@ class SymmetricMatrix<MT,true,false>
    //@{
    inline SymmetricMatrix& operator=( const SymmetricMatrix& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
+      operator=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
+      operator=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator+=( const Matrix<MT2,SO>& rhs );
+      operator+=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator+=( const Matrix<MT2,SO>& rhs );
+      operator+=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator-=( const Matrix<MT2,SO>& rhs );
+      operator-=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
+   template< typename MT2, bool SO2 >
    inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator-=( const Matrix<MT2,SO>& rhs );
+      operator-=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO >
-   inline SymmetricMatrix& operator*=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO2 >
+   inline SymmetricMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix >::Type&
@@ -866,16 +865,16 @@ class SymmetricMatrix<MT,true,false>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename MT2, bool SO > inline void assign   (       DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2, bool SO > inline void assign   ( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >          inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2, bool SO > inline void addAssign( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2 >          inline void addAssign( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >          inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
-   template< typename MT2, bool SO > inline void subAssign( const DenseMatrix<MT2,SO>&     rhs );
-   template< typename MT2 >          inline void subAssign( const SparseMatrix<MT2,false>& rhs );
-   template< typename MT2 >          inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2, bool SO2 > inline void assign   (       DenseMatrix<MT2,SO2>&    rhs );
+   template< typename MT2, bool SO2 > inline void assign   ( const DenseMatrix<MT2,SO2>&    rhs );
+   template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >           inline void assign   ( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2, bool SO2 > inline void addAssign( const DenseMatrix<MT2,SO2>&    rhs );
+   template< typename MT2 >           inline void addAssign( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >           inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
+   template< typename MT2, bool SO2 > inline void subAssign( const DenseMatrix<MT2,SO2>&    rhs );
+   template< typename MT2 >           inline void subAssign( const SparseMatrix<MT2,false>& rhs );
+   template< typename MT2 >           inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    //@}
    //**********************************************************************************************
 
@@ -887,8 +886,8 @@ class SymmetricMatrix<MT,true,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool DF2, bool NF2 >
-   friend bool isDefault( const SymmetricMatrix<MT2,DF2,NF2>& m );
+   template< typename MT2, bool SO2, bool DF2, bool NF2 >
+   friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -901,6 +900,8 @@ class SymmetricMatrix<MT,true,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE         ( ElementType );
    BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
    //**********************************************************************************************
@@ -921,8 +922,9 @@ class SymmetricMatrix<MT,true,false>
 /*! \cond BLAZE_INTERNAL */
 /*!\brief The default constructor for SymmetricMatrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline SymmetricMatrix<MT,true,false>::SymmetricMatrix()
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix()
    : matrix_()  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -937,8 +939,9 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix()
 //
 // \param n The number of rows and columns of the matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( size_t n )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( size_t n )
    : matrix_( n, n )  // The adapted dense matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
@@ -955,8 +958,9 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( size_t n )
 //
 // \param m The symmetric matrix to be copied.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const SymmetricMatrix& m )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const SymmetricMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
@@ -976,10 +980,11 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const SymmetricMatrix& m
 // This constructor initializes the symmetric matrix as a copy of the given matrix. In case the
 // given matrix is not a symmetric matrix, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the foreign matrix
-        , bool SO >      // Storage order of the foreign matrix
-inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the foreign matrix
+        , bool SO2 >    // Storage order of the foreign matrix
+inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO2>& m )
    : matrix_()  // The adapted dense matrix
 {
    using blaze::resize;
@@ -1031,15 +1036,15 @@ inline SymmetricMatrix<MT,true,false>::SymmetricMatrix( const Matrix<MT2,SO>& m 
 // In order to preserve the symmetry of the matrix, any modification to one of the elements will
 // also be applied to the other element.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::Reference
-   SymmetricMatrix<MT,true,false>::operator()( size_t i, size_t j )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::Reference
+   SymmetricMatrix<MT,SO,true,false>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i<rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<columns(), "Invalid column access index" );
 
-   if( ( IsRowMajorMatrix<MT>::value    && i > j ) ||
-       ( IsColumnMajorMatrix<MT>::value && i < j ) )
+   if( ( !SO && i > j ) || ( SO && i < j ) )
       return matrix_(i,j);
    else
       return matrix_(j,i);
@@ -1060,15 +1065,15 @@ inline typename SymmetricMatrix<MT,true,false>::Reference
 // In order to preserve the symmetry of the matrix, any modification to one of the elements will
 // also be applied to the other element.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstReference
-   SymmetricMatrix<MT,true,false>::operator()( size_t i, size_t j ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstReference
+   SymmetricMatrix<MT,SO,true,false>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i<rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<columns(), "Invalid column access index" );
 
-   if( ( IsRowMajorMatrix<MT>::value    && i > j ) ||
-       ( IsColumnMajorMatrix<MT>::value && i < j ) )
+   if( ( !SO && i > j ) || ( SO && i < j ) )
       return matrix_(i,j);
    else
       return matrix_(j,i);
@@ -1091,9 +1096,10 @@ inline typename SymmetricMatrix<MT,true,false>::ConstReference
 // member function. Also note that you can NOT assume that the symmetric matrix stores all its
 // elements. It may choose to store its elements in a lower or upper triangular matrix fashion.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstPointer
-   SymmetricMatrix<MT,true,false>::data() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstPointer
+   SymmetricMatrix<MT,SO,true,false>::data() const
 {
    return matrix_.data();
 }
@@ -1112,9 +1118,10 @@ inline typename SymmetricMatrix<MT,true,false>::ConstPointer
 // Note that you can NOT assume that the symmetric matrix stores all its elements. It may choose
 // to store its elements in a lower or upper triangular matrix fashion.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstPointer
-   SymmetricMatrix<MT,true,false>::data( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstPointer
+   SymmetricMatrix<MT,SO,true,false>::data( size_t i ) const
 {
    return matrix_.data(i);
 }
@@ -1134,13 +1141,15 @@ inline typename SymmetricMatrix<MT,true,false>::ConstPointer
 // of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
 // to the first element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::Iterator SymmetricMatrix<MT,true,false>::begin( size_t i )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::Iterator
+   SymmetricMatrix<MT,SO,true,false>::begin( size_t i )
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return Iterator( matrix_, i, 0UL );
-   else
+   if( SO )
       return Iterator( matrix_, 0UL, i );
+   else
+      return Iterator( matrix_, i, 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1158,14 +1167,15 @@ inline typename SymmetricMatrix<MT,true,false>::Iterator SymmetricMatrix<MT,true
 // the first element of row \a i, in case it adapts a \a columnMajor dense matrix the function
 // returns an iterator to the first element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstIterator
-   SymmetricMatrix<MT,true,false>::begin( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstIterator
+   SymmetricMatrix<MT,SO,true,false>::begin( size_t i ) const
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return ConstIterator( matrix_, i, 0UL );
-   else
+   if( SO )
       return ConstIterator( matrix_, 0UL, i );
+   else
+      return ConstIterator( matrix_, i, 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1183,14 +1193,15 @@ inline typename SymmetricMatrix<MT,true,false>::ConstIterator
 // the first element of row \a i, in case it adapts a \a columnMajor dense matrix the function
 // returns an iterator to the first element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstIterator
-   SymmetricMatrix<MT,true,false>::cbegin( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstIterator
+   SymmetricMatrix<MT,SO,true,false>::cbegin( size_t i ) const
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return ConstIterator( matrix_, i, 0UL );
-   else
+   if( SO )
       return ConstIterator( matrix_, 0UL, i );
+   else
+      return ConstIterator( matrix_, i, 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1208,13 +1219,15 @@ inline typename SymmetricMatrix<MT,true,false>::ConstIterator
 // the last element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator just past the last element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::Iterator SymmetricMatrix<MT,true,false>::end( size_t i )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::Iterator
+   SymmetricMatrix<MT,SO,true,false>::end( size_t i )
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return Iterator( matrix_, i, columns() );
-   else
+   if( SO )
       return Iterator( matrix_, rows(), i );
+   else
+      return Iterator( matrix_, i, columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1232,14 +1245,15 @@ inline typename SymmetricMatrix<MT,true,false>::Iterator SymmetricMatrix<MT,true
 // just past the last element of row \a i, in case it adapts a \a columnMajor dense matrix the
 // function returns an iterator just past the last element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstIterator
-   SymmetricMatrix<MT,true,false>::end( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstIterator
+   SymmetricMatrix<MT,SO,true,false>::end( size_t i ) const
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return ConstIterator( matrix_, i, columns() );
-   else
+   if( SO )
       return ConstIterator( matrix_, rows(), i );
+   else
+      return ConstIterator( matrix_, i, columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1257,14 +1271,15 @@ inline typename SymmetricMatrix<MT,true,false>::ConstIterator
 // just past the last element of row \a i, in case it adapts a \a columnMajor dense matrix the
 // function returns an iterator just past the last element of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline typename SymmetricMatrix<MT,true,false>::ConstIterator
-   SymmetricMatrix<MT,true,false>::cend( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline typename SymmetricMatrix<MT,SO,true,false>::ConstIterator
+   SymmetricMatrix<MT,SO,true,false>::cend( size_t i ) const
 {
-   if( IsRowMajorMatrix<MT>::value )
-      return ConstIterator( matrix_, i, columns() );
-   else
+   if( SO )
       return ConstIterator( matrix_, rows(), i );
+   else
+      return ConstIterator( matrix_, i, columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1288,9 +1303,10 @@ inline typename SymmetricMatrix<MT,true,false>::ConstIterator
 // If possible and necessary, the matrix is resized according to the given \f$ N \times N \f$
 // matrix and initialized as a copy of this matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline SymmetricMatrix<MT,true,false>&
-   SymmetricMatrix<MT,true,false>::operator=( const SymmetricMatrix& rhs )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>&
+   SymmetricMatrix<MT,SO,true,false>::operator=( const SymmetricMatrix& rhs )
 {
    using blaze::resize;
 
@@ -1322,11 +1338,12 @@ inline SymmetricMatrix<MT,true,false>&
 // a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
 // symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::resize;
 
@@ -1368,11 +1385,12 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
 // a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
 // symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::resize;
 
@@ -1417,11 +1435,12 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
 // the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUpper<MT2>::value ||
        ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
@@ -1451,11 +1470,12 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
 // the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUpper<MT2>::value )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
@@ -1494,11 +1514,12 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
 // i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUpper<MT2>::value ||
        ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
@@ -1528,11 +1549,12 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >
 // i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >::Type
-   SymmetricMatrix<MT,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
+   SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUpper<MT2>::value )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
@@ -1570,11 +1592,12 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,true,false>& >:
 // is thrown. Also note that the result of the multiplication operation must be a symmetric matrix.
 // In case it is not, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline SymmetricMatrix<MT,true,false>&
-   SymmetricMatrix<MT,true,false>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,true,false>&
+   SymmetricMatrix<MT,SO,true,false>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::resize;
 
@@ -1603,19 +1626,20 @@ inline SymmetricMatrix<MT,true,false>&
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the matrix.
 */
-template< typename MT >     // Type of the adapted dense matrix
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,false> >::Type&
-   SymmetricMatrix<MT,true,false>::operator*=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,true,false> >::Type&
+   SymmetricMatrix<MT,SO,true,false>::operator*=( Other rhs )
 {
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) *= rhs;
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) *= rhs;
    }
 
@@ -1633,21 +1657,22 @@ inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,false> >::Ty
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the matrix.
 */
-template< typename MT >     // Type of the adapted dense matrix
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
-inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,false> >::Type&
-   SymmetricMatrix<MT,true,false>::operator/=( Other rhs )
+inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,SO,true,false> >::Type&
+   SymmetricMatrix<MT,SO,true,false>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) /= rhs;
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) /= rhs;
    }
 
@@ -1671,8 +1696,9 @@ inline typename EnableIf< IsNumeric<Other>, SymmetricMatrix<MT,true,false> >::Ty
 //
 // \return The number of rows of the matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::rows() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::rows() const
 {
    return matrix_.rows();
 }
@@ -1686,8 +1712,9 @@ inline size_t SymmetricMatrix<MT,true,false>::rows() const
 //
 // \return The number of columns of the matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::columns() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::columns() const
 {
    return matrix_.columns();
 }
@@ -1707,8 +1734,9 @@ inline size_t SymmetricMatrix<MT,true,false>::columns() const
 // it adapts a \a columnMajor dense matrix the function returns the spacing between two
 // columns.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::spacing() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::spacing() const
 {
    return matrix_.spacing();
 }
@@ -1722,8 +1750,9 @@ inline size_t SymmetricMatrix<MT,true,false>::spacing() const
 //
 // \return The capacity of the matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::capacity() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::capacity() const
 {
    return matrix_.capacity();
 }
@@ -1742,8 +1771,9 @@ inline size_t SymmetricMatrix<MT,true,false>::capacity() const
 // matrix adapts a \a rowMajor dense matrix the function returns the capacity of row \a i, in
 // case it adapts a \a columnMajor dense matrix the function returns the capacity of column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::capacity( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::capacity( size_t i ) const
 {
    return matrix_.capacity(i);
 }
@@ -1757,23 +1787,13 @@ inline size_t SymmetricMatrix<MT,true,false>::capacity( size_t i ) const
 //
 // \return The number of non-zero elements in the symmetric matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::nonZeros() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
-   if( IsRowMajorMatrix<MT>::value )
-   {
-      for( size_t i=0UL; i<rows(); ++i ) {
-         for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( matrix_(i,j) ) )
-               nonzeros += 2UL;
-         }
-         if( !isDefault( matrix_(i,i) ) )
-            ++nonzeros;
-      }
-   }
-   else
+   if( SO )
    {
       for( size_t j=0UL; j<columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
@@ -1781,6 +1801,17 @@ inline size_t SymmetricMatrix<MT,true,false>::nonZeros() const
                nonzeros += 2UL;
          }
          if( !isDefault( matrix_(j,j) ) )
+            ++nonzeros;
+      }
+   }
+   else
+   {
+      for( size_t i=0UL; i<rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !isDefault( matrix_(i,j) ) )
+               nonzeros += 2UL;
+         }
+         if( !isDefault( matrix_(i,i) ) )
             ++nonzeros;
       }
    }
@@ -1803,30 +1834,31 @@ inline size_t SymmetricMatrix<MT,true,false>::nonZeros() const
 // non-zero elements in row \a i, in case it adapts a to \a columnMajor dense matrix the function
 // returns the number of non-zero elements in column \a i.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline size_t SymmetricMatrix<MT,true,false>::nonZeros( size_t i ) const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t SymmetricMatrix<MT,SO,true,false>::nonZeros( size_t i ) const
 {
    size_t nonzeros( 0UL );
 
-   if( IsRowMajorMatrix<MT>::value )
+   if( SO )
    {
       for( size_t j=0UL; j<i; ++j ) {
-         if( !isDefault( matrix_(i,j) ) )
+         if( !isDefault( matrix_(j,i) ) )
             ++nonzeros;
       }
       for( size_t j=i; j<rows(); ++j ) {
-         if( !isDefault( matrix_(j,i) ) )
+         if( !isDefault( matrix_(i,j) ) )
             ++nonzeros;
       }
    }
    else
    {
       for( size_t j=0UL; j<i; ++j ) {
-         if( !isDefault( matrix_(j,i) ) )
+         if( !isDefault( matrix_(i,j) ) )
             ++nonzeros;
       }
       for( size_t j=i; j<rows(); ++j ) {
-         if( !isDefault( matrix_(i,j) ) )
+         if( !isDefault( matrix_(j,i) ) )
             ++nonzeros;
       }
    }
@@ -1843,19 +1875,20 @@ inline size_t SymmetricMatrix<MT,true,false>::nonZeros( size_t i ) const
 //
 // \return void
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::reset()
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::reset()
 {
    using blaze::clear;
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             clear( matrix_(i,j) );
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             clear( matrix_(i,j) );
    }
 }
@@ -1903,8 +1936,9 @@ inline void SymmetricMatrix<MT,true,false>::reset()
 
 // Note that the reset() function has no impact on the capacity of the matrix or row/column.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::reset( size_t i )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -1927,8 +1961,9 @@ inline void SymmetricMatrix<MT,true,false>::reset( size_t i )
 // to 0, whereas in case of a fixed-size matrix (for instance StaticMatrix) only the elements will
 // be reset to their default state.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::clear()
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::clear()
 {
    using blaze::clear;
 
@@ -1954,8 +1989,9 @@ inline void SymmetricMatrix<MT,true,false>::clear()
 // to preserve the old matrix values, the \a preserve flag can be set to \a true. In case the
 // size of the matrix is increased, new elements are default initialized.
 */
-template< typename MT >  // Type of the adapted dense matrix
-void SymmetricMatrix<MT,true,false>::resize( size_t n, bool preserve )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+void SymmetricMatrix<MT,SO,true,false>::resize( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
 
@@ -1990,8 +2026,9 @@ void SymmetricMatrix<MT,true,false>::resize( size_t n, bool preserve )
 // this function potentially changes all matrix elements. In order to preserve the old matrix
 // values, the \a preserve flag can be set to \a true. The new elements are default initialized.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::extend( size_t n, bool preserve )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::extend( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
 
@@ -2013,8 +2050,9 @@ inline void SymmetricMatrix<MT,true,false>::extend( size_t n, bool preserve )
 // This function increases the capacity of the symmetric matrix to at least \a elements elements.
 // The current values of the matrix elements are preserved.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::reserve( size_t elements )
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::reserve( size_t elements )
 {
    matrix_.reserve( elements );
 }
@@ -2028,8 +2066,9 @@ inline void SymmetricMatrix<MT,true,false>::reserve( size_t elements )
 //
 // \return Reference to the transposed matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::transpose()
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>& SymmetricMatrix<MT,SO,true,false>::transpose()
 {
    return *this;
 }
@@ -2044,18 +2083,20 @@ inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::transpose
 // \param scalar The scalar value for the matrix scaling.
 // \return Reference to the matrix.
 */
-template< typename MT >     // Type of the adapted dense matrix
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::scale( const Other& scalar )
+inline SymmetricMatrix<MT,SO,true,false>&
+   SymmetricMatrix<MT,SO,true,false>::scale( const Other& scalar )
 {
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) *= scalar;
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) *= scalar;
    }
 
@@ -2073,8 +2114,9 @@ inline SymmetricMatrix<MT,true,false>& SymmetricMatrix<MT,true,false>::scale( co
 // \return void
 // \exception no-throw guarantee.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline void SymmetricMatrix<MT,true,false>::swap( SymmetricMatrix& m ) /* throw() */
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::swap( SymmetricMatrix& m ) /* throw() */
 {
    using std::swap;
 
@@ -2095,10 +2137,11 @@ inline void SymmetricMatrix<MT,true,false>::swap( SymmetricMatrix& m ) /* throw(
 // matrix type, the matrix is required to be a lower triangular matrix, in case \a MT is a
 // column-major matrix type, the matrix is required to be an upper triangular matrix.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline bool SymmetricMatrix<MT,true,false>::isLowerOrUpper()
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline bool SymmetricMatrix<MT,SO,true,false>::isLowerOrUpper()
 {
-   return ( IsRowMajorMatrix<MT>::value ) ? ( isLower( matrix_ ) ) : ( isUpper( matrix_ ) );
+   return ( SO ) ? ( isUpper( matrix_ ) ) : ( isLower( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2123,9 +2166,10 @@ inline bool SymmetricMatrix<MT,true,false>::isLowerOrUpper()
 // to the isAliased() function this function is allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT >     // Type of the adapted dense matrix
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SymmetricMatrix<MT,true,false>::canAlias( const Other* alias ) const
+inline bool SymmetricMatrix<MT,SO,true,false>::canAlias( const Other* alias ) const
 {
    return matrix_.canAlias( alias );
 }
@@ -2144,9 +2188,10 @@ inline bool SymmetricMatrix<MT,true,false>::canAlias( const Other* alias ) const
 // to the conAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
-template< typename MT >     // Type of the adapted dense matrix
+template< typename MT       // Type of the adapted dense matrix
+        , bool SO >         // Storage order of the adapted dense matrix
 template< typename Other >  // Data type of the foreign expression
-inline bool SymmetricMatrix<MT,true,false>::isAliased( const Other* alias ) const
+inline bool SymmetricMatrix<MT,SO,true,false>::isAliased( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -2164,8 +2209,9 @@ inline bool SymmetricMatrix<MT,true,false>::isAliased( const Other* alias ) cons
 // whether the beginning and the end of each row/column of the matrix are guaranteed to conform
 // to the alignment restrictions of the element type \a Type.
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline bool SymmetricMatrix<MT,true,false>::isAligned() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline bool SymmetricMatrix<MT,SO,true,false>::isAligned() const
 {
    return matrix_.isAligned();
 }
@@ -2184,8 +2230,9 @@ inline bool SymmetricMatrix<MT,true,false>::isAligned() const
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename MT >  // Type of the adapted dense matrix
-inline bool SymmetricMatrix<MT,true,false>::canSMPAssign() const
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline bool SymmetricMatrix<MT,SO,true,false>::canSMPAssign() const
 {
    return matrix_.canSMPAssign();
 }
@@ -2205,22 +2252,23 @@ inline bool SymmetricMatrix<MT,true,false>::canSMPAssign() const
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline void SymmetricMatrix<MT,true,false>::assign( DenseMatrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::assign( DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             move( matrix_(i,j), (~rhs)(i,j) );
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             move( matrix_(i,j), (~rhs)(i,j) );
    }
 }
@@ -2240,22 +2288,23 @@ inline void SymmetricMatrix<MT,true,false>::assign( DenseMatrix<MT2,SO>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline void SymmetricMatrix<MT,true,false>::assign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::assign( const DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) = (~rhs)(i,j);
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) = (~rhs)(i,j);
    }
 }
@@ -2275,26 +2324,27 @@ inline void SymmetricMatrix<MT,true,false>::assign( const DenseMatrix<MT2,SO>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::assign( const SparseMatrix<MT2,false>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).upperBound(i,i) );
-         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(i) );
+         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
             matrix_(i,element->index()) = element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).end(i) );
-         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(i,i) );
+         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) = element->value();
       }
    }
@@ -2315,26 +2365,27 @@ inline void SymmetricMatrix<MT,true,false>::assign( const SparseMatrix<MT2,false
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::assign( const SparseMatrix<MT2,true>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).end(j) );
-         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(j,j) );
+         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) = element->value();
       }
    }
    else {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).upperBound(j,j) );
-         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(j) );
+         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
             matrix_(element->index(),j) = element->value();
       }
    }
@@ -2355,22 +2406,23 @@ inline void SymmetricMatrix<MT,true,false>::assign( const SparseMatrix<MT2,true>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >  // Type of the adapted dense matrix
+template< typename MT    // Type of the adapted dense matrix
+        , bool SO >      // Storage order of the adapted dense matrix
 template< typename MT2   // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline void SymmetricMatrix<MT,true,false>::addAssign( const DenseMatrix<MT2,SO>& rhs )
+        , bool SO2 >     // Storage order of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) += (~rhs)(i,j);
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) += (~rhs)(i,j);
    }
 }
@@ -2390,26 +2442,27 @@ inline void SymmetricMatrix<MT,true,false>::addAssign( const DenseMatrix<MT2,SO>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::addAssign( const SparseMatrix<MT2,false>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).upperBound(i,i) );
-         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(i) );
+         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
             matrix_(i,element->index()) += element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).end(i) );
-         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(i,i) );
+         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) += element->value();
       }
    }
@@ -2430,26 +2483,27 @@ inline void SymmetricMatrix<MT,true,false>::addAssign( const SparseMatrix<MT2,fa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::addAssign( const SparseMatrix<MT2,true>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).end(j) );
-         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(j,j) );
+         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) += element->value();
       }
    }
    else {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).upperBound(j,j) );
-         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(j) );
+         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
             matrix_(element->index(),j) += element->value();
       }
    }
@@ -2470,22 +2524,23 @@ inline void SymmetricMatrix<MT,true,false>::addAssign( const SparseMatrix<MT2,tr
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >  // Type of the adapted dense matrix
-template< typename MT2   // Type of the right-hand side dense matrix
-        , bool SO >      // Storage order of the right-hand side dense matrix
-inline void SymmetricMatrix<MT,true,false>::subAssign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   if( IsRowMajorMatrix<MT>::value ) {
-      for( size_t i=0UL; i<rows(); ++i )
-         for( size_t j=0UL; j<=i; ++j )
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
             matrix_(i,j) -= (~rhs)(i,j);
    }
    else {
-      for( size_t j=0UL; j<columns(); ++j )
-         for( size_t i=0UL; i<=j; ++i )
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
             matrix_(i,j) -= (~rhs)(i,j);
    }
 }
@@ -2505,26 +2560,27 @@ inline void SymmetricMatrix<MT,true,false>::subAssign( const DenseMatrix<MT2,SO>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::subAssign( const SparseMatrix<MT2,false>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).upperBound(i,i) );
-         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(i) );
+         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
             matrix_(i,element->index()) -= element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ConstIterator last( (~rhs).end(i) );
-         for( ConstIterator element=(~rhs).lowerBound(i,i); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(i,i) );
+         for( ConstIterator element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) -= element->value();
       }
    }
@@ -2545,26 +2601,27 @@ inline void SymmetricMatrix<MT,true,false>::subAssign( const SparseMatrix<MT2,fa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT >   // Type of the adapted dense matrix
+template< typename MT     // Type of the adapted dense matrix
+        , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
-inline void SymmetricMatrix<MT,true,false>::subAssign( const SparseMatrix<MT2,true>& rhs )
+inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    typedef typename MT2::ConstIterator  ConstIterator;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).end(j) );
-         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
+         const ConstIterator last( (~rhs).upperBound(j,j) );
+         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) -= element->value();
       }
    }
    else {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const ConstIterator last( (~rhs).upperBound(j,j) );
-         for( ConstIterator element=(~rhs).begin(j); element!=last; ++element )
+         const ConstIterator last( (~rhs).end(j) );
+         for( ConstIterator element=(~rhs).lowerBound(j,j); element!=last; ++element )
             matrix_(element->index(),j) -= element->value();
       }
    }

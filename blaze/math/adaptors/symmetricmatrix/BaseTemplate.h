@@ -69,7 +69,7 @@ namespace blaze {
 // template parameter:
 
    \code
-   template< typename MT, bool DF, bool NF >
+   template< typename MT, bool SO, bool DF, bool NF >
    class SymmetricMatrix;
    \endcode
 
@@ -78,6 +78,9 @@ namespace blaze {
 //        type. Note that the given matrix type must be either resizable (as for instance
 //        HybridMatrix or DynamicMatrix) or must be square at compile time (as for instance
 //        StaticMatrix).
+//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix. This
+//        template parameter doesn't have to be explicitly defined, but is automatically derived
+//        from the first template parameter.
 //  - DF: specifies whether the given matrix type is a dense or sparse matrix type. This template
 //        parameter doesn't have to be defined explicitly, it is automatically derived from the
 //        first template parameter. Defining the parameter explicitly may result in a compilation
@@ -523,6 +526,7 @@ namespace blaze {
    \endcode
 */
 template< typename MT                                             // Type of the adapted matrix
+        , bool SO = IsColumnMajorMatrix<MT>::value                // Storage order of the adapted matrix
         , bool DF = IsDenseMatrix<MT>::value                      // Density flag
         , bool NF = IsNumeric<typename MT::ElementType>::value >  // Numeric flag
 class SymmetricMatrix;
