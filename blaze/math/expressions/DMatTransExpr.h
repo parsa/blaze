@@ -498,6 +498,27 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the dense matrix.
+   //
+   // \return The number of non-zero elements in the dense matrix.
+   */
+   inline size_t nonZeros() const {
+      return dm_.nonZeros();
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the specified row/column.
+   //
+   // \param i The index of the row/column.
+   // \return The number of non-zero elements of row/column \a i.
+   */
+   inline size_t nonZeros( size_t i ) const {
+      return dm_.nonZeros( i );
+   }
+   //**********************************************************************************************
+
    //**Operand access******************************************************************************
    /*!\brief Returns the dense matrix operand.
    //
