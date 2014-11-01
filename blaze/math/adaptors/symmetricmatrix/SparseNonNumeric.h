@@ -455,10 +455,9 @@ class SymmetricMatrix<MT,SO,false,false>
    explicit inline SymmetricMatrix( size_t n, size_t nonzeros );
    explicit inline SymmetricMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
-   inline SymmetricMatrix( const SymmetricMatrix& m );
-
-   template< typename MT2, bool SO2 >
-   inline SymmetricMatrix( const Matrix<MT2,SO2>& m );
+                            inline SymmetricMatrix( const SymmetricMatrix& m );
+   template< typename MT2 > inline SymmetricMatrix( const Matrix<MT2,SO>&  m );
+   template< typename MT2 > inline SymmetricMatrix( const Matrix<MT2,!SO>& m );
    //@}
    //**********************************************************************************************
 
@@ -485,19 +484,28 @@ class SymmetricMatrix<MT,SO,false,false>
    //@{
    inline SymmetricMatrix& operator=( const SymmetricMatrix& rhs );
 
-   template< typename MT2, bool SO2 >
+   template< typename MT2 >
    inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+      operator=( const Matrix<MT2,SO>& rhs );
 
-   template< typename MT2, bool SO2 >
+   template< typename MT2 >
    inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
+      operator=( const Matrix<MT2,SO>& rhs );
 
-   template< typename MT2, bool SO2 >
-   inline SymmetricMatrix& operator+=( const Matrix<MT2,SO2>& rhs );
+   template< typename MT2 >
+   inline SymmetricMatrix& operator=( const Matrix<MT2,!SO>& rhs );
 
-   template< typename MT2, bool SO2 >
-   inline SymmetricMatrix& operator-=( const Matrix<MT2,SO2>& rhs );
+   template< typename MT2 >
+   inline SymmetricMatrix& operator+=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline SymmetricMatrix& operator+=( const Matrix<MT2,!SO>& rhs );
+
+   template< typename MT2 >
+   inline SymmetricMatrix& operator-=( const Matrix<MT2,SO>& rhs );
+
+   template< typename MT2 >
+   inline SymmetricMatrix& operator-=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
    inline SymmetricMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
@@ -576,10 +584,10 @@ class SymmetricMatrix<MT,SO,false,false>
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
-   template< typename MT2, bool SO2 > void assign( DenseMatrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > void assign( const DenseMatrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > void assign( SparseMatrix<MT2,SO2>& rhs );
-   template< typename MT2, bool SO2 > void assign( const SparseMatrix<MT2,SO2>& rhs );
+   template< typename MT2 > void assign( DenseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > void assign( const DenseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > void assign( SparseMatrix<MT2,SO>& rhs );
+   template< typename MT2 > void assign( const SparseMatrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -727,7 +735,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const SymmetricMatri
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion constructor from different matrices.
+/*!\brief Conversion constructor from different matrices with the same storage order.
 //
 // \param m Matrix to be copied.
 // \exception std::invalid_argument Invalid setup of symmetric matrix.
@@ -735,11 +743,10 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const SymmetricMatri
 // This constructor initializes the symmetric matrix as a copy of the given matrix. In case the
 // given matrix is not a symmetric matrix, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the foreign matrix
-        , bool SO2 >    // Storage order of the foreign matrix
-inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO2>& m )
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the foreign matrix
+inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>& m )
    : matrix_()  // The adapted sparse matrix
 {
    using blaze::resize;
@@ -757,6 +764,44 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO2
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    assign( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Conversion constructor from different matrices with opposite storage order.
+//
+// \param m Matrix to be copied.
+// \exception std::invalid_argument Invalid setup of symmetric matrix.
+//
+// This constructor initializes the symmetric matrix as a copy of the given matrix. In case the
+// given matrix is not a symmetric matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the foreign matrix
+inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO>& m )
+   : matrix_()  // The adapted sparse matrix
+{
+   using blaze::resize;
+
+   typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
+   typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
+
+   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+
+   Tmp tmp( ~m );
+
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+
+   resize( matrix_, tmp.rows(), tmp.columns() );
+   assign( trans( tmp ) );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
 }
@@ -1015,12 +1060,11 @@ inline SymmetricMatrix<MT,SO,false,false>&
 // a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
 // symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >::Type
-   SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
 
@@ -1060,12 +1104,11 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false
 // a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
 // symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >::Type
-   SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
 
@@ -1091,6 +1134,32 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for matrices with opposite storage order.
+//
+// \param rhs The right-hand side matrix to be copied.
+// \return Reference to the assigned matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// If possible and necessary, the matrix is resized according to the given \f$ N \times N \f$
+// matrix and initialized as a copy of this matrix. If the matrix cannot be resized accordingly,
+// a \a std::invalid_argument exception is thrown. Also note that the given matrix must be a
+// symmetric matrix. Otherwise, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,false,false>&
+   SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,!SO>& rhs )
+{
+   return this->operator=( trans( ~rhs ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a matrix (\f$ A+=B \f$).
 //
 // \param rhs The right-hand side matrix to be added.
@@ -1102,12 +1171,11 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>
 // the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,SO,false,false>&
-   SymmetricMatrix<MT,SO,false,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   SymmetricMatrix<MT,SO,false,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
 
@@ -1119,7 +1187,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
    Tmp tmp( (*this) + ~rhs );
 
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -1128,6 +1196,32 @@ inline SymmetricMatrix<MT,SO,false,false>&
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
 
    return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition assignment operator for the addition of a matrix with opposite storage order
+//        (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side matrix to be added.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the addition operation must be a symmetric matrix, i.e.
+// the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,false,false>&
+   SymmetricMatrix<MT,SO,false,false>::operator+=( const Matrix<MT2,!SO>& rhs )
+{
+   return this->operator+=( trans( ~rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1146,12 +1240,11 @@ inline SymmetricMatrix<MT,SO,false,false>&
 // i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,SO,false,false>&
-   SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
 
@@ -1163,7 +1256,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
    Tmp tmp( (*this) - ~rhs );
 
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -1172,6 +1265,32 @@ inline SymmetricMatrix<MT,SO,false,false>&
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
 
    return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction assignment operator for the subtraction of a matrix with opposite storage
+//        order (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side matrix to be subtracted.
+// \return Reference to the matrix.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also note that the result of the subtraction operation must be a symmetric matrix,
+// i.e. the given matrix must be a symmetric matrix. In case the result is not a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side matrix
+inline SymmetricMatrix<MT,SO,false,false>&
+   SymmetricMatrix<MT,SO,false,false>::operator-=( const Matrix<MT2,!SO>& rhs )
+{
+   return this->operator-=( trans( ~rhs ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1203,7 +1322,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
    Tmp tmp( (*this) * ~rhs );
 
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -2212,11 +2331,10 @@ inline bool SymmetricMatrix<MT,SO,false,false>::canSMPAssign() const
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO2>& rhs )
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
@@ -2264,11 +2382,10 @@ void SymmetricMatrix<MT,SO,false,false>::assign( DenseMatrix<MT2,SO2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void SymmetricMatrix<MT,SO,false,false>::assign( const DenseMatrix<MT2,SO2>& rhs )
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
+void SymmetricMatrix<MT,SO,false,false>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
@@ -2315,11 +2432,10 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const DenseMatrix<MT2,SO2>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO2>& rhs )
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
@@ -2367,11 +2483,10 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO2>& rhs )
+template< typename MT     // Type of the adapted sparse matrix
+        , bool SO >       // Storage order of the adapted sparse matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
+void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
 
