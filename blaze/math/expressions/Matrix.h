@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -577,6 +578,8 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
+
    (~lhs).assign( ~rhs );
 }
 /*! \endcond */
@@ -600,6 +603,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
 
@@ -680,6 +685,8 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
+
    (~lhs).addAssign( ~rhs );
 }
 /*! \endcond */
@@ -703,6 +710,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
 
@@ -783,6 +792,8 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsSymmetric<MT2> >::Type
 {
    BLAZE_FUNCTION_TRACE;
 
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
+
    (~lhs).subAssign( ~rhs );
 }
 /*! \endcond */
@@ -806,6 +817,8 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
    subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT1 );
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~rhs ), "Non-square symmetric matrix detected" );
 
