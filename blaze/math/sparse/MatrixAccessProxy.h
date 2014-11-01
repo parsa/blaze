@@ -1053,7 +1053,7 @@ template< typename MT >  // Type of the sparse matrix
 inline typename MatrixAccessProxy<MT>::Iterator
    MatrixAccessProxy<MT>::insert( size_t index, const ElementType& value ) const
 {
-   get().insert( index, value );
+   return get().insert( index, value );
 }
 //*************************************************************************************************
 
@@ -1076,7 +1076,7 @@ template< typename MT >  // Type of the sparse matrix
 inline typename MatrixAccessProxy<MT>::Iterator
    MatrixAccessProxy<MT>::insert( size_t i, size_t j, const ElementType& value ) const
 {
-   get().insert( i, j, value );
+   return get().insert( i, j, value );
 }
 //*************************************************************************************************
 
