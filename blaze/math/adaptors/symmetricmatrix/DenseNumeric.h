@@ -1585,7 +1585,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >::Type
    SymmetricMatrix<MT,SO,true,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSymmetric<MT2>::value ) {
@@ -1681,7 +1681,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >::Type
    SymmetricMatrix<MT,SO,true,true>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSymmetric<MT2>::value ) {
@@ -1778,7 +1778,7 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& >::Type
    SymmetricMatrix<MT,SO,true,true>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   if( IsLower<MT2>::value || IsUpper<MT2>::value )
+   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( IsSymmetric<MT2>::value ) {
@@ -1844,6 +1844,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,SO,true,true>&
    SymmetricMatrix<MT,SO,true,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
+   if( matrix_.rows() != (~rhs).columns() )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+
    MT tmp( matrix_ * ~rhs );
 
    if( !isSymmetric( tmp ) )
