@@ -1610,7 +1610,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,true>& 
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for matrices with opposite storage order.
 //
-// \param rhs The general matrix to be copied.
+// \param rhs The right-hand side matrix to be copied.
 // \return Reference to the assigned matrix.
 // \exception std::invalid_argument Invalid assignment to symmetric matrix.
 //
