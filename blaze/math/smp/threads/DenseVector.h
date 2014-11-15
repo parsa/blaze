@@ -51,13 +51,15 @@
 #include <blaze/math/smp/threads/ThreadBackend.h>
 #include <blaze/math/SparseSubvector.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -165,8 +167,8 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -221,8 +223,10 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , Or< Not< IsSMPAssignable<VT1> >
+                                 , Not< IsSMPAssignable<VT2> > > > >::Type
+   smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -254,10 +258,12 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2> > >::Type
+   smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -383,8 +389,8 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -440,8 +446,10 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , Or< Not< IsSMPAssignable<VT1> >
+                                 , Not< IsSMPAssignable<VT2> > > > >::Type
+   smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -473,10 +481,12 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpAddAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2> > >::Type
+   smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -602,8 +612,8 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -659,8 +669,10 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , Or< Not< IsSMPAssignable<VT1> >
+                                 , Not< IsSMPAssignable<VT2> > > > >::Type
+   smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -693,10 +705,12 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpSubAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2> > >::Type
+   smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -822,8 +836,8 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -879,8 +893,10 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , Or< Not< IsSMPAssignable<VT1> >
+                                 , Not< IsSMPAssignable<VT2> > > > >::Type
+   smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -913,10 +929,12 @@ inline typename DisableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-inline typename EnableIf< And< IsSMPAssignable<VT1>, IsSMPAssignable<VT2> > >::Type
-   smpMultAssign( DenseVector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+inline typename EnableIf< And< IsDenseVector<VT1>
+                             , IsSMPAssignable<VT1>
+                             , IsSMPAssignable<VT2> > >::Type
+   smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

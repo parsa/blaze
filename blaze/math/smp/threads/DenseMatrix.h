@@ -52,13 +52,15 @@
 #include <blaze/math/SparseSubmatrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -345,11 +347,13 @@ void smpAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,columnM
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , Or< Not< IsSMPAssignable<MT1> >
+                                 , Not< IsSMPAssignable<MT2> > > > >::Type
+   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -381,11 +385,13 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2> > >::Type
+   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -691,11 +697,13 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , Or< Not< IsSMPAssignable<MT1> >
+                                 , Not< IsSMPAssignable<MT2> > > > >::Type
+   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -727,11 +735,13 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpAddAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2> > >::Type
+   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1037,11 +1047,13 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,colu
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , Or< Not< IsSMPAssignable<MT1> >
+                                 , Not< IsSMPAssignable<MT2> > > > >::Type
+   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1074,11 +1086,13 @@ inline typename DisableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::
 // assignment operator.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< And< IsSMPAssignable<MT1>, IsSMPAssignable<MT2> > >::Type
-   smpSubAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< And< IsDenseMatrix<MT1>
+                             , IsSMPAssignable<MT1>
+                             , IsSMPAssignable<MT2> > >::Type
+   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1131,7 +1145,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpMultAssign( DenseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< IsDenseMatrix<MT1> >::Type
+   smpMultAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

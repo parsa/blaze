@@ -42,7 +42,9 @@
 
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -59,13 +61,16 @@ namespace blaze {
 /*!\name Sparse matrix SMP functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void smpAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void smpAddAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void smpSubAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -88,7 +93,8 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -118,7 +124,8 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpAddAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -148,7 +155,8 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , bool SO1      // Storage order of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline void smpSubAssign( SparseMatrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
+inline typename EnableIf< IsSparseMatrix<MT1> >::Type
+   smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
