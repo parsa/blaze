@@ -144,12 +144,29 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either of the two matrix operands requires an intermediate evaluation,
-       the nested \value will be set to 1, otherwise it will be 0. */
-   template< typename MT >
-   struct UseSMPAssign {
-      enum { value = ( evaluateLeft || evaluateRight ) };
+   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+       evaluation strategy. In case the target matrix is row-major and either of the two
+       matrix operands is symmetric, \a value is set to 1 and an optimized evaluation
+       strategy is selected. Otherwise \a value is set to 0 and the default strategy is
+       chosen. */
+   template< typename T1, typename T2, typename T3 >
+   struct CanExploitSymmetry {
+      enum { value = IsRowMajorMatrix<T1>::value &&
+                     ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+       evaluation strategy. In case either of the two matrix operands requires an intermediate
+       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct IsEvaluationRequired {
+      enum { value = ( evaluateLeft || evaluateRight ) &&
+                     CanExploitSymmetry<T1,T2,T3>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -669,7 +686,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void assign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1090,7 +1108,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a transpose dense matrix-transpose dense matrix multiplication to a
-   //        sparse matrix.
+   //        sparse matrix (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -1102,7 +1120,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1124,6 +1143,42 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Restructuring assignment to row-major matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring assignment of a transpose dense matrix-transpose dense matrix
+   //        multiplication to a row-major matrix (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring assignment of a transpose dense
+   // matrix-transpose dense matrix multiplication expression to a row-major matrix. Due to the
+   // explicit application of the SFINAE principle this function can only be selected by the
+   // compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         assign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         assign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         assign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Addition assignment to dense matrices*******************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a transpose dense matrix-transpose dense matrix multiplication
@@ -1139,7 +1194,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    */
    template< typename MT   // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      addAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1579,6 +1635,42 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 #endif
    //**********************************************************************************************
 
+   //**Restructuring addition assignment to row-major matrices*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring addition assignment of a transpose dense matrix-transpose dense matrix
+   //        multiplication to a row-major matrix (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring addition assignment of a transpose
+   // dense matrix-transpose dense matrix multiplication expression to a row-major matrix. Due to
+   // the explicit application of the SFINAE principle this function can only be selected by the
+   // compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      addAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         addAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         addAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         addAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Addition assignment to sparse matrices******************************************************
    // No special implementation for the addition assignment to sparse matrices.
    //**********************************************************************************************
@@ -1586,7 +1678,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**Subtraction assignment to dense matrices****************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a transpose dense matrix-transpose dense matrix
-   //        multiplication to a dense matrix.
+   //        multiplication to a dense matrix (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -1598,7 +1690,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      subAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -2038,6 +2131,43 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
 #endif
    //**********************************************************************************************
 
+   //**Restructuring subtraction assignment to row-major matrices**********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring subtraction assignment of a transpose dense matrix-transpose dense
+   //        matrix multiplication to a row-major matrix (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring subtraction assignment of a
+   // transpose dense matrix-transpose dense matrix multiplication expression to a row-major
+   // matrix. Due to the explicit application of the SFINAE principle this function can only
+   // be selected by the compiler in case the symmetry of either of the two matrix operands
+   // can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      subAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         subAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         subAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         subAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Subtraction assignment to sparse matrices***************************************************
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
@@ -2063,11 +2193,12 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    // This function implements the performance optimized SMP assignment of a transpose dense
    // matrix-transpose dense matrix multiplication expression to a dense matrix. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the expression specific parallel evaluation strategy is selected.
+   // compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2101,7 +2232,7 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**SMP assignment to sparse matrices***********************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP assignment of a transpose dense matrix-transpose dense matrix multiplication
-   //        to a sparse matrix.
+   //        to a sparse matrix (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -2111,11 +2242,12 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    // This function implements the performance optimized SMP assignment of a transpose dense
    // matrix-transpose dense matrix multiplication expression to a sparse matrix. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the expression specific parallel evaluation strategy is selected.
+   // compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2138,6 +2270,42 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Restructuring SMP assignment to row-major matrices******************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring SMP assignment of a transpose dense matrix-transpose dense matrix
+   //        multiplication to a row-major matrix (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP assignment of a transpose
+   // dense matrix-transpose dense matrix multiplication expression to a row-major matrix. Due
+   // to the explicit application of the SFINAE principle this operator can only be selected by
+   // the compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         smpAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         smpAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SMP addition assignment to dense matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP addition assignment of a transpose dense matrix-transpose dense matrix
@@ -2151,11 +2319,12 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    // This function implements the performance optimized SMP addition assignment of a transpose
    // dense matrix-transpose dense matrix multiplication expression to a dense matrix. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the expression specific parallel evaluation strategy is selected.
+   // the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT   // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2182,6 +2351,43 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Restructuring SMP addition assignment to row-major matrices*********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring SMP addition assignment of a transpose dense matrix-transpose dense
+   //        matrix multiplication to a row-major matrix (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP addition assignment of a
+   // transpose dense matrix-transpose dense matrix multiplication expression to a row-major
+   // matrix. Due to the explicit application of the SFINAE principle this operator can only be
+   // selected by the compiler in case the symmetry of either of the two matrix operands can be
+   // exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpAddAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpAddAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         smpAddAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         smpAddAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SMP addition assignment to sparse matrices**************************************************
    // No special implementation for the SMP addition assignment to sparse matrices.
    //**********************************************************************************************
@@ -2189,21 +2395,22 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
    //**SMP subtraction assignment to dense matrices************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP subtraction assignment of a transpose dense matrix-transpose dense matrix
-   //        multiplication to a dense matrix.
+   //        multiplication to a dense matrix (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
    // \param rhs The right-hand side multiplication expression to be subtracted.
    // \return void
    //
-   // This function implements the performance optimized SMP subtraction assignment of a transpose
-   // dense matrix-transpose dense matrix multiplication expression to a dense matrix. Due to the
-   // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the expression specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP subtraction assignment of a
+   // transpose dense matrix-transpose dense matrix multiplication expression to a dense
+   // matrix. Due to the explicit application of the SFINAE principle, this operator can
+   // only be selected by the compiler in case either of the two matrix operands requires
+   // an intermediate evaluation and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2226,6 +2433,43 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpSubAssign( ~lhs, A * B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Restructuring SMP subtraction assignment to row-major matrices******************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Restructuring SMP subtraction assignment of a transpose dense matrix-transpose dense
+   //        matrix multiplication to a row-major matrix (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP subtraction assignment of a
+   // transpose dense matrix-transpose dense matrix multiplication expression to a row-major
+   // matrix. Due to the explicit application of the SFINAE principle this operator can only be
+   // selected by the compiler in case the symmetry of either of the two matrix operands can be
+   // exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpSubAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpSubAssign( ~lhs, trans( rhs.lhs_ ) * trans( rhs.rhs_ ) );
+      else if( IsSymmetric<MT1>::value )
+         smpSubAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
+      else
+         smpSubAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2302,13 +2546,30 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either of the two matrix operands requires an intermediate evaluation,
-       the nested \value will be set to 1, otherwise it will be 0. */
-   template< typename MT >
-   struct UseSMPAssign {
-      enum { value = ( evaluateLeft || evaluateRight ) };
+   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+       evaluation strategy. In case the target matrix is row-major and either of the two
+       matrix operands is symmetric, \a value is set to 1 and an optimized evaluation
+       strategy is selected. Otherwise \a value is set to 0 and the default strategy is
+       chosen. */
+   template< typename T1, typename T2, typename T3 >
+   struct CanExploitSymmetry {
+      enum { value = IsRowMajorMatrix<T1>::value &&
+                     ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+   };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+       evaluation strategy. In case either of the two matrix operands requires an intermediate
+       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct IsEvaluationRequired {
+      enum { value = ( evaluateLeft || evaluateRight ) &&
+                     !CanExploitSymmetry<T1,T2,T3>::value };
    };
    //**********************************************************************************************
 
@@ -2793,7 +3054,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void assign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -3216,7 +3478,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
    //**Assignment to sparse matrices***************************************************************
    /*!\brief Assignment of a scaled transpose dense matrix-transpose dense matrix multiplication
-   //        to a sparse matrix.
+   //        to a sparse matrix (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -3228,7 +3490,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline void assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -3247,6 +3510,44 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       const TmpType tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
+   //**********************************************************************************************
+
+   //**Restructuring assignment to row-major matrices**********************************************
+   /*!\brief Restructuring assignment of a scaled transpose dense matrix-transpose dense matrix
+   //        multiplication to a row-major matrix (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring assignment of a scaled transpose
+   // dense matrix-transpose dense matrix multiplication expression to a row-major matrix. Due to
+   // the explicit application of the SFINAE principle this function can only be selected by the
+   // compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      assign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         assign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         assign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         assign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense matrices*******************************************************
@@ -3667,6 +3968,45 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
       zgemm( C, A, B, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
    }
 #endif
+   //**********************************************************************************************
+
+   //**Restructuring addition assignment to row-major matrices*************************************
+   /*!\brief Restructuring addition assignment of a scaled transpose dense matrix-transpose dense
+   //        matrix multiplication to a row-major matrix (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring addition assignment of a scaled
+   // transpose dense matrix-transpose dense matrix multiplication expression to a row-major
+   // matrix. Due to the explicit application of the SFINAE principle this function can only be
+   // selected by the compiler in case the symmetry of either of the two matrix operands can be
+   // exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      addAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         addAssign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         addAssign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         addAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to sparse matrices******************************************************
@@ -4093,6 +4433,44 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 #endif
    //**********************************************************************************************
 
+   //**Restructuring subtraction assignment to row-major matrices**********************************
+   /*!\brief Restructuring subtraction assignment of a scaled transpose dense matrix-transpose
+   //        dense matrix multiplication to a row-major matrix (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring subtraction assignment of a scaled
+   // transpose dense matrix-transpose dense matrix multiplication expression to a row-major matrix.
+   // Due to the explicit application of the SFINAE principle this function can only be selected
+   // by the compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      subAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         subAssign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         subAssign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         subAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**Subtraction assignment to sparse matrices***************************************************
    // No special implementation for the subtraction assignment to sparse matrices.
    //**********************************************************************************************
@@ -4117,12 +4495,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    // This function implements the performance optimized SMP assignment of a scaled transpose
    // dense matrix-transpose dense matrix multiplication expression to a dense matrix. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the target matrix is SMP assignable and either of the two matrix
-   // operands requires an intermediate evaluation.
+   // the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4157,7 +4535,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
    //**SMP assignment to sparse matrices***********************************************************
    /*!\brief SMP assignment of a scaled transpose dense matrix-transpose dense matrix
-   //        multiplication to a sparse matrix.
+   //        multiplication to a sparse matrix (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -4167,12 +4545,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    // This function implements the performance optimized SMP assignment of a scaled transpose
    // dense matrix-transpose dense matrix multiplication expression to a sparse matrix. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the target matrix is SMP assignable and either of the two matrix
-   // operands requires an intermediate evaluation.
+   // the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4194,6 +4572,44 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    }
    //**********************************************************************************************
 
+   //**Restructuring SMP assignment to row-major matrices******************************************
+   /*!\brief Restructuring SMP assignment of a scaled transpose dense matrix-transpose dense matrix
+   //        multiplication to a row-major matrix (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP assignment of a scaled
+   // transpose dense matrix-dense matrix multiplication expression to a row-major matrix. Due
+   // to the explicit application of the SFINAE principle this operator can only be selected by
+   // the compiler in case the symmetry of either of the two matrix operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpAssign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         smpAssign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         smpAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SMP addition assignment to dense matrices***************************************************
    /*!\brief SMP addition assignment of a scaled transpose dense matrix-transpose dense matrix
    //        multiplication to a dense matrix (\f$ C+=s*A*B \f$).
@@ -4206,12 +4622,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    // This function implements the performance optimized SMP addition assignment of a scaled
    // transpose dense matrix-transpose dense matrix multiplication expression to a dense matrix.
    // Due to the explicit application of the SFINAE principle, this operator can only be selected
-   // by the compiler in case the target matrix is SMP assignable and either of the two matrix
-   // operands requires an intermediate evaluation.
+   // by the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4240,6 +4656,45 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    }
    //**********************************************************************************************
 
+   //**Restructuring SMP addition assignment to row-major matrices*********************************
+   /*!\brief Restructuring SMP addition assignment of a scaled transpose dense matrix-transpose
+   //        dense matrix multiplication to a row-major matrix (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP addition assignment of a
+   // scaled transpose dense matrix-transpose dense matrix multiplication expression to a
+   // row-major matrix. Due to the explicit application of the SFINAE principle this operator
+   // can only be selected by the compiler in case the symmetry of either of the two matrix
+   // operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpAddAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpAddAssign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         smpAddAssign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         smpAddAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**SMP addition assignment to sparse matrices**************************************************
    // No special implementation for the SMP addition assignment to sparse matrices.
    //**********************************************************************************************
@@ -4256,12 +4711,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    // This function implements the performance optimized SMP subtraction assignment of a scaled
    // transpose dense matrix-transpose dense matrix multiplication expression to a dense matrix.
    // Due to the explicit application of the SFINAE principle, this operator can only be selected
-   // by the compiler in case the target matrix is SMP assignable and either of the two matrix
-   // operands requires an intermediate evaluation.
+   // by the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4288,6 +4743,45 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
 
       smpSubAssign( ~lhs, A * B * rhs.scalar_ );
    }
+   //**********************************************************************************************
+
+   //**Restructuring SMP subtraction assignment to row-major matrices******************************
+   /*!\brief Restructuring SMP subtraction assignment of a scaled transpose dense matrix-transpose
+   //        dense matrix multiplication to a row-major matrix (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side matrix.
+   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the symmetry-based restructuring SMP subtraction assignment of
+   // a scaled transpose dense matrix-transpose dense matrix multiplication expression to a
+   // row-major matrix. Due to the explicit application of the SFINAE principle this operator
+   // can only be selected by the compiler in case the symmetry of either of the two matrix
+   // operands can be exploited.
+   */
+   template< typename MT >  // Type of the target matrix
+   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      smpSubAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      typename MMM::LeftOperand  left ( rhs.matrix_.leftOperand()  );
+      typename MMM::RightOperand right( rhs.matrix_.rightOperand() );
+
+      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+         smpSubAssign( ~lhs, trans( left ) * trans( right ) * rhs.scalar_ );
+      else if( IsSymmetric<MT1>::value )
+         smpSubAssign( ~lhs, trans( left ) * right * rhs.scalar_ );
+      else
+         smpSubAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
+   }
+   /*! \endcond */
    //**********************************************************************************************
 
    //**SMP subtraction assignment to sparse matrices***********************************************
