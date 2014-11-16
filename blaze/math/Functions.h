@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <blaze/math/traits/MathTrait.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
@@ -69,26 +70,26 @@ template< typename T >
 inline size_t digits( T a );
 
 template< typename T1, typename T2 >
-inline const typename MathTrait<T1,T2>::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType
    min( const T1& a, const T2& b );
 
 template< typename T1, typename T2, typename T3 >
-inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
    min( const T1& a, const T2& b, const T3& c );
 
 template< typename T1, typename T2 >
-inline const typename MathTrait<T1,T2>::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType
    max( const T1& a, const T2& b );
 
 template< typename T1, typename T2, typename T3 >
-inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
    max( const T1& a, const T2& b, const T3& c );
 
 template< typename T >
-inline T round( T a );
+BLAZE_ALWAYS_INLINE T round( T a );
 
 template< typename T1, typename T2 >
-inline bool lessThan( T1 a, T2 b );
+BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b );
 //@}
 //*************************************************************************************************
 
@@ -164,7 +165,7 @@ inline size_t digits( T a )
 // the MathTrait class description).
 */
 template< typename T1, typename T2 >
-inline const typename MathTrait<T1,T2>::HighType min( const T1& a, const T2& b )
+BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType min( const T1& a, const T2& b )
 {
    // The return type of the function is only a copy of the one of the arguments for two reasons:
    //  - in case the data types T1 and T2 are equal, a reference return type could result in a
@@ -192,7 +193,7 @@ inline const typename MathTrait<T1,T2>::HighType min( const T1& a, const T2& b )
 // the MathTrait class description).
 */
 template< typename T1, typename T2, typename T3 >
-inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
    min( const T1& a, const T2& b, const T3& c )
 {
    // The return type of the function is only a copy of the one of the arguments for two reasons:
@@ -220,7 +221,7 @@ inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::High
 // the MathTrait class description).
 */
 template< typename T1, typename T2 >
-inline const typename MathTrait<T1,T2>::HighType max( const T1& a, const T2& b )
+BLAZE_ALWAYS_INLINE const typename MathTrait<T1,T2>::HighType max( const T1& a, const T2& b )
 {
    // The return type of the function is only a copy of the one of the arguments for two reasons:
    //  - in case the data types T1 and T2 are equal, a reference return type could result in a
@@ -248,7 +249,7 @@ inline const typename MathTrait<T1,T2>::HighType max( const T1& a, const T2& b )
 // the MathTrait class description).
 */
 template< typename T1, typename T2, typename T3 >
-inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
+BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::HighType
    max( const T1& a, const T2& b, const T3& c )
 {
    // The return type of the function is only a copy of the one of the arguments for two reasons:
@@ -276,7 +277,7 @@ inline const typename MathTrait< typename MathTrait<T1,T2>::HighType, T3 >::High
 // function for any other type will result in a compile time error.
 */
 template< typename T >
-inline T round( T a )
+BLAZE_ALWAYS_INLINE T round( T a )
 {
    BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
    return a;
@@ -297,7 +298,7 @@ inline T round( T a )
 // rounded up.
 */
 template<>
-inline float round( float a )
+BLAZE_ALWAYS_INLINE float round( float a )
 {
    return std::floor( a + 0.5F );
 }
@@ -318,7 +319,7 @@ inline float round( float a )
 // rounded up.
 */
 template<>
-inline double round<double>( double a )
+BLAZE_ALWAYS_INLINE double round<double>( double a )
 {
    return std::floor( a + 0.5 );
 }
@@ -339,7 +340,7 @@ inline double round<double>( double a )
 // it is rounded up.
 */
 template<>
-inline long double round<long double>( long double a )
+BLAZE_ALWAYS_INLINE long double round<long double>( long double a )
 {
    return std::floor( a + 0.5L );
 }
@@ -359,7 +360,7 @@ inline long double round<long double>( long double a )
 // Less-than function for the comparison of two integral values.
 */
 template< typename T >
-inline bool lessThan_backend( T a, T b )
+BLAZE_ALWAYS_INLINE bool lessThan_backend( T a, T b )
 {
    return a < b;
 }
@@ -382,7 +383,7 @@ inline bool lessThan_backend( T a, T b )
 // a certain accuracy margin.
 */
 template<>
-inline bool lessThan_backend<float>( float a, float b )
+BLAZE_ALWAYS_INLINE bool lessThan_backend<float>( float a, float b )
 {
    return ( b - a ) > 1E-8F;
 }
@@ -405,7 +406,7 @@ inline bool lessThan_backend<float>( float a, float b )
 // a certain accuracy margin.
 */
 template<>
-inline bool lessThan_backend<double>( double a, double b )
+BLAZE_ALWAYS_INLINE bool lessThan_backend<double>( double a, double b )
 {
    return ( b - a ) > 1E-8;
 }
@@ -428,7 +429,7 @@ inline bool lessThan_backend<double>( double a, double b )
 // certain accuracy margin.
 */
 template<>
-inline bool lessThan_backend<long double>( long double a, long double b )
+BLAZE_ALWAYS_INLINE bool lessThan_backend<long double>( long double a, long double b )
 {
    return ( b - a ) > 1E-10;
 }
@@ -449,7 +450,7 @@ inline bool lessThan_backend<long double>( long double a, long double b )
 // the limited machine accuracy into account.
 */
 template< typename T1, typename T2 >
-inline bool lessThan( T1 a, T2 b )
+BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b )
 {
    typedef typename MathTrait<T1,T2>::HighType  High;
    return lessThan_backend<High>( a, b );
