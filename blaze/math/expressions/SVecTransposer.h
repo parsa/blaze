@@ -288,7 +288,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
-   //**IsAliased function**************************************************************************
+   //**CanAlias function***************************************************************************
    /*!\brief Returns whether the vector can alias with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -311,6 +311,17 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    inline bool isAliased( const Other* alias ) const
    {
       return sv_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the vector can be used in SMP assignments.
+   //
+   // \return \a true in case the vector can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return sv_.canSMPAssign();
    }
    //**********************************************************************************************
 
