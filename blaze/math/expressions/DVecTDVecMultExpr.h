@@ -643,7 +643,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized assignment of a dense vector-dense
    // vector outer product expression to a row-major dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
@@ -903,7 +903,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized addition assignment of a dense vector-
    // dense vector outer product expression to a row-major dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
@@ -1132,7 +1132,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized subtraction assignment of a dense vector-
    // dense vector outer product expression to a row-major dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
@@ -1368,7 +1368,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized SMP assignment of a dense vector-dense
    // vector outer product expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
@@ -1405,7 +1405,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized SMP assignment of a dense vector-dense
    // vector outer product expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
@@ -1444,7 +1444,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized SMP addition assignment of a dense
    // vector-dense vector outer product expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
@@ -1485,7 +1485,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // vector-dense vector outer product expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix

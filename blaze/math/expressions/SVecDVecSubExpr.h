@@ -403,7 +403,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a sparse vector-dense
    // vector subtraction expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
@@ -431,7 +431,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a sparse vector-dense
    // vector addition expression to a sparse vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
@@ -463,7 +463,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // vector-dense vector subtraction expression to a dense vector. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
@@ -495,7 +495,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // vector-dense vector subtraction expression to a dense vector. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
@@ -528,7 +528,7 @@ class SVecDVecSubExpr : public DenseVector< SVecDVecSubExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized SMP multiplication assignment of a
    // sparse vector-dense vector subtraction expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector

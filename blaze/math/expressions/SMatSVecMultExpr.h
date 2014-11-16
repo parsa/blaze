@@ -823,7 +823,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix-sparse
    // vector multiplication expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
@@ -872,7 +872,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix-sparse vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
@@ -918,7 +918,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix-sparse vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
@@ -967,7 +967,7 @@ class SMatSVecMultExpr : public SparseVector< SMatSVecMultExpr<MT,VT>, false >
    //
    // This function implements the performance optimized SMP multiplication assignment of a
    // sparse matrix-sparse vector multiplication expression to a dense vector. Due to the
-   // explicit application of the SFINAE principle, this operator can only be selected by
+   // explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector

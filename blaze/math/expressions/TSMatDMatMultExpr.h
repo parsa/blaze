@@ -882,7 +882,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -923,7 +923,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // matrix-dense matrix multiplication expression to a sparse matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -964,7 +964,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the symmetry-based restructuring SMP assignment of a transpose
    // sparse matrix-dense matrix multiplication expression to a row-major matrix. Due to the
-   // explicit application of the SFINAE principle this operator can only be selected by the
+   // explicit application of the SFINAE principle this function can only be selected by the
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -993,7 +993,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the performance optimized SMP addition assignment of a transpose
    // sparse matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -1034,7 +1034,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the symmetry-based restructuring SMP addition assignment of a
    // transpose sparse matrix-dense matrix multiplication expression to a row-major matrix. Due
-   // to the explicit application of the SFINAE principle this operator can only be selected by
+   // to the explicit application of the SFINAE principle this function can only be selected by
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -1067,7 +1067,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the performance optimized subtraction assignment of a transpose
    // sparse matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -1108,7 +1108,7 @@ class TSMatDMatMultExpr : public DenseMatrix< TSMatDMatMultExpr<MT1,MT2>, true >
    //
    // This function implements the symmetry-based restructuring SMP subtraction assignment of a
    // transpose sparse matrix-dense matrix multiplication expression to a row-major matrix. Due
-   // to the explicit application of the SFINAE principle this operator can only be selected by
+   // to the explicit application of the SFINAE principle this function can only be selected by
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix

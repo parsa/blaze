@@ -452,7 +452,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized assignment of a sparse vector-dense
    // vector multiplication expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either
+   // the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
@@ -489,7 +489,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized assignment of a sparse vector-dense
    // vector multiplication expression to a sparse vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either
+   // the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
@@ -526,7 +526,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized addition assignment of a sparse vector-
    // dense vector multiplication expression to a dense vector. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case either
+   // of the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
@@ -567,7 +567,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized subtraction assignment of a sparse vector-
    // dense vector multiplication expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case either
+   // the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
@@ -608,7 +608,7 @@ class SVecDVecMultExpr : public SparseVector< SVecDVecMultExpr<VT1,VT2,TF>, TF >
    //
    // This function implements the performance optimized multiplication assignment of a sparse
    // vector-dense vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector

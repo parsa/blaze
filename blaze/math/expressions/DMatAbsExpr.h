@@ -574,7 +574,7 @@ class DMatAbsExpr : public DenseMatrix< DMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized assignment of a dense matrix abs
    // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
-   // this operator can only be selected by the compiler in case the operand requires an
+   // this function can only be selected by the compiler in case the operand requires an
    // intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix

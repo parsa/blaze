@@ -321,7 +321,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized assignment of a transpose sparse vector-
    // transpose dense matrix multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either the left-hand side matrix operand requires an intermediate evaluation or
    // the right-hand side vector operand is a compound expression.
    */
@@ -369,7 +369,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized assignment of a transpose sparse vector-
    // transpose dense matrix multiplication expression to a sparse vector. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either the left-hand side matrix operand requires an intermediate evaluation or
    // the right-hand side vector operand is a compound expression.
    */
@@ -402,7 +402,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized addition assignment of a transpose
    // sparse vector-transpose dense matrix multiplication expression to a dense vector. Due
-   // to the explicit application of the SFINAE principle, this operator can only be selected
+   // to the explicit application of the SFINAE principle, this function can only be selected
    // by the compiler in case either the left-hand side matrix operand requires an intermediate
    // evaluation or the right-hand side vector operand is a compound expression.
    */
@@ -449,7 +449,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized subtraction assignment of a transpose
    // sparse vector-transpose dense matrix multiplication expression to a dense vector. Due to
-   // the explicit application of the SFINAE principle, this operator can only be selected by
+   // the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case either the left-hand side matrix operand requires an intermediate
    // evaluation or the right-hand side vector operand is a compound expression.
    */
@@ -496,7 +496,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized multiplication assignment of a transpose
    // sparse vector-transpose dense matrix multiplication expression to a dense vector. Due to
-   // the explicit application of the SFINAE principle, this operator can only be selected by
+   // the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case either the left-hand side matrix operand requires an intermediate
    // evaluation or the right-hand side vector operand is a compound expression.
    */
@@ -533,7 +533,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // vector-transpose dense matrix multiplication expression to a dense vector. Due to the
-   // explicit application of the SFINAE principle, this operator can only be selected by
+   // explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -580,7 +580,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized SMP assignment of a transpose sparse
    // vector-transpose dense matrix multiplication expression to a sparse vector. Due to the
-   // explicit application of the SFINAE principle, this operator can only be selected by
+   // explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
@@ -612,7 +612,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized SMP addition assignment of a transpose
    // sparse vector-transpose dense matrix multiplication expression to a dense vector. Due to
-   // the explicit application of the SFINAE principle, this operator can only be selected by
+   // the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -658,7 +658,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized SMP subtraction assignment of a
    // transpose sparse vector-transpose dense matrix multiplication expression to a dense vector.
-   // Due to the explicit application of the SFINAE principle, this operator can only be selected
+   // Due to the explicit application of the SFINAE principle, this function can only be selected
    // by the the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -704,7 +704,7 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
    //
    // This function implements the performance optimized SMP multiplication assignment of a
    // transpose sparse vector-transpose dense matrix multiplication expression to a dense
-   // vector. Due to the explicit application of the SFINAE principle, this operator can only
+   // vector. Due to the explicit application of the SFINAE principle, this function can only
    // be selected by the compiler in case the expression specific parallel evaluation strategy
    // is selected.
    */

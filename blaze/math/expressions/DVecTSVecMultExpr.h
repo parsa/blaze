@@ -527,7 +527,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //
    // This function implements the performance optimized assignment of a dense vector-sparse
    // vector outer product expression to a row-major dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case either
+   // of the SFINAE principle, this function can only be selected by the compiler in case either
    // of the two operands is an expression or any of the two involved element types is non-numeric
    // data type.
    */
@@ -683,7 +683,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //
    // This function implements the performance optimized assignment of a dense vector-sparse
    // vector outer product expression to a row-major sparse matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands is an expression or any of the two involved element
    // types is non-numeric data type.
    */
@@ -781,7 +781,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //
    // This function implements the performance optimized addition assignment of a dense vector-
    // sparse vector outer product expression to a row-major dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands is an expression or any of the two involved element
    // types is non-numeric data type.
    */
@@ -942,7 +942,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    //
    // This function implements the performance optimized subtraction assignment of a dense vector-
    // sparse vector outer product expression to a row-major dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands is an expression or any of the two involved element
    // types is non-numeric data type.
    */

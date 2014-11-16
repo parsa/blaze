@@ -493,7 +493,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized assignment of a sparse matrix
    // abs expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand
+   // principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -525,7 +525,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized assignment of a sparse matrix
    // abs expression to a row-major sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // operand requires an intermediate evaluation.
    */
    template< typename MT2 >  // Type of the target sparse matrix
@@ -566,7 +566,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized assignment of a sparse matrix
    // abs expression to a column-major sparse matrix. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case
+   // the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename MT2 >  // Type of the target sparse matrix
@@ -607,7 +607,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized addition assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // operand requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -644,7 +644,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized subtraction assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // operand requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -689,7 +689,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP assignment of a sparse matrix abs
    // expression to a dense matrix. Due to the explicit application of the SFINAE principle,
-   // this operator can only be selected by the compiler in case the the expression specific
+   // this function can only be selected by the compiler in case the the expression specific
    // parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -723,7 +723,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the expression
+   // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -760,7 +760,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix abs expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the expression
+   // principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix

@@ -313,7 +313,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized assignment of a dense matrix-transpose
    // dense matrix addition expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case neither of
+   // SFINAE principle, this function can only be selected by the compiler in case neither of
    // the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -356,7 +356,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized assignment of a dense matrix-transpose
    // dense matrix addition expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case either of the
+   // SFINAE principle, this function can only be selected by the compiler in case either of the
    // two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -430,7 +430,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized addition assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case neither
+   // of the SFINAE principle, this function can only be selected by the compiler in case neither
    // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -473,7 +473,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized addition assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // of the SFINAE principle, this function can only be selected by the compiler in case either of
    // the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -507,7 +507,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized subtraction assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case neither
+   // of the SFINAE principle, this function can only be selected by the compiler in case neither
    // of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -550,7 +550,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized subtraction assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // of the SFINAE principle, this function can only be selected by the compiler in case either of
    // the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
@@ -592,7 +592,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
    // dense matrix addition expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
@@ -630,7 +630,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
    // dense matrix addition expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target sparse matrix
@@ -670,7 +670,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP addition assignment of a dense matrix-
    // transpose dense matrix addition expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
@@ -705,7 +705,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // matrix-transpose dense matrix addition expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
+   // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix

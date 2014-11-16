@@ -509,7 +509,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
    // multiplication expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand requires
+   // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -539,7 +539,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
    // multiplication expression to a sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand requires
+   // principle, this function can only be selected by the compiler in case the operand requires
    // an intermediate evaluation.
    */
    template< typename MT2  // Type of the target sparse matrix
@@ -569,7 +569,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized addition assignment of a sparse matrix-
    // scalar multiplication expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the operand
+   // SFINAE principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -606,7 +606,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized subtraction assignment of a sparse matrix-
    // scalar multiplication expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the operand
+   // SFINAE principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -659,7 +659,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix-scalar multiplication expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -696,7 +696,7 @@ class SMatScalarMultExpr : public SparseMatrix< SMatScalarMultExpr<MT,ST,SO>, SO
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix-scalar multiplication expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix

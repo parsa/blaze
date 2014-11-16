@@ -534,7 +534,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized assignment of a dense vector
    // transposition expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case
+   // the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -562,7 +562,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized assignment of a dense vector
    // transposition expression to a sparse vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case
+   // the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
@@ -590,7 +590,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized addition assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case
+   // of the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -622,7 +622,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized subtraction assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the
+   // the SFINAE principle, this function can only be selected by the compiler in case the
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -654,7 +654,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized multiplication assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the operand
+   // SFINAE principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -686,7 +686,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a dense vector
    // transposition expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -714,7 +714,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized SMP assignment of a dense vector
    // transposition expression to a sparse vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the
+   // SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
@@ -742,7 +742,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized SMP addition assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this operator can only be selected by the compiler in case the
+   // the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -774,7 +774,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case expression
+   // SFINAE principle, this function can only be selected by the compiler in case expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
@@ -806,7 +806,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    //
    // This function implements the performance optimized SMP multiplication assignment of a dense
    // vector transposition expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this operator can only be selected by the compiler in case the expression
+   // SFINAE principle, this function can only be selected by the compiler in case the expression
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector

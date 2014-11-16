@@ -2190,7 +2190,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-dense
    // matrix multiplication expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle this operator can only be selected by the compiler in case either of the
+   // SFINAE principle this function can only be selected by the compiler in case either of the
    // two matrix operands requires an intermediate evaluation and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
@@ -2238,7 +2238,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-dense
    // matrix multiplication expression to a sparse matrix. Due to the explicit application of the
-   // SFINAE principle this operator can only be selected by the compiler in case either of the
+   // SFINAE principle this function can only be selected by the compiler in case either of the
    // two matrix operands requires an intermediate evaluation and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target sparse matrix
@@ -2278,7 +2278,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the symmetry-based restructuring SMP assignment of a dense matrix-
    // dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler in
+   // application of the SFINAE principle this function can only be selected by the compiler in
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -2314,7 +2314,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP addition assignment of a dense
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -2359,7 +2359,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the symmetry-based restructuring SMP addition assignment of a dense
    // matrix-dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler in
+   // application of the SFINAE principle this function can only be selected by the compiler in
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -2399,7 +2399,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -2444,7 +2444,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    //
    // This function implements the symmetry-based restructuring SMP subtraction assignment of a
    // dense matrix-dense matrix multiplication expression to a column-major matrix. Due to the
-   // explicit application of the SFINAE principle this operator can only be selected by the
+   // explicit application of the SFINAE principle this function can only be selected by the
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -4491,7 +4491,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the performance optimized assignment of a scaled dense matrix-
    // dense matrix multiplication expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle this operator can only be selected by the compiler in case either
+   // of the SFINAE principle this function can only be selected by the compiler in case either
    // of the two matrix operands requires an intermediate evaluation and no symmetry can be
    // exploited.
    */
@@ -4541,7 +4541,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the performance optimized SMP assignment of a scaled dense matrix-
    // dense matrix multiplication expression to a sparse matrix. Due to the explicit application
-   // of the SFINAE principle this operator can only be selected by the compiler in case either
+   // of the SFINAE principle this function can only be selected by the compiler in case either
    // of the two matrix operands requires an intermediate evaluation and no symmetry can be
    // exploited.
    */
@@ -4580,7 +4580,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the symmetry-based restructuring SMP assignment of a scaled dense
    // matrix-dense matrix multiplication expression to a column-major matrix. Due to the
-   // explicit application of the SFINAE principle this operator can only be selected by
+   // explicit application of the SFINAE principle this function can only be selected by
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -4618,7 +4618,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the performance optimized addition assignment of a scaled dense
    // matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -4664,7 +4664,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the symmetry-based restructuring SMP addition assignment of a scaled
    // dense matrix-dense matrix multiplication expression to a column-major matrix. Due to the
-   // explicit application of the SFINAE principle this operator can only be selected by the
+   // explicit application of the SFINAE principle this function can only be selected by the
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
@@ -4706,7 +4706,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the performance optimized SMP subtraction assignment of a scaled
    // dense matrix-dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle this operator can only be selected by the compiler
+   // application of the SFINAE principle this function can only be selected by the compiler
    // in case either of the two matrix operands requires an intermediate evaluation and no
    // symmetry can be exploited.
    */
@@ -4752,7 +4752,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the symmetry-based restructuring SMP subtraction assignment of a
    // scaled dense matrix-dense matrix multiplication expression to a column-major matrix. Due
-   // to the explicit application of the SFINAE principle this operator can only be selected by
+   // to the explicit application of the SFINAE principle this function can only be selected by
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix

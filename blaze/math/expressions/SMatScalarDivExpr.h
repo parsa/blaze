@@ -506,7 +506,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
    // division expression to a dense matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand
+   // principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -536,7 +536,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized assignment of a sparse matrix-scalar
    // division expression to a sparse matrix. Due to the explicit application of the SFINAE
-   // principle, this operator can only be selected by the compiler in case the operand
+   // principle, this function can only be selected by the compiler in case the operand
    // requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target sparse matrix
@@ -566,7 +566,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized addition assignment of a sparse
    // matrix-scalar division expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case
+   // of the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -603,7 +603,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized subtraction assignment of a sparse
    // matrix-scalar division expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case
+   // of the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -656,7 +656,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized SMP addition assignment of a sparse
    // matrix-scalar division expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
@@ -693,7 +693,7 @@ class SMatScalarDivExpr : public SparseMatrix< SMatScalarDivExpr<MT,ST,SO>, SO >
    //
    // This function implements the performance optimized SMP subtraction assignment of a sparse
    // matrix-scalar division expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT2  // Type of the target dense matrix
