@@ -146,11 +146,11 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either of the two matrix operands requires an intermediate evaluation,
-       the nested \value will be set to 1, otherwise it will be 0. */
-   template< typename MT >
-   struct UseSMPAssign {
+   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+       evaluation strategy. In case either of the two matrix operands requires an intermediate
+       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct IsEvaluationRequired {
       enum { value = ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
@@ -1144,7 +1144,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
    //**Assignment to sparse matrices***************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense matrix-transpose dense matrix multiplication to a sparse matrix.
+   /*!\brief Assignment of a dense matrix-transpose dense matrix multiplication to a sparse matrix
+   //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -1674,7 +1675,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //**Subtraction assignment to dense matrices****************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Subtraction assignment of a dense matrix-transpose dense matrix multiplication to a
-   //        dense matrix.
+   //        dense matrix  (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -2183,13 +2184,13 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a dense matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
+   // dense matrix multiplication expression to a dense matrix. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // the two matrix operands requires an intermediate evaluation and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2222,7 +2223,8 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
    //**SMP assignment to sparse matrices***********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense matrix-transpose dense matrix multiplication to a sparse matrix.
+   /*!\brief SMP assignment of a dense matrix-transpose dense matrix multiplication to a sparse
+   //        matrix (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -2230,13 +2232,13 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the performance optimized SMP assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a sparse matrix. Due to the explicit application
-   // of the SFINAE principle, this operator can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
+   // dense matrix multiplication expression to a sparse matrix. Due to the explicit application of
+   // the SFINAE principle, this operator can only be selected by the compiler in case either of
+   // the two matrix operands requires an intermediate evaluation and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2271,12 +2273,13 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //
    // This function implements the performance optimized SMP addition assignment of a dense matrix-
    // transpose dense matrix multiplication expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
+   // application of the SFINAE principle, this operator can only be selected by the compiler in
+   // case either of the two matrix operands requires an intermediate evaluation and no symmetry
+   // can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2310,7 +2313,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    //**SMP subtraction assignment to dense matrices************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP subtraction assignment of a dense matrix-transpose dense matrix multiplication
-   //        to a dense matrix.
+   //        to a dense matrix (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -2320,11 +2323,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // This function implements the performance optimized SMP subtraction assignment of a dense
    // matrix-transpose dense matrix multiplication expression to a dense matrix. Due to the
    // explicit application of the SFINAE principle, this operator can only be selected by the
-   // compiler in case the expression specific parallel evaluation strategy is selected.
+   // compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2424,11 +2428,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either of the two matrix operands requires an intermediate evaluation,
-       the nested \value will be set to 1, otherwise it will be 0. */
-   template< typename MT >
-   struct UseSMPAssign {
+   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+       evaluation strategy. In case either of the two matrix operands requires an intermediate
+       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3 >
+   struct IsEvaluationRequired {
       enum { value = ( evaluateLeft || evaluateRight ) };
    };
    //**********************************************************************************************
@@ -3388,7 +3392,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
    //**Assignment to sparse matrices***************************************************************
    /*!\brief Assignment of a scaled dense matrix-transpose dense matrix multiplication to a
-   //        sparse matrix.
+   //        sparse matrix (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -4397,11 +4401,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // This function implements the performance optimized SMP assignment of a scaled dense matrix-
    // transpose dense matrix multiplication expression to a dense matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
+   // in case either of the two matrix operands requires an intermediate evaluation and no
+   // symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4436,7 +4441,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
    //**SMP assignment to sparse matrices***********************************************************
    /*!\brief SMP assignment of a scaled dense matrix-transpose dense matrix multiplication to a
-   //        sparse matrix.
+   //        sparse matrix (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side sparse matrix.
@@ -4446,11 +4451,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // This function implements the performance optimized SMP assignment of a scaled dense matrix-
    // transpose dense matrix multiplication expression to a sparse matrix. Due to the explicit
    // application of the SFINAE principle, this operator can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
+   // in case either of the two matrix operands requires an intermediate evaluation and no
+   // symmetry can be exploited.
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4484,11 +4490,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // This function implements the performance optimized SMP addition assignment of a scaled
    // dense matrix-transpose dense matrix multiplication expression to a dense matrix. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the expression specific parallel evaluation strategy is selected.
+   // the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4533,11 +4540,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // This function implements the performance optimized SMP subtraction assignment of a scaled
    // dense matrix-transpose dense matrix multiplication expression to a dense matrix. Due to
    // the explicit application of the SFINAE principle, this operator can only be selected by
-   // the compiler in case the expression specific parallel evaluation strategy is selected.
+   // the compiler in case either of the two matrix operands requires an intermediate evaluation
+   // and no symmetry can be exploited.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename EnableIf< UseSMPAssign<MT> >::Type
+   friend inline typename EnableIf< IsEvaluationRequired<MT,MT1,MT2> >::Type
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
