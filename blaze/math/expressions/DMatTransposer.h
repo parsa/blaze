@@ -328,6 +328,17 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the matrix can be used in SMP assignments.
+   //
+   // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return dm_.canSMPAssign();
+   }
+   //**********************************************************************************************
+
    //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the matrix.
    //
@@ -1080,6 +1091,17 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    inline bool isAligned() const
    {
       return dm_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the matrix can be used in SMP assignments.
+   //
+   // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return dm_.canSMPAssign();
    }
    //**********************************************************************************************
 
