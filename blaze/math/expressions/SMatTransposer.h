@@ -373,6 +373,17 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the matrix can be used in SMP assignments.
+   //
+   // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return sm_.canSMPAssign();
+   }
+   //**********************************************************************************************
+
    //**Transpose assignment of row-major sparse matrices*******************************************
    /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.
    //
@@ -741,6 +752,19 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the matrix can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the alias corresponds to this matrix, \a false if not.
+   */
+   template< typename Other >  // Data type of the foreign expression
+   inline bool canAlias( const Other* alias ) const
+   {
+      return sm_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the matrix is aliased with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -750,6 +774,17 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    inline bool isAliased( const Other* alias ) const
    {
       return sm_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the matrix can be used in SMP assignments.
+   //
+   // \return \a true in case the matrix can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return sm_.canSMPAssign();
    }
    //**********************************************************************************************
 
