@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <blaze/math/smp/threads/ThreadBackend.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -64,7 +65,7 @@ namespace blaze {
 //
 // Via this function the number of threads used for thread parallel operations can be queried.
 */
-inline size_t getNumThreads()
+BLAZE_ALWAYS_INLINE size_t getNumThreads()
 {
    return TheThreadBackend::size();
 }
@@ -85,7 +86,7 @@ inline size_t getNumThreads()
 // Note that the given \a number must be in the range \f$[1..\infty)\f$. In case an invalid
 // number of threads is specified, a \a std::invalid_argument exception is thrown.
 */
-inline size_t setNumThreads( size_t number )
+BLAZE_ALWAYS_INLINE size_t setNumThreads( size_t number )
 {
    if( number == 0UL )
       throw std::invalid_argument( "Invalid number of threads" );
@@ -121,7 +122,7 @@ inline size_t setNumThreads( size_t number )
    }
    \endcode
 */
-inline void shutDownThreads()
+BLAZE_ALWAYS_INLINE void shutDownThreads()
 {
 #if (defined _MSC_VER)
    TheThreadBackend::resize( 0UL, true );

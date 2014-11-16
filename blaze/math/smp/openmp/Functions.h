@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <omp.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -66,7 +67,7 @@ namespace blaze {
 // The function generally reflects the number of threads as set by the OMP_NUM_THREADS environment
 // variable, the \c omp_set_num_threads() library function, or the blaze::setNumThreads() function.
 */
-inline size_t getNumThreads()
+BLAZE_ALWAYS_INLINE size_t getNumThreads()
 {
    return omp_get_max_threads();
 }
@@ -87,7 +88,7 @@ inline size_t getNumThreads()
 // Note that the given \a number must be in the range \f$[1..infty)\f$. In case an invalid
 // number of threads is specified, a \a std::invalid_argument exception is thrown.
 */
-inline size_t setNumThreads( size_t number )
+BLAZE_ALWAYS_INLINE size_t setNumThreads( size_t number )
 {
    if( number == 0UL )
       throw std::invalid_argument( "Invalid number of threads" );
@@ -123,7 +124,7 @@ inline size_t setNumThreads( size_t number )
    }
    \endcode
 */
-inline void shutDownThreads()
+BLAZE_ALWAYS_INLINE void shutDownThreads()
 {}
 /*! \endcond */
 //*************************************************************************************************

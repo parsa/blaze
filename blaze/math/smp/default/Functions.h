@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -57,9 +58,9 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name SMP utility functions */
 //@{
-inline size_t getNumThreads  ();
-inline void   setNumThreads  ( size_t number );
-inline void   shutDownThreads();
+BLAZE_ALWAYS_INLINE size_t getNumThreads  ();
+BLAZE_ALWAYS_INLINE void   setNumThreads  ( size_t number );
+BLAZE_ALWAYS_INLINE void   shutDownThreads();
 //@}
 //*************************************************************************************************
 
@@ -73,7 +74,7 @@ inline void   shutDownThreads();
 // Via this function the number of threads used for thread parallel operations can be queried.
 // Note that in case no parallelization is active the function will always return 1.
 */
-inline size_t getNumThreads()
+BLAZE_ALWAYS_INLINE size_t getNumThreads()
 {
    return 1UL;
 }
@@ -93,7 +94,7 @@ inline size_t getNumThreads()
 // number of threads is specified, a \a std::invalid_argument exception is thrown. Also note that
 // in case no parallelization is active, the function has no effect.
 */
-inline void setNumThreads( size_t number )
+BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
 {
    UNUSED_PARAMETER( number );
 }
@@ -124,7 +125,7 @@ inline void setNumThreads( size_t number )
    }
    \endcode
 */
-inline void shutDownThreads()
+BLAZE_ALWAYS_INLINE void shutDownThreads()
 {}
 //*************************************************************************************************
 
