@@ -279,6 +279,17 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    }
    //**********************************************************************************************
 
+   //**CanSMPAssign function***********************************************************************
+   /*!\brief Returns whether the vector can be used in SMP assignments.
+   //
+   // \return \a true in case the vector can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const
+   {
+      return dv_.canSMPAssign();
+   }
+   //**********************************************************************************************
+
    //**Load function*******************************************************************************
    /*!\brief Aligned load of an intrinsic element of the vector.
    //
