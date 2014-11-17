@@ -153,6 +153,16 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //
    // \return Iterator to the first element of the dense vector.
    */
+   inline Iterator begin() {
+      return dv_.begin();
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first element of the dense vector.
+   //
+   // \return Iterator to the first element of the dense vector.
+   */
    inline ConstIterator begin() const {
       return dv_.cbegin();
    }
@@ -165,6 +175,16 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    */
    inline ConstIterator cbegin() const {
       return dv_.cbegin();
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last element of the dense vector.
+   //
+   // \return Iterator just past the last element of the dense vector.
+   */
+   inline Iterator end() {
+      return dv_.end();
    }
    //**********************************************************************************************
 

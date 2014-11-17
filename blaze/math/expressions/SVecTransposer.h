@@ -120,6 +120,16 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    //
    // \return Iterator to the first non-zero element of the sparse vector.
    */
+   inline Iterator begin() {
+      return sv_.begin();
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of the sparse vector.
+   //
+   // \return Iterator to the first non-zero element of the sparse vector.
+   */
    inline ConstIterator begin() const {
       return sv_.cbegin();
    }
@@ -132,6 +142,16 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    */
    inline ConstIterator cbegin() const {
       return sv_.cbegin();
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of the sparse vector.
+   //
+   // \return Iterator just past the last non-zero element of the sparse vector.
+   */
+   inline Iterator end() {
+      return sv_.end();
    }
    //**********************************************************************************************
 
