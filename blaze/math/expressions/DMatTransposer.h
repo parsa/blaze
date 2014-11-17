@@ -164,6 +164,22 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
    // returns an iterator to the first non-zero element of column \a i.
    */
+   inline Iterator begin( size_t i ) {
+      return dm_.begin( i );
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
+   */
    inline ConstIterator begin( size_t i ) const {
       return dm_.cbegin( i );
    }
@@ -182,6 +198,22 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    */
    inline ConstIterator cbegin( size_t i ) const {
       return dm_.cbegin( i );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
+   */
+   inline Iterator end( size_t i ) {
+      return dm_.end( i );
    }
    //**********************************************************************************************
 
@@ -945,6 +977,17 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // \param j The column index.
    // \return Iterator to the first non-zero element of column \a i.
    */
+   inline Iterator begin( size_t j ) {
+      return dm_.begin(j);
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator to the first non-zero element of column \a i.
+   */
    inline ConstIterator begin( size_t j ) const {
       return dm_.cbegin(j);
    }
@@ -958,6 +1001,17 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    */
    inline ConstIterator cbegin( size_t j ) const {
       return dm_.cbegin(j);
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator just past the last non-zero element of column \a j.
+   */
+   inline Iterator end( size_t j ) {
+      return dm_.end(j);
    }
    //**********************************************************************************************
 

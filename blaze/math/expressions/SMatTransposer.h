@@ -128,6 +128,22 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
    // returns an iterator to the first non-zero element of column \a i.
    */
+   inline Iterator begin( size_t i ) {
+      return sm_.begin(i);
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   //
+   // This function returns a row/column iterator to the first non-zero element of row/column \a i.
+   // In case the storage order is set to \a rowMajor the function returns an iterator to the first
+   // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
+   // returns an iterator to the first non-zero element of column \a i.
+   */
    inline ConstIterator begin( size_t i ) const {
       return sm_.cbegin(i);
    }
@@ -146,6 +162,22 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    */
    inline ConstIterator cbegin( size_t i ) const {
       return sm_.cbegin(i);
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   //
+   // This function returns an row/column iterator just past the last non-zero element of row/column
+   // \a i. In case the storage order is set to \a rowMajor the function returns an iterator just
+   // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
+   // the function returns an iterator just past the last non-zero element of column \a i.
+   */
+   inline Iterator end( size_t i ) {
+      return sm_.end(i);
    }
    //**********************************************************************************************
 
@@ -550,6 +582,17 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param j The column index.
    // \return Iterator to the first non-zero element of column \a j.
    */
+   inline Iterator begin( size_t j ) {
+      return sm_.begin(j);
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator to the first non-zero element of column \a j.
+   */
    inline ConstIterator begin( size_t j ) const {
       return sm_.cbegin(j);
    }
@@ -562,7 +605,18 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Iterator to the first non-zero element of column \a j.
    */
    inline ConstIterator cbegin( size_t j ) const {
-      return sm_.begin(j);
+      return sm_.cbegin(j);
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of column \a j.
+   //
+   // \param j The column index.
+   // \return Iterator just past the last non-zero element of column \a j.
+   */
+   inline Iterator end( size_t j ) {
+      return sm_.end(j);
    }
    //**********************************************************************************************
 
@@ -573,7 +627,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Iterator just past the last non-zero element of column \a j.
    */
    inline ConstIterator end( size_t j ) const {
-      return sm_.end(j);
+      return sm_.cend(j);
    }
    //**********************************************************************************************
 
@@ -584,7 +638,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \return Iterator just past the last non-zero element of column \a j.
    */
    inline ConstIterator cend( size_t j ) const {
-      return sm_.end(j);
+      return sm_.cend(j);
    }
    //**********************************************************************************************
 
