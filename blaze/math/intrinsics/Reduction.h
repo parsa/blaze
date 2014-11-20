@@ -66,8 +66,9 @@ BLAZE_ALWAYS_INLINE int16_t sum( const sse_int16_t& a )
    const sse_int16_t b( _mm256_hadd_epi16( a.value, a.value ) );
    const sse_int16_t c( _mm256_hadd_epi16( b.value, b.value ) );
    const sse_int16_t d( _mm256_hadd_epi16( c.value, c.value ) );
-   const sse_int16_t e( _mm256_hadd_epi16( d.value, d.value ) );
-   return e[0];
+   const __m128i e = _mm_add_epi16( _mm256_extracti128_si256( d.value, 1 )
+                                  , _mm256_castsi256_si128( d.value ) );
+   return *reinterpret_cast<const int16_t*>( &e );
 #elif BLAZE_SSSE3_MODE
    const sse_int16_t b( _mm_hadd_epi16( a.value, a.value ) );
    const sse_int16_t c( _mm_hadd_epi16( b.value, b.value ) );
@@ -96,8 +97,9 @@ BLAZE_ALWAYS_INLINE int32_t sum( const sse_int32_t& a )
 #elif BLAZE_AVX2_MODE
    const sse_int32_t b( _mm256_hadd_epi32( a.value, a.value ) );
    const sse_int32_t c( _mm256_hadd_epi32( b.value, b.value ) );
-   const sse_int32_t d( _mm256_hadd_epi32( c.value, c.value ) );
-   return d[0];
+   const __m128i d = _mm_add_epi32( _mm256_extracti128_si256( c.value, 1 )
+                                  , _mm256_castsi256_si128( c.value ) );
+   return *reinterpret_cast<const int32_t*>( &d );
 #elif BLAZE_SSSE3_MODE
    const sse_int32_t b( _mm_hadd_epi32( a.value, a.value ) );
    const sse_int32_t c( _mm_hadd_epi32( b.value, b.value ) );
