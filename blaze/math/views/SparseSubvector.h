@@ -699,9 +699,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //*******************************************************************************************
 
       //**Base function****************************************************************************
-      /*!\brief Access to the current position of the submatrix iterator.
+      /*!\brief Access to the current position of the subvector iterator.
       //
-      // \return The current position of the submatrix iterator.
+      // \return The current position of the subvector iterator.
       */
       inline IteratorType base() const {
          return pos_;
@@ -709,9 +709,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       //*******************************************************************************************
 
       //**Offset function**************************************************************************
-      /*!\brief Access to the offset of the submatrix iterator.
+      /*!\brief Access to the offset of the subvector iterator.
       //
-      // \return The offset of the submatrix iterator.
+      // \return The offset of the subvector iterator.
       */
       inline size_t offset() const {
          return offset_;
@@ -941,7 +941,7 @@ inline typename SparseSubvector<VT,AF,TF>::Reference
 //*************************************************************************************************
 /*!\brief Subscript operator for the direct access to the subvector elements.
 //
-// \param index Access index. The index must be smaller than the number of matrix columns.
+// \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
 */
 template< typename VT  // Type of the sparse vector
