@@ -72,6 +72,9 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/Unused.h>
@@ -135,14 +138,26 @@ class SymmetricMatrix<MT,SO,false,true>
    class SymmetricValue
    {
     private:
-      //**Type trait generation********************************************************************
-      BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetValueType, value_type, INVALID_TYPE );
+      //**struct BuiltinType***********************************************************************
+      /*!\brief Auxiliary struct to determine the value type of the represented complex element.
+      */
+      template< typename T >
+      struct BuiltinType { typedef INVALID_TYPE  Type; };
+      //*******************************************************************************************
+
+      //**struct ComplexType***********************************************************************
+      /*!\brief Auxiliary struct to determine the value type of the represented complex element.
+      */
+      template< typename T >
+      struct ComplexType { typedef typename T::value_type  Type; };
       //*******************************************************************************************
 
     public:
       //**Type definitions*************************************************************************
       //! Value type of the represented complex element.
-      typedef typename GetValueType<ElementType>::Type  ValueType;
+      typedef typename If< IsComplex<ElementType>
+                         , ComplexType<ElementType>
+                         , BuiltinType<ElementType> >::Type::Type  ValueType;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
