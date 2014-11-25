@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <ostream>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Lower.h>
@@ -57,8 +56,9 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/GetMemberType.h>
+#include <blaze/util/typetraits/IsComplex.h>
 
 
 namespace blaze {
@@ -92,10 +92,18 @@ template< typename MT >  // Type of the adapted matrix
 class NumericProxy
 {
  private:
-   //**Type trait generation***********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetValueType, value_type, INVALID_TYPE );
-   /*! \endcond */
+   //**struct BuiltinType**************************************************************************
+   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
+   */
+   template< typename T >
+   struct BuiltinType { typedef INVALID_TYPE  Type; };
+   //**********************************************************************************************
+
+   //**struct ComplexType**************************************************************************
+   /*!\brief Auxiliary struct to determine the value type of the represented complex element.
+   */
+   template< typename T >
+   struct ComplexType { typedef typename T::value_type  Type; };
    //**********************************************************************************************
 
  public:
@@ -105,7 +113,9 @@ class NumericProxy
    typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
 
    //! Value type of the represented complex element.
-   typedef typename GetValueType<RepresentedType>::Type  ValueType;
+   typedef typename If< IsComplex<RepresentedType>
+                      , ComplexType<RepresentedType>
+                      , BuiltinType<RepresentedType> >::Type::Type  ValueType;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -137,6 +147,8 @@ class NumericProxy
    //@{
    inline void reset() const;
    inline void clear() const;
+
+   inline ConstReference get() const;
    //@}
    //**********************************************************************************************
 
@@ -389,6 +401,19 @@ inline void NumericProxy<MT>::clear() const
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Returning the value of the accessed sparse vector element.
+//
+// \return Direct/raw reference to the accessed matrix element.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const
+{
+   return const_cast<const MT&>( matrix_ )(row_,column_);
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -405,7 +430,7 @@ inline void NumericProxy<MT>::clear() const
 template< typename MT >  // Type of the adapted matrix
 inline NumericProxy<MT>::operator ConstReference() const
 {
-   return const_cast<const MT&>( matrix_ )(row_,column_);
+   return get();
 }
 //*************************************************************************************************
 
@@ -569,9 +594,7 @@ inline std::ostream& operator<<( std::ostream& os, const NumericProxy<MT>& proxy
 template< typename MT1, typename MT2 >
 inline bool operator==( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) == static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() == rhs.get() );
 }
 //*************************************************************************************************
 
@@ -587,8 +610,7 @@ inline bool operator==( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& r
 template< typename MT, typename T >
 inline bool operator==( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) == rhs );
+   return ( lhs.get() == rhs );
 }
 //*************************************************************************************************
 
@@ -604,8 +626,7 @@ inline bool operator==( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator==( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs == static_cast<ConstReference>( rhs ) );
+   return ( lhs == rhs.get() );
 }
 //*************************************************************************************************
 
@@ -621,9 +642,7 @@ inline bool operator==( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT1, typename MT2 >
 inline bool operator!=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) != static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() != rhs.get() );
 }
 //*************************************************************************************************
 
@@ -639,8 +658,7 @@ inline bool operator!=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& r
 template< typename MT, typename T >
 inline bool operator!=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) != rhs );
+   return ( lhs.get() != rhs );
 }
 //*************************************************************************************************
 
@@ -656,8 +674,7 @@ inline bool operator!=( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator!=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs != static_cast<ConstReference>( rhs ) );
+   return ( lhs != rhs.get() );
 }
 //*************************************************************************************************
 
@@ -673,9 +690,7 @@ inline bool operator!=( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT1, typename MT2 >
 inline bool operator<( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) < static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() < rhs.get() );
 }
 //*************************************************************************************************
 
@@ -691,8 +706,7 @@ inline bool operator<( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rh
 template< typename MT, typename T >
 inline bool operator<( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) < rhs );
+   return ( lhs.get() < rhs );
 }
 //*************************************************************************************************
 
@@ -708,8 +722,7 @@ inline bool operator<( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator<( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs < static_cast<ConstReference>( rhs ) );
+   return ( lhs < rhs.get() );
 }
 //*************************************************************************************************
 
@@ -725,9 +738,7 @@ inline bool operator<( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT1, typename MT2 >
 inline bool operator>( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) > static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() > rhs.get() );
 }
 //*************************************************************************************************
 
@@ -743,8 +754,7 @@ inline bool operator>( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rh
 template< typename MT, typename T >
 inline bool operator>( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) > rhs );
+   return ( lhs.get() > rhs );
 }
 //*************************************************************************************************
 
@@ -760,8 +770,7 @@ inline bool operator>( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator>( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs > static_cast<ConstReference>( rhs ) );
+   return ( lhs > rhs.get() );
 }
 //*************************************************************************************************
 
@@ -777,9 +786,7 @@ inline bool operator>( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT1, typename MT2 >
 inline bool operator<=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) <= static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() <= rhs.get() );
 }
 //*************************************************************************************************
 
@@ -795,8 +802,7 @@ inline bool operator<=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& r
 template< typename MT, typename T >
 inline bool operator<=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) <= rhs );
+   return ( lhs.get() <= rhs );
 }
 //*************************************************************************************************
 
@@ -812,8 +818,7 @@ inline bool operator<=( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator<=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs <= static_cast<ConstReference>( rhs ) );
+   return ( lhs <= rhs.get() );
 }
 //*************************************************************************************************
 
@@ -829,9 +834,7 @@ inline bool operator<=( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT1, typename MT2 >
 inline bool operator>=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& rhs )
 {
-   typedef typename NumericProxy<MT1>::ConstReference  LhsConstReference;
-   typedef typename NumericProxy<MT2>::ConstReference  RhsConstReference;
-   return ( static_cast<LhsConstReference>( lhs ) >= static_cast<RhsConstReference>( rhs ) );
+   return ( lhs.get() >= rhs.get() );
 }
 //*************************************************************************************************
 
@@ -847,8 +850,7 @@ inline bool operator>=( const NumericProxy<MT1>& lhs, const NumericProxy<MT2>& r
 template< typename MT, typename T >
 inline bool operator>=( const NumericProxy<MT>& lhs, const T& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( static_cast<ConstReference>( lhs ) >= rhs );
+   return ( lhs.get() >= rhs );
 }
 //*************************************************************************************************
 
@@ -864,8 +866,7 @@ inline bool operator>=( const NumericProxy<MT>& lhs, const T& rhs )
 template< typename T, typename MT >
 inline bool operator>=( const T& lhs, const NumericProxy<MT>& rhs )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return ( lhs >= static_cast<ConstReference>( rhs ) );
+   return ( lhs >= rhs.get() );
 }
 //*************************************************************************************************
 
@@ -881,8 +882,7 @@ inline bool operator>=( const T& lhs, const NumericProxy<MT>& rhs )
 template< typename MT >
 inline std::ostream& operator<<( std::ostream& os, const NumericProxy<MT>& proxy )
 {
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return os << static_cast<ConstReference>( proxy );
+   return os << proxy.get();
 }
 //*************************************************************************************************
 
@@ -961,8 +961,7 @@ inline bool isDefault( const NumericProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
-   typedef typename NumericProxy<MT>::ConstReference  ConstReference;
-   return isDefault( static_cast<ConstReference>( proxy ) );
+   return isDefault( proxy.get() );
 }
 //*************************************************************************************************
 
