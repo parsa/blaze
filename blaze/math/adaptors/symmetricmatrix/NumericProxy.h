@@ -103,8 +103,6 @@ class NumericProxy
    typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
    typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
    typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef NumericProxy                 Pointer;          //!< Pointer to the represented element.
-   typedef const NumericProxy           ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    typedef typename GetValueType<RepresentedType>::Type  ValueType;
@@ -131,14 +129,6 @@ class NumericProxy
    template< typename T > inline NumericProxy& operator-=( const T& value );
    template< typename T > inline NumericProxy& operator*=( const T& value );
    template< typename T > inline NumericProxy& operator/=( const T& value );
-   //@}
-   //**********************************************************************************************
-
-   //**Access operators****************************************************************************
-   /*!\name Access operators */
-   //@{
-   inline Pointer      operator->()       { return this; }
-   inline ConstPointer operator->() const { return this; }
    //@}
    //**********************************************************************************************
 
@@ -188,7 +178,7 @@ class NumericProxy
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( typename MT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -350,40 +340,6 @@ inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
 
    return *this;
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ACCESS OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\fn NumericProxy<MT>::operator->()
-// \brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-//
-// Due to a bug in the Visual Studio compiler, the function has to be defined within the
-// NumericProxy class body. Otherwise the compiler is not able to match the declaration
-// and the definition.
-*/
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\fn NumericProxy<MT>::operator->() const
-// \brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-//
-// Due to a bug in the Visual Studio compiler, the function has to be defined within the
-// NumericProxy class body. Otherwise the compiler is not able to match the declaration
-// and the definition.
-*/
 //*************************************************************************************************
 
 
