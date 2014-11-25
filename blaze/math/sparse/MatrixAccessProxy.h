@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <ostream>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/proxy/Proxy.h>
