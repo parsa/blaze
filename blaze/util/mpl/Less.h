@@ -72,9 +72,9 @@ namespace blaze {
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
 #if (defined _MSC_VER)
-struct Less : public Bool< ( T1::value < T2::value ) >
-#else
 struct Less : public Bool< ( T2::value > T1::value ) >
+#else
+struct Less : public Bool< ( T1::value < T2::value ) >
 #endif
 {};
 //*************************************************************************************************
