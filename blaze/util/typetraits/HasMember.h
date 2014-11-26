@@ -179,6 +179,10 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1230>::Type         
 // as locally as possible to minimize the probability of name collisions. Note however that the
 // macro cannot be used within function scope since a template declaration cannot appear at
 // block scope.
+//
+// Please note that due to an error in the Intel compilers prior to version 14.0 the type trait
+// generated from this macro does NOT work properly, i.e. will not correctly determine whether
+// the specified element is a type member of the given type!
 */
 #define BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )             \
                                                                                             \
@@ -260,6 +264,10 @@ struct TYPE_TRAIT_NAME : public TYPE_TRAIT_NAME##HELPER<TYPE1231>::Type         
 // as locally as possible to minimize the probability of name collisions. Note however that the
 // macro cannot be used within function scope since a template declaration cannot appear at
 // block scope.
+//
+// Please note that due to an error in the Intel compilers prior to version 14.0 the type trait
+// generated from this macro does NOT work properly, i.e. will not correctly determine whether
+// the specified element is a type member of the given type!
 */
 #define BLAZE_CREATE_HAS_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )                       \
                                                                                                  \
