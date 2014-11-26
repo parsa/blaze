@@ -107,12 +107,14 @@ void OperationTest::testHasMember()
    BLAZE_STATIC_ASSERT( HasCompute<Type5>::value == 0 );
    BLAZE_STATIC_ASSERT( HasCompute<Type6>::value == 0 );
 
+#if !(defined __INTEL_COMPILER) || ( __INTEL_COMPILER >= 1400 )
    BLAZE_STATIC_ASSERT( HasDataType<Type1>::value == 0 );
    BLAZE_STATIC_ASSERT( HasDataType<Type2>::value == 0 );
    BLAZE_STATIC_ASSERT( HasDataType<Type3>::value == 0 );
    BLAZE_STATIC_ASSERT( HasDataType<Type4>::value == 0 );
    BLAZE_STATIC_ASSERT( HasDataType<Type5>::value == 1 );
    BLAZE_STATIC_ASSERT( HasDataType<Type6>::value == 1 );
+#endif
 }
 //*************************************************************************************************
 
@@ -128,9 +130,11 @@ void OperationTest::testHasMember()
 */
 void OperationTest::testGetMember()
 {
+#if !(defined __INTEL_COMPILER) || ( __INTEL_COMPILER >= 1400 )
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type5>::Type, Type5::DataType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type6>::Type, Type6::DataType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( GetDataType<Type7>::Type, int             );
+#endif
 }
 //*************************************************************************************************
 
