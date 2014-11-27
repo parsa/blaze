@@ -2540,7 +2540,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
        evaluation strategy. In case the target matrix is column-major and either of the
@@ -2552,7 +2551,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       enum { value = IsColumnMajorMatrix<T1>::value &&
                      ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -3543,7 +3541,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          assign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to dense matrices*******************************************************
@@ -4002,7 +3999,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          addAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Addition assignment to sparse matrices******************************************************
@@ -4465,7 +4461,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          subAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Subtraction assignment to sparse matrices***************************************************
@@ -4604,7 +4599,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          smpAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**SMP addition assignment to dense matrices***************************************************
@@ -4688,7 +4682,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          smpAddAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**SMP addition assignment to sparse matrices**************************************************
@@ -4776,7 +4769,6 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       else
          smpSubAssign( ~lhs, left * trans( right ) * rhs.scalar_ );
    }
-   /*! \endcond */
    //**********************************************************************************************
 
    //**SMP subtraction assignment to sparse matrices***********************************************
