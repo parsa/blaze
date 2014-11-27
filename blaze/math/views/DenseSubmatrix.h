@@ -548,11 +548,12 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \param rest The number of remaining elements beyond the final iterator.
       // \param isAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
-         : iterator_ ( iterator  )  // Iterator to the current submatrix element
-         , final_    ( final     )  // The final iterator for intrinsic operations
-         , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
-         , isAligned_( isAligned )  // Memory alignment flag
+      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator
+                              , size_t remainingElements, bool isMemoryAligned )
+         : iterator_ ( iterator          )  // Iterator to the current submatrix element
+         , final_    ( finalIterator     )  // The final iterator for intrinsic operations
+         , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
+         , isAligned_( isMemoryAligned   )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -563,10 +564,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       */
       template< typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
-         : iterator_ ( it.iterator_  )  // Iterator to the current submatrix element
-         , final_    ( it.final_     )  // The final iterator for intrinsic operations
-         , rest_     ( it.rest_      )  // The number of remaining elements beyond the final iterator
-         , isAligned_( it.isAligned_ )  // Memory alignment flag
+         : iterator_ ( it.base()      )  // Iterator to the current submatrix element
+         , final_    ( it.final()     )  // The final iterator for intrinsic operations
+         , rest_     ( it.rest()      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( it.isAligned() )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -802,18 +803,52 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       }
       //*******************************************************************************************
 
+      //**Base function****************************************************************************
+      /*!\brief Access to the current position of the submatrix iterator.
+      //
+      // \return The current position of the submatrix iterator.
+      */
+      inline IteratorType base() const {
+         return iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Final function***************************************************************************
+      /*!\brief Access to the final position of the submatrix iterator.
+      //
+      // \return The final position of the submatrix iterator.
+      */
+      inline IteratorType final() const {
+         return final_;
+      }
+      //*******************************************************************************************
+
+      //**Rest function****************************************************************************
+      /*!\brief Access to the number of remaining elements beyond the final iterator.
+      //
+      // \return The number of remaining elements beyond the final iterator.
+      */
+      inline size_t rest() const {
+         return rest_;
+      }
+      //*******************************************************************************************
+
+      //**IsAligned function***********************************************************************
+      /*!\brief Access to the iterator's memory alignment flag.
+      //
+      // \return \a true in case the iterator is aligned, \a false if it is not.
+      */
+      inline bool isAligned() const {
+         return isAligned_;
+      }
+      //*******************************************************************************************
+
     private:
       //**Member variables*************************************************************************
       IteratorType iterator_;   //!< Iterator to the current submatrix element.
       IteratorType final_;      //!< The final iterator for intrinsic operations.
       size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      /*! \cond BLAZE_INTERNAL */
-      template< typename IteratorType2 > friend class SubmatrixIterator;
-      /*! \endcond */
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2901,15 +2936,16 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       /*!\brief Constructor of the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
-      // \param final The final iterator for intrinsic operations.
-      // \param rest The number of remaining elements beyond the final iterator.
-      // \param isAligned Memory alignment flag.
+      // \param finalIterator The final iterator for intrinsic operations.
+      // \param remainingElements The number of remaining elements beyond the final iterator.
+      // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType final, size_t rest, bool isAligned )
-         : iterator_ ( iterator  )  // Iterator to the current submatrix element
-         , final_    ( final     )  // The final iterator for intrinsic operations
-         , rest_     ( rest      )  // The number of remaining elements beyond the final iterator
-         , isAligned_( isAligned )  // Memory alignment flag
+      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator
+                              , size_t remainingElements, bool isMemoryAligned )
+         : iterator_ ( iterator          )  // Iterator to the current submatrix element
+         , final_    ( finalIterator     )  // The final iterator for intrinsic operations
+         , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
+         , isAligned_( isMemoryAligned   )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -2920,10 +2956,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       */
       template< typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
-         : iterator_ ( it.iterator_  )  // Iterator to the current submatrix element
-         , final_    ( it.final_     )  // The final iterator for intrinsic operations
-         , rest_     ( it.rest_      )  // The number of remaining elements beyond the final iterator
-         , isAligned_( it.isAligned_ )  // Memory alignment flag
+         : iterator_ ( it.base()      )  // Iterator to the current submatrix element
+         , final_    ( it.final()     )  // The final iterator for intrinsic operations
+         , rest_     ( it.rest()      )  // The number of remaining elements beyond the final iterator
+         , isAligned_( it.isAligned() )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -3159,16 +3195,52 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       }
       //*******************************************************************************************
 
+      //**Base function****************************************************************************
+      /*!\brief Access to the current position of the submatrix iterator.
+      //
+      // \return The current position of the submatrix iterator.
+      */
+      inline IteratorType base() const {
+         return iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Final function***************************************************************************
+      /*!\brief Access to the final position of the submatrix iterator.
+      //
+      // \return The final position of the submatrix iterator.
+      */
+      inline IteratorType final() const {
+         return final_;
+      }
+      //*******************************************************************************************
+
+      //**Rest function****************************************************************************
+      /*!\brief Access to the number of remaining elements beyond the final iterator.
+      //
+      // \return The number of remaining elements beyond the final iterator.
+      */
+      inline size_t rest() const {
+         return rest_;
+      }
+      //*******************************************************************************************
+
+      //**IsAligned function***********************************************************************
+      /*!\brief Access to the iterator's memory alignment flag.
+      //
+      // \return \a true in case the iterator is aligned, \a false if it is not.
+      */
+      inline bool isAligned() const {
+         return isAligned_;
+      }
+      //*******************************************************************************************
+
     private:
       //**Member variables*************************************************************************
       IteratorType iterator_;   //!< Iterator to the current submatrix element.
       IteratorType final_;      //!< The final iterator for intrinsic operations.
       size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      template< typename IteratorType2 > friend class SubmatrixIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
