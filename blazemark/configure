@@ -311,7 +311,7 @@ fi
 if [ "$EIGEN" = "yes" ]; then
    MODULES="$MODULES eigen"
 fi
-MODULES="$MODULES main binaries"
+MODULES="$MODULES main"
 
 # Configuration of the dense vector/dense vector addition benchmark
 DVECDVECADD="\$(OBJECT_PATH)/CLIKE_DVecDVecAdd.o \$(OBJECT_PATH)/CLASSIC_DVecDVecAdd.o \$(OBJECT_PATH)/BLAZE_DVecDVecAdd.o \$(OBJECT_PATH)/BOOST_DVecDVecAdd.o"
@@ -1916,7 +1916,7 @@ LIBRARIES = $LIBRARIES
 
 
 # Build rules
-default: $MODULES
+default: binaries
 
 clike:
 	@echo
@@ -2032,10 +2032,10 @@ main:
 	@echo "... finished!"
 	@echo
 
-binaries:
+binaries: $MODULES
 	@echo "Building the binaries..."
 	@echo "  Building the memory sweep binary..."
-	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/memorysweep \$(OBJECT_PATH)/MAIN_MemorySweep.o
+	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/memorysweep \$(INSTALL_PATH)/src/main/MemorySweep.cpp
 	@echo "  Building dense vector/dense vector addition (dvecdvecadd) binary..."
 	@\$(CXX) \$(CXXFLAGS) -o \$(INSTALL_PATH)/bin/dvecdvecadd $DVECDVECADD \$(LIBRARIES)
 	@echo "  Building dense vector/sparse vector addition (dvecsvecadd) binary..."
