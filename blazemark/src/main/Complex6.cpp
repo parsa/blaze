@@ -212,7 +212,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setClassicResult( blazemark::classic::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getClassicResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getClassicResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -223,7 +223,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlazeResult( blazemark::blaze::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getBlazeResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getBlazeResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -234,7 +234,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBoostResult( blazemark::boost::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getBoostResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getBoostResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -246,7 +246,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setBlitzResult( blazemark::blitz::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getBlitzResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getBlitzResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -259,7 +259,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setGMMResult( blazemark::gmm::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getGMMResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getGMMResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -272,7 +272,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setArmadilloResult( blazemark::armadillo::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getArmadilloResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getArmadilloResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -285,7 +285,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setFLENSResult( blazemark::flens::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getFLENSResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getFLENSResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -298,7 +298,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setMTLResult( blazemark::mtl::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getMTLResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getMTLResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
@@ -311,7 +311,7 @@ void complex6( std::vector<Run>& runs, Benchmarks benchmarks )
          const size_t N    ( run->getSize()  );
          const size_t steps( run->getSteps() );
          run->setEigenResult( blazemark::eigen::complex6( N, steps ) );
-         const double mflops( run->getSteps() * steps / run->getEigenResult() / 1E6 );
+         const double mflops( run->getFlops() * steps / run->getEigenResult() / 1E6 );
          std::cout << "     " << std::setw(12) << N << mflops << std::endl;
       }
    }
