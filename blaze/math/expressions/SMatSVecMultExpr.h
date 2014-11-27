@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -1080,7 +1081,8 @@ inline const typename DisableIf< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >
 // \exception std::invalid_argument Matrix and vector sizes do not match.
 //
 // This operator implements the performance optimized treatment of the multiplication of a
-// symmetric row-major sparse matrix and a sparse vector.
+// symmetric row-major sparse matrix and a sparse vector. It restructures the expression
+// \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
 */
 template< typename T1    // Type of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse vector
@@ -1088,6 +1090,8 @@ inline const typename EnableIf< IsSymmetric<T1>, MultExprTrait<T1,T2> >::Type::T
    operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( T1 );
 
    if( (~mat).columns() != (~vec).size() )
       throw std::invalid_argument( "Matrix and vector sizes do not match" );
