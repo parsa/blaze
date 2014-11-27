@@ -548,8 +548,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \param rest The number of remaining elements beyond the final iterator.
       // \param isAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator
-                              , size_t remainingElements, bool isMemoryAligned )
+      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator,
+                                size_t remainingElements, bool isMemoryAligned )
          : iterator_ ( iterator          )  // Iterator to the current submatrix element
          , final_    ( finalIterator     )  // The final iterator for intrinsic operations
          , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
@@ -2940,8 +2940,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \param remainingElements The number of remaining elements beyond the final iterator.
       // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator
-                              , size_t remainingElements, bool isMemoryAligned )
+      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator,
+                                size_t remainingElements, bool isMemoryAligned )
          : iterator_ ( iterator          )  // Iterator to the current submatrix element
          , final_    ( finalIterator     )  // The final iterator for intrinsic operations
          , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator

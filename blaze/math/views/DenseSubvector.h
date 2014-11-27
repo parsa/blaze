@@ -469,8 +469,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       // \param remainingElements The number of remaining elements beyond the final iterator.
       // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubvectorIterator( IteratorType iterator, IteratorType finalIterator
-                              , size_t remainingElements, bool isMemoryAligned )
+      inline SubvectorIterator( IteratorType iterator, IteratorType finalIterator,
+                                size_t remainingElements, bool isMemoryAligned )
          : iterator_ ( iterator          )  // Iterator to the current subvector element
          , final_    ( finalIterator     )  // The final iterator for intrinsic operations
          , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
