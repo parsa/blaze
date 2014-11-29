@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/expressions/Computation.h>
@@ -881,6 +882,8 @@ inline const typename EnableIf< IsMatMatMultExpr<T2>, MultExprTrait<T1,T2> >::Ty
    operator*( const DenseVector<T1,true>& vec, const SparseMatrix<T2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( T2 );
 
    return ( vec * (~mat).leftOperand() ) * (~mat).rightOperand();
 }
