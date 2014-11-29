@@ -69,7 +69,6 @@ namespace symmetricmatrix {
 */
 DenseNumericTest::DenseNumericTest()
 {
-   /*
    testConstructors();
    testAssignment();
    testAddAssign();
@@ -87,12 +86,9 @@ DenseNumericTest::DenseNumericTest()
    testTranspose();
    testSwap();
    testIsDefault();
-   */
    testSubmatrix();
-   /*
    testRow();
    testColumn();
-   */
 }
 //*************************************************************************************************
 
