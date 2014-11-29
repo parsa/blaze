@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <blaze/math/sparse/SparseVector.h>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/sparsevector/OperationTest.h>

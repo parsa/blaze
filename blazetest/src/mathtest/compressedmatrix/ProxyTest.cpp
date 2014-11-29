@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <blazetest/mathtest/compressedmatrix/ProxyTest.h>
 
 

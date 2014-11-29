@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <blaze/math/SparseColumn.h>
 #include <blaze/math/SparseRow.h>
 #include <blaze/math/SparseSubmatrix.h>

@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <blaze/math/dense/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/densevector/OperationTest.h>

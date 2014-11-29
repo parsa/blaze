@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blazetest/mathtest/sparsematrix/OperationTest.h>
