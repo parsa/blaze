@@ -2584,11 +2584,11 @@ void DenseNumericTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major DynamicMatrix::scale()
+   // Row-major SymmetricMatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::scale()";
+      test_ = "Row-major SymmetricMatrix::scale()";
 
       // Initialization check
       ST sym( 3UL );
@@ -2664,7 +2664,7 @@ void DenseNumericTest::testScaling()
    }
 
    {
-      test_ = "Row-major DynamicMatrix::scale() (complex)";
+      test_ = "Row-major SymmetricMatrix::scale() (complex)";
 
       using blaze::complex;
 
@@ -2876,11 +2876,11 @@ void DenseNumericTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major DynamicMatrix::scale()
+   // Column-major SymmetricMatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::scale()";
+      test_ = "Row-major SymmetricMatrix::scale()";
 
       // Initialization check
       TST sym( 3UL );
@@ -2956,7 +2956,7 @@ void DenseNumericTest::testScaling()
    }
 
    {
-      test_ = "Row-major DynamicMatrix::scale() (complex)";
+      test_ = "Row-major SymmetricMatrix::scale() (complex)";
 
       using blaze::complex;
 
@@ -4014,7 +4014,7 @@ void DenseNumericTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::nonZeros()";
+      test_ = "Column-major SymmetricMatrix::nonZeros()";
 
       // Empty matrix
       {

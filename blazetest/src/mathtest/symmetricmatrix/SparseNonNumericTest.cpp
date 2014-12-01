@@ -3656,11 +3656,11 @@ void SparseNonNumericTest::testScaling()
 
 
    //=====================================================================================
-   // Row-major DynamicMatrix::scale()
+   // Row-major SymmetricMatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Row-major DynamicMatrix::scale()";
+      test_ = "Row-major SymmetricMatrix::scale()";
 
       // Initialization check
       ST sym( 3UL );
@@ -3925,11 +3925,11 @@ void SparseNonNumericTest::testScaling()
 
 
    //=====================================================================================
-   // Column-major DynamicMatrix::scale()
+   // Column-major SymmetricMatrix::scale()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::scale()";
+      test_ = "Column-major SymmetricMatrix::scale()";
 
       // Initialization check
       TST sym( 3UL );
@@ -4972,7 +4972,7 @@ void SparseNonNumericTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "Column-major DynamicMatrix::nonZeros()";
+      test_ = "Column-major SymmetricMatrix::nonZeros()";
 
       // Empty matrix
       {
