@@ -4719,7 +4719,7 @@ void DenseNumericTest::testExtend()
           sym(1,0) != 0 || sym(1,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
+             << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
@@ -4746,7 +4746,7 @@ void DenseNumericTest::testExtend()
           sym(3,0) != 0 || sym(3,1) != 0 || sym(3,2) != 0 || sym(3,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
+             << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -4783,7 +4783,7 @@ void DenseNumericTest::testExtend()
           sym(1,0) != 0 || sym(1,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
+             << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
@@ -4810,7 +4810,7 @@ void DenseNumericTest::testExtend()
           sym(3,0) != 0 || sym(3,1) != 0 || sym(3,2) != 0 || sym(3,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Resizing the matrix failed\n"
+             << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
