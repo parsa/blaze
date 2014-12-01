@@ -2305,7 +2305,7 @@ inline bool SparseSubmatrix<MT,AF,SO>::canAlias( const Other* alias ) const
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
@@ -4451,7 +4451,7 @@ inline bool SparseSubmatrix<MT,AF,true>::canAlias( const Other* alias ) const
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix

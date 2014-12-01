@@ -49,7 +49,6 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -126,7 +125,7 @@ class NumericProxy
    /*!\name Constructors */
    //@{
    explicit inline NumericProxy( MT& matrix, size_t row, size_t column );
-            inline NumericProxy( const NumericProxy& sp );
+            inline NumericProxy( const NumericProxy& np );
    //@}
    //**********************************************************************************************
 
@@ -406,7 +405,7 @@ inline void NumericProxy<MT>::clear() const
 
 
 //*************************************************************************************************
-/*!\brief Returning the value of the accessed sparse vector element.
+/*!\brief Returning the value of the accessed matrix element.
 //
 // \return Direct/raw reference to the accessed matrix element.
 */

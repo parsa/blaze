@@ -1594,7 +1594,7 @@ inline bool StaticVector<Type,N,TF>::canAlias( const Other* alias ) const
 // \return \a true in case the alias corresponds to this vector, \a false if not.
 //
 // This function returns whether the given address is aliased with the vector. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions
+// to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the vector

@@ -1034,9 +1034,9 @@ inline typename SymmetricMatrix<MT,SO,false,true>::ConstReference
 // \return Iterator to the first element of row/column \a i.
 //
 // This function returns a row/column iterator to the first element of row/column \a i. In case
-// the storage order is set to \a rowMajor the function returns an iterator to the first element
-// of row \a i, in case the storage flag is set to \a columnMajor the function returns an iterator
-// to the first element of column \a i.
+// the symmetric matrix adapts a \a rowMajor sparse matrix the function returns an iterator to
+// the first element of row \a i, in case it adapts a \a columnMajor sparse matrix the function
+// returns an iterator to the first element of column \a i.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -1103,9 +1103,9 @@ inline typename SymmetricMatrix<MT,SO,false,true>::ConstIterator
 // \return Iterator just past the last element of row/column \a i.
 //
 // This function returns an row/column iterator just past the last element of row/column \a i.
-// In case the storage order is set to \a rowMajor the function returns an iterator just past
-// the last element of row \a i, in case the storage flag is set to \a columnMajor the function
-// returns an iterator just past the last element of column \a i.
+// In case the symmetric matrix adapts a \a rowMajor sparse matrix the function returns an iterator
+// just past the last element of row \a i, in case it adapts a \a columnMajor sparse matrix the
+// function returns an iterator just past the last element of column \a i.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2448,7 +2448,7 @@ inline bool SymmetricMatrix<MT,SO,false,true>::canAlias( const Other* alias ) co
 // \return \a true in case the alias corresponds to this matrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the matrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions
+// to the canAlias() function this function is not allowed to use compile time expressions
 // to optimize the evaluation.
 */
 template< typename MT       // Type of the adapted sparse matrix

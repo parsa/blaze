@@ -2038,7 +2038,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::canAlias( const DenseSubmatrix<MT2,AF2,SO2
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
@@ -2059,7 +2059,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::isAliased( const Other* alias ) const
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT   // Type of the dense matrix
@@ -4384,7 +4384,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::canAlias( const DenseSubmatrix<MT
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >     // Type of the dense matrix
@@ -4405,7 +4405,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::isAliased( const Other* alias ) c
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >  // Type of the dense matrix
@@ -6392,7 +6392,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::canAlias( const DenseSubmatrix<MT2
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >     // Type of the dense matrix
@@ -6413,7 +6413,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::isAliased( const Other* alias ) co
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >  // Type of the dense matrix
@@ -8347,7 +8347,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::canAlias( const DenseSubmatrix<MT2,
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >     // Type of the dense matrix
@@ -8368,7 +8368,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::isAliased( const Other* alias ) con
 // \return \a true in case the alias corresponds to this submatrix, \a false if not.
 //
 // This function returns whether the given address is aliased with the submatrix. In contrast
-// to the conAlias() function this function is not allowed to use compile time expressions to
+// to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT >  // Type of the dense matrix
