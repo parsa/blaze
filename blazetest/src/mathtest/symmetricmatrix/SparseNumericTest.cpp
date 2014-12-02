@@ -48,7 +48,6 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/symmetricmatrix/SparseNumericTest.h>
-#include <blazetest/mathtest/IsEqual.h>
 
 
 namespace blazetest {
