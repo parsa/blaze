@@ -114,6 +114,8 @@ class NumericProxy
    typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
    typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
    typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
+   typedef NumericProxy*                Pointer;          //!< Pointer to the represented element.
+   typedef const NumericProxy*          ConstPointer;     //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    typedef typename If< IsComplex<RepresentedType>
@@ -142,6 +144,14 @@ class NumericProxy
    template< typename T > inline NumericProxy& operator-=( const T& value );
    template< typename T > inline NumericProxy& operator*=( const T& value );
    template< typename T > inline NumericProxy& operator/=( const T& value );
+   //@}
+   //**********************************************************************************************
+
+   //**Access operators****************************************************************************
+   /*!\name Access operators */
+   //@{
+   inline Pointer      operator->();
+   inline ConstPointer operator->() const;
    //@}
    //**********************************************************************************************
 
@@ -354,6 +364,40 @@ inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
       matrix_(column_,row_) /= value;
 
    return *this;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ACCESS OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Direct access to the represented matrix element.
+//
+// \return Pointer to the represented matrix element.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline typename NumericProxy<MT>::Pointer NumericProxy<MT>::operator->()
+{
+   return this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Direct access to the represented matrix element.
+//
+// \return Pointer to the represented matrix element.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() const
+{
+   return this;
 }
 //*************************************************************************************************
 
