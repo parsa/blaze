@@ -1087,7 +1087,7 @@ inline const typename DisableIf< Or< IsSymmetric<T1>, IsMatMatMultExpr<T1> >
 */
 template< typename T1    // Type of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse vector
-inline const typename EnableIf< IsSymmetric<T1>, MultExprTrait<T1,T2> >::Type::Type
+inline const typename EnableIf< IsSymmetric<T1>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( const SparseMatrix<T1,false>& mat, const SparseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1120,7 +1120,7 @@ inline const typename EnableIf< IsSymmetric<T1>, MultExprTrait<T1,T2> >::Type::T
 template< typename T1    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order of the left-hand side sparse matrix
         , typename T2 >  // Type of the right-hand side sparse vector
-inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Type::Type
+inline const typename EnableIf< IsMatMatMultExpr<T1>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( const SparseMatrix<T1,SO>& mat, const SparseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;

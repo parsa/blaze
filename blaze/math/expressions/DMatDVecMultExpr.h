@@ -3577,7 +3577,7 @@ inline const typename DisableIf< IsMatMatMultExpr<T1>, DMatDVecMultExpr<T1,T2> >
 template< typename T1    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side dense vector
-inline const typename EnableIf< IsMatMatMultExpr<T1>, MultExprTrait<T1,T2> >::Type::Type
+inline const typename EnableIf< IsMatMatMultExpr<T1>, typename MultExprTrait<T1,T2>::Type >::Type
    operator*( const DenseMatrix<T1,SO>& mat, const DenseVector<T2,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
