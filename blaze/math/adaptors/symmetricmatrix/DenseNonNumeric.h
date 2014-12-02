@@ -2023,7 +2023,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Reset the specified row \b and column to the default initial values.
+/*!\brief Reset the specified row/column to the default initial values.
 //
 // \param i The index of the row/column.
 // \return void
