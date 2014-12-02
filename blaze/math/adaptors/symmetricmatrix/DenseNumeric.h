@@ -166,9 +166,9 @@ class SymmetricMatrix<MT,SO,true,true>
       /*!\brief Default constructor of the RowIterator class.
       */
       inline RowIterator()
-         : matrix_( NULL )  // The dense matrix containing the row.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
+         : matrix_( NULL )  // Reference to the adapted dense matrix
+         , row_   ( 0UL  )  // The current row index of the iterator
+         , column_( 0UL  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -180,9 +180,9 @@ class SymmetricMatrix<MT,SO,true,true>
       // \param column Initial column index of the iterator.
       */
       inline RowIterator( MT& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // Reference to the adapted dense matrix.
-         , row_   ( row     )  // The current row-index of the iterator.
-         , column_( column  )  // The current column-index of the iterator.
+         : matrix_( &matrix )  // Reference to the adapted dense matrix
+         , row_   ( row     )  // The current row index of the iterator
+         , column_( column  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -552,8 +552,8 @@ class SymmetricMatrix<MT,SO,true,true>
     private:
       //**Member variables*************************************************************************
       MT*    matrix_;  //!< Reference to the adapted dense matrix.
-      size_t row_;     //!< The current row-index of the iterator.
-      size_t column_;  //!< The current column-index of the iterator.
+      size_t row_;     //!< The current row index of the iterator.
+      size_t column_;  //!< The current column index of the iterator.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -583,9 +583,9 @@ class SymmetricMatrix<MT,SO,true,true>
       /*!\brief Default constructor of the ColumnIterator class.
       */
       inline ColumnIterator()
-         : matrix_( NULL )  // The dense matrix containing the row.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
+         : matrix_( NULL )  // Reference to the adapted dense matrix
+         , row_   ( 0UL  )  // The current row index of the iterator
+         , column_( 0UL  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -597,9 +597,9 @@ class SymmetricMatrix<MT,SO,true,true>
       // \param column Initial column index of the iterator.
       */
       inline ColumnIterator( MT& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // Reference to the adapted dense matrix.
-         , row_   ( row     )  // The current row-index of the iterator.
-         , column_( column  )  // The current column-index of the iterator.
+         : matrix_( &matrix )  // Reference to the adapted dense matrix
+         , row_   ( row     )  // The current row index of the iterator
+         , column_( column  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -969,8 +969,8 @@ class SymmetricMatrix<MT,SO,true,true>
     private:
       //**Member variables*************************************************************************
       MT*    matrix_;  //!< Reference to the adapted dense matrix.
-      size_t row_;     //!< The current row-index of the iterator.
-      size_t column_;  //!< The current column-index of the iterator.
+      size_t row_;     //!< The current row index of the iterator.
+      size_t column_;  //!< The current column index of the iterator.
       //*******************************************************************************************
    };
    //**********************************************************************************************
