@@ -168,9 +168,9 @@ class SymmetricMatrix<MT,SO,true,false>
       /*!\brief Default constructor of the RowIterator class.
       */
       inline RowIterator()
-         : matrix_( NULL )  // The dense matrix containing the row.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
+         : matrix_( NULL )  // Reference to the adapted dense matrix
+         , row_   ( 0UL  )  // The current row index of the iterator
+         , column_( 0UL  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -182,9 +182,9 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param column Initial column index of the iterator.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // Reference to the adapted dense matrix.
-         , row_   ( row     )  // The current row-index of the iterator.
-         , column_( column  )  // The current column-index of the iterator.
+         : matrix_( &matrix )  // Reference to the adapted dense matrix
+         , row_   ( row     )  // The current row index of the iterator
+         , column_( column  )  // The current column index of the iterator
       {
          BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MatrixType );
       }
@@ -197,9 +197,9 @@ class SymmetricMatrix<MT,SO,true,false>
       */
       template< typename MatrixType2 >
       inline RowIterator( const RowIterator<MatrixType2>& it )
-         : matrix_( it.matrix_ )  // Reference to the adapted dense matrix.
-         , row_   ( it.row_    )  // The current row-index of the iterator.
-         , column_( it.column_ )  // The current column-index of the iterator.
+         : matrix_( it.matrix_ )  // Reference to the adapted dense matrix
+         , row_   ( it.row_    )  // The current row index of the iterator
+         , column_( it.column_ )  // The current column index of the iterator
       {
          BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MatrixType );
       }
@@ -423,8 +423,8 @@ class SymmetricMatrix<MT,SO,true,false>
     private:
       //**Member variables*************************************************************************
       MatrixType* matrix_;  //!< Reference to the adapted dense matrix.
-      size_t      row_;     //!< The current row-index of the iterator.
-      size_t      column_;  //!< The current column-index of the iterator.
+      size_t      row_;     //!< The current row index of the iterator.
+      size_t      column_;  //!< The current column index of the iterator.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
@@ -464,9 +464,9 @@ class SymmetricMatrix<MT,SO,true,false>
       /*!\brief Default constructor of the ColumnIterator class.
       */
       inline ColumnIterator()
-         : matrix_( NULL )  // The dense matrix containing the row.
-         , row_   ( 0UL  )  // The current row index.
-         , column_( 0UL  )  // The current column index.
+         : matrix_( NULL )  // Reference to the adapted dense matrix
+         , row_   ( 0UL  )  // The current row index of the iterator
+         , column_( 0UL  )  // The current column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -478,9 +478,9 @@ class SymmetricMatrix<MT,SO,true,false>
       // \param column Initial column index of the iterator.
       */
       inline ColumnIterator( MatrixType& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // Reference to the adapted dense matrix.
-         , row_   ( row     )  // The current row-index of the iterator.
-         , column_( column  )  // The current column-index of the iterator.
+         : matrix_( &matrix )  // Reference to the adapted dense matrix
+         , row_   ( row     )  // The current row index of the iterator
+         , column_( column  )  // The current column index of the iterator
       {
          BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MatrixType );
       }
@@ -493,9 +493,9 @@ class SymmetricMatrix<MT,SO,true,false>
       */
       template< typename MatrixType2 >
       inline ColumnIterator( const ColumnIterator<MatrixType2>& it )
-         : matrix_( it.matrix_ )  // Reference to the adapted dense matrix.
-         , row_   ( it.row_    )  // The current row-index of the iterator.
-         , column_( it.column_ )  // The current column-index of the iterator.
+         : matrix_( it.matrix_ )  // Reference to the adapted dense matrix
+         , row_   ( it.row_    )  // The current row index of the iterator
+         , column_( it.column_ )  // The current column index of the iterator
       {
          BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MatrixType );
       }
@@ -719,8 +719,8 @@ class SymmetricMatrix<MT,SO,true,false>
     private:
       //**Member variables*************************************************************************
       MatrixType* matrix_;  //!< Reference to the adapted dense matrix.
-      size_t      row_;     //!< The current row-index of the iterator.
-      size_t      column_;  //!< The current column-index of the iterator.
+      size_t      row_;     //!< The current row index of the iterator.
+      size_t      column_;  //!< The current column index of the iterator.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
@@ -1442,24 +1442,24 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
 {
    using blaze::resize;
 
+   typedef typename If< IsSymmetric<MT2>
+                      , typename MT2::CompositeType
+                      , typename MT2::ResultType >::Type  Tmp;
+
    if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( IsSymmetric<MT2>::value ) {
-      resize( matrix_, (~rhs).rows(), (~rhs).columns() );
-      if( IsSparseMatrix<MT2>::value )
-         reset();
-      assign( ~rhs );
-   }
-   else {
-      typename MT2::ResultType tmp( ~rhs );
+   Tmp tmp( ~rhs );
 
-      if( !isSymmetric( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-      resize( matrix_, tmp.rows(), tmp.columns() );
-      assign( tmp );
-   }
+   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+
+   resize( matrix_, tmp.rows(), tmp.columns() );
+   if( IsSparseMatrix<Tmp>::value )
+      reset();
+   assign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
@@ -1549,20 +1549,21 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
    SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
+   typedef typename If< IsSymmetric<MT2>
+                      , typename MT2::CompositeType
+                      , typename MT2::ResultType >::Type  Tmp;
+
    if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( IsSymmetric<MT2>::value ) {
-      addAssign( ~rhs );
-   }
-   else {
-      typename MT2::ResultType tmp( ~rhs );
+   Tmp tmp( ~rhs );
 
-      if( !isSymmetric( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-      addAssign( tmp );
-   }
+   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+
+   addAssign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
@@ -1652,20 +1653,21 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >::Type
    SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
+   typedef typename If< IsSymmetric<MT2>
+                      , typename MT2::CompositeType
+                      , typename MT2::ResultType >::Type  Tmp;
+
    if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   if( IsSymmetric<MT2>::value ) {
-      subAssign( ~rhs );
-   }
-   else {
-      typename MT2::ResultType tmp( ~rhs );
+   Tmp tmp( ~rhs );
 
-      if( !isSymmetric( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
+      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-      subAssign( tmp );
-   }
+   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+
+   subAssign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
@@ -1723,10 +1725,14 @@ inline SymmetricMatrix<MT,SO,true,false>&
 {
    using blaze::resize;
 
+   typedef typename MultTrait<MT,typename MT2::ResultType>::Type  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Tmp );
+
    if( matrix_.rows() != (~rhs).columns() )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   typename MultTrait<MT,typename MT2::ResultType>::Type tmp( (*this) * ~rhs );
+   Tmp tmp( (*this) * ~rhs );
 
    if( !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
