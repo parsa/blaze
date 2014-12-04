@@ -39,6 +39,7 @@ all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+     lowermatrix \
      densesubvector sparsesubvector \
      densesubmatrix sparsesubmatrix \
      denserow densecolumn sparserow sparsecolumn \
@@ -63,6 +64,7 @@ noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+      lowermatrix \
       densesubvector sparsesubvector \
       densesubmatrix sparsesubmatrix \
       denserow densecolumn sparserow sparsecolumn \
@@ -144,6 +146,11 @@ compressedmatrix:
 	@echo
 	@echo "Building the CompressedMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./compressedmatrix $(MAKECMDGOALS)
+
+lowermatrix:
+	@echo
+	@echo "Building the LowerMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./lowermatrix $(MAKECMDGOALS)
 
 densesubvector:
 	@echo
@@ -433,6 +440,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
+	@$(MAKE) --no-print-directory -C ./lowermatrix clean
 	@$(MAKE) --no-print-directory -C ./densesubvector clean
 	@$(MAKE) --no-print-directory -C ./sparsesubvector clean
 	@$(MAKE) --no-print-directory -C ./densesubmatrix clean
@@ -496,6 +504,7 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+        lowermatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
