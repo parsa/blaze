@@ -3552,7 +3552,7 @@ void DenseNumericTest::testIterator()
              sym(2,0) != 7 || sym(2,1) != 14 || sym(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0  5  7 )\n( 5  5 14 )\n( 7 14  9 )\n";
@@ -3824,7 +3824,7 @@ void DenseNumericTest::testIterator()
              sym(2,0) != 7 || sym(2,1) != 14 || sym(2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Addition assignment via iterator failed\n"
+                << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0  5  7 )\n( 5  5 14 )\n( 7 14  9 )\n";
