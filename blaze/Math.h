@@ -52,6 +52,7 @@
 #include <blaze/math/Infinity.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/Quaternion.h>
 #include <blaze/math/RotationMatrix.h>
 #include <blaze/math/Serialization.h>

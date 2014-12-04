@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/Forward.h
-//  \brief Header file for all adaptor forward declarations
+//  \file blaze/math/LowerMatrix.h
+//  \brief Header file for the complete LowerMatrix implementation
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,21 +32,14 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_FORWARD_H_
-#define _BLAZE_MATH_ADAPTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_LOWERMATRIX_H_
+#define _BLAZE_MATH_LOWERMATRIX_H_
 
 
-namespace blaze {
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
 
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename, bool, bool > class LowerMatrix;
-template< typename, bool, bool, bool > class SymmetricMatrix;
-
-} // namespace blaze
+#include <blaze/math/adaptors/LowerMatrix.h>
 
 #endif
