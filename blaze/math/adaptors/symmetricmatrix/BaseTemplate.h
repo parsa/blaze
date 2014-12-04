@@ -343,27 +343,32 @@ namespace blaze {
    \code
    using blaze::SymmetricMatrix;
    using blaze::DynamicMatrix;
+   using blaze::HybridMatrix;
    using blaze::StaticMatrix;
    using blaze::CompressedMatrix;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   CompressedMatrix<float> E( 3, 3 );  // Empty row-major sparse single precision 3x3 matrix
+   DynamicMatrix<double,rowMajor> A( 3, 3 );
+   CompressedMatrix<double,rowMajor> B( 3, 3 );
 
-   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > F;
-   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > G;
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( 3 );
+   SymmetricMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
 
-   F = A + B;     // Matrix addition and assignment to a row-major symmetric matrix
-   G = A - C;     // Matrix subtraction and assignment to a column-major symmetric matrix
-   G = A * E;     // Matrix multiplication between a dense and a sparse matrix
+   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
+   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
 
-   A *= 2.0;      // In-place scaling of matrix A
-   F  = 2.0 * B;  // Scaling of matrix B
-   G  = E * 2.0;  // Scaling of matrix E
+   E = A + B;     // Matrix addition and assignment to a row-major symmetric matrix
+   F = C - D;     // Matrix subtraction and assignment to a column-major symmetric matrix
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
 
-   F += A - B;    // Addition assignment
-   G -= A + C;    // Subtraction assignment
-   G *= A * E;    // Multiplication assignment
+   C *= 2.0;      // In-place scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B
+   F  = C * 2.0;  // Scaling of matrix C
+
+   E += A - B;    // Addition assignment
+   F -= C + D;    // Subtraction assignment
+   F *= A * D;    // Multiplication assignment
    \endcode
 
 // \n \section symmetricmatrix_block_structured Block-Structured Symmetric Matrices
@@ -375,8 +380,8 @@ namespace blaze {
    using blaze::StaticMatrix;
    using blaze::SymmetricMatrix;
 
-   // Definition of a 3x3 block-structured symmetric matrix based on CompressedMatrix
-   SymmetricMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > A( 3 );
+   // Definition of a 5x5 block-structured symmetric matrix based on CompressedMatrix
+   SymmetricMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > A( 5 );
    \endcode
 
 // Also in this case, the SymmetricMatrix class template enforces the invariant of symmetry and
