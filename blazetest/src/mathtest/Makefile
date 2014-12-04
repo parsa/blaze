@@ -39,7 +39,7 @@ all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-     lowermatrix \
+     lowermatrix symmetricmatrix \
      densesubvector sparsesubvector \
      densesubmatrix sparsesubmatrix \
      denserow densecolumn sparserow sparsecolumn \
@@ -64,7 +64,7 @@ noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-      lowermatrix \
+      lowermatrix symmetricmatrix \
       densesubvector sparsesubvector \
       densesubmatrix sparsesubmatrix \
       denserow densecolumn sparserow sparsecolumn \
@@ -151,6 +151,11 @@ lowermatrix:
 	@echo
 	@echo "Building the LowerMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./lowermatrix $(MAKECMDGOALS)
+
+symmetricmatrix:
+	@echo
+	@echo "Building the SymmetricMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./symmetricmatrix $(MAKECMDGOALS)
 
 densesubvector:
 	@echo
@@ -441,6 +446,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./lowermatrix clean
+	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
 	@$(MAKE) --no-print-directory -C ./densesubvector clean
 	@$(MAKE) --no-print-directory -C ./sparsesubvector clean
 	@$(MAKE) --no-print-directory -C ./densesubmatrix clean
@@ -504,7 +510,7 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-        lowermatrix \
+        lowermatrix symmetricmatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
