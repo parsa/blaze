@@ -45,11 +45,13 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Intrinsics.h>
@@ -59,9 +61,11 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
@@ -796,15 +800,20 @@ inline typename DenseRow<MT,SO,SF>::ConstIterator DenseRow<MT,SO,SF>::cend() con
 //
 // \param rhs Scalar value to be assigned to all row elements.
 // \return Reference to the assigned row.
+//
+// This function homogeneously assigns the given value to all elements of the row. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs )
 {
-   const size_t columns( size() );
+   const size_t jbegin( ( IsUpper<MT>::value )?( row_ ):( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )?( row_+1UL ):( size() ) );
 
-   for( size_t j=0UL; j<columns; ++j )
+   for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
 
    return *this;
@@ -2451,13 +2460,18 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 //
 // \param rhs Scalar value to be assigned to all row elements.
 // \return Reference to the assigned row.
+//
+// This function homogeneously assigns the given value to all elements of the row. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const ElementType& rhs )
 {
-   const size_t columns( size() );
+   const size_t jbegin( ( IsUpper<MT>::value )?( row_ ):( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )?( row_+1UL ):( size() ) );
 
-   for( size_t j=0UL; j<columns; ++j )
+   for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
 
    return *this;
@@ -3660,6 +3674,9 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const ElementType& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT );
+
    const size_t rows( size() );
 
    for( size_t i=0UL; i<rows; ++i )
