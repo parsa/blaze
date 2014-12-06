@@ -5582,86 +5582,206 @@ void DenseTest::testSubmatrix()
       }
    }
 
-   // (  1  0  0 )      (  1  0  0 )
-   // ( -4  2  0 )  =>  ( -4 11  0 )
-   // (  7  0  3 )      (  7 15 13 )
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 12  0  0 )
+   // (  7  0  3  0 )      (  7 12 12  0 )
+   // ( -2  0  1  5 )      ( -2 12 12  5 )
    {
       test_ = "Row-major submatrix() function (assignment test 1)";
 
       typedef blaze::DenseSubmatrix<LT>  SMT;
 
-      LT lower( 3UL );
+      LT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
       lower(2,0) =  7;
       lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
-      sm = blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor>( 11, 0, 15, 13 );
+      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      sm = 12;
 
-      if( sm(0,0) != 11 || sm(0,1) !=  0 ||
-          sm(1,0) != 15 || sm(1,1) != 13 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) !=  0 ||
+          sm(2,0) != 12 || sm(2,1) != 12 ||
+          sm(3,0) != 12 || sm(3,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 11  0 )\n( 15 13 )\n";
+             << "   Expected result:\n(  0  0 )\n( 12  0 )\n( 12 12 )\n( 12 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 ||
-          lower(1,0) != -4 || lower(1,1) != 11 || lower(1,2) !=  0 ||
-          lower(2,0) !=  7 || lower(2,1) != 15 || lower(2,2) != 13 ) {
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) !=  0 ||
+          lower(1,0) != -4 || lower(1,1) != 12 || lower(1,2) !=  0 || lower(1,3) !=  0 ||
+          lower(2,0) !=  7 || lower(2,1) != 12 || lower(2,2) != 12 || lower(2,3) !=  0 ||
+          lower(3,0) != -2 || lower(3,1) != 12 || lower(3,2) != 12 || lower(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1  0  0 )\n( -4 11  0 )\n(  7 15 13 )\n";
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( -4 12  0  0 )\n"
+                                     "(  7 12 12  0 )\n"
+                                     "( -2 12 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-   // (  1  0  0 )      (  1  0  0 )
-   // ( -4  2  0 )  =>  ( -4 18  0 )
-   // (  7  0  3 )      (  7  0  3 )
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( 12 12  0  0 )
+   // (  7  0  3  0 )      ( 12 12 12  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
    {
       test_ = "Row-major submatrix() function (assignment test 2)";
 
       typedef blaze::DenseSubmatrix<LT>  SMT;
 
-      LT lower( 3UL );
+      LT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
       lower(2,0) =  7;
       lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 2UL, 2UL );
-      sm = blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor>( 0, 18, 0, 0 );
+      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      sm = 12;
 
-      if( sm(0,0) !=  0 || sm(0,1) != 0 ||
-          sm(1,0) != 18 || sm(1,1) != 0 ) {
+      if( sm(0,0) != 12 || sm(0,1) != 12 || sm(0,2) !=  0 || sm(0,3) != 0 ||
+          sm(1,0) != 12 || sm(1,1) != 12 || sm(1,2) != 12 || sm(1,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0 0 )\n( 18 0 )\n";
+             << "   Expected result:\n( 12 12  0  0 )\n( 12 12 12  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -4 || lower(1,1) != 18 || lower(1,2) != 0 ||
-          lower(2,0) !=  7 || lower(2,1) !=  0 || lower(2,2) != 3 ) {
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) !=  0 ||
+          lower(1,0) != 12 || lower(1,1) != 12 || lower(1,2) !=  0 || lower(1,3) !=  0 ||
+          lower(2,0) != 12 || lower(2,1) != 12 || lower(2,2) != 12 || lower(2,3) !=  0 ||
+          lower(3,0) != -2 || lower(3,1) !=  0 || lower(3,2) !=  1 || lower(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1  0  0 )\n( -4 18  0 )\n(  7  0  0 )\n";
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( 12 12  0  0 )\n"
+                                     "( 12 12 12  0 )\n"
+                                     "( -2  0  1  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 18  0  0 )
+   // (  7  0  3  0 )      (  7 14 11  0 )
+   // ( -2  0  1  5 )      ( -2 15 19  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 3)";
+
+      typedef blaze::DenseSubmatrix<LT>  SMT;
+
+      LT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      sm = blaze::StaticMatrix<int,4UL,2UL,blaze::rowMajor>(  0,  0, 18,  0, 14, 11, 15, 19 );
+
+      if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+          sm(1,0) != 18 || sm(1,1) !=  0 ||
+          sm(2,0) != 14 || sm(2,1) != 11 ||
+          sm(3,0) != 15 || sm(3,1) != 19 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  0 )\n( 18  0 )\n( 14 11 )\n( 15 19 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 18 || lower(1,2) !=  0 || lower(1,3) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 14 || lower(2,2) != 11 || lower(2,3) != 0 ||
+          lower(3,0) != -2 || lower(3,1) != 15 || lower(3,2) != 19 || lower(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( -4 18  0  0 )\n"
+                                     "(  7 14 11  0 )\n"
+                                     "( -2 15 19  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( 12 18  0  0 )
+   // (  7  0  3  0 )      ( 15 17 11  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 4)";
+
+      typedef blaze::DenseSubmatrix<LT>  SMT;
+
+      LT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      sm = blaze::StaticMatrix<int,2UL,4UL,blaze::columnMajor>( 12, 15, 18, 17, 0, 11, 0, 0 );
+
+      if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
+          sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 18  0  0 )\n( 15 17 11  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) != 0 ||
+          lower(1,0) != 12 || lower(1,1) != 18 || lower(1,2) !=  0 || lower(1,3) != 0 ||
+          lower(2,0) != 15 || lower(2,1) != 17 || lower(2,2) != 11 || lower(2,3) != 0 ||
+          lower(3,0) != -2 || lower(3,1) !=  0 || lower(3,2) !=  1 || lower(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( 12 18  0  0 )\n"
+                                     "( 15 17 11  0 )\n"
+                                     "( -2  0  1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5758,86 +5878,206 @@ void DenseTest::testSubmatrix()
       }
    }
 
-   // (  1  0  0 )      (  1  0  0 )
-   // ( -4  2  0 )  =>  ( -4 11  0 )
-   // (  7  0  3 )      (  7 15 13 )
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 12  0  0 )
+   // (  7  0  3  0 )      (  7 12 12  0 )
+   // ( -2  0  1  5 )      ( -2 12 12  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 1)";
+      test_ = "Column-major submatrix() function (assignment test 1)";
 
       typedef blaze::DenseSubmatrix<TLT>  SMT;
 
-      TLT lower( 3UL );
+      TLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
       lower(2,0) =  7;
       lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
-      sm = blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor>( 11, 0, 15, 13 );
+      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      sm = 12;
 
-      if( sm(0,0) != 11 || sm(0,1) !=  0 ||
-          sm(1,0) != 15 || sm(1,1) != 13 ) {
+      if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+          sm(1,0) != 12 || sm(1,1) !=  0 ||
+          sm(2,0) != 12 || sm(2,1) != 12 ||
+          sm(3,0) != 12 || sm(3,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n( 11  0 )\n( 15 13 )\n";
+             << "   Expected result:\n(  0  0 )\n( 12  0 )\n( 12 12 )\n( 12 12 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 ||
-          lower(1,0) != -4 || lower(1,1) != 11 || lower(1,2) !=  0 ||
-          lower(2,0) !=  7 || lower(2,1) != 15 || lower(2,2) != 13 ) {
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) !=  0 ||
+          lower(1,0) != -4 || lower(1,1) != 12 || lower(1,2) !=  0 || lower(1,3) !=  0 ||
+          lower(2,0) !=  7 || lower(2,1) != 12 || lower(2,2) != 12 || lower(2,3) !=  0 ||
+          lower(3,0) != -2 || lower(3,1) != 12 || lower(3,2) != 12 || lower(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1  0  0 )\n( -4 11  0 )\n(  7 15 13 )\n";
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( -4 12  0  0 )\n"
+                                     "(  7 12 12  0 )\n"
+                                     "( -2 12 12  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-   // (  1  0  0 )      (  1  0  0 )
-   // ( -4  2  0 )  =>  ( -4 18  0 )
-   // (  7  0  3 )      (  7  0  3 )
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( 12 12  0  0 )
+   // (  7  0  3  0 )      ( 12 12 12  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 2)";
+      test_ = "Column-major submatrix() function (assignment test 2)";
 
       typedef blaze::DenseSubmatrix<TLT>  SMT;
 
-      TLT lower( 3UL );
+      TLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
       lower(2,0) =  7;
       lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 2UL, 2UL );
-      sm = blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor>( 0, 18, 0, 0 );
+      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      sm = 12;
 
-      if( sm(0,0) !=  0 || sm(0,1) != 0 ||
-          sm(1,0) != 18 || sm(1,1) != 0 ) {
+      if( sm(0,0) != 12 || sm(0,1) != 12 || sm(0,2) !=  0 || sm(0,3) != 0 ||
+          sm(1,0) != 12 || sm(1,1) != 12 || sm(1,2) != 12 || sm(1,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << sm << "\n"
-             << "   Expected result:\n(  0 0 )\n( 18 0 )\n";
+             << "   Expected result:\n( 12 12  0  0 )\n( 12 12 12  0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
-      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -4 || lower(1,1) != 18 || lower(1,2) != 0 ||
-          lower(2,0) !=  7 || lower(2,1) !=  0 || lower(2,2) != 3 ) {
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) !=  0 ||
+          lower(1,0) != 12 || lower(1,1) != 12 || lower(1,2) !=  0 || lower(1,3) !=  0 ||
+          lower(2,0) != 12 || lower(2,1) != 12 || lower(2,2) != 12 || lower(2,3) !=  0 ||
+          lower(3,0) != -2 || lower(3,1) !=  0 || lower(3,2) !=  1 || lower(3,3) !=  5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment to submatrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1  0  0 )\n( -4 18  0 )\n(  7  0  0 )\n";
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( 12 12  0  0 )\n"
+                                     "( 12 12 12  0 )\n"
+                                     "( -2  0  1  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 18  0  0 )
+   // (  7  0  3  0 )      (  7 14 11  0 )
+   // ( -2  0  1  5 )      ( -2 15 19  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 3)";
+
+      typedef blaze::DenseSubmatrix<TLT>  SMT;
+
+      TLT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      sm = blaze::StaticMatrix<int,4UL,2UL,blaze::rowMajor>(  0,  0, 18,  0, 14, 11, 15, 19 );
+
+      if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
+          sm(1,0) != 18 || sm(1,1) !=  0 ||
+          sm(2,0) != 14 || sm(2,1) != 11 ||
+          sm(3,0) != 15 || sm(3,1) != 19 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n(  0  0 )\n( 18  0 )\n( 14 11 )\n( 15 19 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 18 || lower(1,2) !=  0 || lower(1,3) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 14 || lower(2,2) != 11 || lower(2,3) != 0 ||
+          lower(3,0) != -2 || lower(3,1) != 15 || lower(3,2) != 19 || lower(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( -4 18  0  0 )\n"
+                                     "(  7 14 11  0 )\n"
+                                     "( -2 15 19  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( 12 18  0  0 )
+   // (  7  0  3  0 )      ( 15 17 11  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 4)";
+
+      typedef blaze::DenseSubmatrix<TLT>  SMT;
+
+      TLT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      sm = blaze::StaticMatrix<int,2UL,4UL,blaze::columnMajor>( 12, 15, 18, 17, 0, 11, 0, 0 );
+
+      if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
+          sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 18  0  0 )\n( 15 17 11  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) !=  0 || lower(0,3) != 0 ||
+          lower(1,0) != 12 || lower(1,1) != 18 || lower(1,2) !=  0 || lower(1,3) != 0 ||
+          lower(2,0) != 15 || lower(2,1) != 17 || lower(2,2) != 11 || lower(2,3) != 0 ||
+          lower(3,0) != -2 || lower(3,1) !=  0 || lower(3,2) !=  1 || lower(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0  0 )\n"
+                                     "( 12 18  0  0 )\n"
+                                     "( 15 17 11  0 )\n"
+                                     "( -2  0  1  5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5917,6 +6157,30 @@ void DenseTest::testRow()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1  0  0 )\n( -4 -5  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      row1 = 8;
+
+      if( row1[0] != 8 || row1[1] != 8 || row1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 8 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 8 || lower(1,1) != 8 || lower(1,2) != 0 ||
+          lower(2,0) != 7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 8 8 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -6048,6 +6312,30 @@ void DenseTest::testRow()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1  0  0 )\n( -4 -5  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      row1 = 8;
+
+      if( row1[0] != 8 || row1[1] != 8 || row1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 8 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 8 || lower(1,1) != 8 || lower(1,2) != 0 ||
+          lower(2,0) != 7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 8 8 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -6195,6 +6483,30 @@ void DenseTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
+      col1 = 8;
+
+      if( col1[0] != 0 || col1[1] != 8 || col1[2] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 8 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 8 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 8 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 8 0 )\n(  7 8 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
       reset( col1 );
 
       if( col1[0] != 0 || col1[1] != 0 || col1[2] != 0 ) {
@@ -6323,6 +6635,30 @@ void DenseTest::testColumn()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1  0  0 )\n( -4 -5  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      col1 = 8;
+
+      if( col1[0] != 0 || col1[1] != 8 || col1[2] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 0 8 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 8 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 8 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 8 0 )\n(  7 8 3 )\n";
          throw std::runtime_error( oss.str() );
       }
 
