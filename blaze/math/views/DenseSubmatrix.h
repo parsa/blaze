@@ -68,8 +68,10 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
@@ -1386,7 +1388,9 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
 //
-// This function homogeneously assigns the given value to all dense matrix elements.
+// This function homogeneously assigns the given value to all dense matrix elements. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
@@ -1394,11 +1398,15 @@ template< typename MT  // Type of the dense matrix
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const ElementType& rhs )
 {
    const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )?( max( i, column_ ) ):( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )?( min( i+1UL, column_+n_ ) ):( column_+n_ ) );
+
+      for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
+   }
 
    return *this;
 }
@@ -3743,18 +3751,24 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
 //
-// This function homogeneously assigns the given value to all dense matrix elements.
+// This function homogeneously assigns the given value to all dense matrix elements. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>&
    DenseSubmatrix<MT,unaligned,true>::operator=( const ElementType& rhs )
 {
-   const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )?( max( j, row_ ) ):( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )?( min( j+1UL, row_+m_ ) ):( row_+m_ ) );
+
+      for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
+   }
 
    return *this;
 }
@@ -5734,18 +5748,24 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstIterator
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
 //
-// This function homogeneously assigns the given value to all dense matrix elements.
+// This function homogeneously assigns the given value to all dense matrix elements. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>&
    DenseSubmatrix<MT,aligned,false>::operator=( const ElementType& rhs )
 {
    const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )?( max( i, column_ ) ):( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )?( min( i+1UL, column_+n_ ) ):( column_+n_ ) );
+
+      for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
+   }
 
    return *this;
 }
@@ -7706,18 +7726,24 @@ inline typename DenseSubmatrix<MT,aligned,true>::ConstIterator
 // \param rhs Scalar value to be assigned to all submatrix elements.
 // \return Reference to the assigned submatrix.
 //
-// This function homogeneously assigns the given value to all dense matrix elements.
+// This function homogeneously assigns the given value to all dense matrix elements. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>&
    DenseSubmatrix<MT,aligned,true>::operator=( const ElementType& rhs )
 {
-   const size_t iend( row_ + m_ );
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )?( max( j, row_ ) ):( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )?( min( j+1UL, row_+m_ ) ):( row_+m_ ) );
+
+      for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
+   }
 
    return *this;
 }
