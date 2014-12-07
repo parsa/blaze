@@ -49,6 +49,7 @@
 #include <blazetest/mathtest/creator/DynamicMatrix.h>
 #include <blazetest/mathtest/creator/DynamicSymmetric.h>
 #include <blazetest/mathtest/creator/DynamicVector.h>
+#include <blazetest/mathtest/creator/HybridLower.h>
 #include <blazetest/mathtest/creator/HybridMatrix.h>
 #include <blazetest/mathtest/creator/HybridSymmetric.h>
 #include <blazetest/mathtest/creator/HybridVector.h>
