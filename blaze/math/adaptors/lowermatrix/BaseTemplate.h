@@ -210,7 +210,7 @@ namespace blaze {
 
 // The lower matrix property is also enforced for views (rows, columns, submatrices, ...) on the
 // lower matrix. The following example demonstrates that modifying the elements of an entire row
-// of a lower matrix only affects the lower and diagonal matrix elements:
+// and submatrix of a lower matrix only affects the lower and diagonal matrix elements:
 
    \code
    using blaze::DynamicMatrix;
@@ -238,6 +238,87 @@ namespace blaze {
    //       ( 4 0 5 0 )
    //
    row( A, 2 ) = 9;
+
+   // Setting the lower and diagonal elements in the 1st and 2nd column to 7 results in
+   //
+   //       ( 0 0 0 0 )
+   //   A = ( 1 7 0 0 )
+   //       ( 9 7 7 0 )
+   //       ( 4 7 7 0 )
+   //
+   submatrix( A, 0, 1, 4, 2 ) = 7;
+   \endcode
+
+// The next example demonstrates the (compound) assignment to rows/columns and submatrices of
+// lower matrices. Since only lower and diagonal elements may be modified the matrix to be
+// assigned must be structured such that the lower matrix invariant of the lower matrix is
+// preserved. Otherwise a \a std::invalid_argument exception is thrown:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::SymmetricMatrix;
+
+   // Setup of two default 4x4 symmetric matrices
+   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of a 4-dimensional vector
+   //
+   //   v = ( 1 2 3 0 )
+   //
+   DynamicVector<int> v( 4, 0 );
+   v[0] = 1;
+   v[1] = 2;
+   v[2] = 3;
+
+   // OK: Assigning v to the 2nd row of A1 preserves the lower matrix invariant
+   //
+   //        ( 0 0 0 0 )
+   //   A1 = ( 0 0 0 0 )
+   //        ( 1 2 3 0 )
+   //        ( 0 0 0 0 )
+   //
+   row( A1, 2 ) = v;  // OK
+
+   // Error: Assigning v to the 1st row of A1 violates the lower matrix invariant! The element
+   //   marked with X cannot be assigned and triggers an exception.
+   //
+   //        ( 0 0 0 0 )
+   //   A1 = ( 1 2 X 0 )
+   //        ( 1 2 3 0 )
+   //        ( 0 0 0 0 )
+   //
+   row( A1, 1 ) = v;  // Assignment throws an exception!
+
+   // Setup of the 3x2 dynamic matrix
+   //
+   //       ( 0 0 )
+   //   B = ( 7 0 )
+   //       ( 8 9 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL, 0 );
+   B(1,0) = 7;
+   B(2,1) = 8;
+   B(2,2) = 9;
+
+   // OK: Assigning B to a submatrix of A2 such that the lower matrix invariant can be preserved
+   //
+   //        ( 0 0 0 0 )
+   //   A2 = ( 0 7 0 0 )
+   //        ( 0 8 9 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the lower matrix invariant cannot be
+   //   preserved! The elements marked with X cannot be assigned without violating the invariant!
+   //
+   //        ( 0 0 0 0 )
+   //   A2 = ( 0 7 X 0 )
+   //        ( 0 8 8 X )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 2UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 
 // \n \subsection lowermatrix_initialization The Upper Elements of a Dense Lower Matrix are Always Default Initialized!
