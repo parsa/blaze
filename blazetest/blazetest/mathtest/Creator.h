@@ -53,6 +53,7 @@
 #include <blazetest/mathtest/creator/HybridMatrix.h>
 #include <blazetest/mathtest/creator/HybridSymmetric.h>
 #include <blazetest/mathtest/creator/HybridVector.h>
+#include <blazetest/mathtest/creator/StaticLower.h>
 #include <blazetest/mathtest/creator/StaticMatrix.h>
 #include <blazetest/mathtest/creator/StaticSymmetric.h>
 #include <blazetest/mathtest/creator/StaticVector.h>
