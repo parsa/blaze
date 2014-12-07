@@ -284,9 +284,9 @@ namespace blaze {
 
    // Setup of the 3x2 dynamic matrix
    //
-   //       ( 0 9 )
-   //   B = ( 9 8 )
-   //       ( 0 7 )
+   //       ( 1 2 )
+   //   B = ( 3 4 )
+   //       ( 5 6 )
    //
    DynamicMatrix<int> B( 3UL, 2UL );
    B(0,0) = 1;
