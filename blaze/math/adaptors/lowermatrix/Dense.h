@@ -874,8 +874,7 @@ inline typename LowerMatrix<MT,SO,true>::ConstReference
 // use techniques such as padding to improve the alignment of the data. Whereas the number of
 // elements within a row/column are given by the \c rows() and \c columns() member functions,
 // respectively, the total number of elements including padding is given by the \c spacing()
-// member function. Also note that you can NOT assume that the lower matrix stores all its
-// elements. It may choose to store its elements in a lower or upper triangular matrix fashion.
+// member function.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
