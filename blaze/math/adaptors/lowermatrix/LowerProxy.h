@@ -110,7 +110,7 @@ class LowerProxy : public Proxy< LowerProxy<MT>, typename MT::ElementType >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline LowerProxy& operator= ( const LowerProxy& sp );
+                          inline LowerProxy& operator= ( const LowerProxy& lp );
    template< typename T > inline LowerProxy& operator= ( const T& value );
    template< typename T > inline LowerProxy& operator+=( const T& value );
    template< typename T > inline LowerProxy& operator-=( const T& value );
