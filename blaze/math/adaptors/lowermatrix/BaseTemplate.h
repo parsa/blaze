@@ -168,12 +168,14 @@ namespace blaze {
    using blaze::LowerMatrix;
    using blaze::rowMajor;
 
+   typedef LowerMatrix< CompressedMatrix<double,rowMajor> >  CompressedLower;
+
    // Default constructed, row-major 3x3 lower compressed matrix
-   LowerMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
+   CompressedLower A( 3 );
 
    // Initializing elements via the function call operator
    A(0,0) = 1.0;  // Initialization of the diagonal element (0,0)
-   A(2,0) = 2.0;  // Initialization of the lower element (2,1)
+   A(2,0) = 2.0;  // Initialization of the lower element (2,0)
    A(1,2) = 9.0;  // Throws an exception; invalid modification of upper element
 
    // Inserting two more elements via the insert() function
@@ -187,7 +189,10 @@ namespace blaze {
    A.append( 1, 2, 9.0 );  // Throws an exception; appending an element in the upper part
 
    // Access via a non-const iterator
-   *A.begin(1) = 10.0;  // Modifies the element (1,0)
+   CompressedLower::Iterator it = A.begin(1);
+   *it = 6.0;  // Modifies the element (1,0)
+   it += 2;
+   *it = 9.0;  // Throws an exception; modifies the upper element (1,2)
 
    // Erasing elements via the erase() function
    A.erase( 0, 0 );  // Erasing the diagonal element (0,0)
@@ -214,7 +219,7 @@ namespace blaze {
 
    \code
    using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
 
    // Setup of the lower matrix
    //
@@ -227,8 +232,8 @@ namespace blaze {
    A(1,0) = 1;
    A(1,1) = 2;
    A(2,1) = 3;
-   A(2,3) = 4;
-   A(3,0) = 5;
+   A(3,0) = 4;
+   A(3,2) = 5;
 
    // Setting the lower and diagonal elements in the 2nd row to 9 results in the matrix
    //
@@ -257,16 +262,17 @@ namespace blaze {
    \code
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
-   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowVector;
 
-   // Setup of two default 4x4 symmetric matrices
-   SymmetricMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+   // Setup of two default 4x4 lower matrices
+   LowerMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
 
    // Setup of a 4-dimensional vector
    //
    //   v = ( 1 2 3 0 )
    //
-   DynamicVector<int> v( 4, 0 );
+   DynamicVector<int,rowVector> v( 4, 0 );
    v[0] = 1;
    v[1] = 2;
    v[2] = 3;
