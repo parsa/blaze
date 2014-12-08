@@ -638,7 +638,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       LT lower;
@@ -670,7 +669,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       LT lower;
@@ -703,7 +701,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       try {
@@ -730,7 +727,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       try {
@@ -756,7 +752,6 @@ void DenseTest::testAssignment()
       lower1(1,0) = -4;
       lower1(1,1) =  2;
       lower1(2,0) =  7;
-      lower1(2,1) =  0;
       lower1(2,2) =  3;
 
       LT lower2;
@@ -788,7 +783,6 @@ void DenseTest::testAssignment()
       lower1(1,0) = -4;
       lower1(1,1) =  2;
       lower1(2,0) =  7;
-      lower1(2,1) =  0;
       lower1(2,2) =  3;
 
       LT lower2;
@@ -889,7 +883,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       TLT lower;
@@ -921,7 +914,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       TLT lower;
@@ -954,7 +946,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       try {
@@ -981,7 +972,6 @@ void DenseTest::testAssignment()
       mat(1,0) = -4;
       mat(1,1) =  2;
       mat(2,0) =  7;
-      mat(2,1) =  0;
       mat(2,2) =  3;
 
       try {
@@ -1007,7 +997,6 @@ void DenseTest::testAssignment()
       lower1(1,0) = -4;
       lower1(1,1) =  2;
       lower1(2,0) =  7;
-      lower1(2,1) =  0;
       lower1(2,2) =  3;
 
       TLT lower2;
@@ -1039,7 +1028,6 @@ void DenseTest::testAssignment()
       lower1(1,0) = -4;
       lower1(1,1) =  2;
       lower1(2,0) =  7;
-      lower1(2,1) =  0;
       lower1(2,2) =  3;
 
       TLT lower2;
@@ -3167,7 +3155,7 @@ void DenseTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Multiplying the element (1,1)
+      // Multiplying the element (2,1)
       lower(2,1) *= -3;
 
       checkRows    ( lower, 3UL );
@@ -3352,7 +3340,7 @@ void DenseTest::testFunctionCall()
          throw std::runtime_error( oss.str() );
       }
 
-      // Multiplying the element (1,1)
+      // Multiplying the element (2,1)
       lower(2,1) *= -3;
 
       checkRows    ( lower, 3UL );
@@ -6591,7 +6579,7 @@ void DenseTest::testColumn()
              << " Error: Column access failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 8 8 0 )\n";
+             << "   Expected result:\n( 0 8 8 )\n";
          throw std::runtime_error( oss.str() );
       }
 
