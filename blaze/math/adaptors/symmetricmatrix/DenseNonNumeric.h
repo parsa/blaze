@@ -1162,7 +1162,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+   BLAZE_INTERNAL_ASSERT( !tmp.canAlias( this ), "Aliasing detected" );
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    if( IsSparseMatrix<Tmp>::value )
@@ -1269,7 +1269,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+   BLAZE_INTERNAL_ASSERT( !tmp.canAlias( this ), "Aliasing detected" );
 
    addAssign( tmp );
 
@@ -1373,7 +1373,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   BLAZE_INTERNAL_ASSERT( !tmp.isAliased( this ), "Aliasing detected" );
+   BLAZE_INTERNAL_ASSERT( !tmp.canAlias( this ), "Aliasing detected" );
 
    subAssign( tmp );
 
