@@ -163,7 +163,7 @@ inline const blaze::UpperMatrix< blaze::DynamicMatrix<T,SO> >
    // Initialization of a column-major matrix
    if( SO ) {
       for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<=j_; ++i )
+         for( size_t i=0UL; i<=j; ++i )
             matrix(i,j) = ec_();
    }
 
