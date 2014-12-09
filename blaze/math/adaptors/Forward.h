@@ -46,6 +46,7 @@ namespace blaze {
 
 template< typename, bool, bool > class LowerMatrix;
 template< typename, bool, bool, bool > class SymmetricMatrix;
+template< typename, bool, bool > class UpperMatrix;
 
 } // namespace blaze
 
