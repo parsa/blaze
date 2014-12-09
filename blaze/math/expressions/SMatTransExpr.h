@@ -856,7 +856,7 @@ struct IsSymmetric< SMatTransExpr<MT,SO> > : public IsTrue< IsSymmetric<MT>::val
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsLower< SMatTransExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
+struct IsLower< SMatTransExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -873,7 +873,7 @@ struct IsLower< SMatTransExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsUpper< SMatTransExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
+struct IsUpper< SMatTransExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
