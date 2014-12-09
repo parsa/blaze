@@ -141,10 +141,10 @@ class SymmetricMatrix<MT,SO,true,true>
    };
    //**********************************************************************************************
 
-   //**RowIterator class definition****************************************************************
-   /*!\brief Row-wise iterator over the non-constant elements of the dense symmetric matrix.
+   //**Iterator class definition*******************************************************************
+   /*!\brief Iterator over the non-constant elements of the dense symmetric matrix.
    */
-   class RowIterator
+   class Iterator
    {
     public:
       //**Type definitions*************************************************************************
@@ -163,9 +163,9 @@ class SymmetricMatrix<MT,SO,true,true>
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Default constructor of the RowIterator class.
+      /*!\brief Default constructor of the Iterator class.
       */
-      inline RowIterator()
+      inline Iterator()
          : matrix_( NULL )  // Reference to the adapted dense matrix
          , row_   ( 0UL  )  // The current row index of the iterator
          , column_( 0UL  )  // The current column index of the iterator
@@ -173,13 +173,13 @@ class SymmetricMatrix<MT,SO,true,true>
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor for the RowIterator class.
+      /*!\brief Constructor for the Iterator class.
       //
       // \param matrix The adapted matrix.
       // \param row Initial row index of the iterator.
       // \param column Initial column index of the iterator.
       */
-      inline RowIterator( MT& matrix, size_t row, size_t column )
+      inline Iterator( MT& matrix, size_t row, size_t column )
          : matrix_( &matrix )  // Reference to the adapted dense matrix
          , row_   ( row     )  // The current row index of the iterator
          , column_( column  )  // The current column index of the iterator
@@ -192,8 +192,8 @@ class SymmetricMatrix<MT,SO,true,true>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline RowIterator& operator+=( size_t inc ) {
-         column_ += inc;
+      inline Iterator& operator+=( size_t inc ) {
+         ( SO )?( row_ += inc ):( column_ += inc );
          return *this;
       }
       //*******************************************************************************************
@@ -204,8 +204,8 @@ class SymmetricMatrix<MT,SO,true,true>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline RowIterator& operator-=( size_t dec ) {
-         column_ -= dec;
+      inline Iterator& operator-=( size_t dec ) {
+         ( SO )?( row_ -= dec ):( column_ -= dec );
          return *this;
       }
       //*******************************************************************************************
@@ -215,8 +215,8 @@ class SymmetricMatrix<MT,SO,true,true>
       //
       // \return Reference to the incremented iterator.
       */
-      inline RowIterator& operator++() {
-         ++column_;
+      inline Iterator& operator++() {
+         ( SO )?( ++row_ ):( ++column_ );
          return *this;
       }
       //*******************************************************************************************
@@ -226,8 +226,8 @@ class SymmetricMatrix<MT,SO,true,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const RowIterator operator++( int ) {
-         const RowIterator tmp( *this );
+      inline const Iterator operator++( int ) {
+         const Iterator tmp( *this );
          ++(*this);
          return tmp;
       }
@@ -238,8 +238,8 @@ class SymmetricMatrix<MT,SO,true,true>
       //
       // \return Reference to the decremented iterator.
       */
-      inline RowIterator& operator--() {
-         --column_;
+      inline Iterator& operator--() {
+         ( SO )?( --row_ ):( --column_ );
          return *this;
       }
       //*******************************************************************************************
@@ -249,8 +249,8 @@ class SymmetricMatrix<MT,SO,true,true>
       //
       // \return The previous position of the iterator.
       */
-      inline const RowIterator operator--( int ) {
-         const RowIterator tmp( *this );
+      inline const Iterator operator--( int ) {
+         const Iterator tmp( *this );
          --(*this);
          return tmp;
       }
@@ -282,222 +282,225 @@ class SymmetricMatrix<MT,SO,true,true>
       // \return An iterator over constant elements.
       */
       inline operator ConstIterator() const {
-         return matrix_->begin(row_) + column_;
+         if( SO )
+            return matrix_->begin( column_ ) + row_;
+         else
+            return matrix_->begin( row_ ) + column_;
       }
       //*******************************************************************************************
 
       //**Equality operator************************************************************************
-      /*!\brief Equality comparison between two RowIterator objects.
+      /*!\brief Equality comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ == rhs.column_ );
+      friend inline bool operator==( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ == rhs.row_ ):( lhs.column_ == rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Equality operator************************************************************************
-      /*!\brief Equality comparison between a RowIterator and a ConstIterator.
+      /*!\brief Equality comparison between a Iterator and a ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator==( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) == rhs );
       }
       //*******************************************************************************************
 
       //**Equality operator************************************************************************
-      /*!\brief Equality comparison between a ConstIterator and a RowIterator.
+      /*!\brief Equality comparison between a ConstIterator and a Iterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      friend inline bool operator==( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator==( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs == ConstIterator( rhs ) );
       }
       //*******************************************************************************************
 
       //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between two RowIterator objects.
+      /*!\brief Inequality comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      friend inline bool operator!=( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ != rhs.column_ );
+      friend inline bool operator!=( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ != rhs.row_ ):( lhs.column_ != rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between a RowIterator and ConstIterator.
+      /*!\brief Inequality comparison between a Iterator and ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      friend inline bool operator!=( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator!=( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) != rhs );
       }
       //*******************************************************************************************
 
       //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between a ConstIterator and RowIterator.
+      /*!\brief Inequality comparison between a ConstIterator and Iterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      friend inline bool operator!=( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator!=( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs != ConstIterator( rhs ) );
       }
       //*******************************************************************************************
 
       //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
+      /*!\brief Less-than comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      friend inline bool operator<( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ < rhs.column_ );
+      friend inline bool operator<( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ < rhs.row_ ):( lhs.column_ < rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between a RowIterator and a ConstIterator.
+      /*!\brief Less-than comparison between a Iterator and a ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      friend inline bool operator<( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator<( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) < rhs );
       }
       //*******************************************************************************************
 
       //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between a ConstIterator and a RowIterator.
+      /*!\brief Less-than comparison between a ConstIterator and a Iterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      friend inline bool operator<( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator<( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs < ConstIterator( rhs ) );
       }
       //*******************************************************************************************
 
       //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
+      /*!\brief Greater-than comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      friend inline bool operator>( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ > rhs.column_ );
+      friend inline bool operator>( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ > rhs.row_ ):( lhs.column_ > rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between a RowIterator and a ConstIterator.
+      /*!\brief Greater-than comparison between a Iterator and a ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      friend inline bool operator>( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator>( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) > rhs );
       }
       //*******************************************************************************************
 
       //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between a ConstIterator and a RowIterator.
+      /*!\brief Greater-than comparison between a ConstIterator and a Iterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      friend inline bool operator>( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator>( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs > ConstIterator( rhs ) );
       }
       //*******************************************************************************************
 
       //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
+      /*!\brief Less-than comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      friend inline bool operator<=( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ <= rhs.column_ );
+      friend inline bool operator<=( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ <= rhs.row_ ):( lhs.column_ <= rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between a RowIterator and a ConstIterator.
+      /*!\brief Less-than comparison between a Iterator and a ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      friend inline bool operator<=( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator<=( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) <= rhs );
       }
       //*******************************************************************************************
 
       //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between a ConstIterator and a RowIterator.
+      /*!\brief Less-than comparison between a ConstIterator and a Iterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      friend inline bool operator<=( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator<=( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs <= ConstIterator( rhs ) );
       }
       //*******************************************************************************************
 
       //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
+      /*!\brief Greater-than comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      friend inline bool operator>=( const RowIterator& lhs, const RowIterator& rhs ) {
-         return ( lhs.column_ >= rhs.column_ );
+      friend inline bool operator>=( const Iterator& lhs, const Iterator& rhs ) {
+         return ( SO )?( lhs.row_ >= rhs.row_ ):( lhs.column_ >= rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between a RowIterator and a ConstIterator.
+      /*!\brief Greater-than comparison between a Iterator and a ConstIterator.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      friend inline bool operator>=( const RowIterator& lhs, const ConstIterator& rhs ) {
+      friend inline bool operator>=( const Iterator& lhs, const ConstIterator& rhs ) {
          return ( ConstIterator( lhs ) >= rhs );
       }
       //*******************************************************************************************
 
       //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
+      /*!\brief Greater-than comparison between two Iterator objects.
       //
       // \param lhs The left-hand side iterator.
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      friend inline bool operator>=( const ConstIterator& lhs, const RowIterator& rhs ) {
+      friend inline bool operator>=( const ConstIterator& lhs, const Iterator& rhs ) {
          return ( lhs >= ConstIterator( rhs ) );
       }
       //*******************************************************************************************
@@ -508,44 +511,53 @@ class SymmetricMatrix<MT,SO,true,true>
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const RowIterator& rhs ) const {
-         return ( column_ - rhs.column_ );
+      inline DifferenceType operator-( const Iterator& rhs ) const {
+         return ( SO )?( row_ - rhs.row_ ):( column_ - rhs.column_ );
       }
       //*******************************************************************************************
 
       //**Addition operator************************************************************************
-      /*!\brief Addition between a RowIterator and an integral value.
+      /*!\brief Addition between a Iterator and an integral value.
       //
       // \param it The iterator to be incremented.
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) {
-         return RowIterator( *it.matrix_, it.row_, it.column_ + inc );
+      friend inline const Iterator operator+( const Iterator& it, size_t inc ) {
+         if( SO )
+            return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
+         else
+            return Iterator( *it.matrix_, it.row_, it.column_ + inc );
       }
       //*******************************************************************************************
 
       //**Addition operator************************************************************************
-      /*!\brief Addition between an integral value and a RowIterator.
+      /*!\brief Addition between an integral value and a Iterator.
       //
       // \param inc The number of elements the iterator is incremented.
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) {
-         return RowIterator( *it.matrix_, it.row_, it.column_ + inc );
+      friend inline const Iterator operator+( size_t inc, const Iterator& it ) {
+         if( SO )
+            return Iterator( *it.matrix_, it.row_ + inc, it.column_ );
+         else
+            return Iterator( *it.matrix_, it.row_, it.column_ + inc );
       }
       //*******************************************************************************************
 
       //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between a RowIterator and an integral value.
+      /*!\brief Subtraction between a Iterator and an integral value.
       //
       // \param it The iterator to be decremented.
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) {
-         return RowIterator( *it.matrix_, it.row_, it.column_ - dec );
+      friend inline const Iterator operator-( const Iterator& it, size_t dec ) {
+         if( SO )
+            return Iterator( *it.matrix_, it.row_ - dec, it.column_ );
+         else
+            return Iterator( *it.matrix_, it.row_, it.column_ - dec );
       }
       //*******************************************************************************************
 
@@ -556,428 +568,6 @@ class SymmetricMatrix<MT,SO,true,true>
       size_t column_;  //!< The current column index of the iterator.
       //*******************************************************************************************
    };
-   //**********************************************************************************************
-
-   //**ColumnIterator class definition*************************************************************
-   /*!\brief Column-wise iterator over the non-constant elements of the dense symmetric matrix.
-   */
-   class ColumnIterator
-   {
-    public:
-      //**Type definitions*************************************************************************
-      typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
-      typedef typename MT::ElementType         ValueType;         //!< Type of the underlying elements.
-      typedef NumericProxy<MT>                 PointerType;       //!< Pointer return type.
-      typedef NumericProxy<MT>                 ReferenceType;     //!< Reference return type.
-      typedef ptrdiff_t                        DifferenceType;    //!< Difference between two iterators.
-
-      // STL iterator requirements
-      typedef IteratorCategory  iterator_category;  //!< The iterator category.
-      typedef ValueType         value_type;         //!< Type of the underlying elements.
-      typedef PointerType       pointer;            //!< Pointer return type.
-      typedef ReferenceType     reference;          //!< Reference return type.
-      typedef DifferenceType    difference_type;    //!< Difference between two iterators.
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Default constructor of the ColumnIterator class.
-      */
-      inline ColumnIterator()
-         : matrix_( NULL )  // Reference to the adapted dense matrix
-         , row_   ( 0UL  )  // The current row index of the iterator
-         , column_( 0UL  )  // The current column index of the iterator
-      {}
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the ColumnIterator class.
-      //
-      // \param matrix The adapted matrix.
-      // \param row Initial row index of the iterator.
-      // \param column Initial column index of the iterator.
-      */
-      inline ColumnIterator( MT& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // Reference to the adapted dense matrix
-         , row_   ( row     )  // The current row index of the iterator
-         , column_( column  )  // The current column index of the iterator
-      {}
-      //*******************************************************************************************
-
-      //**Addition assignment operator*************************************************************
-      /*!\brief Addition assignment operator.
-      //
-      // \param inc The increment of the iterator.
-      // \return The incremented iterator.
-      */
-      inline ColumnIterator& operator+=( size_t inc ) {
-         row_ += inc;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Subtraction assignment operator**********************************************************
-      /*!\brief Subtraction assignment operator.
-      //
-      // \param dec The decrement of the iterator.
-      // \return The decremented iterator.
-      */
-      inline ColumnIterator& operator-=( size_t dec ) {
-         row_ -= dec;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Prefix increment operator****************************************************************
-      /*!\brief Pre-increment operator.
-      //
-      // \return Reference to the incremented iterator.
-      */
-      inline ColumnIterator& operator++() {
-         ++row_;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix increment operator***************************************************************
-      /*!\brief Post-increment operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const ColumnIterator operator++( int ) {
-         const ColumnIterator tmp( *this );
-         ++(*this);
-         return tmp;
-      }
-      //*******************************************************************************************
-
-      //**Prefix decrement operator****************************************************************
-      /*!\brief Pre-decrement operator.
-      //
-      // \return Reference to the decremented iterator.
-      */
-      inline ColumnIterator& operator--() {
-         --row_;
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix decrement operator***************************************************************
-      /*!\brief Post-decrement operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const ColumnIterator operator--( int ) {
-         const ColumnIterator tmp( *this );
-         --(*this);
-         return tmp;
-      }
-      //*******************************************************************************************
-
-      //**Element access operator******************************************************************
-      /*!\brief Direct access to the element at the current iterator position.
-      //
-      // \return The resulting value.
-      */
-      inline ReferenceType operator*() const {
-         return ReferenceType( *matrix_, row_, column_ );
-      }
-      //*******************************************************************************************
-
-      //**Element access operator******************************************************************
-      /*!\brief Direct access to the element at the current iterator position.
-      //
-      // \return The resulting value.
-      */
-      inline PointerType operator->() const {
-         return PointerType( *matrix_, row_, column_ );
-      }
-      //*******************************************************************************************
-
-      //**Conversion operator**********************************************************************
-      /*!\brief Conversion to an iterator over constant elements.
-      //
-      // \return An iterator over constant elements.
-      */
-      inline operator ConstIterator() const {
-         return matrix_->begin(column_) + row_;
-      }
-      //*******************************************************************************************
-
-      //**Equality operator************************************************************************
-      /*!\brief Equality comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators refer to the same element, \a false if not.
-      */
-      friend inline bool operator==( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ == rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Equality operator************************************************************************
-      /*!\brief Equality comparison between a ColumnIterator and a ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators refer to the same element, \a false if not.
-      */
-      friend inline bool operator==( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) == rhs );
-      }
-      //*******************************************************************************************
-
-      //**Equality operator************************************************************************
-      /*!\brief Equality comparison between a ConstIterator and a ColumnIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators refer to the same element, \a false if not.
-      */
-      friend inline bool operator==( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs == ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators don't refer to the same element, \a false if they do.
-      */
-      friend inline bool operator!=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ != rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between a ColumnIterator and ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators don't refer to the same element, \a false if they do.
-      */
-      friend inline bool operator!=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) != rhs );
-      }
-      //*******************************************************************************************
-
-      //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between a ConstIterator and ColumnIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the iterators don't refer to the same element, \a false if they do.
-      */
-      friend inline bool operator!=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs != ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller, \a false if not.
-      */
-      friend inline bool operator<( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ < rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between a ColumnIterator and a ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller, \a false if not.
-      */
-      friend inline bool operator<( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) < rhs );
-      }
-      //*******************************************************************************************
-
-      //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between a ConstIterator and a ColumnIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller, \a false if not.
-      */
-      friend inline bool operator<( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs < ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater, \a false if not.
-      */
-      friend inline bool operator>( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ > rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between a ColumnIterator and a ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater, \a false if not.
-      */
-      friend inline bool operator>( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) > rhs );
-      }
-      //*******************************************************************************************
-
-      //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between a ConstIterator and a ColumnIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater, \a false if not.
-      */
-      friend inline bool operator>( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs > ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
-      */
-      friend inline bool operator<=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ <= rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between a ColumnIterator and a ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
-      */
-      friend inline bool operator<=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) <= rhs );
-      }
-      //*******************************************************************************************
-
-      //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between a ConstIterator and a ColumnIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
-      */
-      friend inline bool operator<=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs <= ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
-      */
-      friend inline bool operator>=( const ColumnIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs.row_ >= rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between a ColumnIterator and a ConstIterator.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
-      */
-      friend inline bool operator>=( const ColumnIterator& lhs, const ConstIterator& rhs ) {
-         return ( ConstIterator( lhs ) >= rhs );
-      }
-      //*******************************************************************************************
-
-      //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two ColumnIterator objects.
-      //
-      // \param lhs The left-hand side iterator.
-      // \param rhs The right-hand side iterator.
-      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
-      */
-      friend inline bool operator>=( const ConstIterator& lhs, const ColumnIterator& rhs ) {
-         return ( lhs >= ConstIterator( rhs ) );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two iterators.
-      //
-      // \param rhs The right-hand side iterator.
-      // \return The number of elements between the two iterators.
-      */
-      inline DifferenceType operator-( const ColumnIterator& rhs ) const {
-         return ( row_ - rhs.row_ );
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between a ColumnIterator and an integral value.
-      //
-      // \param it The iterator to be incremented.
-      // \param inc The number of elements the iterator is incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const ColumnIterator operator+( const ColumnIterator& it, size_t inc ) {
-         return ColumnIterator( *it.matrix_, it.row_ + inc, it.column_ );
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between an integral value and a ColumnIterator.
-      //
-      // \param inc The number of elements the iterator is incremented.
-      // \param it The iterator to be incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const ColumnIterator operator+( size_t inc, const ColumnIterator& it ) {
-         return ColumnIterator( *it.matrix_, it.row_ + inc, it.column_ );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between a ColumnIterator and an integral value.
-      //
-      // \param it The iterator to be decremented.
-      // \param dec The number of elements the iterator is decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const ColumnIterator operator-( const ColumnIterator& it, size_t dec ) {
-         return ColumnIterator( *it.matrix_, it.row_ - dec, it.column_ );
-      }
-      //*******************************************************************************************
-
-    private:
-      //**Member variables*************************************************************************
-      MT*    matrix_;  //!< Reference to the adapted dense matrix.
-      size_t row_;     //!< The current row index of the iterator.
-      size_t column_;  //!< The current column index of the iterator.
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Type definitions****************************************************************************
-   //! Iterator over non-constant elements.
-   typedef typename IfTrue< SO, ColumnIterator, RowIterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
