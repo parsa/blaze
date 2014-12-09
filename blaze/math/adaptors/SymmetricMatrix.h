@@ -336,6 +336,30 @@ struct AddTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
    typedef typename AddTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
 };
 
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, LowerMatrix<MT2,SO2,DF2> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct AddTrait< LowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, UpperMatrix<MT2,SO2,DF2> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct AddTrait< UpperMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
@@ -401,6 +425,30 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    typedef typename SubTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, LowerMatrix<MT2,SO2,DF2> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct SubTrait< LowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, UpperMatrix<MT2,SO2,DF2> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct SubTrait< UpperMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
@@ -530,6 +578,30 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    typedef typename MultTrait< CompressedMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, LowerMatrix<MT2,SO2,DF2> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct MultTrait< LowerMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, UpperMatrix<MT2,SO2,DF2> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
+struct MultTrait< UpperMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
