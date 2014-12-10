@@ -796,9 +796,9 @@ class SymmetricMatrix<MT,SO,false,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
@@ -1245,8 +1245,6 @@ template< typename MT2 >  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,true>& >::Type
    SymmetricMatrix<MT,SO,false,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   using std::swap;
-
    if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
@@ -1506,8 +1504,6 @@ template< typename MT2  // Type of the right-hand side matrix
 inline SymmetricMatrix<MT,SO,false,true>&
    SymmetricMatrix<MT,SO,false,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   using std::swap;
-
    if( matrix_.rows() != (~rhs).columns() )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
@@ -1700,7 +1696,7 @@ inline void SymmetricMatrix<MT,SO,false,true>::reset()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Reset the specified row/column to the default initial values.
+/*!\brief Reset the specified row \b and column to the default initial values.
 //
 // \param i The index of the row/column.
 // \return void
