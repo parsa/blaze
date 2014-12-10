@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/mathtest/densesubvector/AlignedTest.h>

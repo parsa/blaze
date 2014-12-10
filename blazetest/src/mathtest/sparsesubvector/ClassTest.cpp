@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/sparsesubvector/ClassTest.h>
 

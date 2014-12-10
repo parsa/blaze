@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/Complex.h>

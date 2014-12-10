@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/serialization/MatrixSerializer.h>
 #include <blaze/math/serialization/VectorSerializer.h>
 #include <blaze/util/Complex.h>

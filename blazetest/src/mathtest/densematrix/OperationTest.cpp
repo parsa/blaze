@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/densematrix/OperationTest.h>

@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/typetraits/AlignmentOf.h>

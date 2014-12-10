@@ -39,8 +39,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
