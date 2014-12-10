@@ -819,7 +819,7 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( const Matrix<MT2,SO2>& m )
 // \exception std::invalid_argument Invalid assignment to lower matrix element.
 //
 // The function call operator provides access to the elements at position (i,j). The attempt to
-// assign to an element in the lower part of the matrix (i.e. above the diagonal) will result in
+// assign to an element in the lower part of the matrix (i.e. below the diagonal) will result in
 // a \a std::invalid_argument exception.
 */
 template< typename MT  // Type of the adapted dense matrix
@@ -846,7 +846,7 @@ inline typename UpperMatrix<MT,SO,true>::Reference
 // \exception std::invalid_argument Invalid assignment to lower matrix element.
 //
 // The function call operator provides access to the elements at position (i,j). The attempt to
-// assign to an element in the lower part of the matrix (i.e. above the diagonal) will result in
+// assign to an element in the lower part of the matrix (i.e. below the diagonal) will result in
 // a \a std::invalid_argument exception.
 */
 template< typename MT  // Type of the adapted dense matrix
