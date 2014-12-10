@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/LowerProxy.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -111,7 +112,7 @@ class LowerMatrix<MT,SO,true>
    typedef LowerMatrix<MT,SO,true>      This;            //!< Type of this LowerMatrix instance.
    typedef This                         ResultType;      //!< Result type for expression template evaluations.
    typedef LowerMatrix<OT,!SO,true>     OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef LowerMatrix<TT,!SO,true>     TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef UpperMatrix<TT,!SO,true>     TransposeType;   //!< Transpose type for expression template evaluations.
    typedef ET                           ElementType;     //!< Type of the matrix elements.
    typedef typename MT::IntrinsicType   IntrinsicType;   //!< Intrinsic type of the matrix elements.
    typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
@@ -134,7 +135,7 @@ class LowerMatrix<MT,SO,true>
    //**********************************************************************************************
 
    //**Iterator class definition*******************************************************************
-   /*!\brief Row-wise iterator over the non-constant elements of the dense lower matrix.
+   /*!\brief Iterator over the non-constant elements of the dense lower matrix.
    */
    class Iterator
    {
@@ -703,9 +704,9 @@ class LowerMatrix<MT,SO,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
