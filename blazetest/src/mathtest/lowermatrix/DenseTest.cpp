@@ -219,7 +219,7 @@ void DenseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7  0  3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -436,7 +436,7 @@ void DenseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7  0  3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
