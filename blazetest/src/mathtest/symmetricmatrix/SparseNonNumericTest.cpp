@@ -342,7 +342,7 @@ void SparseNonNumericTest::testConstructors()
 
 
    //=====================================================================================
-   // Row-major copy constructor
+   // Column-major copy constructor
    //=====================================================================================
 
    // Copy constructor (0x0)
@@ -6158,7 +6158,7 @@ void SparseNonNumericTest::testAppend()
          // Initialization check
          ST sym( 4UL, 9UL );
          sym.reserve( 0UL, 2UL );
-         sym.reserve( 0UL, 2UL );
+         sym.reserve( 1UL, 2UL );
          sym.reserve( 2UL, 2UL );
          sym.reserve( 3UL, 3UL );
 
@@ -6364,7 +6364,7 @@ void SparseNonNumericTest::testAppend()
          // Initialization check
          TST sym( 4UL, 9UL );
          sym.reserve( 0UL, 2UL );
-         sym.reserve( 0UL, 2UL );
+         sym.reserve( 1UL, 2UL );
          sym.reserve( 2UL, 2UL );
          sym.reserve( 3UL, 3UL );
 
@@ -6631,7 +6631,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -6659,7 +6659,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -6687,7 +6687,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -6715,7 +6715,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -6790,7 +6790,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -6832,7 +6832,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -6871,7 +6871,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -6913,7 +6913,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -6998,7 +6998,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7040,7 +7040,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7082,7 +7082,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7121,7 +7121,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 0 2 3 )\n( 0 4 0 0 )\n( 2 0 0 0 )\n( 3 0 0 0 )\n";
@@ -7200,7 +7200,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7228,7 +7228,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7256,7 +7256,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -7284,7 +7284,7 @@ void SparseNonNumericTest::testErase()
           sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -7359,7 +7359,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7401,7 +7401,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7440,7 +7440,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a non-zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -7482,7 +7482,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a zero element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) ( 3 ) )\n"
@@ -7567,7 +7567,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7609,7 +7609,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) || sym(3,2) != vec( 7 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7651,7 +7651,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) ( 2 ) ( 3 ) )\n"
@@ -7690,7 +7690,7 @@ void SparseNonNumericTest::testErase()
              sym(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 0 2 3 )\n( 0 4 0 0 )\n( 2 0 0 0 )\n( 3 0 0 0 )\n";
