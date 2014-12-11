@@ -5782,7 +5782,7 @@ void ClassTest::testErase()
              mat(2,1) != 6 || mat(2,4) != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 4 0 5 )\n( 0 6 0 0 7 )\n";
@@ -5819,7 +5819,7 @@ void ClassTest::testErase()
              mat(2,1) != 6 || mat(2,4) != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 7 )\n";
@@ -5856,7 +5856,7 @@ void ClassTest::testErase()
              mat(2,1) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
@@ -5890,7 +5890,7 @@ void ClassTest::testErase()
              mat(2,1) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 )\n( 0 3 0 0 5 )\n( 0 6 0 0 0 )\n";
@@ -6281,7 +6281,7 @@ void ClassTest::testErase()
              mat(1,2) != 6 || mat(4,2) != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 4 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
@@ -6318,7 +6318,7 @@ void ClassTest::testErase()
              mat(1,2) != 6 || mat(4,2) != 7 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 7 )\n";
@@ -6355,7 +6355,7 @@ void ClassTest::testErase()
              mat(1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
@@ -6389,7 +6389,7 @@ void ClassTest::testErase()
              mat(1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 0 0 0 )\n( 0 3 6 )\n( 2 0 0 )\n( 0 0 0 )\n( 0 5 0 )\n";
