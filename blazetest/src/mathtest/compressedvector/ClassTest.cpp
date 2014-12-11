@@ -1881,7 +1881,7 @@ void ClassTest::testErase()
       if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 2 0 0 3 0 4 5 )\n";
@@ -1898,7 +1898,7 @@ void ClassTest::testErase()
       if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 2 0 0 3 0 4 0 )\n";
@@ -1915,7 +1915,7 @@ void ClassTest::testErase()
       if( vec[2] != 2 || vec[7] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a non-zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
@@ -1932,7 +1932,7 @@ void ClassTest::testErase()
       if( vec[2] != 2 || vec[7] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Erasing a zero element failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
@@ -2136,7 +2136,7 @@ void ClassTest::testErase()
          if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 || vec[8] != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << vec << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 3 0 4 5 )\n";
@@ -2167,7 +2167,7 @@ void ClassTest::testErase()
          if( vec[2] != 2 || vec[5] != 3 || vec[7] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << vec << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 3 0 4 0 )\n";
@@ -2195,7 +2195,7 @@ void ClassTest::testErase()
          if( vec[2] != 2 || vec[7] != 4 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a non-zero element failed\n"
+                << " Error: Erasing a single-element range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << vec << "\n"
                 << "   Expected result:\n( 0 0 2 0 0 0 0 4 0 )\n";
