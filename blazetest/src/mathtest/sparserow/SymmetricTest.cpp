@@ -4236,7 +4236,7 @@ void SymmetricTest::testAppend()
       if( row1[1] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
@@ -4246,7 +4246,7 @@ void SymmetricTest::testAppend()
       if( mat(1,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );
@@ -4278,7 +4278,7 @@ void SymmetricTest::testAppend()
           mat(3,1) != 2 || mat(4,1) != 3 || mat(8,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );
@@ -4311,7 +4311,7 @@ void SymmetricTest::testAppend()
       if( row1[1] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << row1 << "\n"
              << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
@@ -4321,7 +4321,7 @@ void SymmetricTest::testAppend()
       if( mat(1,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );
@@ -4353,7 +4353,7 @@ void SymmetricTest::testAppend()
           mat(3,1) != 2 || mat(4,1) != 3 || mat(8,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n";
          throw std::runtime_error( oss.str() );

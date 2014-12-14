@@ -6223,7 +6223,7 @@ void ClassTest::testAppend()
          if( sm(2,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
@@ -6246,7 +6246,7 @@ void ClassTest::testAppend()
          if( sm(2,1) != 1 || sm(0,0) != 2 || sm(0,3) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
@@ -6270,7 +6270,7 @@ void ClassTest::testAppend()
              sm(3,1) != 4 || sm(3,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 0 0 )\n( 0 1 0 0 )\n( 0 4 5 0 )\n";
@@ -6304,7 +6304,7 @@ void ClassTest::testAppend()
          if( sm(0,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -6328,7 +6328,7 @@ void ClassTest::testAppend()
          if( sm(0,1) != 1 || sm(1,1) != 2 || sm(1,3) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -6353,7 +6353,7 @@ void ClassTest::testAppend()
              sm(3,0) != 4 || sm(3,1) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 0 2 0 3 )\n( 0 0 0 0 )\n( 4 5 0 0 )\n";
@@ -6404,7 +6404,7 @@ void ClassTest::testAppend()
          if( sm(1,2) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -6427,7 +6427,7 @@ void ClassTest::testAppend()
          if( sm(1,2) != 1 || sm(0,0) != 2 || sm(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 0 )\n( 0 0 0 0 )\n( 3 0 0 0 )\n";
@@ -6451,7 +6451,7 @@ void ClassTest::testAppend()
              sm(1,3) != 4 || sm(2,3) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 2 0 0 0 )\n( 0 0 1 4 )\n( 0 0 0 5 )\n( 3 0 0 0 )\n";
@@ -6485,7 +6485,7 @@ void ClassTest::testAppend()
          if( sm(1,0) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -6509,7 +6509,7 @@ void ClassTest::testAppend()
          if( sm(1,0) != 1 || sm(1,1) != 2 || sm(3,1) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 1 2 0 0 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";
@@ -6534,7 +6534,7 @@ void ClassTest::testAppend()
              sm(0,3) != 4 || sm(1,3) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sm << "\n"
                 << "   Expected result:\n( 0 0 0 4 )\n( 1 2 0 5 )\n( 0 0 0 0 )\n( 0 3 0 0 )\n";

@@ -5037,7 +5037,7 @@ void SparseNumericTest::testAppend()
          if( sym(1,2) != 1 || sym(2,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
@@ -5063,7 +5063,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 3 0 0 0 )\n";
@@ -5089,7 +5089,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 3 || sym(3,1) != 4 || sym(3,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 1 4 )\n( 0 1 0 5 )\n( 3 4 5 0 )\n";
@@ -5122,7 +5122,7 @@ void SparseNumericTest::testAppend()
          if( sym(0,1) != 1 || sym(1,0) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -5148,7 +5148,7 @@ void SparseNumericTest::testAppend()
              sym(2,1) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 1 2 3 0 )\n( 0 3 0 0 )\n( 0 0 0 0 )\n";
@@ -5175,7 +5175,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 4 || sym(3,1) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 4 )\n( 1 2 3 5 )\n( 0 3 0 0 )\n( 4 5 0 0 )\n";
@@ -5225,7 +5225,7 @@ void SparseNumericTest::testAppend()
          if( sym(1,2) != 1 || sym(2,1) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 0 0 0 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 0 0 0 0 )\n";
@@ -5251,7 +5251,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 1 0 )\n( 0 1 0 0 )\n( 3 0 0 0 )\n";
@@ -5277,7 +5277,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 3 || sym(3,1) != 4 || sym(3,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 2 0 0 3 )\n( 0 0 1 4 )\n( 0 1 0 5 )\n( 3 4 5 0 )\n";
@@ -5310,7 +5310,7 @@ void SparseNumericTest::testAppend()
          if( sym(0,1) != 1 || sym(1,0) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 1 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n";
@@ -5336,7 +5336,7 @@ void SparseNumericTest::testAppend()
              sym(2,1) != 3 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 0 )\n( 1 2 3 0 )\n( 0 3 0 0 )\n( 0 0 0 0 )\n";
@@ -5363,7 +5363,7 @@ void SparseNumericTest::testAppend()
              sym(3,0) != 4 || sym(3,1) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 4 )\n( 1 2 3 5 )\n( 0 3 0 0 )\n( 4 5 0 0 )\n";

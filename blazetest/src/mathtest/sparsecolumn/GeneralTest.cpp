@@ -4281,7 +4281,7 @@ void GeneralTest::testAppend()
       if( col1[1] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";
@@ -4331,7 +4331,7 @@ void GeneralTest::testAppend()
       if( col1[1] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Initialization failed\n"
+             << " Error: Append operation failed\n"
              << " Details:\n"
              << "   Result:\n" << col1 << "\n"
              << "   Expected result:\n( 0 1 0 0 0 0 0 0 0 )\n";

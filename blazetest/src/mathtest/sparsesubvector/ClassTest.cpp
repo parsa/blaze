@@ -2189,7 +2189,7 @@ void ClassTest::testAppend()
    if( sv[0] != 1 ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Initialization failed\n"
+          << " Error: Append operation failed\n"
           << " Details:\n"
           << "   Result:\n" << sv << "\n"
           << "   Expected result:\n( 0 0 1 0 0 0 0 0 0 0 )\n";

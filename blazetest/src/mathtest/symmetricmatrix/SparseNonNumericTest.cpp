@@ -6186,7 +6186,7 @@ void SparseNonNumericTest::testAppend()
          if( sym(1,2) != vec( 1 ) || sym(2,1) != vec( 1 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) (   ) )\n"
@@ -6215,7 +6215,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,0) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( ( 2 ) (   ) (   ) ( 3 ) )\n"
@@ -6244,7 +6244,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,0) != vec( 3 ) || sym(3,1) != vec( 4 ) || sym(3,2) != vec( 5 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( ( 2 ) (   ) (   ) ( 3 ) )\n"
@@ -6280,7 +6280,7 @@ void SparseNonNumericTest::testAppend()
          if( sym(0,1) != vec( 1 ) || sym(1,0) != vec( 1 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
@@ -6309,7 +6309,7 @@ void SparseNonNumericTest::testAppend()
              sym(2,1) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
@@ -6339,7 +6339,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,2) != vec( 4 ) || sym(3,3) != vec( 5 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
@@ -6392,7 +6392,7 @@ void SparseNonNumericTest::testAppend()
          if( sym(1,2) != vec( 1 ) || sym(2,1) != vec( 1 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) (   ) (   ) (   ) )\n"
@@ -6421,7 +6421,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,0) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( ( 2 ) (   ) (   ) ( 3 ) )\n"
@@ -6450,7 +6450,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,0) != vec( 3 ) || sym(3,1) != vec( 4 ) || sym(3,2) != vec( 5 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( ( 2 ) (   ) (   ) ( 3 ) )\n"
@@ -6486,7 +6486,7 @@ void SparseNonNumericTest::testAppend()
          if( sym(0,1) != vec( 1 ) || sym(1,0) != vec( 1 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
@@ -6515,7 +6515,7 @@ void SparseNonNumericTest::testAppend()
              sym(2,1) != vec( 3 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
@@ -6545,7 +6545,7 @@ void SparseNonNumericTest::testAppend()
              sym(3,2) != vec( 4 ) || sym(3,3) != vec( 5 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Initialization failed\n"
+                << " Error: Append operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( (   ) ( 1 ) (   ) (   ) )\n"
