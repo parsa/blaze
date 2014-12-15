@@ -359,7 +359,7 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major UpperMatrix default constructor (DynamicMatrix)";
 
-      TUT upper;
+      OUT upper;
 
       checkRows    ( upper, 0UL );
       checkColumns ( upper, 0UL );
@@ -386,7 +386,7 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major UpperMatrix size constructor (DynamicMatrix)";
 
-      TUT upper( 2UL );
+      OUT upper( 2UL );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
@@ -402,8 +402,8 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major UpperMatrix copy constructor (0x0)";
 
-      const TUT upper1;
-      const TUT upper2( upper1 );
+      const OUT upper1;
+      const OUT upper2( upper1 );
 
       checkRows    ( upper2, 0UL );
       checkColumns ( upper2, 0UL );
@@ -414,14 +414,14 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major UpperMatrix copy constructor (3x3)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,0) =  1;
       upper1(0,1) = -4;
       upper1(0,2) =  7;
       upper1(1,1) =  2;
       upper1(2,2) =  3;
 
-      const TUT upper2( upper1 );
+      const OUT upper2( upper1 );
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
@@ -451,7 +451,7 @@ void DenseTest::testConstructors()
       test_ = "Column-major UpperMatrix conversion constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
-      const TUT upper( mat );
+      const OUT upper( mat );
 
       checkRows    ( upper, 0UL );
       checkColumns ( upper, 0UL );
@@ -469,7 +469,7 @@ void DenseTest::testConstructors()
       mat(1,1) =  2;
       mat(2,2) =  3;
 
-      const TUT upper( mat );
+      const OUT upper( mat );
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
@@ -502,7 +502,7 @@ void DenseTest::testConstructors()
       mat(2,2) =  3;
 
       try {
-         const TUT upper( mat );
+         const OUT upper( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -525,7 +525,7 @@ void DenseTest::testConstructors()
       upper1(1,1) =  2;
       upper1(2,2) =  3;
 
-      const TUT upper2( upper1 );
+      const OUT upper2( upper1 );
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
@@ -812,7 +812,7 @@ void DenseTest::testAssignment()
    {
       test_ = "Column-major UpperMatrix copy assignment (0x0)";
 
-      TUT upper1, upper2;
+      OUT upper1, upper2;
 
       upper2 = upper1;
 
@@ -825,7 +825,7 @@ void DenseTest::testAssignment()
    {
       test_ = "Column-major UpperMatrix copy assignment (3x3)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,0) =  1;
       upper1(0,1) = -4;
       upper1(0,2) =  7;
@@ -833,7 +833,7 @@ void DenseTest::testAssignment()
       upper1(1,2) =  0;
       upper1(2,2) =  3;
 
-      TUT upper2;
+      OUT upper2;
       upper2 = upper1;
 
       checkRows    ( upper2, 3UL );
@@ -864,7 +864,7 @@ void DenseTest::testAssignment()
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
 
-      TUT upper;
+      OUT upper;
       upper = mat;
 
       checkRows    ( upper, 0UL );
@@ -883,7 +883,7 @@ void DenseTest::testAssignment()
       mat(1,1) =  2;
       mat(2,2) =  3;
 
-      TUT upper;
+      OUT upper;
       upper = mat;
 
       checkRows    ( upper, 3UL );
@@ -914,7 +914,7 @@ void DenseTest::testAssignment()
       mat(1,1) =  2;
       mat(2,2) =  3;
 
-      TUT upper;
+      OUT upper;
       upper = mat;
 
       checkRows    ( upper, 3UL );
@@ -947,7 +947,7 @@ void DenseTest::testAssignment()
       mat(2,2) =  3;
 
       try {
-         TUT upper;
+         OUT upper;
          upper = mat;
 
          std::ostringstream oss;
@@ -973,7 +973,7 @@ void DenseTest::testAssignment()
       mat(2,2) =  3;
 
       try {
-         TUT upper;
+         OUT upper;
          upper = mat;
 
          std::ostringstream oss;
@@ -997,7 +997,7 @@ void DenseTest::testAssignment()
       upper1(1,1) =  2;
       upper1(2,2) =  3;
 
-      TUT upper2;
+      OUT upper2;
       upper2 = upper1;
 
       checkRows    ( upper2, 3UL );
@@ -1028,7 +1028,7 @@ void DenseTest::testAssignment()
       upper1(1,1) =  2;
       upper1(2,2) =  3;
 
-      TUT upper2;
+      OUT upper2;
       upper2 = upper1;
 
       checkRows    ( upper2, 3UL );
@@ -1244,7 +1244,7 @@ void DenseTest::testAddAssign()
    {
       test_ = "Row-major/column-major UpperMatrix addition assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -1295,7 +1295,7 @@ void DenseTest::testAddAssign()
       mat(1,1) = -2;
       mat(1,2) =  5;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1335,7 +1335,7 @@ void DenseTest::testAddAssign()
       mat(1,1) = -2;
       mat(1,2) =  5;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1372,7 +1372,7 @@ void DenseTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1399,7 +1399,7 @@ void DenseTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1429,7 +1429,7 @@ void DenseTest::testAddAssign()
       upper1(1,1) = -2;
       upper1(1,2) =  5;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -1463,13 +1463,13 @@ void DenseTest::testAddAssign()
    {
       test_ = "Column-major/column-major UpperMatrix addition assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
       upper1(1,2) =  5;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -1695,7 +1695,7 @@ void DenseTest::testSubAssign()
    {
       test_ = "Row-major/column-major UpperMatrix subtraction assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -1746,7 +1746,7 @@ void DenseTest::testSubAssign()
       mat(1,1) =  2;
       mat(1,2) =  5;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1786,7 +1786,7 @@ void DenseTest::testSubAssign()
       mat(1,1) =  2;
       mat(1,2) =  5;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1823,7 +1823,7 @@ void DenseTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1850,7 +1850,7 @@ void DenseTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -1880,7 +1880,7 @@ void DenseTest::testSubAssign()
       upper1(1,1) =  2;
       upper1(1,2) =  5;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -1914,13 +1914,13 @@ void DenseTest::testSubAssign()
    {
       test_ = "Column-major/column-major UpperMatrix subtraction assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
       upper1(1,2) =  5;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -2149,7 +2149,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Row-major/column-major UpperMatrix multiplication assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -2198,7 +2198,7 @@ void DenseTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -2237,7 +2237,7 @@ void DenseTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -2277,7 +2277,7 @@ void DenseTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -2307,7 +2307,7 @@ void DenseTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -2336,7 +2336,7 @@ void DenseTest::testMultAssign()
       upper1(1,1) = 2;
       upper1(2,2) = 2;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -2370,12 +2370,12 @@ void DenseTest::testMultAssign()
    {
       test_ = "Column-major/column-major UpperMatrix multiplication assignment (UpperMatrix)";
 
-      TUT upper1( 3UL );
+      OUT upper1( 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
 
-      TUT upper2( 3UL );
+      OUT upper2( 3UL );
       upper2(0,0) =  1;
       upper2(0,1) = -4;
       upper2(0,2) =  7;
@@ -2724,7 +2724,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  1;
       upper(0,2) = -2;
       upper(1,2) =  3;
@@ -2761,7 +2761,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  1;
       upper(0,2) = -2;
       upper(1,2) =  3;
@@ -2798,7 +2798,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  1;
       upper(0,2) = -2;
       upper(1,2) =  3;
@@ -2835,7 +2835,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  2;
       upper(0,2) = -4;
       upper(1,2) =  6;
@@ -2872,7 +2872,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  2;
       upper(0,2) = -4;
       upper(1,2) =  6;
@@ -2910,7 +2910,7 @@ void DenseTest::testScaling()
       test_ = "Column-major UpperMatrix::scale()";
 
       // Initialization check
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,1) =  1;
       upper(0,2) = -2;
       upper(1,2) =  3;
@@ -3221,7 +3221,7 @@ void DenseTest::testFunctionCall()
    {
       test_ = "Column-major UpperMatrix::operator()";
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
 
       // Writing the element (1,1)
       upper(1,1) = 1;
@@ -3780,10 +3780,10 @@ void DenseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef TUT::Iterator       Iterator;
-      typedef TUT::ConstIterator  ConstIterator;
+      typedef OUT::Iterator       Iterator;
+      typedef OUT::ConstIterator  ConstIterator;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,2) =  3;
       upper(1,1) = -2;
@@ -4254,7 +4254,7 @@ void DenseTest::testNonZeros()
 
       // Empty matrix
       {
-         TUT upper( 3UL );
+         OUT upper( 3UL );
 
          checkRows    ( upper, 3UL );
          checkColumns ( upper, 3UL );
@@ -4279,7 +4279,7 @@ void DenseTest::testNonZeros()
 
       // Partially filled matrix
       {
-         TUT upper( 3UL );
+         OUT upper( 3UL );
          upper(0,0) =  1;
          upper(1,1) = -2;
          upper(1,2) =  3;
@@ -4308,7 +4308,7 @@ void DenseTest::testNonZeros()
 
       // Fully filled matrix
       {
-         TUT upper( 3UL );
+         OUT upper( 3UL );
          upper(0,0) = -1;
          upper(0,1) =  2;
          upper(0,2) =  3;
@@ -4490,7 +4490,7 @@ void DenseTest::testReset()
       test_ = "Column-major UpperMatrix::reset()";
 
       // Initialization check
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) = 1;
       upper(0,1) = 2;
       upper(0,2) = 3;
@@ -4724,7 +4724,7 @@ void DenseTest::testClear()
       test_ = "Column-major UpperMatrix::clear()";
 
       // Initialization check
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) = 1;
       upper(0,1) = 2;
       upper(0,2) = 3;
@@ -4913,7 +4913,7 @@ void DenseTest::testResize()
       test_ = "Column-major UpperMatrix::resize()";
 
       // Initialization check
-      TUT upper;
+      OUT upper;
 
       checkRows    ( upper, 0UL );
       checkColumns ( upper, 0UL );
@@ -5067,7 +5067,7 @@ void DenseTest::testExtend()
       test_ = "Column-major UpperMatrix::extend()";
 
       // Initialization check
-      TUT upper;
+      OUT upper;
 
       checkRows    ( upper, 0UL );
       checkColumns ( upper, 0UL );
@@ -5168,7 +5168,7 @@ void DenseTest::testReserve()
       test_ = "Column-major UpperMatrix::reserve()";
 
       // Initialization check
-      TUT upper;
+      OUT upper;
 
       checkRows    ( upper, 0UL );
       checkColumns ( upper, 0UL );
@@ -5267,12 +5267,12 @@ void DenseTest::testSwap()
    {
       test_ = "Column-major UpperMatrix swap";
 
-      TUT upper1( 2UL );
+      OUT upper1( 2UL );
       upper1(0,0) = 1;
       upper1(0,1) = 2;
       upper1(1,1) = 3;
 
-      TUT upper2( 2UL );
+      OUT upper2( 2UL );
       upper2(0,0) = 4;
       upper2(0,1) = 5;
       upper2(1,1) = 0;
@@ -5407,7 +5407,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with 0x0 matrix
       {
-         TUT upper;
+         OUT upper;
 
          if( isDefault( upper ) != true ) {
             std::ostringstream oss;
@@ -5421,7 +5421,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         TUT upper( 3UL );
+         OUT upper( 3UL );
 
          if( isDefault( upper(0,1) ) != true ) {
             std::ostringstream oss;
@@ -5444,7 +5444,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         TUT upper( 3UL );
+         OUT upper( 3UL );
          upper(0,1) = 1;
 
          if( isDefault( upper(0,1) ) != false ) {
@@ -5834,9 +5834,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -5925,9 +5925,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 1)";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 4UL );
+      OUT upper( 4UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -5977,9 +5977,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 2)";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 4UL );
+      OUT upper( 4UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6027,9 +6027,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 3)";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 4UL );
+      OUT upper( 4UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6077,9 +6077,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 4)";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 4UL );
+      OUT upper( 4UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6129,9 +6129,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 5)";
 
-      typedef blaze::DenseSubmatrix<TUT>  SMT;
+      typedef blaze::DenseSubmatrix<OUT>  SMT;
 
-      TUT upper( 4UL );
+      OUT upper( 4UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6348,9 +6348,9 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<TUT>  RT;
+      typedef blaze::DenseRow<OUT>  RT;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6460,9 +6460,9 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function (assignment test)";
 
-      typedef blaze::DenseRow<TUT>  RT;
+      typedef blaze::DenseRow<OUT>  RT;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6671,9 +6671,9 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<TUT>  CT;
+      typedef blaze::DenseColumn<OUT>  CT;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
@@ -6783,9 +6783,9 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function (assignment test)";
 
-      typedef blaze::DenseColumn<TUT>  CT;
+      typedef blaze::DenseColumn<OUT>  CT;
 
-      TUT upper( 3UL );
+      OUT upper( 3UL );
       upper(0,0) =  1;
       upper(0,1) = -4;
       upper(0,2) =  7;
