@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
@@ -610,12 +611,12 @@ void DenseTest::testAssignment()
 
 
    //=====================================================================================
-   // Row-major conversion assignment
+   // Row-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Row-major LowerMatrix conversion assignment (0x0)";
+      test_ = "Row-major LowerMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
 
@@ -627,9 +628,9 @@ void DenseTest::testAssignment()
       checkNonZeros( lower, 0UL );
    }
 
-   // Row-major/row-major conversion assignment (lower)
+   // Row-major/row-major dense matrix assignment (lower)
    {
-      test_ = "Row-major/row-major LowerMatrix conversion assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix assignment (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -658,9 +659,9 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (lower)
+   // Row-major/column-major dense matrix assignment (lower)
    {
-      test_ = "Row-major/column-major LowerMatrix conversion assignment (lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix assignment (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -689,9 +690,9 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Row-major/row-major conversion assignment (non-lower)
+   // Row-major/row-major dense matrix assignment (non-lower)
    {
-      test_ = "Row-major/row-major LowerMatrix conversion assignment (non-lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix assignment (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -715,9 +716,9 @@ void DenseTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major conversion assignment (non-lower)
+   // Row-major/column-major dense matrix assignment (non-lower)
    {
-      test_ = "Row-major/column-major LowerMatrix conversion assignment (non-lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix assignment (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -741,9 +742,9 @@ void DenseTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major conversion assignment (LowerMatrix)
+   // Row-major/row-major dense matrix assignment (LowerMatrix)
    {
-      test_ = "Row-major/row-major LowerMatrix conversion assignment (LowerMatrix)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix assignment (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(0,0) =  1;
@@ -772,11 +773,208 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (LowerMatrix)
+   // Row-major/column-major dense matrix assignment (LowerMatrix)
    {
-      test_ = "Row-major/column-major LowerMatrix conversion assignment (LowerMatrix)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix assignment (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      LT lower2;
+      lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 5UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Row-major LowerMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+      LT lower;
+      lower = mat;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+   }
+
+   // Row-major/row-major sparse matrix assignment (lower)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower;
+      lower = mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 5UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix assignment (lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower;
+      lower = mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 5UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix assignment (non-lower)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(0,2) =  5;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      try {
+         LT lower;
+         lower = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix assignment (non-lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(0,2) =  5;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      try {
+         LT lower;
+         lower = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 5UL );
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      LT lower2;
+      lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 5UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 5UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
@@ -855,12 +1053,12 @@ void DenseTest::testAssignment()
 
 
    //=====================================================================================
-   // Column-major conversion assignment
+   // Column-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Column-major LowerMatrix conversion assignment (0x0)";
+      test_ = "Column-major LowerMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
@@ -872,9 +1070,9 @@ void DenseTest::testAssignment()
       checkNonZeros( lower, 0UL );
    }
 
-   // Column-major/row-major conversion assignment (lower)
+   // Column-major/row-major dense matrix assignment (lower)
    {
-      test_ = "Column-major/row-major LowerMatrix conversion assignment (lower)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix assignment (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -903,9 +1101,9 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (lower)
+   // Column-major/column-major dense matrix assignment (lower)
    {
-      test_ = "Column-major/column-major LowerMatrix conversion assignment (lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix assignment (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -934,9 +1132,9 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Column-major/row-major conversion assignment (non-lower)
+   // Column-major/row-major dense matrix assignment (non-lower)
    {
-      test_ = "Column-major/row-major LowerMatrix conversion assignment (non-lower)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix assignment (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -960,9 +1158,9 @@ void DenseTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major conversion assignment (non-lower)
+   // Column-major/column-major dense matrix assignment (non-lower)
    {
-      test_ = "Column-major/column-major LowerMatrix conversion assignment (non-lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix assignment (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -986,9 +1184,9 @@ void DenseTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major conversion assignment (LowerMatrix)
+   // Column-major/row-major dense matrix assignment (LowerMatrix)
    {
-      test_ = "Column-major/row-major LowerMatrix conversion assignment (LowerMatrix)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix assignment (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(0,0) =  1;
@@ -1017,11 +1215,208 @@ void DenseTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (LowerMatrix)
+   // Column-major/column-major dense matrix assignment (LowerMatrix)
    {
-      test_ = "Column-major/column-major LowerMatrix conversion assignment (LowerMatrix)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix assignment (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      OLT lower2;
+      lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 5UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Column-major LowerMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+      OLT lower;
+      lower = mat;
+
+      checkRows    ( lower, 0UL );
+      checkColumns ( lower, 0UL );
+      checkNonZeros( lower, 0UL );
+   }
+
+   // Column-major/row-major sparse matrix assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower;
+      lower = mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 5UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower;
+      lower = mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 5UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
+          lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix assignment (non-lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(0,2) =  5;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      try {
+         OLT lower;
+         lower = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix assignment (non-lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+      mat(0,0) =  1;
+      mat(0,2) =  5;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      try {
+         OLT lower;
+         lower = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 5UL );
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      OLT lower2;
+      lower2 = lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkNonZeros( lower2, 5UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 5UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
@@ -1063,12 +1458,12 @@ void DenseTest::testAssignment()
 void DenseTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major addition assignment
+   // Row-major dense matrix addition assignment
    //=====================================================================================
 
-   // Row-major/row-major addition assignment (lower)
+   // Row-major/row-major dense matrix addition assignment (lower)
    {
-      test_ = "Row-major/row-major LowerMatrix addition assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix addition assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) =  2;
@@ -1106,9 +1501,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Row-major/column-major addition assignment (lower)
+   // Row-major/column-major dense matrix addition assignment (lower)
    {
-      test_ = "Row-major/column-major LowerMatrix addition assignment (lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix addition assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) =  2;
@@ -1146,9 +1541,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major addition assignment (non-lower)
+   // Row-major/row-major dense matrix addition assignment (non-lower)
    {
-      test_ = "Row-major/row-major LowerMatrix addition assignment (non-lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix addition assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1173,9 +1568,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major addition assignment (non-lower)
+   // Row-major/column-major dense matrix addition assignment (non-lower)
    {
-      test_ = "Row-major/column-major LowerMatrix addition assignment (non-lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix addition assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1200,9 +1595,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major addition assignment (LowerMatrix)
+   // Row-major/row-major dense matrix addition assignment (LowerMatrix)
    {
-      test_ = "Row-major/row-major LowerMatrix addition assignment (LowerMatrix)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(1,0) =  2;
@@ -1240,9 +1635,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Row-major/column-major addition assignment (LowerMatrix)
+   // Row-major/column-major dense matrix addition assignment (LowerMatrix)
    {
-      test_ = "Row-major/column-major LowerMatrix addition assignment (LowerMatrix)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
       lower1(1,0) =  2;
@@ -1282,12 +1677,233 @@ void DenseTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major addition assignment
+   // Row-major sparse matrix addition assignment
    //=====================================================================================
 
-   // Column-major/row-major addition assignment (lower)
+   // Row-major/row-major sparse matrix addition assignment (lower)
    {
-      test_ = "Column-major/row-major LowerMatrix addition assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix sparse matrix addition assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) =  2;
+      mat(1,1) = -2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower += mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 13 || lower(2,1) != 5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix addition assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) =  2;
+      mat(1,1) = -2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower += mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 13 || lower(2,1) != 5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix addition assignment (non-lower)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix addition assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (non-lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix addition assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix addition assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 += lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 3UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) != 13 || lower2(2,1) != 5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 += lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 3UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) != 13 || lower2(2,1) != 5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix addition assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix dense matrix addition assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) =  2;
@@ -1325,9 +1941,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Column-major/column-major addition assignment (lower)
+   // Column-major/column-major dense matrix addition assignment (lower)
    {
-      test_ = "Column-major/column-major LowerMatrix addition assignment (lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix addition assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) =  2;
@@ -1365,9 +1981,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major addition assignment (non-lower)
+   // Column-major/row-major dense matrix addition assignment (non-lower)
    {
-      test_ = "Column-major/row-major LowerMatrix addition assignment (non-lower)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix addition assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1392,9 +2008,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major addition assignment (non-lower)
+   // Column-major/column-major dense matrix addition assignment (non-lower)
    {
-      test_ = "Column-major/column-major LowerMatrix addition assignment (non-lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix addition assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1419,9 +2035,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major addition assignment (LowerMatrix)
+   // Column-major/row-major dense matrix addition assignment (LowerMatrix)
    {
-      test_ = "Column-major/row-major LowerMatrix addition assignment (LowerMatrix)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(1,0) =  2;
@@ -1459,11 +2075,232 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Column-major/column-major addition assignment (LowerMatrix)
+   // Column-major/column-major dense matrix addition assignment (LowerMatrix)
    {
-      test_ = "Column-major/column-major LowerMatrix addition assignment (LowerMatrix)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
+      lower1(1,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 += lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) != 13 || lower2(2,1) != 5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix addition assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix addition assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) =  2;
+      mat(1,1) = -2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower += mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 13 || lower(2,1) != 5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix addition assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) =  2;
+      mat(1,1) = -2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower += mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 13 || lower(2,1) != 5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix addition assignment (non-lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix addition assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (non-lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix addition assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix addition assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) =  2;
+      lower1(1,1) = -2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 += lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) != 0 || lower2(1,2) != 0 ||
+          lower2(2,0) != 13 || lower2(2,1) != 5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -2 0 0 )\n( 13 5 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -1514,12 +2351,12 @@ void DenseTest::testAddAssign()
 void DenseTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major subtraction assignment
+   // Row-major dense matrix subtraction assignment
    //=====================================================================================
 
-   // Row-major/row-major subtraction assignment (lower)
+   // Row-major/row-major dense matrix subtraction assignment (lower)
    {
-      test_ = "Row-major/row-major LowerMatrix subtraction assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix subtraction assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) = -2;
@@ -1557,9 +2394,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Row-major/column-major subtraction assignment (lower)
+   // Row-major/column-major dense matrix subtraction assignment (lower)
    {
-      test_ = "Row-major/column-major LowerMatrix subtraction assignment (lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix subtraction assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) = -2;
@@ -1597,9 +2434,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major subtraction assignment (non-lower)
+   // Row-major/row-major dense matrix subtraction assignment (non-lower)
    {
-      test_ = "Row-major/row-major LowerMatrix subtraction assignment (non-lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix subtraction assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1624,9 +2461,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major subtraction assignment (non-lower)
+   // Row-major/column-major dense matrix subtraction assignment (non-lower)
    {
-      test_ = "Row-major/column-major LowerMatrix subtraction assignment (non-lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix subtraction assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1651,9 +2488,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major subtraction assignment (LowerMatrix)
+   // Row-major/row-major dense matrix subtraction assignment (LowerMatrix)
    {
-      test_ = "Row-major/row-major LowerMatrix subtraction assignment (LowerMatrix)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(1,0) = -2;
@@ -1691,9 +2528,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Row-major/column-major subtraction assignment (LowerMatrix)
+   // Row-major/column-major dense matrix subtraction assignment (LowerMatrix)
    {
-      test_ = "Row-major/column-major LowerMatrix subtraction assignment (LowerMatrix)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
       lower1(1,0) = -2;
@@ -1733,12 +2570,233 @@ void DenseTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major subtraction assignment
+   // Row-major sparse matrix subtraction assignment
    //=====================================================================================
 
-   // Column-major/row-major subtraction assignment (lower)
+   // Row-major/row-major sparse matrix subtraction assignment (lower)
    {
-      test_ = "Column-major/row-major LowerMatrix subtraction assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) = -2;
+      mat(1,1) =  2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower -= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+          lower(2,0) !=  1 || lower(2,1) != -5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) = -2;
+      mat(1,1) =  2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower -= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 3UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+          lower(2,0) !=  1 || lower(2,1) != -5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix subtraction assignment (non-lower)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix subtraction assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (non-lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix subtraction assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix subtraction assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) = -2;
+      lower1(1,1) =  2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 -= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 3UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) !=  0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  1 || lower2(2,1) != -5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) = -2;
+      lower1(1,1) =  2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 -= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 3UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) !=  0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  1 || lower2(2,1) != -5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix subtraction assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix dense matrix subtraction assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) = -2;
@@ -1776,9 +2834,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Column-major/column-major subtraction assignment (lower)
+   // Column-major/column-major dense matrix subtraction assignment (lower)
    {
-      test_ = "Column-major/column-major LowerMatrix subtraction assignment (lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix subtraction assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(1,0) = -2;
@@ -1816,9 +2874,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major subtraction assignment (non-lower)
+   // Column-major/row-major dense matrix subtraction assignment (non-lower)
    {
-      test_ = "Column-major/row-major LowerMatrix subtraction assignment (non-lower)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix subtraction assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1843,9 +2901,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major subtraction assignment (non-lower)
+   // Column-major/column-major dense matrix subtraction assignment (non-lower)
    {
-      test_ = "Column-major/column-major LowerMatrix subtraction assignment (non-lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix subtraction assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
@@ -1870,9 +2928,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major subtraction assignment (LowerMatrix)
+   // Column-major/row-major dense matrix subtraction assignment (LowerMatrix)
    {
-      test_ = "Column-major/row-major LowerMatrix subtraction assignment (LowerMatrix)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(1,0) = -2;
@@ -1910,11 +2968,232 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Column-major/column-major subtraction assignment (LowerMatrix)
+   // Column-major/column-major dense matrix subtraction assignment (LowerMatrix)
    {
-      test_ = "Column-major/column-major LowerMatrix subtraction assignment (LowerMatrix)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
+      lower1(1,0) = -2;
+      lower1(1,1) =  2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 -= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) !=  0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  1 || lower2(2,1) != -5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix subtraction assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) = -2;
+      mat(1,1) =  2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower -= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+          lower(2,0) !=  1 || lower(2,1) != -5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(1,0) = -2;
+      mat(1,1) =  2;
+      mat(2,0) =  6;
+      mat(2,1) =  5;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower -= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+          lower(2,0) !=  1 || lower(2,1) != -5 || lower(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix subtraction assignment (non-lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix subtraction assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (non-lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix subtraction assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
+      mat(0,2) = 6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix subtraction assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      lower1(1,0) = -2;
+      lower1(1,1) =  2;
+      lower1(2,0) =  6;
+      lower1(2,1) =  5;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 -= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -2 || lower2(1,1) !=  0 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  1 || lower2(2,1) != -5 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1  0  0 )\n( -2  0  0 )\n(  1 -5  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -1965,12 +3244,12 @@ void DenseTest::testSubAssign()
 void DenseTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major multiplication assignment
+   // Row-major dense matrix multiplication assignment
    //=====================================================================================
 
-   // Row-major/row-major multiplication assignment (lower)
+   // Row-major/row-major dense matrix multiplication assignment (lower)
    {
-      test_ = "Row-major/row-major LowerMatrix multiplication assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix multiplication assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2007,9 +3286,9 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Row-major/column-major multiplication assignment (lower)
+   // Row-major/column-major dense matrix multiplication assignment (lower)
    {
-      test_ = "Row-major/column-major LowerMatrix multiplication assignment (lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix multiplication assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2046,9 +3325,9 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Row-major/row-major multiplication assignment (non-lower)
+   // Row-major/row-major dense matrix multiplication assignment (non-lower)
    {
-      test_ = "Row-major/row-major LowerMatrix multiplication assignment (non-lower)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix multiplication assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2076,9 +3355,9 @@ void DenseTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major multiplication assignment (non-lower)
+   // Row-major/column-major dense matrix multiplication assignment (non-lower)
    {
-      test_ = "Row-major/column-major LowerMatrix multiplication assignment (non-lower)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix multiplication assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2106,9 +3385,9 @@ void DenseTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major multiplication assignment (LowerMatrix)
+   // Row-major/row-major dense matrix multiplication assignment (LowerMatrix)
    {
-      test_ = "Row-major/row-major LowerMatrix multiplication assignment (LowerMatrix)";
+      test_ = "Row-major/row-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(0,0) = 2;
@@ -2145,9 +3424,9 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Row-major/column-major multiplication assignment (LowerMatrix)
+   // Row-major/column-major dense matrix multiplication assignment (LowerMatrix)
    {
-      test_ = "Row-major/column-major LowerMatrix multiplication assignment (LowerMatrix)";
+      test_ = "Row-major/column-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
       lower1(0,0) = 2;
@@ -2186,12 +3465,235 @@ void DenseTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major multiplication assignment
+   // Row-major sparse matrix multiplication assignment
    //=====================================================================================
 
-   // Column-major/row-major multiplication assignment (lower)
+   // Row-major/row-major sparse matrix multiplication assignment (lower)
    {
-      test_ = "Column-major/row-major LowerMatrix multiplication assignment (lower)";
+      test_ = "Row-major/row-major LowerMatrix sparse matrix multiplication assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower *= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -8 || lower(1,1) != 4 || lower(1,2) != 0 ||
+          lower(2,0) != 14 || lower(2,1) != 0 || lower(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix multiplication assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower *= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -8 || lower(1,1) != 4 || lower(1,2) != 0 ||
+          lower(2,0) != 14 || lower(2,1) != 0 || lower(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix multiplication assignment (non-lower)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix multiplication assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (non-lower)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix multiplication assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix multiplication assignment (LowerMatrix)
+   {
+      test_ = "Row-major/row-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 3UL );
+      lower1(0,0) = 2;
+      lower1(1,1) = 2;
+      lower1(2,2) = 2;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 *= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -8 || lower2(1,1) != 4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 14 || lower2(2,1) != 0 || lower2(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (LowerMatrix)
+   {
+      test_ = "Row-major/column-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 3UL );
+      lower1(0,0) = 2;
+      lower1(1,1) = 2;
+      lower1(2,2) = 2;
+
+      LT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 *= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -8 || lower2(1,1) != 4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 14 || lower2(2,1) != 0 || lower2(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix multiplication assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix multiplication assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix dense matrix multiplication assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2228,9 +3730,9 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Column-major/column-major multiplication assignment (lower)
+   // Column-major/column-major dense matrix multiplication assignment (lower)
    {
-      test_ = "Column-major/column-major LowerMatrix multiplication assignment (lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix multiplication assignment (lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2267,9 +3769,9 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Column-major/row-major multiplication assignment (non-lower)
+   // Column-major/row-major dense matrix multiplication assignment (non-lower)
    {
-      test_ = "Column-major/row-major LowerMatrix multiplication assignment (non-lower)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix multiplication assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2297,9 +3799,9 @@ void DenseTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major multiplication assignment (non-lower)
+   // Column-major/column-major dense matrix multiplication assignment (non-lower)
    {
-      test_ = "Column-major/column-major LowerMatrix multiplication assignment (non-lower)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix multiplication assignment (non-lower)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2327,9 +3829,9 @@ void DenseTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major multiplication assignment (LowerMatrix)
+   // Column-major/row-major dense matrix multiplication assignment (LowerMatrix)
    {
-      test_ = "Column-major/row-major LowerMatrix multiplication assignment (LowerMatrix)";
+      test_ = "Column-major/row-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
       LT lower1( 3UL );
       lower1(0,0) = 2;
@@ -2366,11 +3868,234 @@ void DenseTest::testMultAssign()
       }
    }
 
-   // Column-major/column-major multiplication assignment (LowerMatrix)
+   // Column-major/column-major dense matrix multiplication assignment (LowerMatrix)
    {
-      test_ = "Column-major/column-major LowerMatrix multiplication assignment (LowerMatrix)";
+      test_ = "Column-major/column-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
       OLT lower1( 3UL );
+      lower1(0,0) = 2;
+      lower1(1,1) = 2;
+      lower1(2,2) = 2;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 *= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -8 || lower2(1,1) != 4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 14 || lower2(2,1) != 0 || lower2(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix multiplication assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix multiplication assignment (lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix multiplication assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower *= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -8 || lower(1,1) != 4 || lower(1,2) != 0 ||
+          lower(2,0) != 14 || lower(2,1) != 0 || lower(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix multiplication assignment (lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      lower *= mat;
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 9UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
+
+      if( lower(0,0) !=  2 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != -8 || lower(1,1) != 4 || lower(1,2) != 0 ||
+          lower(2,0) != 14 || lower(2,1) != 0 || lower(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix multiplication assignment (non-lower)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix multiplication assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-lower row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (non-lower)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix multiplication assignment (non-lower)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      try {
+         lower *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-lower column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix multiplication assignment (LowerMatrix)
+   {
+      test_ = "Column-major/row-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 3UL );
+      lower1(0,0) = 2;
+      lower1(1,1) = 2;
+      lower1(2,2) = 2;
+
+      OLT lower2( 3UL );
+      lower2(0,0) =  1;
+      lower2(1,0) = -4;
+      lower2(1,1) =  2;
+      lower2(2,0) =  7;
+      lower2(2,2) =  3;
+
+      lower2 *= lower1;
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  2 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -8 || lower2(1,1) != 4 || lower2(1,2) != 0 ||
+          lower2(2,0) != 14 || lower2(2,1) != 0 || lower2(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  2 0 0 )\n( -8 4 0 )\n( 14 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (LowerMatrix)
+   {
+      test_ = "Column-major/column-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
