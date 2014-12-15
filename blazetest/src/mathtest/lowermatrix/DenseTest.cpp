@@ -359,7 +359,7 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major LowerMatrix default constructor (DynamicMatrix)";
 
-      TLT lower;
+      OLT lower;
 
       checkRows    ( lower, 0UL );
       checkColumns ( lower, 0UL );
@@ -386,7 +386,7 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major LowerMatrix size constructor (DynamicMatrix)";
 
-      TLT lower( 2UL );
+      OLT lower( 2UL );
 
       checkRows    ( lower, 2UL );
       checkColumns ( lower, 2UL );
@@ -402,8 +402,8 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major LowerMatrix copy constructor (0x0)";
 
-      const TLT lower1;
-      const TLT lower2( lower1 );
+      const OLT lower1;
+      const OLT lower2( lower1 );
 
       checkRows    ( lower2, 0UL );
       checkColumns ( lower2, 0UL );
@@ -414,14 +414,14 @@ void DenseTest::testConstructors()
    {
       test_ = "Column-major LowerMatrix copy constructor (3x3)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
       lower1(2,0) =  7;
       lower1(2,2) =  3;
 
-      const TLT lower2( lower1 );
+      const OLT lower2( lower1 );
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
@@ -451,7 +451,7 @@ void DenseTest::testConstructors()
       test_ = "Column-major LowerMatrix conversion constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
-      const TLT lower( mat );
+      const OLT lower( mat );
 
       checkRows    ( lower, 0UL );
       checkColumns ( lower, 0UL );
@@ -469,7 +469,7 @@ void DenseTest::testConstructors()
       mat(2,0) =  7;
       mat(2,2) =  3;
 
-      const TLT lower( mat );
+      const OLT lower( mat );
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
@@ -502,7 +502,7 @@ void DenseTest::testConstructors()
       mat(2,2) =  3;
 
       try {
-         const TLT lower( mat );
+         const OLT lower( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -525,7 +525,7 @@ void DenseTest::testConstructors()
       lower1(2,0) =  7;
       lower1(2,2) =  3;
 
-      const TLT lower2( lower1 );
+      const OLT lower2( lower1 );
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
@@ -812,7 +812,7 @@ void DenseTest::testAssignment()
    {
       test_ = "Column-major LowerMatrix copy assignment (0x0)";
 
-      TLT lower1, lower2;
+      OLT lower1, lower2;
 
       lower2 = lower1;
 
@@ -825,7 +825,7 @@ void DenseTest::testAssignment()
    {
       test_ = "Column-major LowerMatrix copy assignment (3x3)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
@@ -833,7 +833,7 @@ void DenseTest::testAssignment()
       lower1(2,1) =  0;
       lower1(2,2) =  3;
 
-      TLT lower2;
+      OLT lower2;
       lower2 = lower1;
 
       checkRows    ( lower2, 3UL );
@@ -864,7 +864,7 @@ void DenseTest::testAssignment()
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
-      TLT lower;
+      OLT lower;
       lower = mat;
 
       checkRows    ( lower, 0UL );
@@ -883,7 +883,7 @@ void DenseTest::testAssignment()
       mat(2,0) =  7;
       mat(2,2) =  3;
 
-      TLT lower;
+      OLT lower;
       lower = mat;
 
       checkRows    ( lower, 3UL );
@@ -914,7 +914,7 @@ void DenseTest::testAssignment()
       mat(2,0) =  7;
       mat(2,2) =  3;
 
-      TLT lower;
+      OLT lower;
       lower = mat;
 
       checkRows    ( lower, 3UL );
@@ -947,7 +947,7 @@ void DenseTest::testAssignment()
       mat(2,2) =  3;
 
       try {
-         TLT lower;
+         OLT lower;
          lower = mat;
 
          std::ostringstream oss;
@@ -973,7 +973,7 @@ void DenseTest::testAssignment()
       mat(2,2) =  3;
 
       try {
-         TLT lower;
+         OLT lower;
          lower = mat;
 
          std::ostringstream oss;
@@ -997,7 +997,7 @@ void DenseTest::testAssignment()
       lower1(2,0) =  7;
       lower1(2,2) =  3;
 
-      TLT lower2;
+      OLT lower2;
       lower2 = lower1;
 
       checkRows    ( lower2, 3UL );
@@ -1028,7 +1028,7 @@ void DenseTest::testAssignment()
       lower1(2,0) =  7;
       lower1(2,2) =  3;
 
-      TLT lower2;
+      OLT lower2;
       lower2 = lower1;
 
       checkRows    ( lower2, 3UL );
@@ -1244,7 +1244,7 @@ void DenseTest::testAddAssign()
    {
       test_ = "Row-major/column-major LowerMatrix addition assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -1295,7 +1295,7 @@ void DenseTest::testAddAssign()
       mat(2,0) =  6;
       mat(2,1) =  5;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1335,7 +1335,7 @@ void DenseTest::testAddAssign()
       mat(2,0) =  6;
       mat(2,1) =  5;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1372,7 +1372,7 @@ void DenseTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1399,7 +1399,7 @@ void DenseTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1429,7 +1429,7 @@ void DenseTest::testAddAssign()
       lower1(2,0) =  6;
       lower1(2,1) =  5;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -1463,13 +1463,13 @@ void DenseTest::testAddAssign()
    {
       test_ = "Column-major/column-major LowerMatrix addition assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
       lower1(2,1) =  5;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -1695,7 +1695,7 @@ void DenseTest::testSubAssign()
    {
       test_ = "Row-major/column-major LowerMatrix subtraction assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -1746,7 +1746,7 @@ void DenseTest::testSubAssign()
       mat(2,0) =  6;
       mat(2,1) =  5;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1786,7 +1786,7 @@ void DenseTest::testSubAssign()
       mat(2,0) =  6;
       mat(2,1) =  5;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1823,7 +1823,7 @@ void DenseTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1850,7 +1850,7 @@ void DenseTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,2) = 6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -1880,7 +1880,7 @@ void DenseTest::testSubAssign()
       lower1(2,0) =  6;
       lower1(2,1) =  5;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -1914,13 +1914,13 @@ void DenseTest::testSubAssign()
    {
       test_ = "Column-major/column-major LowerMatrix subtraction assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
       lower1(2,1) =  5;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -2149,7 +2149,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Row-major/column-major LowerMatrix multiplication assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -2198,7 +2198,7 @@ void DenseTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -2237,7 +2237,7 @@ void DenseTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -2277,7 +2277,7 @@ void DenseTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -2307,7 +2307,7 @@ void DenseTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -2336,7 +2336,7 @@ void DenseTest::testMultAssign()
       lower1(1,1) = 2;
       lower1(2,2) = 2;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -2370,12 +2370,12 @@ void DenseTest::testMultAssign()
    {
       test_ = "Column-major/column-major LowerMatrix multiplication assignment (LowerMatrix)";
 
-      TLT lower1( 3UL );
+      OLT lower1( 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
 
-      TLT lower2( 3UL );
+      OLT lower2( 3UL );
       lower2(0,0) =  1;
       lower2(1,0) = -4;
       lower2(1,1) =  2;
@@ -2724,7 +2724,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  1;
       lower(2,0) = -2;
       lower(2,1) =  3;
@@ -2761,7 +2761,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  1;
       lower(2,0) = -2;
       lower(2,1) =  3;
@@ -2798,7 +2798,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  1;
       lower(2,0) = -2;
       lower(2,1) =  3;
@@ -2835,7 +2835,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  2;
       lower(2,0) = -4;
       lower(2,1) =  6;
@@ -2872,7 +2872,7 @@ void DenseTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  2;
       lower(2,0) = -4;
       lower(2,1) =  6;
@@ -2910,7 +2910,7 @@ void DenseTest::testScaling()
       test_ = "Column-major LowerMatrix::scale()";
 
       // Initialization check
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(1,0) =  1;
       lower(2,0) = -2;
       lower(2,1) =  3;
@@ -3221,7 +3221,7 @@ void DenseTest::testFunctionCall()
    {
       test_ = "Column-major LowerMatrix::operator()";
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
 
       // Writing the element (1,1)
       lower(1,1) = 1;
@@ -3780,10 +3780,10 @@ void DenseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef TLT::Iterator       Iterator;
-      typedef TLT::ConstIterator  ConstIterator;
+      typedef OLT::Iterator       Iterator;
+      typedef OLT::ConstIterator  ConstIterator;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,1) = -2;
       lower(2,0) =  3;
@@ -4254,7 +4254,7 @@ void DenseTest::testNonZeros()
 
       // Empty matrix
       {
-         TLT lower( 3UL );
+         OLT lower( 3UL );
 
          checkRows    ( lower, 3UL );
          checkColumns ( lower, 3UL );
@@ -4279,7 +4279,7 @@ void DenseTest::testNonZeros()
 
       // Partially filled matrix
       {
-         TLT lower( 3UL );
+         OLT lower( 3UL );
          lower(0,0) =  1;
          lower(1,1) = -2;
          lower(2,1) =  3;
@@ -4308,7 +4308,7 @@ void DenseTest::testNonZeros()
 
       // Fully filled matrix
       {
-         TLT lower( 3UL );
+         OLT lower( 3UL );
          lower(0,0) = -1;
          lower(1,0) =  2;
          lower(1,1) =  3;
@@ -4490,7 +4490,7 @@ void DenseTest::testReset()
       test_ = "Column-major LowerMatrix::reset()";
 
       // Initialization check
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) = 1;
       lower(1,0) = 2;
       lower(1,1) = 3;
@@ -4724,7 +4724,7 @@ void DenseTest::testClear()
       test_ = "Column-major LowerMatrix::clear()";
 
       // Initialization check
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) = 1;
       lower(1,0) = 2;
       lower(1,1) = 3;
@@ -4912,7 +4912,7 @@ void DenseTest::testResize()
       test_ = "Column-major LowerMatrix::resize()";
 
       // Initialization check
-      TLT lower;
+      OLT lower;
 
       checkRows    ( lower, 0UL );
       checkColumns ( lower, 0UL );
@@ -5064,7 +5064,7 @@ void DenseTest::testExtend()
       test_ = "Column-major LowerMatrix::extend()";
 
       // Initialization check
-      TLT lower;
+      OLT lower;
 
       checkRows    ( lower, 0UL );
       checkColumns ( lower, 0UL );
@@ -5164,7 +5164,7 @@ void DenseTest::testReserve()
       test_ = "Column-major LowerMatrix::reserve()";
 
       // Initialization check
-      TLT lower;
+      OLT lower;
 
       checkRows    ( lower, 0UL );
       checkColumns ( lower, 0UL );
@@ -5263,12 +5263,12 @@ void DenseTest::testSwap()
    {
       test_ = "Column-major LowerMatrix swap";
 
-      TLT lower1( 2UL );
+      OLT lower1( 2UL );
       lower1(0,0) = 1;
       lower1(1,0) = 2;
       lower1(1,1) = 3;
 
-      TLT lower2( 2UL );
+      OLT lower2( 2UL );
       lower2(0,0) = 4;
       lower2(1,0) = 5;
       lower2(1,1) = 0;
@@ -5403,7 +5403,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with 0x0 matrix
       {
-         TLT lower;
+         OLT lower;
 
          if( isDefault( lower ) != true ) {
             std::ostringstream oss;
@@ -5417,7 +5417,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         TLT lower( 3UL );
+         OLT lower( 3UL );
 
          if( isDefault( lower(1,0) ) != true ) {
             std::ostringstream oss;
@@ -5440,7 +5440,7 @@ void DenseTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         TLT lower( 3UL );
+         OLT lower( 3UL );
          lower(1,0) = 1;
 
          if( isDefault( lower(1,0) ) != false ) {
@@ -5830,9 +5830,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -5921,9 +5921,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 1)";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 4UL );
+      OLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -5973,9 +5973,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (assignment test 2)";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 4UL );
+      OLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6023,9 +6023,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 3)";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 4UL );
+      OLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6073,9 +6073,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 4)";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 4UL );
+      OLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6125,9 +6125,9 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 5)";
 
-      typedef blaze::DenseSubmatrix<TLT>  SMT;
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
 
-      TLT lower( 4UL );
+      OLT lower( 4UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6344,9 +6344,9 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<TLT>  RT;
+      typedef blaze::DenseRow<OLT>  RT;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6456,9 +6456,9 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function (assignment test)";
 
-      typedef blaze::DenseRow<TLT>  RT;
+      typedef blaze::DenseRow<OLT>  RT;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6667,9 +6667,9 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<TLT>  CT;
+      typedef blaze::DenseColumn<OLT>  CT;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
@@ -6779,9 +6779,9 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function (assignment test)";
 
-      typedef blaze::DenseColumn<TLT>  CT;
+      typedef blaze::DenseColumn<OLT>  CT;
 
-      TLT lower( 3UL );
+      OLT lower( 3UL );
       lower(0,0) =  1;
       lower(1,0) = -4;
       lower(1,1) =  2;
