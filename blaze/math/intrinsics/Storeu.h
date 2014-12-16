@@ -46,155 +46,14 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/HasSize.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for intrinsic aligned store operations.
-// \ingroup intrinsics
-//
-// This helper structure provides the mapping between the size of an integral data type and the
-// according intrinsic aligned store function. Note that the type \a T must be an integral data
-// type. Instantiating the Storeu class with a non-integral data type results in a compilation
-// error.
-*/
-template< typename T  // Type of the integral
-        , size_t N >  // Size of the integral
-struct Storeu;
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SPECIALIZATIONS OF THE STOREU CLASS TEMPLATE
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Storeu class template for 2-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Storeu<T,2UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int16_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
-   {
-#if BLAZE_AVX2_MODE
-      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
-#elif BLAZE_SSE2_MODE
-      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
-#else
-      *address = value.value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Storeu class template for 4-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Storeu<T,4UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int32_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
-   {
-#if BLAZE_MIC_MODE
-      _mm512_packstorelo_epi32( address, value.value );
-      _mm512_packstorehi_epi32( address+16UL, value.value );
-#elif BLAZE_AVX2_MODE
-      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
-#elif BLAZE_SSE2_MODE
-      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
-#else
-      *address = value.value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Storeu class template for 8-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Storeu<T,8UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int64_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE void storeu( T* address, const Type& value )
-   {
-#if BLAZE_MIC_MODE
-      _mm512_packstorelo_epi64( address, value.value );
-      _mm512_packstorehi_epi64( address+8UL, value.value );
-#elif BLAZE_AVX2_MODE
-      _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
-#elif BLAZE_SSE2_MODE
-      _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
-#else
-      *address = value.value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -203,21 +62,85 @@ struct Storeu<T,8UL>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Unaligned store of a vector of integral values.
+/*!\brief Unaligned store of a vector of 2-byte integral values.
 // \ingroup intrinsics
 //
 // \param address The target address.
-// \param value The integral vector to be stored.
+// \param value The 2-byte integral vector to be stored.
 // \return void
 //
-// This function stores a vector of integral values. In contrast to the according store function,
-// the given address is not required to be properly aligned.
+// This function stores a vector of 2-byte integral values. In contrast to the according store
+// function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T> >::Type
-   storeu( T* address, const typename Storeu<T,sizeof(T)>::Type& value )
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
+   storeu( T* address, const sse_int16_t& value )
 {
-   Storeu<T,sizeof(T)>::storeu( address, value );
+#if BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of a vector of 4-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 4-byte integral vector to be stored.
+// \return void
+//
+// This function stores a vector of 4-byte integral values. In contrast to the according store
+// function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
+   storeu( T* address, const sse_int32_t& value )
+{
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_epi32( address, value.value );
+   _mm512_packstorehi_epi32( address+16UL, value.value );
+#elif BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of a vector of 8-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 8-byte integral vector to be stored.
+// \return void
+//
+// This function stores a vector of 8-byte integral values. In contrast to the according store
+// function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
+   storeu( T* address, const sse_int64_t& value )
+{
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_epi64( address, value.value );
+   _mm512_packstorehi_epi64( address+8UL, value.value );
+#elif BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
 }
 //*************************************************************************************************
 

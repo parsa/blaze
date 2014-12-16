@@ -48,159 +48,14 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/HasSize.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for intrinsic aligned load operations.
-// \ingroup intrinsics
-//
-// This helper structure provides the mapping between the size of an integral data type and the
-// according intrinsic aligned load function. Note that the type \a T must be an integral data
-// type. Instantiating the Load class with a non-integral data type results in a compilation
-// error.
-*/
-template< typename T  // Type of the integral
-        , size_t N >  // Size of the integral
-struct Load;
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SPECIALIZATIONS OF THE LOAD CLASS TEMPLATE
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 2-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Load<T,2UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int16_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type load( const T* address )
-   {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 4-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Load<T,4UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int32_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type load( const T* address )
-   {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_MIC_MODE
-      return _mm512_load_epi32( address );
-#elif BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Load class template for 8-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Load<T,8UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int64_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type load( const T* address )
-   {
-      BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
-
-#if BLAZE_MIC_MODE
-      return _mm512_load_epi64( address );
-#elif BLAZE_AVX2_MODE
-      return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -209,21 +64,89 @@ struct Load<T,8UL>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Loads a vector of integral values.
+/*!\brief Loads a vector of 2-byte integral values.
 // \ingroup intrinsics
 //
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of integral values. The given address must be aligned according
-// to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case
-// of AVX, and 64-byte alignment in case of MIC.
+// This function loads a vector of 2-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T>, Load<T,sizeof(T)> >::Type::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_int16_t >::Type
    load( const T* address )
 {
-   return Load<T,sizeof(T)>::load( address );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 4-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The first integral value to be loaded.
+// \return The loaded vector of integral values.
+//
+// This function loads a vector of 4-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_int32_t >::Type
+   load( const T* address )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_MIC_MODE
+   return _mm512_load_epi32( address );
+#elif BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 8-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The first integral value to be loaded.
+// \return The loaded vector of integral values.
+//
+// This function loads a vector of 8-byte integral values. The given address must be aligned
+// according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
+// in case of AVX, and 64-byte alignment in case of MIC.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_int64_t >::Type
+   load( const T* address )
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_MIC_MODE
+   return _mm512_load_epi64( address );
+#elif BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
 }
 //*************************************************************************************************
 

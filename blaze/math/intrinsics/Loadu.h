@@ -46,159 +46,14 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/HasSize.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for intrinsic unaligned load operations.
-// \ingroup intrinsics
-//
-// This helper structure provides the mapping between the size of an integral data type and the
-// according intrinsic unaligned load function. Note that the type \a T must be an integral data
-// type. Instantiating the Loadu class with a non-integral data type results in a compilation
-// error.
-*/
-template< typename T  // Type of the integral
-        , size_t N >  // Size of the integral
-struct Loadu;
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SPECIALIZATIONS OF THE LOADU CLASS TEMPLATE
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Loadu class template for 2-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Loadu<T,2UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int16_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
-   {
-#if BLAZE_AVX2_MODE
-      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Loadu class template for 4-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Loadu<T,4UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int32_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
-   {
-#if BLAZE_MIC_MODE
-      __m512i v1 = _mm512_setzero_epi32();
-      v1 = _mm512_loadunpacklo_epi32( v1, address );
-      v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
-      return v1;
-#elif BLAZE_AVX2_MODE
-      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Loadu class template for 8-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Loadu<T,8UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int64_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type loadu( const T* address )
-   {
-#if BLAZE_MIC_MODE
-      __m512i v1 = _mm512_setzero_epi32();
-      v1 = _mm512_loadunpacklo_epi64( v1, address );
-      v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
-      return v1;
-#elif BLAZE_AVX2_MODE
-      return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
-#elif BLAZE_SSE2_MODE
-      return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
-#else
-      return *address;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -207,20 +62,86 @@ struct Loadu<T,8UL>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Loads a vector of integral values.
+/*!\brief Loads a vector of 2-byte integral values.
 // \ingroup intrinsics
 //
 // \param address The first integral value to be loaded.
 // \return The loaded vector of integral values.
 //
-// This function loads a vector of integral values. In contrast to the according load function,
-// the given address is not required to be properly aligned.
+// This function loads a vector of 2-byte integral values. In contrast to the according load
+// function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T>, Loadu<T,sizeof(T)> >::Type::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_int16_t >::Type
    loadu( const T* address )
 {
-   return Loadu<T,sizeof(T)>::loadu( address );
+#if BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 4-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The first integral value to be loaded.
+// \return The loaded vector of integral values.
+//
+// This function loads a vector of 4-byte integral values. In contrast to the according load
+// function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_int32_t >::Type
+   loadu( const T* address )
+{
+#if BLAZE_MIC_MODE
+   __m512i v1 = _mm512_setzero_epi32();
+   v1 = _mm512_loadunpacklo_epi32( v1, address );
+   v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
+   return v1;
+#elif BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 8-byte integral values.
+// \ingroup intrinsics
+//
+// \param address The first integral value to be loaded.
+// \return The loaded vector of integral values.
+//
+// This function loads a vector of 8-byte integral values. In contrast to the according load
+// function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_int64_t >::Type
+   loadu( const T* address )
+{
+#if BLAZE_MIC_MODE
+   __m512i v1 = _mm512_setzero_epi32();
+   v1 = _mm512_loadunpacklo_epi64( v1, address );
+   v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
+   return v1;
+#elif BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
 }
 //*************************************************************************************************
 

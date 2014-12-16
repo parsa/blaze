@@ -46,152 +46,14 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/HasSize.h>
+#include <blaze/util/typetraits/IsIntegral.h>
 
 
 namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for intrinsic set operations.
-// \ingroup intrinsics
-//
-// This helper structure provides the mapping between the size of an integral data type and the
-// according intrinsic set function. Note that the type \a T must be an integral data type.
-// Instantiating the Set class with a non-integral data type results in a compilation error.
-*/
-template< typename T  // Type of the integral
-        , size_t N >  // Size of the integral
-struct Set;
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SPECIALIZATIONS OF THE SET CLASS TEMPLATE
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Set class template for 2-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Set<T,2UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int16_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type set( T value )
-   {
-#if BLAZE_AVX2_MODE
-      return _mm256_set1_epi16( value );
-#elif BLAZE_SSE2_MODE
-      return _mm_set1_epi16( value );
-#else
-      return value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Set class template for 4-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Set<T,4UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int32_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type set( T value )
-   {
-#if BLAZE_MIC_MODE
-      return _mm512_set1_epi32( value );
-#elif BLAZE_AVX2_MODE
-      return _mm256_set1_epi32( value );
-#elif BLAZE_SSE2_MODE
-      return _mm_set1_epi32( value );
-#else
-      return value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Set class template for 8-byte integral data types.
-// \ingroup intrinsics
-*/
-template< typename T >  // Type of the integral
-struct Set<T,8UL>
-{
- public:
-   //**Type definitions****************************************************************************
-   typedef sse_int64_t  Type;
-   //**********************************************************************************************
-
-   //**Set function********************************************************************************
-   static BLAZE_ALWAYS_INLINE Type set( T value )
-   {
-#if BLAZE_MIC_MODE
-      return _mm512_set1_epi64( value );
-#elif BLAZE_AVX2_MODE
-      return _mm256_set1_epi64x( value );
-#elif BLAZE_SSE2_MODE
-      return _mm_set1_epi64( value );
-#else
-      return value;
-#endif
-   }
-   //**********************************************************************************************
-
- private:
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
 
 //=================================================================================================
 //
@@ -200,17 +62,71 @@ struct Set<T,8UL>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Sets all values in the vector to the given integral value.
+/*!\brief Sets all values in the vector to the given 2-byte integral value.
 // \ingroup intrinsics
 //
-// \param value The given integral value.
-// \return The set vector of integral values.
+// \param value The given 2-byte integral value.
+// \return The set vector of 2-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< IsIntegral<T>, Set<T,sizeof(T)> >::Type::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_int16_t >::Type
    set( T value )
 {
-   return Set<T,sizeof(T)>::set( value );
+#if BLAZE_AVX2_MODE
+   return _mm256_set1_epi16( value );
+#elif BLAZE_SSE2_MODE
+   return _mm_set1_epi16( value );
+#else
+   return value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 4-byte integral value.
+// \ingroup intrinsics
+//
+// \param value The given 4-byte integral value.
+// \return The set vector of 4-byte integral values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_int32_t >::Type
+   set( T value )
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set1_epi32( value );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set1_epi32( value );
+#elif BLAZE_SSE2_MODE
+   return _mm_set1_epi32( value );
+#else
+   return value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 8-byte integral value.
+// \ingroup intrinsics
+//
+// \param value The given 8-byte integral value.
+// \return The set vector of 8-byte integral values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_int64_t >::Type
+   set( T value )
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set1_epi64( value );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set1_epi64x( value );
+#elif BLAZE_SSE2_MODE
+   return _mm_set1_epi64( value );
+#else
+   return value;
+#endif
 }
 //*************************************************************************************************
 
