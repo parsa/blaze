@@ -174,10 +174,10 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfl
 {
    __m256 x, y, z;
 
-   x = _mm256_shuffle_ps( a.value, a.value, 0xA0A0 );
+   x = _mm256_shuffle_ps( a.value, a.value, 0xA0 );
    z = _mm256_mul_ps( x, b.value );
-   x = _mm256_shuffle_ps( a.value, a.value, 0xF5F5 );
-   y = _mm256_shuffle_ps( b.value, b.value, 0xB1B1 );
+   x = _mm256_shuffle_ps( a.value, a.value, 0xF5 );
+   y = _mm256_shuffle_ps( b.value, b.value, 0xB1 );
    y = _mm256_mul_ps( x, y );
    return _mm256_addsub_ps( z, y );
 }
