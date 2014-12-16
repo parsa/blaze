@@ -7547,6 +7547,40 @@ void DenseTest::testSubmatrix()
       }
    }
 
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 11 12  0 )
+   // (  7  0  3  0 )      (  7 13 14  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 6)";
+
+      typedef blaze::DenseSubmatrix<LT>  SMT;
+
+      LT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor>( 11, 12, 13, 14 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
@@ -7892,6 +7926,40 @@ void DenseTest::testSubmatrix()
          throw std::runtime_error( oss.str() );
       }
    }
+
+   // (  1  0  0  0 )      (  1  0  0  0 )
+   // ( -4  2  0  0 )  =>  ( -4 11 12  0 )
+   // (  7  0  3  0 )      (  7 13 14  0 )
+   // ( -2  0  1  5 )      ( -2  0  1  5 )
+   {
+      test_ = "Row-major submatrix() function (assignment test 6)";
+
+      typedef blaze::DenseSubmatrix<OLT>  SMT;
+
+      OLT lower( 4UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+      lower(3,0) = -2;
+      lower(3,2) =  1;
+      lower(3,3) =  5;
+
+      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor>( 11, 13, 12, 14 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
@@ -8024,7 +8092,7 @@ void DenseTest::testRow()
    // ( -4  2  0 )  =>  ( 2  8  0 )
    // (  7  0  3 )      ( 7  0  3 )
    {
-      test_ = "Row-major row() function (assignment test)";
+      test_ = "Row-major row() function (assignment test 1)";
 
       typedef blaze::DenseRow<LT>  RT;
 
@@ -8059,6 +8127,36 @@ void DenseTest::testRow()
              << "   Expected result:\n( 1 0 0 )\n( 2 8 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+
+   // (  1  0  0 )      ( 1  0  0 )
+   // ( -4  2  0 )  =>  ( 2  8  1 )
+   // (  7  0  3 )      ( 7  0  3 )
+   {
+      test_ = "Row-major row() function (assignment test 2)";
+
+      typedef blaze::DenseRow<LT>  RT;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      RT row1 = row( lower, 1UL );
+
+      try {
+         row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 2, 8, 1 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -8179,7 +8277,7 @@ void DenseTest::testRow()
    // ( -4  2  0 )  =>  ( 2  8  0 )
    // (  7  0  3 )      ( 7  0  3 )
    {
-      test_ = "Column-major row() function (assignment test)";
+      test_ = "Column-major row() function (assignment test 1)";
 
       typedef blaze::DenseRow<OLT>  RT;
 
@@ -8214,6 +8312,36 @@ void DenseTest::testRow()
              << "   Expected result:\n( 1 0 0 )\n( 2 8 0 )\n( 7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+
+   // (  1  0  0 )      ( 1  0  0 )
+   // ( -4  2  0 )  =>  ( 2  8  1 )
+   // (  7  0  3 )      ( 7  0  3 )
+   {
+      test_ = "Row-major row() function (assignment test 2)";
+
+      typedef blaze::DenseRow<OLT>  RT;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      RT row1 = row( lower, 1UL );
+
+      try {
+         row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 2, 8, 1 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -8347,7 +8475,7 @@ void DenseTest::testColumn()
    // ( -4  2  0 )  =>  ( -4  8  0 )
    // (  7  0  3 )      (  7  2  3 )
    {
-      test_ = "Row-major column() function (assignment test)";
+      test_ = "Row-major column() function (assignment test 1)";
 
       typedef blaze::DenseColumn<LT>  CT;
 
@@ -8382,6 +8510,36 @@ void DenseTest::testColumn()
              << "   Expected result:\n(  1 0 0 )\n( -4 8 0 )\n(  7 2 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+
+   // (  1  0  0 )      (  1  1  0 )
+   // ( -4  2  0 )  =>  ( -4  8  0 )
+   // (  7  0  3 )      (  7  2  3 )
+   {
+      test_ = "Row-major column() function (assignment test 2)";
+
+      typedef blaze::DenseColumn<LT>  CT;
+
+      LT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      CT col1 = column( lower, 1UL );
+
+      try {
+         col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( 1, 8, 2 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -8502,7 +8660,7 @@ void DenseTest::testColumn()
    // ( -4  2  0 )  =>  ( -4  8  0 )
    // (  7  0  3 )      (  7  2  3 )
    {
-      test_ = "Column-major column() function (assignment test)";
+      test_ = "Column-major column() function (assignment test 1)";
 
       typedef blaze::DenseColumn<OLT>  CT;
 
@@ -8537,6 +8695,36 @@ void DenseTest::testColumn()
              << "   Expected result:\n(  1 0 0 )\n( -4 8 0 )\n(  7 2 3 )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+
+   // (  1  0  0 )      (  1  1  0 )
+   // ( -4  2  0 )  =>  ( -4  8  0 )
+   // (  7  0  3 )      (  7  2  3 )
+   {
+      test_ = "Row-major column() function (assignment test 2)";
+
+      typedef blaze::DenseColumn<OLT>  CT;
+
+      OLT lower( 3UL );
+      lower(0,0) =  1;
+      lower(1,0) = -4;
+      lower(1,1) =  2;
+      lower(2,0) =  7;
+      lower(2,2) =  3;
+
+      CT col1 = column( lower, 1UL );
+
+      try {
+         col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( 1, 8, 2 );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
