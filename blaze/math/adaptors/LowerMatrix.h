@@ -42,6 +42,7 @@
 
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/Dense.h>
+#include <blaze/math/adaptors/lowermatrix/Sparse.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
