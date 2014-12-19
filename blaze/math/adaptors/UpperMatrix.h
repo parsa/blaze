@@ -42,6 +42,7 @@
 
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/Dense.h>
+#include <blaze/math/adaptors/uppermatrix/Sparse.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
