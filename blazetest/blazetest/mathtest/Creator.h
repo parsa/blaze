@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blazetest/mathtest/creator/Complex.h>
+#include <blazetest/mathtest/creator/CompressedLower.h>
 #include <blazetest/mathtest/creator/CompressedMatrix.h>
 #include <blazetest/mathtest/creator/CompressedSymmetric.h>
 #include <blazetest/mathtest/creator/CompressedVector.h>
