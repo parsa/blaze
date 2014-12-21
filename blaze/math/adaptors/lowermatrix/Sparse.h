@@ -261,6 +261,9 @@ class LowerMatrix<MT,SO,false>
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
    inline bool canSMPAssign() const;
+
+   inline MT&       unwrap();
+   inline const MT& unwrap() const;
    //@}
    //**********************************************************************************************
 
@@ -1771,6 +1774,38 @@ inline bool LowerMatrix<MT,SO,false>::canSMPAssign() const
    return matrix_.canSMPAssign();
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline MT& LowerMatrix<MT,SO,false>::unwrap()
+{
+   return matrix_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline const MT& LowerMatrix<MT,SO,false>::unwrap() const
+{
+   return matrix_;
+}
 //*************************************************************************************************
 
 } // namespace blaze
