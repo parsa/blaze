@@ -65,9 +65,9 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<double,rowMajor>   StaticMatrixType;
-   typedef blaze::DynamicMatrix<float,rowMajor>   DynamicMatrixType;
-   typedef blaze::CompressedMatrix<int,rowMajor>  CompressedMatrixType;
+   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
+   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
+   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
 
    typedef blaze::UpperMatrix<StaticMatrixType>      UpperStaticType;
    typedef blaze::UpperMatrix<DynamicMatrixType>     UpperDynamicType;
