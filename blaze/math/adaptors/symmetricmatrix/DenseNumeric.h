@@ -692,6 +692,9 @@ class SymmetricMatrix<MT,SO,true,true>
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
+   inline MT&       unwrap();
+   inline const MT& unwrap() const;
+
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -1969,6 +1972,38 @@ inline bool SymmetricMatrix<MT,SO,true,true>::canSMPAssign() const
    return matrix_.canSMPAssign();
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline MT& SymmetricMatrix<MT,SO,true,true>::unwrap()
+{
+   return matrix_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline const MT& SymmetricMatrix<MT,SO,true,true>::unwrap() const
+{
+   return matrix_;
+}
 //*************************************************************************************************
 
 
