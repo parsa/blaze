@@ -54,6 +54,7 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -254,6 +255,26 @@ struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public IsResizable<MT>::Typ
 {
    enum { value = IsResizable<MT>::value };
    typedef typename IsResizable<MT>::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISADAPTOR SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
