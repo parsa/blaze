@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/AbsExpr.h>
+#include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/Columns.h>
