@@ -7320,6 +7320,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = 12;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 2UL );
+      checkNonZeros( lower,  2UL, 3UL );
+      checkNonZeros( lower,  3UL, 4UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 12 || sm(1,1) !=  0 ||
           sm(2,0) != 12 || sm(2,1) != 12 ||
@@ -7372,6 +7380,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = 12;
 
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+      checkNonZeros( lower, 3UL, 3UL );
+
       if( sm(0,0) != 12 || sm(0,1) != 12 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 12 || sm(1,1) != 12 || sm(1,2) != 12 || sm(1,3) != 0 ) {
          std::ostringstream oss;
@@ -7421,6 +7437,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 0UL, 2UL, 2UL, 2UL );
       sm = 12;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 8UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 3UL );
 
       if( sm(0,0) != 0 || sm(0,1) != 0 ||
           sm(1,0) != 0 || sm(1,1) != 0 ) {
@@ -7484,6 +7508,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 2UL );
+      checkNonZeros( lower,  2UL, 3UL );
+      checkNonZeros( lower,  3UL, 4UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -7542,6 +7574,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+      checkNonZeros( lower, 3UL, 3UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -7640,6 +7680,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 2UL );
+      checkNonZeros( lower,  2UL, 3UL );
+      checkNonZeros( lower,  3UL, 4UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -7698,6 +7746,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+      checkNonZeros( lower, 3UL, 3UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -7802,6 +7858,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 2UL );
+      checkNonZeros( lower,  2UL, 3UL );
+      checkNonZeros( lower,  3UL, 4UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -7861,6 +7925,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+      checkNonZeros( lower, 3UL, 3UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -7960,6 +8032,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 1UL );
+      checkNonZeros( lower,  1UL, 2UL );
+      checkNonZeros( lower,  2UL, 3UL );
+      checkNonZeros( lower,  3UL, 4UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -8019,6 +8099,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 3UL );
+      checkNonZeros( lower, 3UL, 3UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -8207,6 +8295,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = 12;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 4UL );
+      checkNonZeros( lower,  1UL, 3UL );
+      checkNonZeros( lower,  2UL, 2UL );
+      checkNonZeros( lower,  3UL, 1UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 12 || sm(1,1) !=  0 ||
           sm(2,0) != 12 || sm(2,1) != 12 ||
@@ -8259,6 +8355,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = 12;
 
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
+
       if( sm(0,0) != 12 || sm(0,1) != 12 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 12 || sm(1,1) != 12 || sm(1,2) != 12 || sm(1,3) != 0 ) {
          std::ostringstream oss;
@@ -8308,6 +8412,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 0UL, 2UL, 2UL, 2UL );
       sm = 12;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 8UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
 
       if( sm(0,0) != 0 || sm(0,1) != 0 ||
           sm(1,0) != 0 || sm(1,1) != 0 ) {
@@ -8371,6 +8483,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 4UL );
+      checkNonZeros( lower,  1UL, 3UL );
+      checkNonZeros( lower,  2UL, 2UL );
+      checkNonZeros( lower,  3UL, 1UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -8429,6 +8549,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -8527,6 +8655,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 4UL );
+      checkNonZeros( lower,  1UL, 3UL );
+      checkNonZeros( lower,  2UL, 2UL );
+      checkNonZeros( lower,  3UL, 1UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -8585,6 +8721,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -8689,6 +8833,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 4UL );
+      checkNonZeros( lower,  1UL, 3UL );
+      checkNonZeros( lower,  2UL, 2UL );
+      checkNonZeros( lower,  3UL, 1UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -8748,6 +8900,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
@@ -8847,6 +9007,14 @@ void DenseTest::testSubmatrix()
       SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
+      checkRows    ( lower,  4UL );
+      checkColumns ( lower,  4UL );
+      checkNonZeros( lower, 10UL );
+      checkNonZeros( lower,  0UL, 4UL );
+      checkNonZeros( lower,  1UL, 3UL );
+      checkNonZeros( lower,  2UL, 2UL );
+      checkNonZeros( lower,  3UL, 1UL );
+
       if( sm(0,0) !=  0 || sm(0,1) !=  0 ||
           sm(1,0) != 18 || sm(1,1) !=  0 ||
           sm(2,0) != 14 || sm(2,1) != 11 ||
@@ -8906,6 +9074,14 @@ void DenseTest::testSubmatrix()
 
       SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
+
+      checkRows    ( lower, 4UL );
+      checkColumns ( lower, 4UL );
+      checkNonZeros( lower, 9UL );
+      checkNonZeros( lower, 0UL, 4UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 3UL, 1UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 18 || sm(0,2) !=  0 || sm(0,3) != 0 ||
           sm(1,0) != 15 || sm(1,1) != 17 || sm(1,2) != 11 || sm(1,3) != 0 ) {
