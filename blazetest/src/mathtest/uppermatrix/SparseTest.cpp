@@ -9790,7 +9790,7 @@ void SparseTest::testIsDefault()
 void SparseTest::testSubmatrix()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major general tests
    //=====================================================================================
 
    {
@@ -9880,14 +9880,26 @@ void SparseTest::testSubmatrix()
       }
    }
 
+
+   //=====================================================================================
+   // Row-major dense matrix assignment
+   //=====================================================================================
+
    // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
    // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
    // ( 0  0  3  1 )      ( 0  0 16  1 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 1)";
+      test_ = "Row-major submatrix() function (row-major dense matrix assignment test 1)";
 
       typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 4UL, 2UL, 0 );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
 
       UT upper( 4UL );
       upper(0,0) =  1;
@@ -9900,7 +9912,15 @@ void SparseTest::testSubmatrix()
       upper(3,3) =  5;
 
       SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
-      sm = blaze::StaticMatrix<int,4UL,2UL,blaze::rowMajor>( 12, 15, 18, 17, 0, 16, 0, 0 );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 4UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 15 ||
           sm(1,0) != 18 || sm(1,1) != 17 ||
@@ -9937,9 +9957,16 @@ void SparseTest::testSubmatrix()
    // ( 0  0  3  1 )      ( 0  0 11 16 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 2)";
+      test_ = "Row-major submatrix() function (row-major dense matrix assignment test 2)";
 
       typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 0 );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
 
       UT upper( 4UL );
       upper(0,0) =  1;
@@ -9952,7 +9979,15 @@ void SparseTest::testSubmatrix()
       upper(3,3) =  5;
 
       SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
-      sm = blaze::StaticMatrix<int,2UL,4UL,blaze::columnMajor>( 0, 0, 17, 0, 14, 11, 10, 16 );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 4UL );
+      checkNonZeros( upper,  1UL, 3UL );
+      checkNonZeros( upper,  2UL, 2UL );
+      checkNonZeros( upper,  3UL, 1UL );
 
       if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
           sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
@@ -9987,9 +10022,15 @@ void SparseTest::testSubmatrix()
    // ( 0  0  3  1 )      ( 0 13 14  1 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 3)";
+      test_ = "Row-major submatrix() function (row-major dense matrix assignment test 3)";
 
       typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
 
       UT upper( 4UL );
       upper(0,0) =  1;
@@ -10004,7 +10045,179 @@ void SparseTest::testSubmatrix()
       SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
 
       try {
-         sm = blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor>( 11, 12, 13, 14 );
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major dense matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 0 );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 4UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major dense matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 4UL, 0 );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 4UL );
+      checkNonZeros( upper,  1UL, 3UL );
+      checkNonZeros( upper,  2UL, 2UL );
+      checkNonZeros( upper,  3UL, 1UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major dense matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -10018,7 +10231,360 @@ void SparseTest::testSubmatrix()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (row-major sparse matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 2UL, 6UL );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+      mat.insert( 3UL, 0UL, 0 );
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 4UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (row-major sparse matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 6UL );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+      mat.insert( 1UL, 0UL, 0 );
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 4UL );
+      checkNonZeros( upper,  1UL, 3UL );
+      checkNonZeros( upper,  2UL, 2UL );
+      checkNonZeros( upper,  3UL, 1UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (row-major sparse matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major sparse matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 6UL );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+      mat.insert( 3UL, 0UL, 0 );
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 4UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+      checkNonZeros( upper, 3UL, 1UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major sparse matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 4UL, 6UL );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+      mat.insert( 1UL, 0UL, 0 );
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 4UL );
+      checkNonZeros( upper,  1UL, 3UL );
+      checkNonZeros( upper,  2UL, 2UL );
+      checkNonZeros( upper,  3UL, 1UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Row-major submatrix() function (column-major sparse matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<UT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      UT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major general tests
    //=====================================================================================
 
    {
@@ -10108,14 +10674,26 @@ void SparseTest::testSubmatrix()
       }
    }
 
+
+   //=====================================================================================
+   // Column-major dense matrix assignment
+   //=====================================================================================
+
    // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
    // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
    // ( 0  0  3  1 )      ( 0  0 16  1 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Column-major submatrix() function (assignment test 1)";
+      test_ = "Column-major submatrix() function (row-major dense matrix assignment test 1)";
 
       typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 4UL, 2UL, 0 );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
 
       OUT upper( 4UL );
       upper(0,0) =  1;
@@ -10128,7 +10706,15 @@ void SparseTest::testSubmatrix()
       upper(3,3) =  5;
 
       SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
-      sm = blaze::StaticMatrix<int,4UL,2UL,blaze::rowMajor>( 12, 15, 18, 17, 0, 16, 0, 0 );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 3UL );
 
       if( sm(0,0) != 12 || sm(0,1) != 15 ||
           sm(1,0) != 18 || sm(1,1) != 17 ||
@@ -10165,9 +10751,16 @@ void SparseTest::testSubmatrix()
    // ( 0  0  3  1 )      ( 0  0 11 16 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Column-major submatrix() function (assignment test 2)";
+      test_ = "Column-major submatrix() function (row-major dense matrix assignment test 2)";
 
       typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 0 );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
 
       OUT upper( 4UL );
       upper(0,0) =  1;
@@ -10180,7 +10773,15 @@ void SparseTest::testSubmatrix()
       upper(3,3) =  5;
 
       SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
-      sm = blaze::StaticMatrix<int,2UL,4UL,blaze::columnMajor>( 0, 0, 17, 0, 14, 11, 10, 16 );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 1UL );
+      checkNonZeros( upper,  1UL, 2UL );
+      checkNonZeros( upper,  2UL, 3UL );
+      checkNonZeros( upper,  3UL, 4UL );
 
       if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
           sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
@@ -10215,9 +10816,15 @@ void SparseTest::testSubmatrix()
    // ( 0  0  3  1 )      ( 0 13 14  1 )
    // ( 0  0  0  5 )      ( 0  0  0  5 )
    {
-      test_ = "Row-major submatrix() function (assignment test 3)";
+      test_ = "Column-major submatrix() function (row-major dense matrix assignment test 3)";
 
       typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
 
       OUT upper( 4UL );
       upper(0,0) =  1;
@@ -10232,7 +10839,532 @@ void SparseTest::testSubmatrix()
       SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
 
       try {
-         sm = blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor>( 11, 13, 12, 14 );
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major dense matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 0 );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 3UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major dense matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 4UL, 0 );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 1UL );
+      checkNonZeros( upper,  1UL, 2UL );
+      checkNonZeros( upper,  2UL, 3UL );
+      checkNonZeros( upper,  3UL, 4UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major dense matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (row-major sparse matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 2UL, 6UL );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+      mat.insert( 3UL, 0UL, 0 );
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 3UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (row-major sparse matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 4UL, 6UL );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+      mat.insert( 1UL, 0UL, 0 );
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 1UL );
+      checkNonZeros( upper,  1UL, 2UL );
+      checkNonZeros( upper,  2UL, 3UL );
+      checkNonZeros( upper,  3UL, 4UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (row-major sparse matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 12 15 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 18 17  0 )
+   // ( 0  0  3  1 )      ( 0  0 16  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major sparse matrix assignment test 1)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 2UL, 6UL );
+      mat(0,0) = 12;
+      mat(0,1) = 15;
+      mat(1,0) = 18;
+      mat(1,1) = 17;
+      mat(2,1) = 16;
+      mat.insert( 3UL, 0UL, 0 );
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 0UL, 1UL, 4UL, 2UL );
+      sm = mat;
+
+      checkRows    ( upper, 4UL );
+      checkColumns ( upper, 4UL );
+      checkNonZeros( upper, 9UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+      checkNonZeros( upper, 3UL, 3UL );
+
+      if( sm(0,0) != 12 || sm(0,1) != 15 ||
+          sm(1,0) != 18 || sm(1,1) != 17 ||
+          sm(2,0) !=  0 || sm(2,1) != 16 ||
+          sm(3,0) !=  0 || sm(3,1) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 12 15 )\n( 18 17 )\n(  0 16 )\n(  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 12 || upper(0,2) != 15 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 18 || upper(1,2) != 17 || upper(1,3) !=  0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 16 || upper(2,3) !=  1 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 12 15 -2 )\n"
+                                     "( 0 18 17  0 )\n"
+                                     "( 0  0 16  1 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 17 14 10 )
+   // ( 0  0  3  1 )      ( 0  0 11 16 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major sparse matrix assignment test 2)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 4UL, 6UL );
+      mat(0,1) = 17;
+      mat(0,2) = 14;
+      mat(0,3) = 10;
+      mat(1,2) = 11;
+      mat(1,3) = 16;
+      mat.insert( 1UL, 0UL, 0 );
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 0UL, 2UL, 4UL );
+      sm = mat;
+
+      checkRows    ( upper,  4UL );
+      checkColumns ( upper,  4UL );
+      checkNonZeros( upper, 10UL );
+      checkNonZeros( upper,  0UL, 1UL );
+      checkNonZeros( upper,  1UL, 2UL );
+      checkNonZeros( upper,  2UL, 3UL );
+      checkNonZeros( upper,  3UL, 4UL );
+
+      if( sm(0,0) != 0 || sm(0,1) != 17 || sm(0,2) != 14 || sm(0,3) != 10 ||
+          sm(1,0) != 0 || sm(1,1) !=  0 || sm(1,2) != 11 || sm(1,3) != 16 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 0 17 14 10 )\n( 0  0 11 16 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 || upper(0,3) != -2 ||
+          upper(1,0) != 0 || upper(1,1) != 17 || upper(1,2) != 14 || upper(1,3) != 10 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 11 || upper(2,3) != 16 ||
+          upper(3,0) != 0 || upper(3,1) !=  0 || upper(3,2) !=  0 || upper(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment to submatrix failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 -2 )\n"
+                                     "( 0 17 14 10 )\n"
+                                     "( 0  0 11 16 )\n"
+                                     "( 0  0  0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
+   // ( 0  2  0  0 )  =>  ( 0 11 12  0 )
+   // ( 0  0  3  1 )      ( 0 13 14  1 )
+   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   {
+      test_ = "Column-major submatrix() function (column-major sparse matrix assignment test 3)";
+
+      typedef blaze::SparseSubmatrix<OUT>  SMT;
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
+      mat(0,0) = 11;
+      mat(0,1) = 12;
+      mat(1,0) = 13;
+      mat(1,1) = 14;
+
+      OUT upper( 4UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(0,3) = -2;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+      upper(2,3) =  1;
+      upper(3,3) =  5;
+
+      SMT sm = submatrix( upper, 1UL, 1UL, 2UL, 2UL );
+
+      try {
+         sm = mat;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
