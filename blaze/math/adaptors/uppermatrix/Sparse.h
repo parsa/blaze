@@ -231,6 +231,9 @@ class UpperMatrix<MT,SO,false>
    template< typename Other > inline UpperMatrix& scale( const Other& scalar );
    template< typename Other > inline UpperMatrix& scaleDiagonal( Other scale );
                               inline void         swap( UpperMatrix& m ) /* throw() */;
+
+   static inline size_t maxNonZeros();
+   static inline size_t maxNonZeros( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -1432,6 +1435,49 @@ inline void UpperMatrix<MT,SO,false>::swap( UpperMatrix& m ) /* throw() */
    using std::swap;
 
    swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the maximum number of non-zero values for a upper triangular matrix.
+//
+// \return The maximum number of non-zero values.
+//
+// This function returns the maximum possible number of non-zero values for a upper triangular
+// matrix with fixed-size adapted matrix of type \a MT. Note that this function can only be
+// called in case the adapted dense matrix is a fixed-size matrix. The attempt to call this
+// function in case the adapted matrix is resizable matrix will result in a compile time error.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t UpperMatrix<MT,SO,false>::maxNonZeros()
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+
+   return maxNonZeros( Rows<MT>::value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the maximum number of non-zero values for a upper triangular matrix.
+//
+// \param n The number of rows and columns of the matrix.
+// \return The maximum number of non-zero values.
+//
+// This function returns the maximum possible number of non-zero values for a upper triangular
+// matrix of the given number of rows and columns.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline size_t UpperMatrix<MT,SO,false>::maxNonZeros( size_t n )
+{
+   return ( ( n + 1UL ) * n ) / 2UL;
 }
 /*! \endcond */
 //*************************************************************************************************
