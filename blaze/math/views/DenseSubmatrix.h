@@ -2284,7 +2284,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::hasOverlap() const
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const DenseMatrix<MT2,SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2321,7 +2321,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const DenseMatrix<MT2,SO>&
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const DenseMatrix<MT2,!SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2358,7 +2358,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const DenseMatrix<MT2,!SO>
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const SparseMatrix<MT2,SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2397,7 +2397,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const SparseMatrix<MT2,SO>
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const SparseMatrix<MT2,!SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2436,7 +2436,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesLower( const SparseMatrix<MT2,!SO
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const DenseMatrix<MT2,SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2473,7 +2473,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const DenseMatrix<MT2,SO>&
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const DenseMatrix<MT2,!SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2510,7 +2510,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const DenseMatrix<MT2,!SO>
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const SparseMatrix<MT2,SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -2549,7 +2549,7 @@ inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const SparseMatrix<MT2,SO>
 template< typename MT     // Type of the dense matrix
         , bool AF         // Alignment flag
         , bool SO >       // Storage order
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,AF,SO>::preservesUpper( const SparseMatrix<MT2,!SO>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5277,7 +5277,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::hasOverlap() const
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5314,7 +5314,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const DenseMatrix
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5351,7 +5351,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const DenseMatrix
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5390,7 +5390,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const SparseMatri
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5429,7 +5429,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesLower( const SparseMatri
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5466,7 +5466,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const DenseMatrix
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5503,7 +5503,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const DenseMatrix
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -5542,7 +5542,7 @@ inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const SparseMatri
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::preservesUpper( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -7934,7 +7934,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::hasOverlap() const
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -7971,7 +7971,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const DenseMatrix<
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8008,7 +8008,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const DenseMatrix<
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8047,7 +8047,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const SparseMatrix
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8086,7 +8086,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesLower( const SparseMatrix
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8123,7 +8123,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const DenseMatrix<
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8160,7 +8160,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const DenseMatrix<
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -8199,7 +8199,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const SparseMatrix
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,false>::preservesUpper( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10537,7 +10537,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::hasOverlap() const
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10574,7 +10574,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const DenseMatrix<M
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10611,7 +10611,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const DenseMatrix<M
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10650,7 +10650,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const SparseMatrix<
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10689,7 +10689,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesLower( const SparseMatrix<
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const DenseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10726,7 +10726,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const DenseMatrix<M
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const DenseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10763,7 +10763,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const DenseMatrix<M
 // be preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const SparseMatrix<MT2,true>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -10802,7 +10802,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const SparseMatrix<
 // preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT >   // Type of the dense matrix
-template< typename MT2 >  // Type of the right-hand side matrix
+template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline bool DenseSubmatrix<MT,aligned,true>::preservesUpper( const SparseMatrix<MT2,false>& rhs ) const
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
