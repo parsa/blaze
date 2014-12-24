@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -66,6 +68,7 @@
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
+#include <blazetest/mathtest/MatchAdaptor.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -95,35 +98,16 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT1::OppositeType               OMT1;  //!< Matrix type 1 with opposite storage order
-   typedef typename MT2::OppositeType               OMT2;  //!< Matrix type 2 with opposite storage order
-   typedef typename MT1::TransposeType              TMT1;  //!< Transpose matrix type 1
-   typedef typename MT2::TransposeType              TMT2;  //!< Transpose matrix type 2
+   typedef typename MT1::OppositeType   OMT1;  //!< Matrix type 1 with opposite storage order
+   typedef typename MT2::OppositeType   OMT2;  //!< Matrix type 2 with opposite storage order
+   typedef typename MT1::TransposeType  TMT1;  //!< Transpose matrix type 1
+   typedef typename MT2::TransposeType  TMT2;  //!< Transpose matrix type 2
+
    typedef typename blaze::AddTrait<MT1,MT2>::Type  RE;    //!< Default result type
    typedef typename RE::OppositeType                ORE;   //!< Default result type with opposite storage order
    typedef typename RE::TransposeType               TRE;   //!< Transpose default result type
    typedef typename ORE::TransposeType              TORE;  //!< Transpose default result type with opposite storage order
-   //**********************************************************************************************
 
-   //**AdaptType class definition******************************************************************
-   /*!\brief Adapts the given type to the default result type.
-   //
-   // The AdaptType type trait adapts the given type to the default result type. In case result
-   // type has an adaptor (SymmetricMatrix, ...), the same adaptor is added to the given type.
-   */
-   template< typename T >  // The type to be adapted
-   struct AdaptType
-   {
-    public:
-      //*******************************************************************************************
-      /*! \cond BLAZE_INTERNAL */
-      typedef typename blaze::If< blaze::IsSymmetric<RE>, blaze::SymmetricMatrix<T>, T >::Type  Type;
-      /*! \endcond */
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Type definitions****************************************************************************
    typedef typename MT1::ElementType        ET1;  //!< Element type 1
    typedef typename MT2::ElementType        ET2;  //!< Element type 2
    typedef typename RE::ElementType         RET;  //!< Resulting element type
@@ -131,10 +115,10 @@ class OperationTest
    typedef blaze::DynamicMatrix<ET2,false>  RT2;  //!< Reference type 2
 
    //! Dense reference result type
-   typedef typename AdaptType< blaze::DynamicMatrix<RET,false> >::Type  DRRE;
+   typedef typename MatchAdaptor< RE, blaze::DynamicMatrix<RET,false> >::Type  DRRE;
 
    //! Sparse reference result type
-   typedef typename AdaptType< blaze::CompressedMatrix<RET,false> >::Type  SRRE;
+   typedef typename MatchAdaptor< RE, blaze::CompressedMatrix<RET,false> >::Type  SRRE;
 
    typedef typename DRRE::OppositeType    ODRRE;   //!< Dense reference result type with opposite storage order
    typedef typename SRRE::OppositeType    OSRRE;   //!< Sparse reference result type with opposite storage order
