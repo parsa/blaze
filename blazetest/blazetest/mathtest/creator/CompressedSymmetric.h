@@ -97,9 +97,9 @@ class Creator< blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> > >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   size_t n_;         //!< The number of rows and columns of the compressed matrix.
-   size_t nonzeros_;  //!< The number of non-zero elements in the compressed matrix.
-   Creator<T> ec_;    //!< Creator for the elements of the compressed matrix.
+   size_t n_;         //!< The number of rows and columns of the symmetric compressed matrix.
+   size_t nonzeros_;  //!< The number of non-zero elements in the symmetric compressed matrix.
+   Creator<T> ec_;    //!< Creator for the elements of the symmetric compressed matrix.
    //@}
    //**********************************************************************************************
 };
@@ -117,15 +117,15 @@ class Creator< blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> > >
 //*************************************************************************************************
 /*!\brief Constructor for the creator specialization for SymmetricMatrix<CompressedMatrix>.
 //
-// \param elementCreator The creator for the elements of the compressed matrix.
+// \param elementCreator The creator for the elements of the symmetric compressed matrix.
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename T  // Element type of the compressed matrix
         , bool SO >   // Storage order of the compressed matrix
 inline Creator< blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( const Creator<T>& elementCreator )
-   : n_( 3UL )              // The number of rows and columns of the compressed matrix
-   , nonzeros_( 3UL )       // The total number of non-zero elements in the compressed matrix
-   , ec_( elementCreator )  // Creator for the elements of the compressed matrix
+   : n_( 3UL )              // The number of rows and columns of the symmetric compressed matrix
+   , nonzeros_( 3UL )       // The total number of non-zero elements in the symmetric compressed matrix
+   , ec_( elementCreator )  // Creator for the elements of the symmetric compressed matrix
 {}
 //*************************************************************************************************
 
@@ -142,9 +142,9 @@ template< typename T  // Element type of the compressed matrix
         , bool SO >   // Storage order of the compressed matrix
 inline Creator< blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> > >::Creator( size_t n, size_t nonzeros,
                                                                                     const Creator<T>& elementCreator )
-   : n_( n )                // The number of rows and columns of the compressed matrix
-   , nonzeros_( nonzeros )  // The total number of non-zero elements in the compressed matrix
-   , ec_( elementCreator )  // Creator for the elements of the compressed matrix
+   : n_( n )                // The number of rows and columns of the symmetric compressed matrix
+   , nonzeros_( nonzeros )  // The total number of non-zero elements in the symmetric compressed matrix
+   , ec_( elementCreator )  // Creator for the elements of the symmetric compressed matrix
 {
    if( n_ * n_ < nonzeros_ )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
