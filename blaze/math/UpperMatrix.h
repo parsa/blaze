@@ -192,7 +192,7 @@ inline const UpperMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > ( ( n + 1UL ) * n ) / 2UL )
+   if( nonzeros > UpperMatrix<MT,SO,DF>::maxNonZeros( n ) )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    UpperMatrix<MT,SO,DF> matrix( n );
@@ -277,7 +277,7 @@ inline const UpperMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > ( ( n + 1UL ) * n ) / 2UL )
+   if( nonzeros > UpperMatrix<MT,SO,DF>::maxNonZeros( n ) )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    UpperMatrix<MT,SO,DF> matrix( n );
@@ -390,7 +390,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,SO,DF>& mat
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > ( ( n + 1UL ) * n ) / 2UL )
+   if( nonzeros > UpperMatrix<MT,SO,DF>::maxNonZeros( n ) )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    if( n == 0UL ) return;
@@ -525,7 +525,7 @@ inline void Rand< UpperMatrix<MT,SO,DF> >::randomize( UpperMatrix<MT,SO,DF>& mat
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > ( ( n + 1UL ) * n ) / 2UL )
+   if( nonzeros > UpperMatrix<MT,SO,DF>::maxNonZeros( n ) )
       throw std::invalid_argument( "Invalid number of non-zero elements" );
 
    if( n == 0UL ) return;
