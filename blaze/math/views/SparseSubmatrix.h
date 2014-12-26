@@ -1572,6 +1572,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline SparseSubmatrix<MT,AF,SO>&
    SparseSubmatrix<MT,AF,SO>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
+   using blaze::assign;
+
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
@@ -1598,7 +1600,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
 
    reset();
-   lhs.assign( tmp );
+   assign( lhs, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
@@ -4168,6 +4170,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline SparseSubmatrix<MT,AF,true>&
    SparseSubmatrix<MT,AF,true>::operator*=( const Matrix<MT2,SO>& rhs )
 {
+   using blaze::assign;
+
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
    typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
@@ -4194,7 +4198,7 @@ inline SparseSubmatrix<MT,AF,true>&
    Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
 
    reset();
-   lhs.assign( tmp );
+   assign( lhs, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
