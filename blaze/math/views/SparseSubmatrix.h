@@ -935,6 +935,8 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline bool hasOverlap() const;
+
    template< typename MT2 > inline bool preservesLower( const DenseMatrix<MT2,SO>&   rhs ) const;
    template< typename MT2 > inline bool preservesLower( const DenseMatrix<MT2,!SO>&  rhs ) const;
    template< typename MT2 > inline bool preservesLower( const SparseMatrix<MT2,SO>&  rhs ) const;
@@ -2112,6 +2114,29 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::scale( const Other&
 
 
 //*************************************************************************************************
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checking for possible violations of the underlying lower triangular matrix.
 //
 // \param rhs The matrix to be checked.
@@ -2432,7 +2457,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline bool SparseSubmatrix<MT,AF,SO>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
@@ -3548,6 +3573,8 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline bool hasOverlap() const;
+
    template< typename MT2 > inline bool preservesLower( const DenseMatrix<MT2,true>&   rhs ) const;
    template< typename MT2 > inline bool preservesLower( const DenseMatrix<MT2,false>&  rhs ) const;
    template< typename MT2 > inline bool preservesLower( const SparseMatrix<MT2,true>&  rhs ) const;
@@ -4707,6 +4734,30 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::scale( const Ot
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
+//
+// \return \a true in case an overlap exists, \a false if not.
+//
+// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
+// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
+// \a false.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const
+{
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+
+   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+      return false;
+   else return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Checking for possible violations of the underlying lower triangular matrix.
 //
 // \param rhs The matrix to be checked.
@@ -5034,7 +5085,7 @@ template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline bool SparseSubmatrix<MT,AF,true>::preservesSymmetry( const Matrix<MT2,SO2>& rhs )
 {
-   if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
+   if( !hasOverlap() )
       return true;
 
    const bool   lower( row_ > column_ );
