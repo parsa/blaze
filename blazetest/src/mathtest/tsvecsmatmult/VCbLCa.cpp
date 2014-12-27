@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/tsvecsmatmult/VCaSCb.cpp
-//  \brief Source file for the VCaSCb sparse vector/sparse matrix multiplication math test
+//  \file src/mathtest/tsvecsmatmult/VCbLCa.cpp
+//  \brief Source file for the VCbLCa sparse vector/sparse matrix multiplication math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/tsvecsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -56,7 +56,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VCaSCb'..." << std::endl;
+   std::cout << "   Running 'VCbLCa'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
@@ -64,27 +64,27 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::CompressedVector<TypeA>                            VCa;
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeB> >  SCb;
+      typedef blaze::CompressedVector<TypeB>                        VCb;
+      typedef blaze::LowerMatrix< blaze::CompressedMatrix<TypeA> >  LCa;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCa>  CVCa;
-      typedef blazetest::Creator<SCb>  CSCb;
+      typedef blazetest::Creator<VCb>  CVCb;
+      typedef blazetest::Creator<LCa>  CLCa;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            for( size_t k=0UL; k<=i*i; ++k ) {
-               RUN_TSVECSMATMULT_OPERATION_TEST( CVCa( i, j ), CSCb( i, k ) );
+            for( size_t k=0UL; k<=LCa::maxNonZeros( i ); ++k ) {
+               RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( i, j ), CLCa( i, k ) );
             }
          }
       }
 
       // Running tests with large vectors and matrices
-      RUN_TSVECSMATMULT_OPERATION_TEST( CVCa(  67UL,  7UL ), CSCb(  67UL,  7UL ) );
-      RUN_TSVECSMATMULT_OPERATION_TEST( CVCa( 127UL, 13UL ), CSCb( 127UL, 13UL ) );
-      RUN_TSVECSMATMULT_OPERATION_TEST( CVCa(  64UL,  8UL ), CSCb(  64UL,  8UL ) );
-      RUN_TSVECSMATMULT_OPERATION_TEST( CVCa( 128UL, 16UL ), CSCb( 128UL, 16UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb(  67UL,  7UL ), CLCa(  67UL,  7UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( 127UL, 13UL ), CLCa( 127UL, 13UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb(  64UL,  8UL ), CLCa(  64UL,  8UL ) );
+      RUN_TSVECSMATMULT_OPERATION_TEST( CVCb( 128UL, 16UL ), CLCa( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse vector/sparse matrix multiplication:\n"

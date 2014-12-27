@@ -47,14 +47,20 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: VCaMCa VCaMCb VCbMCa VCbMCb \
+         VCaLCa VCaLCb VCbLCa VCbLCb \
+         VCaUCa VCaUCb VCbUCa VCbUCb \
          VCaSCa VCaSCb VCbSCa VCbSCb \
          AliasingTest
 all: $(BIN)
-essential: VCaMCa VCaSCa AliasingTest
+essential: VCaMCa VCaLCa VCaUCa VCaSCa AliasingTest
 single: VCaMCa
 
 
 # Build rules
+VCaLCa: VCaLCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaLCb: VCaLCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaMCa: VCaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaMCb: VCaMCb.o
@@ -63,6 +69,15 @@ VCaSCa: VCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaSCb: VCaSCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaUCa: VCaUCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaUCb: VCaUCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VCbLCa: VCbLCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbLCb: VCbLCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMCa: VCbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbMCb: VCbMCb.o
@@ -70,6 +85,10 @@ VCbMCb: VCbMCb.o
 VCbSCa: VCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbSCb: VCbSCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbUCa: VCbUCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbUCb: VCbUCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
