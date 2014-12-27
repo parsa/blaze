@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatdmatsub/SDbMDa.cpp
-//  \brief Source file for the SDbMDa dense matrix/dense matrix subtraction math test
+//  \file src/mathtest/dmatdmatsub/U3x3bU3x3b.cpp
+//  \brief Source file for the U3x3bU3x3b dense matrix/dense matrix subtraction math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -39,8 +39,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/StaticMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatdmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -55,29 +55,20 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SDbMDa'..." << std::endl;
+   std::cout << "   Running 'U3x3bU3x3b'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeB> >  SDb;
-      typedef blaze::DynamicMatrix<TypeA>                            MDa;
+      typedef blaze::UpperMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >  U3x3b;
 
       // Creator type definitions
-      typedef blazetest::Creator<SDb>  CSDb;
-      typedef blazetest::Creator<MDa>  CMDa;
+      typedef blazetest::Creator<U3x3b>  CU3x3b;
 
-      // Running tests with small matrices
-      for( size_t i=0UL; i<=9UL; ++i ) {
-         RUN_DMATDMATSUB_OPERATION_TEST( CSDb( i ), CMDa( i, i ) );
-      }
-
-      // Running tests with large matrices
-      RUN_DMATDMATSUB_OPERATION_TEST( CSDb(  67UL ), CMDa(  67UL,  67UL ) );
-      RUN_DMATDMATSUB_OPERATION_TEST( CSDb( 128UL ), CMDa( 128UL, 128UL ) );
+      // Running the tests
+      RUN_DMATDMATSUB_OPERATION_TEST( CU3x3b(), CU3x3b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix subtraction:\n"
