@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/tdvecsmatmult/VDaSCb.cpp
-//  \brief Source file for the VDaSCb dense vector/sparse matrix multiplication math test
+//  \file src/mathtest/tdvecsmatmult/VDbUCb.cpp
+//  \brief Source file for the VDbUCb dense vector/sparse matrix multiplication math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicVector.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/tdvecsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -56,33 +56,32 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'VDaSCb'..." << std::endl;
+   std::cout << "   Running 'VDbUCb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicVector<TypeA>                               VDa;
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeB> >  SCb;
+      typedef blaze::DynamicVector<TypeB>                           VDb;
+      typedef blaze::UpperMatrix< blaze::CompressedMatrix<TypeB> >  UCb;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
-      typedef blazetest::Creator<SCb>  CSCb;
+      typedef blazetest::Creator<VDb>  CVDb;
+      typedef blazetest::Creator<UCb>  CUCb;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_TDVECSMATMULT_OPERATION_TEST( CVDa( i ), CSCb( i, j ) );
+         for( size_t j=0UL; j<=UCb::maxNonZeros( i ); ++j ) {
+            RUN_TDVECSMATMULT_OPERATION_TEST( CVDb( i ), CUCb( i, j ) );
          }
       }
 
       // Running tests with large vectors and matrices
-      RUN_TDVECSMATMULT_OPERATION_TEST( CVDa(  67UL ), CSCb(  67UL,  7UL ) );
-      RUN_TDVECSMATMULT_OPERATION_TEST( CVDa( 127UL ), CSCb( 127UL, 13UL ) );
-      RUN_TDVECSMATMULT_OPERATION_TEST( CVDa(  64UL ), CSCb(  64UL,  8UL ) );
-      RUN_TDVECSMATMULT_OPERATION_TEST( CVDa( 128UL ), CSCb( 128UL, 16UL ) );
+      RUN_TDVECSMATMULT_OPERATION_TEST( CVDb(  67UL ), CUCb(  67UL,  7UL ) );
+      RUN_TDVECSMATMULT_OPERATION_TEST( CVDb( 127UL ), CUCb( 127UL, 13UL ) );
+      RUN_TDVECSMATMULT_OPERATION_TEST( CVDb(  64UL ), CUCb(  64UL,  8UL ) );
+      RUN_TDVECSMATMULT_OPERATION_TEST( CVDb( 128UL ), CUCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense vector/sparse matrix multiplication:\n"
