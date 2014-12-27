@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatdmatadd/SDbMDa.cpp
-//  \brief Source file for the SDbMDa dense matrix/dense matrix addition math test
+//  \file src/mathtest/dmatdmatadd/UDaUDb.cpp
+//  \brief Source file for the UDaUDb dense matrix/dense matrix addition math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatdmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -55,7 +55,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SDbMDa'..." << std::endl;
+   std::cout << "   Running 'UDaUDb'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
@@ -63,21 +63,21 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeB> >  SDb;
-      typedef blaze::DynamicMatrix<TypeA>                            MDa;
+      typedef blaze::UpperMatrix< blaze::DynamicMatrix<TypeA> >  UDa;
+      typedef blaze::UpperMatrix< blaze::DynamicMatrix<TypeB> >  UDb;
 
       // Creator type definitions
-      typedef blazetest::Creator<SDb>  CSDb;
-      typedef blazetest::Creator<MDa>  CMDa;
+      typedef blazetest::Creator<UDa>  CUDa;
+      typedef blazetest::Creator<UDb>  CUDb;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=9UL; ++i ) {
-         RUN_DMATDMATADD_OPERATION_TEST( CSDb( i ), CMDa( i, i ) );
+         RUN_DMATDMATADD_OPERATION_TEST( CUDa( i ), CUDb( i ) );
       }
 
       // Running tests with large matrices
-      RUN_DMATDMATADD_OPERATION_TEST( CSDb(  67UL ), CMDa(  67UL,  67UL ) );
-      RUN_DMATDMATADD_OPERATION_TEST( CSDb( 128UL ), CMDa( 128UL, 128UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CUDa(  67UL ), CUDb(  67UL ) );
+      RUN_DMATDMATADD_OPERATION_TEST( CUDa( 128UL ), CUDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix addition:\n"
