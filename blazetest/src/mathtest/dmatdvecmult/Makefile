@@ -49,14 +49,25 @@ BIN = $(SRC:.cpp=)
 default: M3x3aV3a M3x3aV3b M3x3bV3a M3x3bV3b \
          MHaVHa MHaVHb MHbVHa MHbVHb \
          MDaVDa MDaVDb MDbVDa MDbVDb \
+         LDaVDa LDaVDb LDbVDa LDbVDb \
+         UDaVDa UDaVDb UDbVDa UDbVDb \
          SDaVDa SDaVDb SDbVDa SDbVDb \
          AliasingTest
 all: $(BIN)
-essential: M3x3aV3a MHaVHa MDaVDa SDaVDa AliasingTest
+essential: M3x3aV3a MHaVHa MDaVDa LDaVDa UDaVDa SDaVDa AliasingTest
 single: MDaVDa
 
 
 # Build rules
+LDaVDa: LDaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDaVDb: LDaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbVDa: LDbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbVDb: LDbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 M2x2aV2a: M2x2aV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M2x2aV2b: M2x2aV2b.o
@@ -321,6 +332,15 @@ SDaVDb: SDaVDb.o
 SDbVDa: SDbVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDbVDb: SDbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+UDaVDa: UDaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDaVDb: UDaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbVDa: UDbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbVDb: UDbVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

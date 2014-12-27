@@ -1,6 +1,10 @@
 *.d
 *.o
 AliasingTest
+LDaVDa
+LDaVDb
+LDbVDa
+LDbVDb
 M2x2aV2a
 M2x2aV2b
 M2x2aVDa
@@ -129,4 +133,8 @@ SDaVDa
 SDaVDb
 SDbVDa
 SDbVDb
+UDaVDa
+UDaVDb
+UDbVDa
+UDbVDb
 
