@@ -1,6 +1,10 @@
 *.d
 *.o
 AliasingTest
+LCaVDa
+LCaVDb
+LCbVDa
+LCbVDb
 MCaV2a
 MCaV2b
 MCaV3a
@@ -33,4 +37,8 @@ SCaVDa
 SCaVDb
 SCbVDa
 SCbVDb
+UCaVDa
+UCaVDb
+UCbVDa
+UCbVDb
 
