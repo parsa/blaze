@@ -49,10 +49,12 @@ BIN = $(SRC:.cpp=)
 default: V3aM3x3a V3aM3x3b V3bM3x3a V3bM3x3b \
          VHaMHa VHaMHb VHbMHa VHbMHb \
          VDaMDa VDaMDb VDbMDa VDbMDb \
+         VDaLDa VDaLDb VDbLDa VDbLDb \
+         VDaUDa VDaUDb VDbUDa VDbUDb \
          VDaSDa VDaSDb VDbSDa VDbSDb \
          AliasingTest
 all: $(BIN)
-essential: V3aM3x3a VHaMHa VDaMDa VDaSDa AliasingTest
+essential: V3aM3x3a VHaMHa VDaMDa VDaLDa VDaUDa VDaSDa AliasingTest
 single: VDaMDa
 
 
@@ -168,6 +170,10 @@ V16bM16x8a: V16bM16x8a.o
 V16bM16x8b: V16bM16x8b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+VDaLDa: VDaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaLDb: VDaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaM2x2a: VDaM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaM2x2b: VDaM2x2b.o
@@ -208,6 +214,14 @@ VDaSDa: VDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaSDb: VDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaUDa: VDaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaUDb: VDaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbLDa: VDbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbLDb: VDbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbM2x2a: VDbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbM2x2b: VDbM2x2b.o
@@ -247,6 +261,10 @@ VDbMHb: VDbMHb.o
 VDbSDa: VDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbSDb: VDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbUDa: VDbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbUDb: VDbUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VHaM2x2a: VHaM2x2a.o
