@@ -47,14 +47,25 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: MCaVCa MCaVCb MCbVCa MCbVCb \
+         LCaVCa LCaVCb LCbVCa LCbVCb \
+         UCaVCa UCaVCb UCbVCa UCbVCb \
          SCaVCa SCaVCb SCbVCa SCbVCb \
          AliasingTest
 all: $(BIN)
-essential: MCaVCa SCaVCa AliasingTest
+essential: MCaVCa LCaVCa UCaVCa SCaVCa AliasingTest
 single: MCaVCa
 
 
 # Build rules
+LCaVCa: LCaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaVCb: LCaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbVCa: LCbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbVCb: LCbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 MCaVCa: MCaVCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaVCb: MCaVCb.o
@@ -71,6 +82,15 @@ SCaVCb: SCaVCb.o
 SCbVCa: SCbVCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbVCb: SCbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+UCaVCa: UCaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaVCb: UCaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbVCa: UCbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbVCb: UCbVCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

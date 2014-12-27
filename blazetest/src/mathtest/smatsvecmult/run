@@ -37,6 +37,11 @@ PATH_SMATSVECMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse matrix/sparse vector multiplication tests...";
 
+EXE=$PATH_SMATSVECMULT/LCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/LCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/LCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/LCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_SMATSVECMULT/MCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATSVECMULT/MCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATSVECMULT/MCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
@@ -46,5 +51,10 @@ EXE=$PATH_SMATSVECMULT/SCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then e
 EXE=$PATH_SMATSVECMULT/SCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATSVECMULT/SCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATSVECMULT/SCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_SMATSVECMULT/UCaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/UCaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/UCbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATSVECMULT/UCbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
 EXE=$PATH_SMATSVECMULT/AliasingTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
