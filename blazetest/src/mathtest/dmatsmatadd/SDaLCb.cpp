@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatsmatadd/MDbSCb.cpp
-//  \brief Source file for the MDbSCb dense matrix/sparse matrix addition math test
+//  \file src/mathtest/dmatsmatadd/SDaLCb.cpp
+//  \brief Source file for the SDaLCb dense matrix/sparse matrix addition math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatsmatadd/OperationTest.h>
@@ -56,30 +57,31 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MDbSCb'..." << std::endl;
+   std::cout << "   Running 'SDaLCb'..." << std::endl;
 
+   using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeB>                               MDb;
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeB> >  SCb;
+      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeA> >  SDa;
+      typedef blaze::LowerMatrix< blaze::CompressedMatrix<TypeB> >   LCb;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDb>  CMDb;
-      typedef blazetest::Creator<SCb>  CSCb;
+      typedef blazetest::Creator<SDa>  CSDa;
+      typedef blazetest::Creator<LCb>  CLCb;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_DMATSMATADD_OPERATION_TEST( CMDb( i, i ), CSCb( i, j ) );
+         for( size_t j=0UL; j<=LCb::maxNonZeros( i ); ++j ) {
+            RUN_DMATSMATADD_OPERATION_TEST( CSDa( i ), CLCb( i, j ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATSMATADD_OPERATION_TEST( CMDb(  67UL,  67UL ), CSCb(  67UL,  7UL ) );
-      RUN_DMATSMATADD_OPERATION_TEST( CMDb( 128UL, 128UL ), CSCb( 128UL, 16UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CSDa(  67UL ), CLCb(  67UL,  7UL ) );
+      RUN_DMATSMATADD_OPERATION_TEST( CSDa( 128UL ), CLCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix addition:\n"
