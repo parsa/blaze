@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatsmatsub/MDbSCb.cpp
-//  \brief Source file for the MDbSCb dense matrix/sparse matrix subtraction math test
+//  \file src/mathtest/dmatsmatsub/LHbLCb.cpp
+//  \brief Source file for the LHbLCb dense matrix/sparse matrix subtraction math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,8 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/HybridMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatsmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -56,30 +56,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MDbSCb'..." << std::endl;
+   std::cout << "   Running 'LHbLCb'..." << std::endl;
 
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeB>                               MDb;
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeB> >  SCb;
+      typedef blaze::LowerMatrix< blaze::HybridMatrix<TypeB,128UL,128UL> >  LHb;
+      typedef blaze::LowerMatrix< blaze::CompressedMatrix<TypeB> >          LCb;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDb>  CMDb;
-      typedef blazetest::Creator<SCb>  CSCb;
+      typedef blazetest::Creator<LHb>  CLHb;
+      typedef blazetest::Creator<LCb>  CLCb;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_DMATSMATSUB_OPERATION_TEST( CMDb( i, i ), CSCb( i, j ) );
+         for( size_t j=0UL; j<=LCb::maxNonZeros( i ); ++j ) {
+            RUN_DMATSMATSUB_OPERATION_TEST( CLHb( i ), CLCb( i, j ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATSMATSUB_OPERATION_TEST( CMDb(  67UL,  67UL ), CSCb(  67UL,  7UL ) );
-      RUN_DMATSMATSUB_OPERATION_TEST( CMDb( 128UL, 128UL ), CSCb( 128UL, 16UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CLHb(  67UL ), CLCb(  67UL,  7UL ) );
+      RUN_DMATSMATSUB_OPERATION_TEST( CLHb( 128UL ), CLCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix subtraction:\n"
