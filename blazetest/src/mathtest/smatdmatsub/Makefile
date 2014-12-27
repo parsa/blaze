@@ -49,16 +49,70 @@ BIN = $(SRC:.cpp=)
 default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          MCaMHa MCaMHb MCbMHa MCbMHb \
          MCaMDa MCaMDb MCbMDa MCbMDb \
-         MCaSDa MCaSDb MCbSDa MCbSDb \
-         SCaMDa SCaMDb SCbMDa SCbMDb \
+         LCaLDa LCaLDb LCbLDa LCbLDb \
+         UCaUDa UCaUDb UCbUDa UCbUDb \
          SCaSDa SCaSDb SCbSDa SCbSDb \
          AliasingTest
 all: $(BIN)
-essential: MCaM3x3a MCaMHa MCaMDa MCaSDa SCaMDa SCaSDa AliasingTest
+essential: MCaM3x3a MCaMHa MCaMDa LCaLDa UCaUDa SCaSDa AliasingTest
 single: MCaMDa
 
 
 # Build rules
+LCaL3x3a: LCaL3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaL3x3b: LCaL3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaLDa: LCaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaLDb: LCaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaLHa: LCaLHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaLHb: LCaLHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaMDa: LCaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaMDb: LCaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaSDa: LCaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaSDb: LCaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaUDa: LCaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaUDb: LCaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+LCbL3x3a: LCbL3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbL3x3b: LCbL3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbLDa: LCbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbLDb: LCbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbLHa: LCbLHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbLHb: LCbLHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbMDa: LCbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbMDb: LCbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbSDa: LCbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbSDb: LCbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbUDa: LCbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbUDb: LCbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MCaLDa: MCaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaLDb: MCaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaM2x2a: MCaM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaM2x2b: MCaM2x2b.o
@@ -99,7 +153,15 @@ MCaSDa: MCaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaSDb: MCaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaUDa: MCaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaUDb: MCaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+MCbLDa: MCbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbLDb: MCbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbM2x2a: MCbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbM2x2b: MCbM2x2b.o
@@ -140,7 +202,15 @@ MCbSDa: MCbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbSDb: MCbSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbUDa: MCbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbUDb: MCbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+SCaLDa: SCaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaLDb: SCaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaMDa: SCaMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaMDb: SCaMDb.o
@@ -157,7 +227,15 @@ SCaSHa: SCaSHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaSHb: SCaSHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaUDa: SCaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaUDb: SCaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+SCbLDa: SCbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbLDb: SCbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbMDa: SCbMDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbMDb: SCbMDb.o
@@ -173,6 +251,60 @@ SCbSDb: SCbSDb.o
 SCbSHa: SCbSHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbSHb: SCbSHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbUDa: SCbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbUDb: SCbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+UCaLDa: UCaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaLDb: UCaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaMDa: UCaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaMDb: UCaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaSDa: UCaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaSDb: UCaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaU3x3a: UCaU3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaU3x3b: UCaU3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaUDa: UCaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaUDb: UCaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaUHa: UCaUHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaUHb: UCaUHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+UCbLDa: UCbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbLDb: UCbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbMDa: UCbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbMDb: UCbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbSDa: UCbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbSDb: UCbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbU3x3a: UCbU3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbU3x3b: UCbU3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbUDa: UCbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbUDb: UCbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbUHa: UCbUHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbUHb: UCbUHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
