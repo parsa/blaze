@@ -49,14 +49,20 @@ BIN = $(SRC:.cpp=)
 default: VCaM3x3a VCaM3x3b VCbM3x3a VCbM3x3b \
          VCaMHa VCaMHb VCbMHa VCbMHb \
          VCaMDa VCaMDb VCbMDa VCbMDb \
+         VCaLDa VCaLDb VCbLDa VCbLDb \
+         VCaUDa VCaUDb VCbUDa VCbUDb \
          VCaSDa VCaSDb VCbSDa VCbSDb \
          AliasingTest
 all: $(BIN)
-essential: VCaM3x3a VCaMHa VCaMDa VCaSDa AliasingTest
+essential: VCaM3x3a VCaMHa VCaMDa VCaLDa VCaUDa VCaSDa AliasingTest
 single: VCaMDa
 
 
 # Build rules
+VCaLDa: VCaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaLDb: VCaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaM2x2a: VCaM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaM2x2b: VCaM2x2b.o
@@ -97,7 +103,15 @@ VCaSDa: VCaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaSDb: VCaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaUDa: VCaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaUDb: VCaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+VCbLDa: VCbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbLDb: VCbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbM2x2a: VCbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbM2x2b: VCbM2x2b.o
@@ -137,6 +151,10 @@ VCbMHb: VCbMHb.o
 VCbSDa: VCbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbSDb: VCbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbUDa: VCbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbUDb: VCbUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
