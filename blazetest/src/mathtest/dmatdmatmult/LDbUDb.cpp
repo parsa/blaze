@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatdmatmult/SDaMDa.cpp
-//  \brief Source file for the SDaMDa dense matrix/dense matrix multiplication math test
+//  \file src/mathtest/dmatdmatmult/LDbUDb.cpp
+//  \brief Source file for the LDbUDb dense matrix/dense matrix multiplication math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/LowerMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatdmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -55,34 +56,32 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SDaMDa'..." << std::endl;
+   std::cout << "   Running 'LDbUDb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeA> >  SDa;
-      typedef blaze::DynamicMatrix<TypeA>                            MDa;
+      typedef blaze::LowerMatrix< blaze::DynamicMatrix<TypeB> >  LDb;
+      typedef blaze::UpperMatrix< blaze::DynamicMatrix<TypeB> >  UDb;
 
       // Creator type definitions
-      typedef blazetest::Creator<SDa>  CSDa;
-      typedef blazetest::Creator<MDa>  CMDa;
+      typedef blazetest::Creator<LDb>  CLDb;
+      typedef blazetest::Creator<UDb>  CUDb;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=6UL; ++j ) {
-            RUN_DMATDMATMULT_OPERATION_TEST( CSDa( i ), CMDa( i, j ) );
-         }
+         RUN_DMATDMATMULT_OPERATION_TEST( CLDb( i ), CUDb( i ) );
       }
 
       // Running tests with large matrices
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 15UL ), CMDa( 15UL, 37UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 37UL ), CMDa( 37UL, 37UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 63UL ), CMDa( 63UL, 37UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 16UL ), CMDa( 16UL, 32UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 32UL ), CMDa( 32UL, 32UL ) );
-      RUN_DMATDMATMULT_OPERATION_TEST( CSDa( 64UL ), CMDa( 64UL, 32UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 15UL ), CUDb( 15UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 37UL ), CUDb( 37UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 63UL ), CUDb( 63UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 16UL ), CUDb( 16UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 32UL ), CUDb( 32UL ) );
+      RUN_DMATDMATMULT_OPERATION_TEST( CLDb( 64UL ), CUDb( 64UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense matrix multiplication:\n"
