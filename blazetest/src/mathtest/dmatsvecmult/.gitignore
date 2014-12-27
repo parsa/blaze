@@ -1,6 +1,10 @@
 *.d
 *.o
 AliasingTest
+LDaVCa
+LDaVCb
+LDbVCa
+LDbVCb
 M2x2aVCa
 M2x2aVCb
 M2x2bVCa
@@ -41,4 +45,8 @@ SDaVCa
 SDaVCb
 SDbVCa
 SDbVCb
+UDaVCa
+UDaVCb
+UDbVCa
+UDbVCb
 
