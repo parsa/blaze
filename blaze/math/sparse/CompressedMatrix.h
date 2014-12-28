@@ -391,9 +391,6 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
 
    inline bool canSMPAssign() const;
 
-   inline CompressedMatrix&       unwrap();
-   inline const CompressedMatrix& unwrap() const;
-
    template< typename MT, bool SO2 > inline void assign   ( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT >           inline void assign   ( const SparseMatrix<MT,!SO>& rhs );
@@ -2176,38 +2173,6 @@ inline bool CompressedMatrix<Type,SO>::canSMPAssign() const
 
 
 //*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the sparse matrix
-        , bool SO >      // Storage order
-inline const CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::unwrap() const
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Default implementation of the assignment of a row-major dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -2644,9 +2609,6 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
    inline bool canSMPAssign() const;
-
-   inline CompressedMatrix&       unwrap();
-   inline const CompressedMatrix& unwrap() const;
 
    template< typename MT, bool SO > inline void assign   ( const DenseMatrix<MT,SO>&     rhs );
    template< typename MT >          inline void assign   ( const SparseMatrix<MT,true>&  rhs );
@@ -4423,36 +4385,6 @@ inline bool CompressedMatrix<Type,true>::canSMPAssign() const
    return false;
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type >  // Data type of the sparse matrix
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type >  // Data type of the sparse matrix
-inline const CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::unwrap() const
-{
-   return *this;
-}
 //*************************************************************************************************
 
 
