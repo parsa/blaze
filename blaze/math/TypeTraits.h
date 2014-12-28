@@ -104,5 +104,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnrestrictedType.h>
 
 #endif
