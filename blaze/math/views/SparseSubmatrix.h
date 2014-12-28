@@ -43,11 +43,11 @@
 #include <iterator>
 #include <stdexcept>
 #include <vector>
-#include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Restricted.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Submatrix.h>
@@ -74,8 +74,8 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -1276,7 +1276,10 @@ inline SparseSubmatrix<MT,AF,SO>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
@@ -1293,7 +1296,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1305,9 +1308,9 @@ inline SparseSubmatrix<MT,AF,SO>&
       assign( lhs, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -1342,7 +1345,10 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -1356,7 +1362,7 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1401,7 +1407,10 @@ inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >:
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -1417,14 +1426,14 @@ inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >:
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -1456,11 +1465,15 @@ inline SparseSubmatrix<MT,AF,SO>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type    AddType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type       AddType;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -1477,14 +1490,14 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -1516,11 +1529,15 @@ inline SparseSubmatrix<MT,AF,SO>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type    SubType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type       SubType;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -1537,14 +1554,14 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -1576,14 +1593,17 @@ inline SparseSubmatrix<MT,AF,SO>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type   MultType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type      MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
    if( columns() != (~rhs).rows() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -1599,14 +1619,14 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -2078,9 +2098,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
+
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
    const ResultType tmp( trans(*this) );
    reset();
    assign( lhs, tmp );
@@ -2829,7 +2852,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2866,7 +2889,7 @@ template< typename MT     // Type of the sparse matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2903,7 +2926,7 @@ template< typename MT     // Type of the sparse matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2953,7 +2976,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
@@ -2988,7 +3011,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::addAssign( const SparseMatrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
@@ -3023,7 +3046,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
@@ -3058,7 +3081,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO2 >    // Storage order of the right-hand sparse matrix
 inline void SparseSubmatrix<MT,AF,SO>::subAssign( const SparseMatrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
@@ -3890,7 +3913,10 @@ inline SparseSubmatrix<MT,AF,true>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
@@ -3907,7 +3933,7 @@ inline SparseSubmatrix<MT,AF,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3919,9 +3945,9 @@ inline SparseSubmatrix<MT,AF,true>&
       assign( lhs, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -3957,7 +3983,10 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>&
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -3971,7 +4000,7 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -3983,9 +4012,9 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>&
       assign( lhs, ~rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -4021,7 +4050,10 @@ inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>& 
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
@@ -4037,14 +4069,14 @@ inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>& 
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -4077,11 +4109,15 @@ inline SparseSubmatrix<MT,AF,true>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type    AddType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type       AddType;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -4098,14 +4134,14 @@ inline SparseSubmatrix<MT,AF,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -4138,11 +4174,15 @@ inline SparseSubmatrix<MT,AF,true>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type    SubType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type       SubType;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
@@ -4159,14 +4199,14 @@ inline SparseSubmatrix<MT,AF,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -4199,12 +4239,15 @@ inline SparseSubmatrix<MT,AF,true>&
 {
    using blaze::assign;
 
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type   MultType;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type      MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
 
@@ -4222,14 +4265,14 @@ inline SparseSubmatrix<MT,AF,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
 
    reset();
    assign( lhs, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( matrix_.unwrap() ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( matrix_.unwrap() ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( matrix_.unwrap() ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
 
    return *this;
 }
@@ -4695,9 +4738,12 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef SparseSubmatrix< typename RemoveAdaptor<MT>::Type, unaligned >  Lhs;
+   typedef SparseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
 
-   Lhs lhs( matrix_.unwrap(), row_, column_, m_, n_ );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( Lhs );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED    ( Lhs );
+
+   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
    const ResultType tmp( trans(*this) );
    reset();
    assign( lhs, tmp );
@@ -5469,7 +5515,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,true>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5507,7 +5553,7 @@ template< typename MT     // Type of the sparse matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5545,7 +5591,7 @@ template< typename MT     // Type of the sparse matrix
 template< typename MT2 >  // Type of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5596,7 +5642,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,true>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
@@ -5632,7 +5678,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand side sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::addAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
@@ -5668,7 +5714,7 @@ template< typename MT2  // Type of the right-hand side dense matrix
         , bool SO >     // Storage order of the right-hand side dense matrix
 inline void SparseSubmatrix<MT,AF,true>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
@@ -5704,7 +5750,7 @@ template< typename MT2  // Type of the right-hand side sparse matrix
         , bool SO >     // Storage order of the right-hand sparse matrix
 inline void SparseSubmatrix<MT,AF,true>::subAssign( const SparseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
 
    typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
