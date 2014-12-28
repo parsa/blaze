@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/util/constraints/Numeric.h>
 
 
@@ -306,6 +307,25 @@ struct IsResizable< UpperMatrix<MT,SO,DF> > : public IsResizable<MT>::Type
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct RemoveAdaptor< UpperMatrix<MT,SO,DF> >
+{
+   typedef MT  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UNRESTRICTEDTYPE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct UnrestrictedType< UpperMatrix<MT,SO,DF> >
 {
    typedef MT  Type;
 };
