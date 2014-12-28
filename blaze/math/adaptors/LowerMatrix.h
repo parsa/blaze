@@ -195,6 +195,31 @@ inline void swap( LowerMatrix<MT,SO,DF>& a, LowerMatrix<MT,SO,DF>& b ) /* throw(
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the instance without the access restrictions to the upper part.
+// \ingroup math_shims
+//
+// \param m The lower matrix to be derestricted.
+// \return Reference to the matrix without access restrictions.
+//
+// This function returns a reference to the given lower matrix instance that has no access
+// restrictions to the upper part of the matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline MT& derestrict( LowerMatrix<MT,SO,DF>& m )
+{
+   return m.matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
