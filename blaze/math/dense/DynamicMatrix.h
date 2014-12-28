@@ -356,9 +356,6 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline DynamicMatrix&       unwrap();
-   inline const DynamicMatrix& unwrap() const;
-
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -1691,38 +1688,6 @@ inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
 
 
 //*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-inline const DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::unwrap() const
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2610,9 +2575,6 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
-
-   inline DynamicMatrix&       unwrap();
-   inline const DynamicMatrix& unwrap() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -3945,36 +3907,6 @@ inline bool DynamicMatrix<Type,true>::canSMPAssign() const
    return ( columns() > SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type >  // Data type of the matrix
-inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type >  // Data type of the matrix
-inline const DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::unwrap() const
-{
-   return *this;
-}
 //*************************************************************************************************
 
 
