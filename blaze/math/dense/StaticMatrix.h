@@ -392,9 +392,6 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    inline bool isAligned() const;
 
-   inline StaticMatrix&       unwrap();
-   inline const StaticMatrix& unwrap() const;
-
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
    inline void          store ( size_t i, size_t j, const IntrinsicType& value );
@@ -2461,42 +2458,6 @@ inline bool StaticMatrix<Type,M,N,SO>::isAligned() const
 
 
 //*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-inline const StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::unwrap() const
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -3281,9 +3242,6 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    template< typename Other > inline bool isAliased( const Other* alias ) const;
 
    inline bool isAligned() const;
-
-   inline StaticMatrix&       unwrap();
-   inline const StaticMatrix& unwrap() const;
 
    inline IntrinsicType load  ( size_t i, size_t j ) const;
    inline IntrinsicType loadu ( size_t i, size_t j ) const;
@@ -5361,40 +5319,6 @@ inline bool StaticMatrix<Type,M,N,true>::isAligned() const
    return true;
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::unwrap()
-{
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns a reference to the underlying (i.e. unwrapped) matrix instance.
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-inline const StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::unwrap() const
-{
-   return *this;
-}
 //*************************************************************************************************
 
 
