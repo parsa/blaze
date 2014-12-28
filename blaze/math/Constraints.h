@@ -67,6 +67,7 @@
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Restricted.h>
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/Rows.h>
 #include <blaze/math/constraints/SerialExpr.h>
