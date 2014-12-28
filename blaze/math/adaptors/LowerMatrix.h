@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -237,26 +238,6 @@ struct IsLower< LowerMatrix<MT,SO,DF> > : public TrueType
 
 //=================================================================================================
 //
-//  ISRESIZABLE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct IsResizable< LowerMatrix<MT,SO,DF> > : public IsResizable<MT>::Type
-{
-   enum { value = IsResizable<MT>::value };
-   typedef typename IsResizable<MT>::Type  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISADAPTOR SPECIALIZATIONS
 //
 //=================================================================================================
@@ -268,6 +249,46 @@ struct IsAdaptor< LowerMatrix<MT,SO,DF> > : public TrueType
 {
    enum { value = 1 };
    typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESTRICTED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsRestricted< LowerMatrix<MT,SO,DF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESIZABLE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsResizable< LowerMatrix<MT,SO,DF> > : public IsResizable<MT>::Type
+{
+   enum { value = IsResizable<MT>::value };
+   typedef typename IsResizable<MT>::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
