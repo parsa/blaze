@@ -41,10 +41,12 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -948,6 +950,33 @@ BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>
    return ( IsSame<MT1,MT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be derestricted.
+// \return Reference to the matrix without access restrictions.
+//
+// This function removes all restrictions on the data access to the given matrix. It returns a
+// reference to the matrix that does provide the same interface but does not have any restrictions
+// on the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE typename UnrestrictedType<MT>::Type& derestrict( Matrix<MT,SO>& matrix )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
+
+   return ~matrix;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

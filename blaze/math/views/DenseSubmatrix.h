@@ -56,7 +56,6 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Derestrict.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>

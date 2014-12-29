@@ -41,7 +41,9 @@
 //*************************************************************************************************
 
 #include <stdexcept>
+#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -168,7 +170,8 @@ BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector )
 {
    return (~vector).begin();
@@ -182,7 +185,8 @@ BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector )
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vector )
 {
    return (~vector).begin();
@@ -196,7 +200,8 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vecto
 // \param vector The given dense or sparse vector.
 // \return Iterator to the first element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector )
 {
    return (~vector).begin();
@@ -210,7 +215,8 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vect
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector )
 {
    return (~vector).end();
@@ -224,7 +230,8 @@ BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector )
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector )
 {
    return (~vector).end();
@@ -238,7 +245,8 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector 
 // \param vector The given dense or sparse vector.
 // \return Iterator just past the last element of the given vector.
 */
-template< typename VT, bool TF >
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector )
 {
    return (~vector).end();
@@ -538,6 +546,33 @@ BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>
    return ( IsSame<VT1,VT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given vector.
+// \ingroup vector
+//
+// \param vector The vector to be derestricted.
+// \return Reference to the vector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given vector. It returns a
+// reference to the vector that does provide the same interface but does not have any restrictions
+// on the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE typename UnrestrictedType<VT>::Type& derestrict( Vector<VT,TF>& vector )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
+
+   return ~vector;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
