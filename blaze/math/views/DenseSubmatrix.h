@@ -60,6 +60,7 @@
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -70,11 +71,11 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Streaming.h>
@@ -95,6 +96,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -1124,6 +1126,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
+      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1474,11 +1480,6 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
@@ -1494,7 +1495,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1540,11 +1541,6 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -1560,7 +1556,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -1606,11 +1602,6 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -1628,7 +1619,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -1669,11 +1660,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type      AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -1689,7 +1677,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -1736,11 +1724,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type      AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -1758,7 +1743,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -1799,11 +1784,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type      SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -1819,7 +1801,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -1866,11 +1848,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type      SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -1888,7 +1867,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -1927,11 +1906,8 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type     MultType;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
@@ -1949,7 +1925,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -1976,12 +1952,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator*=( Other rhs )
 {
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) * rhs );
 
    return *this;
@@ -2005,12 +1976,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) / rhs );
 
    return *this;
@@ -2248,12 +2214,7 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    smpAssign( lhs, tmp );
 
@@ -4199,6 +4160,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
+      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4521,11 +4486,6 @@ inline DenseSubmatrix<MT,unaligned,true>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
@@ -4541,7 +4501,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4587,11 +4547,6 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -4607,7 +4562,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -4653,11 +4608,6 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -4675,7 +4625,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -4716,11 +4666,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type      AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -4736,7 +4683,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -4783,11 +4730,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type      AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -4805,7 +4749,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -4846,11 +4790,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type      SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -4866,7 +4807,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -4913,11 +4854,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type      SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -4935,7 +4873,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -4975,11 +4913,8 @@ inline DenseSubmatrix<MT,unaligned,true>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type     MultType;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
@@ -4997,7 +4932,7 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -5024,12 +4959,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >::Type&
    DenseSubmatrix<MT,unaligned,true>::operator*=( Other rhs )
 {
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) * rhs );
 
    return *this;
@@ -5053,12 +4983,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) / rhs );
 
    return *this;
@@ -5279,12 +5204,7 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    smpAssign( lhs, tmp );
 
@@ -6854,6 +6774,10 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
+      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -7199,11 +7123,6 @@ inline DenseSubmatrix<MT,aligned,false>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
@@ -7219,7 +7138,7 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -7265,11 +7184,6 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -7285,7 +7199,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -7331,11 +7245,6 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -7353,7 +7262,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -7394,11 +7303,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type     AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -7414,7 +7320,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -7461,11 +7367,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type     AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -7483,7 +7386,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -7524,11 +7427,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type     SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -7544,7 +7444,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -7591,11 +7491,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type     SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -7613,7 +7510,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -7653,11 +7550,8 @@ inline DenseSubmatrix<MT,aligned,false>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >    Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type     MultType;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
@@ -7675,7 +7569,7 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -7702,12 +7596,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::Type&
    DenseSubmatrix<MT,aligned,false>::operator*=( Other rhs )
 {
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) * rhs );
 
    return *this;
@@ -7731,12 +7620,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) / rhs );
 
    return *this;
@@ -7974,12 +7858,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    smpAssign( lhs, tmp );
 
@@ -9543,6 +9422,10 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseSubmatrix<MT2,AF2,SO2>& b );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
+      derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -9858,11 +9741,6 @@ inline DenseSubmatrix<MT,aligned,true>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
@@ -9878,7 +9756,7 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -9923,11 +9801,6 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -9943,7 +9816,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const typename MT2::ResultType tmp( ~rhs );
@@ -9989,11 +9862,6 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
@@ -10011,7 +9879,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSparseMatrix<MT2>::value )
       reset();
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -10052,11 +9920,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type     AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -10072,7 +9937,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -10119,11 +9984,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type     AddType;
+   typedef typename AddTrait<ResultType,typename MT2::ResultType>::Type  AddType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -10141,7 +10003,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -10182,11 +10044,8 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type     SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -10202,7 +10061,7 @@ inline typename DisableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -10249,11 +10108,8 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >   Lhs;
-   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type     SubType;
+   typedef typename SubTrait<ResultType,typename MT2::ResultType>::Type  SubType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -10271,7 +10127,7 @@ inline typename EnableIf< And< IsAdaptor<MT>, RequiresEvaluation<MT2> >
    if( IsSymmetric<MT>::value && !preservesSymmetry( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -10311,11 +10167,8 @@ inline DenseSubmatrix<MT,aligned,true>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >    Lhs;
-   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type     MultType;
+   typedef typename MultTrait<ResultType,typename MT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED     ( Lhs );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
@@ -10333,7 +10186,7 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( IsSymmetric<MT>::value && !preservesSymmetry( tmp ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
 
    smpAssign( lhs, tmp );
 
@@ -10360,12 +10213,7 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::Type&
    DenseSubmatrix<MT,aligned,true>::operator*=( Other rhs )
 {
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) * rhs );
 
    return *this;
@@ -10389,12 +10237,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, aligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    smpAssign( lhs, (*this) / rhs );
 
    return *this;
@@ -10615,12 +10458,7 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typedef DenseSubmatrix< typename UnrestrictedType<MT>::Type, unaligned >  Lhs;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( Lhs );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED   ( Lhs );
-
-   Lhs lhs( derestrict( matrix_ ), row_, column_, m_, n_ );
+   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    smpAssign( lhs, tmp );
 
@@ -12022,7 +11860,9 @@ inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm )
 // dense matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT, bool AF, bool SO >
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
 inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseMatrix<MT,SO>& b )
 {
    return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
@@ -12042,7 +11882,9 @@ inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseMatrix<MT,SO>&
 // dense matrix and by that represents the same observable state. In this case, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT, bool AF, bool SO >
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
 inline bool isSame( const DenseMatrix<MT,SO>& a, const DenseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
@@ -12062,13 +11904,43 @@ inline bool isSame( const DenseMatrix<MT,SO>& a, const DenseSubmatrix<MT,AF,SO>&
 // same part of the same dense matrix. In case both submatrices represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT, bool AF, bool SO >
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
 inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseSubmatrix<MT,AF,SO>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) &&
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
             ( a.m_ == b.m_ ) && ( a.n_ == b.n_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param dm The submatrix to be derestricted.
+// \return Submatrix without access restrictions.
+//
+// This function removes all restrictions on the data access to the given submatrix. It returns a
+// submatrix that does provide the same interface but does not have any restrictions on the data
+// access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DerestrictTrait< DenseSubmatrix<MT,AF,SO> >::Type
+   derestrict( DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef typename DerestrictTrait< DenseSubmatrix<MT,AF,SO> >::Type  ReturnType;
+   return ReturnType( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -12109,6 +11981,45 @@ inline const DenseSubmatrix<MT,AF1,SO>
 
    return DenseSubmatrix<MT,AF1,SO>( dm.matrix_, dm.row_ + row, dm.column_ + column, m, n );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESTRICTED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO >
+struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public If< IsRestricted<MT>, TrueType, FalseType >::Type
+{
+   enum { value = IsRestricted<MT>::value };
+   typedef typename If< IsRestricted<MT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DERESTRICTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO >
+struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
+{
+   typedef DenseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF, SO >  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 

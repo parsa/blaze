@@ -41,9 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/typetraits/IsResizable.h>
-#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -566,10 +564,8 @@ BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE typename UnrestrictedType<VT>::Type& derestrict( Vector<VT,TF>& vector )
+BLAZE_ALWAYS_INLINE VT& derestrict( Vector<VT,TF>& vector )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( VT );
-
    return ~vector;
 }
 /*! \endcond */

@@ -46,6 +46,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -58,7 +59,6 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/util/constraints/Numeric.h>
 
 
@@ -343,16 +343,16 @@ struct RemoveAdaptor< UpperMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
-//  UNRESTRICTEDTYPE SPECIALIZATIONS
+//  DERESTRICTTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct UnrestrictedType< UpperMatrix<MT,SO,DF> >
+struct DerestrictTrait< UpperMatrix<MT,SO,DF> >
 {
-   typedef MT  Type;
+   typedef MT&  Type;
 };
 /*! \endcond */
 //*************************************************************************************************

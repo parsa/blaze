@@ -41,12 +41,10 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/UnrestrictedType.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -970,10 +968,8 @@ BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-BLAZE_ALWAYS_INLINE typename UnrestrictedType<MT>::Type& derestrict( Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE MT& derestrict( Matrix<MT,SO>& matrix )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE( MT );
-
    return ~matrix;
 }
 /*! \endcond */
