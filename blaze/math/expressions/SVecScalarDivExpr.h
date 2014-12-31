@@ -381,7 +381,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    */
    inline ConstIterator find( size_t index ) const {
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-      return ConstIterator( vector_.find( index ) );
+      return ConstIterator( vector_.find( index ), scalar_ );
    }
    //**********************************************************************************************
 
@@ -393,7 +393,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    */
    inline ConstIterator lowerBound( size_t index ) const {
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-      return ConstIterator( vector_.lowerBound( index ) );
+      return ConstIterator( vector_.lowerBound( index ), scalar_ );
    }
    //**********************************************************************************************
 
@@ -405,7 +405,7 @@ class SVecScalarDivExpr : public SparseVector< SVecScalarDivExpr<VT,ST,TF>, TF >
    */
    inline ConstIterator upperBound( size_t index ) const {
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-      return ConstIterator( vector_.upperBound( index ) );
+      return ConstIterator( vector_.upperBound( index ), scalar_ );
    }
    //**********************************************************************************************
 
