@@ -57,9 +57,11 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/views/AlignmentFlag.h>
@@ -79,6 +81,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -1006,6 +1009,10 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
 
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT2, bool AF2, bool TF2 >
+   friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
+      derestrict( DenseSubvector<VT2,AF2,TF2>& dv );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2569,6 +2576,10 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
 
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT2, bool AF2, bool TF2 >
+   friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
+      derestrict( DenseSubvector<VT2,AF2,TF2>& dv );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4561,7 +4572,9 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
 // of the given dense vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b )
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
@@ -4581,7 +4594,9 @@ inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>&
 // of the given dense vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
@@ -4601,11 +4616,41 @@ inline bool isSame( const DenseVector<VT,TF>& a, const DenseSubvector<VT,AF,TF>&
 // same range of the same dense vector. In case both subvectors represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given dense subvector.
+// \ingroup dense_subvector
+//
+// \param dv The subvector to be derestricted.
+// \return Subvector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given subvector. It returns a
+// subvector that does provide the same interface but does not have any restrictions on the data
+// access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename DerestrictTrait< DenseSubvector<VT,AF,TF> >::Type
+   derestrict( DenseSubvector<VT,AF,TF>& dv )
+{
+   typedef typename DerestrictTrait< DenseSubvector<VT,AF,TF> >::Type  ReturnType;
+   return ReturnType( derestrict( dv.vector_ ), dv.offset_, dv.size_ );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -4644,6 +4689,45 @@ inline const DenseSubvector<VT,AF1,TF>
 
    return DenseSubvector<VT,AF1,TF>( dv.vector_, dv.offset_ + index, size );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESTRICTED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct IsRestricted< DenseSubvector<VT,AF,TF> > : public If< IsRestricted<VT>, TrueType, FalseType >::Type
+{
+   enum { value = IsRestricted<VT>::value };
+   typedef typename If< IsRestricted<VT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DERESTRICTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct DerestrictTrait< DenseSubvector<VT,AF,TF> >
+{
+   typedef DenseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
