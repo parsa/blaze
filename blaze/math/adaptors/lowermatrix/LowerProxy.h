@@ -236,11 +236,8 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline LowerProxy<MT>& LowerProxy<MT>::operator=( const T& value )
 {
-   if( row_ < column_ ) {
-      if( isDefault( value ) )
-         return *this;
+   if( row_ < column_ )
       throw std::invalid_argument( "Invalid assignment to upper matrix element" );
-   }
 
    matrix_(row_,column_) = value;
 
@@ -263,11 +260,8 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline LowerProxy<MT>& LowerProxy<MT>::operator+=( const T& value )
 {
-   if( row_ < column_ ) {
-      if( isDefault( value ) )
-         return *this;
+   if( row_ < column_ )
       throw std::invalid_argument( "Invalid assignment to upper matrix element" );
-   }
 
    matrix_(row_,column_) += value;
 
@@ -290,11 +284,8 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline LowerProxy<MT>& LowerProxy<MT>::operator-=( const T& value )
 {
-   if( row_ < column_ ) {
-      if( isDefault( value ) )
-         return *this;
+   if( row_ < column_ )
       throw std::invalid_argument( "Invalid assignment to upper matrix element" );
-   }
 
    matrix_(row_,column_) -= value;
 
@@ -317,11 +308,8 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline LowerProxy<MT>& LowerProxy<MT>::operator*=( const T& value )
 {
-   if( row_ < column_ ) {
-      if( isDefault( value ) )
-         return *this;
+   if( row_ < column_ )
       throw std::invalid_argument( "Invalid assignment to upper matrix element" );
-   }
 
    matrix_(row_,column_) *= value;
 
@@ -344,11 +332,8 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline LowerProxy<MT>& LowerProxy<MT>::operator/=( const T& value )
 {
-   if( row_ < column_ ) {
-      if( isDefault( value ) )
-         return *this;
+   if( row_ < column_ )
       throw std::invalid_argument( "Invalid assignment to upper matrix element" );
-   }
 
    matrix_(row_,column_) /= value;
 

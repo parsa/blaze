@@ -1714,11 +1714,8 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void LowerMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( i < j ) {
-      if( isDefault( value ) )
-         return;
+   if( i < j )
       throw std::invalid_argument( "Invalid access to upper matrix element" );
-   }
 
    matrix_.append( i, j, value, check );
 }
