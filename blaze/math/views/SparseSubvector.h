@@ -55,12 +55,14 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
@@ -74,6 +76,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -862,6 +865,10 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
 
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
+
+   template< typename VT2, bool AF2, bool TF2 >
+   friend typename DerestrictTrait< SparseSubvector<VT2,AF2,TF2> >::Type
+      derestrict( SparseSubvector<VT2,AF2,TF2>& sv );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2160,7 +2167,9 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
 // of the given sparse vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b )
 {
    return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
@@ -2180,7 +2189,9 @@ inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF
 // of the given sparse vector and by that represents the same observable state. In this case, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
@@ -2200,11 +2211,41 @@ inline bool isSame( const SparseVector<VT,TF>& a, const SparseSubvector<VT,AF,TF
 // same range of the same sparse vector. In case both subvectors represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT, bool AF, bool TF >
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
 inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT,AF,TF>& b )
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given sparse subvector.
+// \ingroup sparse_subvector
+//
+// \param sv The subvector to be derestricted.
+// \return Subvector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given subvector. It returns a
+// subvector that does provide the same interface but does not have any restrictions on the data
+// access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename DerestrictTrait< SparseSubvector<VT,AF,TF> >::Type
+   derestrict( SparseSubvector<VT,AF,TF>& sv )
+{
+   typedef typename DerestrictTrait< SparseSubvector<VT,AF,TF> >::Type  ReturnType;
+   return ReturnType( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2243,6 +2284,45 @@ inline const SparseSubvector<VT,AF1,TF>
 
    return SparseSubvector<VT,AF1,TF>( sv.vector_, sv.offset_ + index, size );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISRESTRICTED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct IsRestricted< SparseSubvector<VT,AF,TF> > : public If< IsRestricted<VT>, TrueType, FalseType >::Type
+{
+   enum { value = IsRestricted<VT>::value };
+   typedef typename If< IsRestricted<VT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DERESTRICTTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct DerestrictTrait< SparseSubvector<VT,AF,TF> >
+{
+   typedef SparseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+};
 /*! \endcond */
 //*************************************************************************************************
 
