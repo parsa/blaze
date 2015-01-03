@@ -53,7 +53,6 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
-#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
