@@ -606,6 +606,7 @@ class LowerMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline LowerMatrix& operator=( const ElementType& rhs );
    inline LowerMatrix& operator=( const LowerMatrix& rhs );
 
    template< typename MT2, bool SO2 >
@@ -1066,6 +1067,35 @@ inline typename LowerMatrix<MT,SO,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all lower and diagonal matrix elements.
+//
+// \param rhs Scalar value to be assigned to the lower and diagonal matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline LowerMatrix<MT,SO,true>&
+   LowerMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=j; i<rows(); ++i )
+            matrix_(i,j) = rhs;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
