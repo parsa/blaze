@@ -562,6 +562,35 @@ void DenseTest::testConstructors()
 void DenseTest::testAssignment()
 {
    //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   // Homogeneous assignment (3x3)
+   {
+      test_ = "Row-major UpperMatrix homogeneous assignment (3x3)";
+
+      UT upper( 3UL );
+      upper = 2;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 2 || upper(0,1) != 2 || upper(0,2) != 2 ||
+          upper(1,0) != 0 || upper(1,1) != 2 || upper(1,2) != 2 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
@@ -602,7 +631,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -652,7 +681,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -683,7 +712,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -766,7 +795,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -797,7 +826,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -848,7 +877,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -880,7 +909,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -963,7 +992,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -994,10 +1023,39 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major homogeneous assignment
+   //=====================================================================================
+
+   // Homogeneous assignment (3x3)
+   {
+      test_ = "Column-major UpperMatrix homogeneous assignment (3x3)";
+
+      OUT upper( 3UL );
+      upper = 2;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+
+      if( upper(0,0) != 2 || upper(0,1) != 2 || upper(0,2) != 2 ||
+          upper(1,0) != 0 || upper(1,1) != 2 || upper(1,2) != 2 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 2 2 2 )\n( 0 2 2 )\n( 0 0 2 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1044,7 +1102,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1094,7 +1152,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1125,7 +1183,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1208,7 +1266,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1239,7 +1297,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1290,7 +1348,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1322,7 +1380,7 @@ void DenseTest::testAssignment()
           upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1405,7 +1463,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
@@ -1436,7 +1494,7 @@ void DenseTest::testAssignment()
           upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
