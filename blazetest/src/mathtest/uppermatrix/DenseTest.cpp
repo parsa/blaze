@@ -40,12 +40,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/CompressedVector.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
+#include <blaze/math/DynamicVector.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
-#include <blaze/math/StaticVector.h>
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/uppermatrix/DenseTest.h>
 
@@ -9170,7 +9171,7 @@ void DenseTest::testSubmatrix()
 void DenseTest::testRow()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major general tests
    //=====================================================================================
 
    {
@@ -9233,30 +9234,6 @@ void DenseTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      row1 = 8;
-
-      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 8 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
-          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 8 ||
-          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 -4  7 )\n( 0  8  8 )\n( 0  0  3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       reset( row1 );
 
       if( row1[0] != 0 || row1[1] != 0 || row1[2] != 0 ) {
@@ -9282,11 +9259,13 @@ void DenseTest::testRow()
       }
    }
 
-   // ( 1 -4  7 )      ( 1 -4  7 )
-   // ( 0  2  0 )  =>  ( 0  8 -2 )
-   // ( 0  0  3 )      ( 0  0  3 )
+
+   //=====================================================================================
+   // Row-major scalar assignment
+   //=====================================================================================
+
    {
-      test_ = "Row-major row() function (assignment test 1)";
+      test_ = "Row-major row() function (scalar assignment test)";
 
       typedef blaze::DenseRow<UT>  RT;
 
@@ -9298,7 +9277,71 @@ void DenseTest::testRow()
       upper(2,2) =  3;
 
       RT row1 = row( upper, 1UL );
-      row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 0, 8, -2 );
+      row1 = 8;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 8 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  8  8 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 0  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major row() function (dense vector assignment test 1)";
+
+      typedef blaze::DenseRow<UT>  RT;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      vec[1] =  8;
+      vec[2] = -2;
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+      row1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != -2 ) {
          std::ostringstream oss;
@@ -9324,12 +9367,17 @@ void DenseTest::testRow()
    }
 
    // ( 1 -4  7 )      ( 1 -4  7 )
-   // ( 0  2  0 )  =>  ( 1  8 -2 )
+   // ( 0  2  0 )  =>  ( 9  8 -2 )
    // ( 0  0  3 )      ( 0  0  3 )
    {
-      test_ = "Row-major row() function (assignment test 2)";
+      test_ = "Row-major row() function (dense vector assignment test 2)";
 
       typedef blaze::DenseRow<UT>  RT;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      vec[0] =  9;
+      vec[1] =  8;
+      vec[2] = -2;
 
       UT upper( 3UL );
       upper(0,0) =  1;
@@ -9341,7 +9389,7 @@ void DenseTest::testRow()
       RT row1 = row( upper, 1UL );
 
       try {
-         row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 1, 8, -2 );
+         row1 = vec;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -9355,7 +9403,100 @@ void DenseTest::testRow()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major sparse vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 0  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major row() function (sparse vector assignment test 1)";
+
+      typedef blaze::DenseRow<UT>  RT;
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      vec[1] =  8;
+      vec[2] = -2;
+      vec.insert( 0UL, 0 );
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+      row1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0  8 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != -2 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  8 -2 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 9  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major row() function (sparse vector assignment test 2)";
+
+      typedef blaze::DenseRow<UT>  RT;
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      vec[0] =  9;
+      vec[1] =  8;
+      vec[2] = -2;
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+
+      try {
+         row1 = vec;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major general tests
    //=====================================================================================
 
    {
@@ -9418,30 +9559,6 @@ void DenseTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      row1 = 8;
-
-      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 8 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << row1 << "\n"
-             << "   Expected result:\n( 0 8 8 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
-          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 8 ||
-          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Row access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 -4  7 )\n( 0  8  8 )\n( 0  0  3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       reset( row1 );
 
       if( row1[0] != 0 || row1[1] != 0 || row1[2] != 0 ) {
@@ -9467,11 +9584,13 @@ void DenseTest::testRow()
       }
    }
 
-   // ( 1 -4  7 )      ( 1 -4  7 )
-   // ( 0  2  0 )  =>  ( 0  8 -2 )
-   // ( 0  0  3 )      ( 0  0  3 )
+
+   //=====================================================================================
+   // Column-major scalar assignment
+   //=====================================================================================
+
    {
-      test_ = "Column-major row() function (assignment test 1)";
+      test_ = "Column-major row() function (scalar assignment test)";
 
       typedef blaze::DenseRow<OUT>  RT;
 
@@ -9483,7 +9602,71 @@ void DenseTest::testRow()
       upper(2,2) =  3;
 
       RT row1 = row( upper, 1UL );
-      row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 0, 8, -2 );
+      row1 = 8;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 8 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 8 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 8 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  8  8 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 0  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Column-major row() function (dense vector assignment test 1)";
+
+      typedef blaze::DenseRow<OUT>  RT;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      vec[1] =  8;
+      vec[2] = -2;
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+      row1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
 
       if( row1[0] != 0 || row1[1] != 8 || row1[2] != -2 ) {
          std::ostringstream oss;
@@ -9509,12 +9692,17 @@ void DenseTest::testRow()
    }
 
    // ( 1 -4  7 )      ( 1 -4  7 )
-   // ( 0  2  0 )  =>  ( 1  8 -2 )
+   // ( 0  2  0 )  =>  ( 9  8 -2 )
    // ( 0  0  3 )      ( 0  0  3 )
    {
-      test_ = "Row-major row() function (assignment test 2)";
+      test_ = "Row-major row() function (dense vector assignment test 2)";
 
       typedef blaze::DenseRow<OUT>  RT;
+
+      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
+      vec[0] =  9;
+      vec[1] =  8;
+      vec[2] = -2;
 
       OUT upper( 3UL );
       upper(0,0) =  1;
@@ -9526,7 +9714,100 @@ void DenseTest::testRow()
       RT row1 = row( upper, 1UL );
 
       try {
-         row1 = blaze::StaticVector<int,3UL,blaze::rowVector>( 1, 8, -2 );
+         row1 = vec;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 0  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Column-major row() function (sparse vector assignment test 1)";
+
+      typedef blaze::DenseRow<OUT>  RT;
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      vec[1] =  8;
+      vec[2] = -2;
+      vec.insert( 0UL, 0 );
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+      row1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0  8 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) !=  7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != -2 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Row reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  8 -2 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 )      ( 1 -4  7 )
+   // ( 0  2  0 )  =>  ( 9  8 -2 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major row() function (sparse vector assignment test 2)";
+
+      typedef blaze::DenseRow<OUT>  RT;
+
+      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
+      vec[0] =  9;
+      vec[1] =  8;
+      vec[2] = -2;
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      RT row1 = row( upper, 1UL );
+
+      try {
+         row1 = vec;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -9553,7 +9834,7 @@ void DenseTest::testRow()
 void DenseTest::testColumn()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major general tests
    //=====================================================================================
 
    {
@@ -9616,30 +9897,6 @@ void DenseTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      col1 = 8;
-
-      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Column access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 8 8 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( upper(0,0) != 1 || upper(0,1) != 8 || upper(0,2) != 7 ||
-          upper(1,0) != 0 || upper(1,1) != 8 || upper(1,2) != 0 ||
-          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Column access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 8 7 )\n( 0 8 0 )\n( 0 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       reset( col1 );
 
       if( col1[0] != 0 || col1[1] != 0 || col1[2] != 0 ) {
@@ -9665,11 +9922,13 @@ void DenseTest::testColumn()
       }
    }
 
-   // ( 1 -4  7 )      ( 1 -2  7 )
-   // ( 0  2  0 )  =>  ( 0  8  0 )
-   // ( 0  0  3 )      ( 0  0  3 )
+
+   //=====================================================================================
+   // Row-major scalar assignment
+   //=====================================================================================
+
    {
-      test_ = "Row-major column() function (assignment test 1)";
+      test_ = "Row-major column() function (scalar assignment test)";
 
       typedef blaze::DenseColumn<UT>  CT;
 
@@ -9681,7 +9940,71 @@ void DenseTest::testColumn()
       upper(2,2) =  3;
 
       CT col1 = column( upper, 1UL );
-      col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( -2, 8, 0 );
+      col1 = 8;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 8 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 8 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) != 8 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 8 7 )\n( 0 8 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -2  7 )
+   // ( 0  2  0 )  =>  ( 0  8  0 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major column() function (dense vector assignment test 1)";
+
+      typedef blaze::DenseColumn<UT>  CT;
+
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL, 0 );
+      vec[0] = -2;
+      vec[1] =  8;
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+      col1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( col1[0] != -2 || col1[1] != 8 || col1[2] != 0 ) {
          std::ostringstream oss;
@@ -9708,11 +10031,16 @@ void DenseTest::testColumn()
 
    // ( 1 -4  7 )      ( 1 -2  7 )
    // ( 0  2  0 )  =>  ( 0  8  0 )
-   // ( 0  0  3 )      ( 0  1  3 )
+   // ( 0  0  3 )      ( 0  9  3 )
    {
-      test_ = "Row-major column() function (assignment test 2)";
+      test_ = "Row-major column() function (dense vector assignment test 2)";
 
       typedef blaze::DenseColumn<UT>  CT;
+
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec[2] =  9;
 
       UT upper( 3UL );
       upper(0,0) =  1;
@@ -9724,7 +10052,7 @@ void DenseTest::testColumn()
       CT col1 = column( upper, 1UL );
 
       try {
-         col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( -2, 8, 1 );
+         col1 = vec;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -9738,7 +10066,100 @@ void DenseTest::testColumn()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major sparse vector assignment
+   //=====================================================================================
+
+   // ( 1 -4  7 )      ( 1 -2  7 )
+   // ( 0  2  0 )  =>  ( 0  8  0 )
+   // ( 0  0  3 )      ( 0  0  3 )
+   {
+      test_ = "Row-major column() function (sparse vector assignment test 1)";
+
+      typedef blaze::DenseColumn<UT>  CT;
+
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec.insert( 2UL, 0 );
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+      col1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
+
+      if( col1[0] != -2 || col1[1] != 8 || col1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( -2 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -2 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -2  7 )\n( 0  8  0 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 )      ( 1 -2  7 )
+   // ( 0  2  0 )  =>  ( 0  8  0 )
+   // ( 0  0  3 )      ( 0  9  3 )
+   {
+      test_ = "Row-major column() function (sparse vector assignment test 2)";
+
+      typedef blaze::DenseColumn<UT>  CT;
+
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec[2] =  9;
+
+      UT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+
+      try {
+         col1 = vec;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major general tests
    //=====================================================================================
 
    {
@@ -9801,30 +10222,6 @@ void DenseTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      col1 = 8;
-
-      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Column access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << col1 << "\n"
-             << "   Expected result:\n( 8 8 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( upper(0,0) != 1 || upper(0,1) != 8 || upper(0,2) != 7 ||
-          upper(1,0) != 0 || upper(1,1) != 8 || upper(1,2) != 0 ||
-          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Column access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n(  1 8 7 )\n( 0 8 0 )\n( 0 0 3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
       reset( col1 );
 
       if( col1[0] != 0 || col1[1] != 0 || col1[2] != 0 ) {
@@ -9850,11 +10247,13 @@ void DenseTest::testColumn()
       }
    }
 
-   // (  1  0  0 )      (  1  0  0 )
-   // ( -4  2  0 )  =>  ( -4  8  0 )
-   // (  7  0  3 )      (  7  2  3 )
+
+   //=====================================================================================
+   // Column-major scalar assignment
+   //=====================================================================================
+
    {
-      test_ = "Column-major column() function (assignment test 1)";
+      test_ = "Column-major column() function (scalar assignment test)";
 
       typedef blaze::DenseColumn<OUT>  CT;
 
@@ -9866,7 +10265,71 @@ void DenseTest::testColumn()
       upper(2,2) =  3;
 
       CT col1 = column( upper, 1UL );
-      col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( -2, 8, 0 );
+      col1 = 8;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( col1[0] != 8 || col1[1] != 8 || col1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( 8 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != 8 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) != 8 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column access failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n(  1 8 7 )\n( 0 8 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense vector assignment
+   //=====================================================================================
+
+   // (  1  0  0 )      (  1  0  0 )
+   // ( -4  2  0 )  =>  ( -4  8  0 )
+   // (  7  0  3 )      (  7  2  3 )
+   {
+      test_ = "Column-major column() function (dense vector assignment test 1)";
+
+      typedef blaze::DenseColumn<OUT>  CT;
+
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL, 0 );
+      vec[0] = -2;
+      vec[1] =  8;
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+      col1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( col1[0] != -2 || col1[1] != 8 || col1[2] != 0 ) {
          std::ostringstream oss;
@@ -9893,11 +10356,16 @@ void DenseTest::testColumn()
 
    // ( 1 -4  7 )      ( 1 -2  7 )
    // ( 0  2  0 )  =>  ( 0  8  0 )
-   // ( 0  0  3 )      ( 0  1  3 )
+   // ( 0  0  3 )      ( 0  9  3 )
    {
-      test_ = "Row-major column() function (assignment test 2)";
+      test_ = "Column-major column() function (dense vector assignment test 2)";
 
       typedef blaze::DenseColumn<OUT>  CT;
+
+      blaze::DynamicVector<int,blaze::columnVector> vec( 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec[2] =  9;
 
       OUT upper( 3UL );
       upper(0,0) =  1;
@@ -9909,7 +10377,100 @@ void DenseTest::testColumn()
       CT col1 = column( upper, 1UL );
 
       try {
-         col1 = blaze::StaticVector<int,3UL,blaze::columnVector>( -2, 8, 1 );
+         col1 = vec;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of invalid vector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse vector assignment
+   //=====================================================================================
+
+   // (  1  0  0 )      (  1  0  0 )
+   // ( -4  2  0 )  =>  ( -4  8  0 )
+   // (  7  0  3 )      (  7  2  3 )
+   {
+      test_ = "Column-major column() function (sparse vector assignment test 1)";
+
+      typedef blaze::DenseColumn<OUT>  CT;
+
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec.insert( 2UL, 0 );
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+      col1 = vec;
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( col1[0] != -2 || col1[1] != 8 || col1[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << col1 << "\n"
+             << "   Expected result:\n( -2 8 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( upper(0,0) != 1 || upper(0,1) != -2 || upper(0,2) != 7 ||
+          upper(1,0) != 0 || upper(1,1) !=  8 || upper(1,2) != 0 ||
+          upper(2,0) != 0 || upper(2,1) !=  0 || upper(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Column reset failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 1 -2  7 )\n( 0  8  0 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // ( 1 -4  7 )      ( 1 -2  7 )
+   // ( 0  2  0 )  =>  ( 0  8  0 )
+   // ( 0  0  3 )      ( 0  9  3 )
+   {
+      test_ = "Column-major column() function (sparse vector assignment test 2)";
+
+      typedef blaze::DenseColumn<OUT>  CT;
+
+      blaze::CompressedVector<int,blaze::columnVector> vec( 3UL, 3UL );
+      vec[0] = -2;
+      vec[1] =  8;
+      vec[2] =  9;
+
+      OUT upper( 3UL );
+      upper(0,0) =  1;
+      upper(0,1) = -4;
+      upper(0,2) =  7;
+      upper(1,1) =  2;
+      upper(2,2) =  3;
+
+      CT col1 = column( upper, 1UL );
+
+      try {
+         col1 = vec;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
