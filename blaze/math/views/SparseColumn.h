@@ -1793,7 +1793,7 @@ inline void SparseColumn<MT,SO,SF>::assign( const SparseVector<VT,false>& rhs )
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      matrix_.append( element->index(), col_, element->value() );
+      matrix_.append( element->index(), col_, element->value(), true );
    }
 }
 //*************************************************************************************************
@@ -5203,7 +5203,7 @@ inline void SparseColumn<MT,false,true>::assign( const SparseVector<VT,false>& r
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    for( typename VT::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      matrix_.append( col_, element->index(), element->value() );
+      matrix_.append( col_, element->index(), element->value(), true );
    }
 }
 /*! \endcond */
