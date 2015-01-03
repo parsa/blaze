@@ -539,7 +539,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -589,7 +589,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -620,7 +620,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -703,7 +703,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -734,7 +734,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -785,7 +785,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -817,7 +817,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -900,7 +900,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -931,7 +931,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -980,7 +980,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1030,7 +1030,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1061,7 +1061,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1144,7 +1144,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1175,7 +1175,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1226,7 +1226,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1258,7 +1258,7 @@ void SparseTest::testAssignment()
           lower(2,0) !=  7 || lower(2,1) != 0 || lower(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1341,7 +1341,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
@@ -1372,7 +1372,7 @@ void SparseTest::testAssignment()
           lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
+             << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
