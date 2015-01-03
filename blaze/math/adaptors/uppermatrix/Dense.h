@@ -605,6 +605,7 @@ class UpperMatrix<MT,SO,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline UpperMatrix& operator=( const ElementType& rhs );
    inline UpperMatrix& operator=( const UpperMatrix& rhs );
 
    template< typename MT2, bool SO2 >
@@ -1065,6 +1066,35 @@ inline typename UpperMatrix<MT,SO,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all upper and diagonal matrix elements.
+//
+// \param rhs Scalar value to be assigned to the upper and diagonal matrix elements.
+// \return Reference to the assigned matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline UpperMatrix<MT,SO,true>&
+   UpperMatrix<MT,SO,true>::operator=( const ElementType& rhs )
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) = rhs;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=i; j<columns(); ++j )
+            matrix_(i,j) = rhs;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
