@@ -212,6 +212,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper2, 3UL );
       checkCapacity( upper2, 9UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -260,6 +263,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper, 3UL );
       checkCapacity( upper, 9UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -316,6 +322,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper2, 3UL );
       checkCapacity( upper2, 9UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -429,6 +438,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper2, 3UL );
       checkCapacity( upper2, 9UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -477,6 +489,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper, 3UL );
       checkCapacity( upper, 9UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -533,6 +548,9 @@ void DenseTest::testConstructors()
       checkColumns ( upper2, 3UL );
       checkCapacity( upper2, 9UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -575,6 +593,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 2 || upper(0,1) != 2 || upper(0,2) != 2 ||
           upper(1,0) != 0 || upper(1,1) != 2 || upper(1,2) != 2 ||
@@ -625,6 +646,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -675,6 +699,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -706,6 +733,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -789,6 +819,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -820,6 +853,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -871,6 +907,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -903,6 +942,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 3UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 1UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -986,6 +1028,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1017,6 +1062,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1046,6 +1094,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 6UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 3UL );
 
       if( upper(0,0) != 2 || upper(0,1) != 2 || upper(0,2) != 2 ||
           upper(1,0) != 0 || upper(1,1) != 2 || upper(1,2) != 2 ||
@@ -1096,6 +1147,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1146,6 +1200,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -1177,6 +1234,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -1260,6 +1320,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1291,6 +1354,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1342,6 +1408,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -1374,6 +1443,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
       checkNonZeros( upper, 5UL );
+      checkNonZeros( upper, 0UL, 1UL );
+      checkNonZeros( upper, 1UL, 2UL );
+      checkNonZeros( upper, 2UL, 2UL );
 
       if( upper(0,0) != 1 || upper(0,1) != -4 || upper(0,2) != 7 ||
           upper(1,0) != 0 || upper(1,1) !=  2 || upper(1,2) != 0 ||
@@ -1457,6 +1529,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
@@ -1488,6 +1563,9 @@ void DenseTest::testAssignment()
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
       checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
           upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
