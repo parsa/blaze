@@ -74,6 +74,8 @@
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -81,6 +83,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Null.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -617,6 +620,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( MT );
+   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -2703,6 +2709,9 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
+   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4249,6 +4258,9 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE        ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE      ( MT );
+   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
