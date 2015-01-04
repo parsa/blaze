@@ -213,17 +213,17 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
       const ConstIterator end( x.end() );
-      ConstIterator element( x.begin() );
-      ElementType res;
+      ConstIterator element( IsLower<MT>::value ? x.lowerBound( index ) : x.begin() );
+      ElementType res = ElementType();
 
-      if( element != end ) {
+      if( element != end && !( IsUpper<MT>::value && element->index() > index ) ) {
          res = element->value() * mat_( element->index(), index );
          ++element;
-         for( ; element!=end; ++element )
+         for( ; element!=end; ++element ) {
+            if( IsUpper<MT>::value && element->index() > index )
+               break;
             res += element->value() * mat_( element->index(), index );
-      }
-      else {
-         reset( res );
+         }
       }
 
       return res;
