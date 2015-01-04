@@ -81,6 +81,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/StaticAssert.h>
@@ -330,7 +331,7 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the column element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -361,19 +362,19 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant row value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2208,7 +2209,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2235,7 +2236,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
    //**********************************************************************************************
 
    //**ColumnIterator class definition*************************************************************
@@ -2258,9 +2259,9 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense element.
-      typedef typename SelectType< returnConst
-                                 , typename MatrixType::ConstReference
-                                 , typename MatrixType::Reference >::Type  Reference;
+      typedef typename IfTrue< returnConst
+                             , typename MatrixType::ConstReference
+                             , typename MatrixType::Reference >::Type  Reference;
 
       typedef std::random_access_iterator_tag  IteratorCategory;  //!< The iterator category.
       typedef RemoveReference<Reference>       ValueType;         //!< Type of the underlying elements.
@@ -2551,7 +2552,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    typedef ColumnIterator<const MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, ColumnIterator<MT> >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, ColumnIterator<MT> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4002,7 +4003,7 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the column element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -4033,19 +4034,19 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant row value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant row value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
