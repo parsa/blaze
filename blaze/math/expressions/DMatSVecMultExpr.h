@@ -61,8 +61,10 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -205,7 +207,7 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
+      BLAZE_USER_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
       typedef typename RemoveReference<VCT>::Type::ConstIterator  ConstIterator;
 
@@ -213,17 +215,17 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
-      ConstIterator element( x.begin() );
-      ElementType res;
+      ConstIterator element( IsUpper<MT>::value ? x.lowerBound( index ) : x.begin() );
+      ElementType res = ElementType();
 
-      if( element != x.end() ) {
+      if( element != x.end() && !( IsLower<MT>::value && element->index() > index ) ) {
          res = mat_( index, element->index() ) * element->value();
          ++element;
-         for( ; element!=x.end(); ++element )
+         for( ; element!=x.end(); ++element ) {
+            if( IsLower<MT>::value && element->index() > index )
+               break;
             res += mat_( index, element->index() ) * element->value();
-      }
-      else {
-         reset( res );
+         }
       }
 
       return res;
