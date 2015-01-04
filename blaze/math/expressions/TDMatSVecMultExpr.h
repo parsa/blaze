@@ -60,8 +60,10 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -241,18 +243,17 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
-      ConstIterator element( x.begin() );
-      ElementType res;
+      ConstIterator element( IsUpper<MT>::value ? x.lowerBound( index ) : x.begin() );
+      ElementType res = ElementType();
 
-      if( element != x.end() ) {
+      if( element != x.end() && !( IsLower<MT>::value && element->index() > index ) ) {
          res = mat_( index, element->index() ) * element->value();
          ++element;
          for( ; element!=x.end(); ++element ) {
+            if( IsLower<MT>::value && element->index() > index )
+               break;
             res += mat_( index, element->index() ) * element->value();
          }
-      }
-      else {
-         reset( res );
       }
 
       return res;
@@ -416,8 +417,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       ++element;
 
-      for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<M; ++i ) {
+      for( ; element!=end; ++element )
+      {
+         const size_t ibegin( ( IsLower<MT>::value )?( element->index() ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( element->index()+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,element->index()) * element->value();
          }
       }
@@ -472,6 +477,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const VET    v4( element->value() );
          ++element;
 
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
          for( size_t i=0UL; i<M; ++i ) {
             y[i] = A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
@@ -502,7 +509,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const VET    v4( element->value() );
          ++element;
 
-         for( size_t i=0UL; i<M; ++i ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
@@ -511,7 +523,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t j1( element->index() );
          const VET    v1( element->value() );
 
-         for( size_t i=0UL; i<M; ++i ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,j1) * v1;
          }
       }
@@ -567,6 +582,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v4( set( element->value() ) );
          ++element;
 
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
          for( size_t i=0UL; i<M; i+=IT::size ) {
             y.store( i, A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
@@ -597,7 +614,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v4( set( element->value() ) );
          ++element;
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
       }
@@ -606,7 +628,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t        j1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) + A.load(i,j1) * v1 );
          }
       }
@@ -714,8 +739,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
-      for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<M; ++i ) {
+      for( ; element!=end; ++element )
+      {
+         const size_t ibegin( ( IsLower<MT>::value )?( element->index() ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( element->index()+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,element->index()) * element->value();
          }
       }
@@ -770,7 +799,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const VET    v4( element->value() );
          ++element;
 
-         for( size_t i=0UL; i<M; ++i ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
@@ -779,7 +813,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t j1( element->index() );
          const VET    v1( element->value() );
 
-         for( size_t i=0UL; i<M; ++i ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] += A(i,j1) * v1;
          }
       }
@@ -835,7 +872,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v4( set( element->value() ) );
          ++element;
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
          }
       }
@@ -844,7 +886,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t        j1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) + A.load(i,j1) * v1 );
          }
       }
@@ -926,8 +971,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
-      for( ; element!=end; ++element ) {
-         for( size_t i=0UL; i<M; ++i ) {
+      for( ; element!=end; ++element )
+      {
+         const size_t ibegin( ( IsLower<MT>::value )?( element->index() ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( element->index()+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] -= A(i,element->index()) * element->value();
          }
       }
@@ -982,7 +1031,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const VET    v4( element->value() );
          ++element;
 
-         for( size_t i=0UL; i<M; ++i ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] -= A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
@@ -991,7 +1045,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t j1( element->index() );
          const VET    v1( element->value() );
 
-         for( size_t i=0UL; i<M; ++i ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             y[i] -= A(i,j1) * v1;
          }
       }
@@ -1047,7 +1104,12 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const IntrinsicType v4( set( element->value() ) );
          ++element;
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j4+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) - A.load(i,j1) * v1 - A.load(i,j2) * v2 - A.load(i,j3) * v3 - A.load(i,j4) * v4 );
          }
       }
@@ -1056,7 +1118,10 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
          const size_t        j1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
+         const size_t ibegin( ( IsLower<MT>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( j1+1UL ):( M ) );
+
+         for( size_t i=ibegin; i<iend; i+=IT::size ) {
             y.store( i, y.load(i) - A.load(i,j1) * v1 );
          }
       }
