@@ -764,10 +764,10 @@ void GeneralTest::testAddAssign()
       row2 += vec;
 
       checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  3UL );
+      checkNonZeros( row2,  2UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 11UL );
+      checkNonZeros( mat_, 10UL );
 
       if( row2[0] != 0 || row2[1] != -4 || row2[2] != -3 || row2[3] != 0 ) {
          std::ostringstream oss;
@@ -1352,11 +1352,11 @@ void GeneralTest::testMultAssign()
 
       row2 *= vec;
 
-      checkSize    ( row2,  4UL );
-      checkNonZeros( row2,  2UL );
-      checkRows    ( mat_,  5UL );
-      checkColumns ( mat_,  4UL );
-      checkNonZeros( mat_, 10UL );
+      checkSize    ( row2, 4UL );
+      checkNonZeros( row2, 1UL );
+      checkRows    ( mat_, 5UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 9UL );
 
       if( row2[0] != -4 || row2[1] != 0 || row2[2] != 0 || row2[3] != 0 ) {
          std::ostringstream oss;
