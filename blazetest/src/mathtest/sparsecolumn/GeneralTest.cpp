@@ -896,10 +896,10 @@ void GeneralTest::testAddAssign()
       col2 += vec;
 
       checkSize    ( col2 ,  4UL );
-      checkNonZeros( col2 ,  3UL );
+      checkNonZeros( col2 ,  2UL );
       checkRows    ( tmat_,  4UL );
       checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 11UL );
+      checkNonZeros( tmat_, 10UL );
 
       if( col2[0] != 0 || col2[1] != -4 || col2[2] != -3 || col2[3] != 0 ) {
          std::ostringstream oss;
@@ -1462,11 +1462,11 @@ void GeneralTest::testMultAssign()
 
       col2 *= vec;
 
-      checkSize    ( col2 ,  4UL );
-      checkNonZeros( col2 ,  2UL );
-      checkRows    ( tmat_,  4UL );
-      checkColumns ( tmat_,  5UL );
-      checkNonZeros( tmat_, 10UL );
+      checkSize    ( col2 , 4UL );
+      checkNonZeros( col2 , 1UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 5UL );
+      checkNonZeros( tmat_, 9UL );
 
       if( col2[0] != -4 || col2[1] != 0 || col2[2] != 0 || col2[3] != 0 ) {
          std::ostringstream oss;
