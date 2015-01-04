@@ -267,6 +267,13 @@ class UpperMatrix<MT,SO,false>
    //**********************************************************************************************
 
  private:
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline void resetLower();
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -426,6 +433,9 @@ inline UpperMatrix<MT,SO,false>::UpperMatrix( const Matrix<MT2,SO2>& m )
    if( IsSymmetric<MT2>::value || IsLower<MT2>::value ||
        ( !IsUpper<MT2>::value && !isUpper( matrix_ ) ) )
       throw std::invalid_argument( "Invalid setup of upper matrix" );
+
+   if( !IsUpper<MT2>::value )
+      resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
 }
@@ -688,6 +698,9 @@ inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
 
    matrix_ = ~rhs;
 
+   if( !IsUpper<MT2>::value )
+      resetLower();
+
    return *this;
 }
 /*! \endcond */
@@ -729,6 +742,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
       move( matrix_, tmp );
    }
 
+   if( !IsUpper<MT2>::value )
+      resetLower();
+
    return *this;
 }
 /*! \endcond */
@@ -760,6 +776,9 @@ inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
       throw std::invalid_argument( "Invalid assignment to upper matrix" );
 
    matrix_ += ~rhs;
+
+   if( !IsUpper<MT2>::value )
+      resetLower();
 
    return *this;
 }
@@ -802,6 +821,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
       matrix_ += tmp;
    }
 
+   if( !IsUpper<MT2>::value )
+      resetLower();
+
    return *this;
 }
 /*! \endcond */
@@ -833,6 +855,9 @@ inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
       throw std::invalid_argument( "Invalid assignment to upper matrix" );
 
    matrix_ -= ~rhs;
+
+   if( !IsUpper<MT2>::value )
+      resetLower();
 
    return *this;
 }
@@ -875,6 +900,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >::Type
       matrix_ -= tmp;
    }
 
+   if( !IsUpper<MT2>::value )
+      resetLower();
+
    return *this;
 }
 /*! \endcond */
@@ -909,6 +937,9 @@ inline UpperMatrix<MT,SO,false>&
       throw std::invalid_argument( "Invalid assignment to upper matrix" );
 
    move( matrix_, tmp );
+
+   if( !IsUpper<MT2>::value )
+      resetLower();
 
    return *this;
 }
@@ -1477,6 +1508,29 @@ template< typename MT  // Type of the adapted dense matrix
 inline size_t UpperMatrix<MT,SO,false>::maxNonZeros( size_t n )
 {
    return ( ( n + 1UL ) * n ) / 2UL;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset the complete lower part of the matrix to the default initial values.
+//
+// \return void
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void UpperMatrix<MT,SO,false>::resetLower()
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         matrix_.erase( j, matrix_.upperBound( j, j ), matrix_.end( j ) );
+   }
+   else {
+      for( size_t i=1UL; i<rows(); ++i )
+         matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
