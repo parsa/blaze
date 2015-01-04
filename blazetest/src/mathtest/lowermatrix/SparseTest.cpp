@@ -183,6 +183,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower2, 3UL );
       checkCapacity( lower2, 5UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -231,6 +234,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower, 3UL );
       checkCapacity( lower, 5UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -287,6 +293,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower2, 3UL );
       checkCapacity( lower2, 5UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -367,6 +376,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower2, 3UL );
       checkCapacity( lower2, 5UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -415,6 +427,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower, 3UL );
       checkCapacity( lower, 5UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -471,6 +486,9 @@ void SparseTest::testConstructors()
       checkColumns ( lower2, 3UL );
       checkCapacity( lower2, 5UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -533,6 +551,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -583,6 +604,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -614,6 +638,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -697,6 +724,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -728,6 +758,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -778,7 +811,10 @@ void SparseTest::testAssignment()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -810,7 +846,10 @@ void SparseTest::testAssignment()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 1UL );
+      checkNonZeros( lower, 1UL, 2UL );
+      checkNonZeros( lower, 2UL, 2UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -894,6 +933,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -925,6 +967,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -974,6 +1019,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -1024,6 +1072,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -1055,6 +1106,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
       checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -1138,6 +1192,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -1169,6 +1226,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -1219,7 +1279,10 @@ void SparseTest::testAssignment()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -1251,7 +1314,10 @@ void SparseTest::testAssignment()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkNonZeros( lower, 6UL );
+      checkNonZeros( lower, 5UL );
+      checkNonZeros( lower, 0UL, 3UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -4 || lower(1,1) != 2 || lower(1,2) != 0 ||
@@ -1335,6 +1401,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -1366,6 +1435,9 @@ void SparseTest::testAssignment()
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
       checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
           lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
@@ -1639,10 +1711,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
       checkNonZeros( lower, 2UL, 3UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
@@ -1680,10 +1752,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
       checkNonZeros( lower, 2UL, 3UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
@@ -2079,11 +2151,11 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 2UL );
-      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
@@ -2120,11 +2192,11 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 2UL );
-      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) != 0 || lower(0,2) != 0 ||
           lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
@@ -2532,10 +2604,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
       checkNonZeros( lower, 2UL, 3UL );
 
       if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
@@ -2573,10 +2645,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 3UL );
+      checkNonZeros( lower, 1UL, 2UL );
       checkNonZeros( lower, 2UL, 3UL );
 
       if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
@@ -2972,11 +3044,11 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 2UL );
-      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
           lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
@@ -3013,11 +3085,11 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 7UL );
-      checkNonZeros( lower, 7UL );
+      checkCapacity( lower, 6UL );
+      checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 2UL );
-      checkNonZeros( lower, 2UL, 2UL );
+      checkNonZeros( lower, 2UL, 1UL );
 
       if( lower(0,0) !=  1 || lower(0,1) !=  0 || lower(0,2) != 0 ||
           lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
