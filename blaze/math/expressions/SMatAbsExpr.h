@@ -111,7 +111,7 @@ class SMatAbsExpr : public SparseMatrix< SMatAbsExpr<MT,SO>, SO >
    //**Return type evaluation**********************************************************************
    //! Compilation switch for the selection of the subscript operator return type.
    /*! The \a returnExpr compile time constant expression is a compilation switch for the
-       selection of the \a ReturnType. If the vector operand returns a temporary vector
+       selection of the \a ReturnType. If the matrix operand returns a temporary vector
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
