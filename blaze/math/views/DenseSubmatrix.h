@@ -91,7 +91,6 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -467,7 +466,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -499,13 +498,13 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -868,7 +867,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3511,7 +3510,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -3543,13 +3542,13 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3912,7 +3911,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -6501,7 +6500,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -6533,19 +6532,19 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -9152,7 +9151,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense matrix expression.
-   typedef typename SelectType< IsExpression<MT>::value, MT, MT& >::Type  Operand;
+   typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
 
    //! Intrinsic trait for the matrix element type.
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
@@ -9184,19 +9183,19 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
