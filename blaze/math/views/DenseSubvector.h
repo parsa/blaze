@@ -74,8 +74,8 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/SelectType.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -382,7 +382,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, VT, VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
 
    //! Intrinsic trait for the vector element type.
    typedef IntrinsicTrait<typename VT::ElementType>  IT;
@@ -413,13 +413,13 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename SelectType< useConst, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename VT::Reference >::Type  Reference;
 
    //! Pointer to a constant subvector value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant subvector value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -782,7 +782,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    typedef SubvectorIterator<typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, SubvectorIterator<typename VT::Iterator> >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, SubvectorIterator<typename VT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2331,7 +2331,7 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
  private:
    //**Type definitions****************************************************************************
    //! Composite data type of the dense vector expression.
-   typedef typename SelectType< IsExpression<VT>::value, VT, VT& >::Type  Operand;
+   typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
 
    //! Intrinsic trait for the vector element type.
    typedef IntrinsicTrait<typename VT::ElementType>  IT;
@@ -2362,19 +2362,19 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename SelectType< useConst, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef typename IfTrue< useConst, ConstReference, typename VT::Reference >::Type  Reference;
 
    //! Pointer to a constant subvector value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a constant subvector value.
-   typedef typename SelectType< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename VT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename SelectType< useConst, ConstIterator, typename VT::Iterator >::Type  Iterator;
+   typedef typename IfTrue< useConst, ConstIterator, typename VT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
