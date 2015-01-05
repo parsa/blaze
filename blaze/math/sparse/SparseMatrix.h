@@ -216,7 +216,7 @@ template< typename T1  // Type of the left-hand side sparse matrix
         , bool SO >    // Storage order
 inline bool operator==( const SparseMatrix<T1,SO>& lhs, const SparseMatrix<T2,!SO>& rhs )
 {
-   const typename T2::TransposeType tmp( ~rhs );
+   const typename T2::OppositeType tmp( ~rhs );
    return ( ~lhs == tmp );
 }
 //*************************************************************************************************
