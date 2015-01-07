@@ -267,6 +267,48 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    }
    //**********************************************************************************************
 
+   //**Capacity function***************************************************************************
+   /*!\brief Returns the maximum capacity of the matrix.
+   //
+   // \return The capacity of the matrix.
+   */
+   inline size_t capacity() const {
+      return sm_.capacity();
+   }
+   //**********************************************************************************************
+
+   //**Capacity function***************************************************************************
+   /*!\brief Returns the current capacity of the specified row/column.
+   //
+   // \param i The index of the row/column.
+   // \return The current capacity of row/column \a i.
+   */
+   inline size_t capacity( size_t i ) const {
+      return sm_.capacity( i );
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the matrix
+   //
+   // \return The number of non-zero elements in the matrix.
+   */
+   inline size_t nonZeros() const {
+      return sm_.nonZeros();
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the specified row/column.
+   //
+   // \param i The index of the row/column.
+   // \return The number of non-zero elements of row/column \a i.
+   */
+   inline size_t nonZeros( size_t i ) const {
+      return sm_.nonZeros( i );
+   }
+   //**********************************************************************************************
+
    //**Reset function******************************************************************************
    /*!\brief Resets the matrix elements.
    //
@@ -693,6 +735,48 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    */
    inline size_t columns() const {
       return sm_.rows();
+   }
+   //**********************************************************************************************
+
+   //**Capacity function***************************************************************************
+   /*!\brief Returns the maximum capacity of the matrix.
+   //
+   // \return The capacity of the matrix.
+   */
+   inline size_t capacity() const {
+      return sm_.capacity();
+   }
+   //**********************************************************************************************
+
+   //**Capacity function***************************************************************************
+   /*!\brief Returns the current capacity of the specified column.
+   //
+   // \param j The index of the column.
+   // \return The current capacity of column \a j.
+   */
+   inline size_t capacity( size_t j ) const {
+      return sm_.capacity( j );
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the matrix
+   //
+   // \return The number of non-zero elements in the matrix.
+   */
+   inline size_t nonZeros() const {
+      return sm_.nonZeros();
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the specified column.
+   //
+   // \param j The index of the column.
+   // \return The number of non-zero elements of column \a j.
+   */
+   inline size_t nonZeros( size_t j ) const {
+      return sm_.nonZeros( j );
    }
    //**********************************************************************************************
 
