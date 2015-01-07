@@ -110,7 +110,7 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   for( size_t i=0; i<A.rows(); ++i )
+   for( size_t i=0UL; i<A.rows(); ++i )
    {
       const LhsConstIterator lend( A.end(i) );
       const RhsConstIterator rend( B.end(i) );
@@ -118,23 +118,37 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
       LhsConstIterator lelem( A.begin(i) );
       RhsConstIterator relem( B.begin(i) );
 
-      while( lelem != lend && relem != rend ) {
-         if( lelem->index() < relem->index() && !isDefault( (lelem++)->value() ) )
+      while( lelem != lend && relem != rend )
+      {
+         if( lelem->index() < relem->index() ) {
+            if( !isDefault( lelem->value() ) )
+               return false;
+            ++lelem;
+         }
+         else if( lelem->index() > relem->index() ) {
+            if( !isDefault( relem->value() ) )
+               return false;
+            ++relem;
+         }
+         else if( !equal( lelem->value(), relem->value() ) ) {
             return false;
-         else if( lelem->index() > relem->index() && !isDefault( (relem++)->value() ) )
-            return false;
-         else if( !equal( (lelem++)->value(), (relem++)->value() ) )
-            return false;
+         }
+         else {
+            ++lelem;
+            ++relem;
+         }
       }
 
       while( lelem != lend ) {
-         if( !isDefault( (lelem++)->value() ) )
+         if( !isDefault( lelem->value() ) )
             return false;
+         ++lelem;
       }
 
       while( relem != rend ) {
-         if( !isDefault( (relem++)->value() ) )
+         if( !isDefault( relem->value() ) )
             return false;
+         ++relem;
       }
    }
 
@@ -170,7 +184,7 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   for( size_t j=0; j<A.columns(); ++j )
+   for( size_t j=0UL; j<A.columns(); ++j )
    {
       const LhsConstIterator lend( A.end(j) );
       const RhsConstIterator rend( B.end(j) );
@@ -178,23 +192,37 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
       LhsConstIterator lelem( A.begin(j) );
       RhsConstIterator relem( B.begin(j) );
 
-      while( lelem != lend && relem != rend ) {
-         if( lelem->index() < relem->index() && !isDefault( (lelem++)->value() ) )
+      while( lelem != lend && relem != rend )
+      {
+         if( lelem->index() < relem->index() ) {
+            if( !isDefault( lelem->value() ) )
+               return false;
+            ++lelem;
+         }
+         else if( lelem->index() > relem->index() ) {
+            if( !isDefault( relem->value() ) )
+               return false;
+            ++relem;
+         }
+         else if( !equal( lelem->value(), relem->value() ) ) {
             return false;
-         else if( lelem->index() > relem->index() && !isDefault( (relem++)->value() ) )
-            return false;
-         else if( !equal( (lelem++)->value(), (relem++)->value() ) )
-            return false;
+         }
+         else {
+            ++lelem;
+            ++relem;
+         }
       }
 
       while( lelem != lend ) {
-         if( !isDefault( (lelem++)->value() ) )
+         if( !isDefault( lelem->value() ) )
             return false;
+         ++lelem;
       }
 
       while( relem != rend ) {
-         if( !isDefault( (relem++)->value() ) )
+         if( !isDefault( relem->value() ) )
             return false;
+         ++relem;
       }
    }
 
