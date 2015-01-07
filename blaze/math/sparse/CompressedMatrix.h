@@ -1578,6 +1578,9 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 
    m_ = m;
    n_ = n;
+
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 //*************************************************************************************************
 
@@ -1622,6 +1625,9 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+
    const size_t current( capacity(i) );
 
    if( current >= nonzeros ) return;
@@ -1656,6 +1662,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
       deallocate( newBegin[0UL] );
       delete [] newBegin;
       end_ = newEnd;
+      capacity_ = m_;
    }
    else
    {
@@ -1665,6 +1672,9 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
          end_  [j] += additional;
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 //*************************************************************************************************
 
@@ -3790,6 +3800,9 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 
    m_ = m;
    n_ = n;
+
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3833,6 +3846,9 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
+
    const size_t current( capacity(j) );
 
    if( current >= nonzeros ) return;
@@ -3867,6 +3883,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
       deallocate( newBegin[0UL] );
       delete [] newBegin;
       end_ = newEnd;
+      capacity_ = n_;
    }
    else
    {
@@ -3876,6 +3893,9 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
          end_  [k] += additional;
       }
    }
+
+   BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
+   BLAZE_INTERNAL_ASSERT( static_cast<size_t>( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
