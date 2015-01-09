@@ -692,8 +692,9 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
@@ -705,15 +706,24 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const ConstIterator begin( x.begin() );
+      const ConstIterator end  ( x.end()   );
+      size_t index( 0UL );
 
-      for( ConstIterator element=x.begin(); element!=end; ++element ) {
+      for( ConstIterator element=begin; element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
-            (~lhs).reserve( element->index(), y.size() );
+            for( ; index < element->index(); ++index ) {
+               (~lhs).finalize( index );
+            }
             for( size_t i=0UL; i<y.size(); ++i ) {
                (~lhs).append( element->index(), i, element->value() * y[i] );
             }
+            (~lhs).finalize( index++ );
          }
+      }
+
+      for( ; index < x.size(); ++index ) {
+         (~lhs).finalize( index );
       }
    }
    /*! \endcond */
@@ -741,8 +751,9 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
@@ -754,15 +765,16 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const ConstIterator begin( x.begin() );
+      const ConstIterator end  ( x.end()   );
 
       for( size_t i=0UL; i<y.size(); ++i ) {
          if( !isDefault( y[i] ) ) {
-            (~lhs).reserve( i, x.nonZeros() );
-            for( ConstIterator element=x.begin(); element!=end; ++element ) {
+            for( ConstIterator element=begin; element!=end; ++element ) {
                (~lhs).append( element->index(), i, element->value() * y[i] );
             }
          }
+         (~lhs).finalize( i );
       }
    }
    /*! \endcond */
