@@ -693,8 +693,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
@@ -711,11 +712,11 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       for( size_t i=0UL; i<x.size(); ++i ) {
          if( !isDefault( x[i] ) ) {
-            (~lhs).reserve( i, y.nonZeros() );
             for( ConstIterator element=begin; element!=end; ++element ) {
                (~lhs).append( i, element->index(), x[i] * element->value() );
             }
          }
+         (~lhs).finalize( i );
       }
    }
    /*! \endcond */
@@ -741,8 +742,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()     == rhs.rows()    , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
@@ -756,14 +758,22 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const ConstIterator begin( y.begin() );
       const ConstIterator end  ( y.end()   );
+      size_t index( 0UL );
 
       for( ConstIterator element=begin; element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
-            (~lhs).reserve( element->index(), x.size() );
+            for( ; index < element->index(); ++index ) {
+               (~lhs).finalize( index );
+            }
             for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
                (~lhs).append( i, element->index(), x[i] * element->value() );
             }
+            (~lhs).finalize( index++ );
          }
+      }
+
+      for( ; index < y.size(); ++index ) {
+         (~lhs).finalize( index );
       }
    }
    /*! \endcond */
