@@ -46,6 +46,7 @@
 #include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blaze/init/StaticLower.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
+#include <blazemark/blaze/init/StaticSymmetric.h>
 #include <blazemark/blaze/init/StaticUpper.h>
 #include <blazemark/blaze/init/StaticVector.h>
 
