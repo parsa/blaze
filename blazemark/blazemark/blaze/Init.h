@@ -42,6 +42,7 @@
 
 #include <blazemark/blaze/init/CompressedLower.h>
 #include <blazemark/blaze/init/CompressedMatrix.h>
+#include <blazemark/blaze/init/CompressedSymmetric.h>
 #include <blazemark/blaze/init/CompressedUpper.h>
 #include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/init/DynamicLower.h>
