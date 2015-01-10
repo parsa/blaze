@@ -93,36 +93,31 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename VT1::TransposeType                TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType                TVT2;  //!< Transpose vector type 2
-   typedef typename blaze::MultTrait<VT1,TVT2>::Type  RE;    //!< Default result type
-   typedef typename RE::OppositeType                  ORE;   //!< Default result type with opposite storage order
-   typedef typename RE::TransposeType                 TRE;   //!< Transpose default result type
-   typedef typename ORE::TransposeType                TORE;  //!< Transpose default result type with opposite storage order
-   //**********************************************************************************************
+   typedef typename VT1::ElementType  ET1;  //!< Element type 1
+   typedef typename VT2::ElementType  ET2;  //!< Element type 2
 
-   //**Type definitions****************************************************************************
-   typedef typename VT1::ElementType           ET1;     //!< Element type 1
-   typedef typename VT2::ElementType           ET2;     //!< Element type 2
-   typedef typename RE::ElementType            RET;     //!< Resulting element type
-   typedef blaze::DynamicVector<ET1,false>     RT1;     //!< Reference type 1
-   typedef blaze::DynamicVector<ET2,true>      RT2;     //!< Reference type 2
-   typedef blaze::DynamicMatrix<RET,false>     DRRE;    //!< Dense reference result type
-   typedef blaze::CompressedMatrix<RET,false>  SRRE;    //!< Sparse reference result type
-   typedef typename DRRE::OppositeType         ODRRE;   //!< Dense reference result type with opposite storage order
-   typedef typename SRRE::OppositeType         OSRRE;   //!< Sparse reference result type with opposite storage order
-   typedef typename DRRE::TransposeType        TDRRE;   //!< Transpose dense reference result type
-   typedef typename SRRE::TransposeType        TSRRE;   //!< Transpose sparse reference result type
-   typedef typename ODRRE::TransposeType       TODRRE;  //!< Transpose dense reference result type with opposite storage order
-   typedef typename OSRRE::TransposeType       TOSRRE;  //!< Transpose sparse reference result type with opposite storage order
-   typedef DRRE                                DRE;     //!< Dense result type
-   typedef RE                                  SRE;     //!< Sparse result type
-   typedef ODRRE                               ODRE;    //!< Dense result type with opposite storage order
-   typedef ORE                                 OSRE;    //!< Sparse result type with opposite storage order
-   typedef TDRRE                               TDRE;    //!< Transpose dense result type
-   typedef TRE                                 TSRE;    //!< Transpose sparse result type
-   typedef TODRRE                              TODRE;   //!< Transpose dense result type with opposite storage order
-   typedef TORE                                TOSRE;   //!< Transpose sparse result type with opposite storage order
+   typedef typename VT1::TransposeType  TVT1;  //!< Transpose vector type 1
+   typedef typename VT2::TransposeType  TVT2;  //!< Transpose vector type 2
+
+   //! Sparse result type
+   typedef typename blaze::MultTrait<VT1,TVT2>::Type  SRE;
+
+   typedef typename SRE::ElementType     SET;    //!< Element type of the sparse result
+   typedef typename SRE::OppositeType    OSRE;   //!< Sparse result type with opposite storage order
+   typedef typename SRE::TransposeType   TSRE;   //!< Transpose sparse result type
+   typedef typename OSRE::TransposeType  TOSRE;  //!< Transpose sparse result type with opposite storage order
+
+   //! Dense result type
+   typedef blaze::DynamicMatrix<SET,false>  DRE;
+
+   typedef typename DRE::ElementType     DET;    //!< Element type of the dense result
+   typedef typename DRE::OppositeType    ODRE;   //!< Dense result type with opposite storage order
+   typedef typename DRE::TransposeType   TDRE;   //!< Transpose dense result type
+   typedef typename ODRE::TransposeType  TODRE;  //!< Transpose dense result type with opposite storage order
+
+   typedef blaze::DynamicVector<ET1,false>           RT1;  //!< Reference type 1
+   typedef blaze::DynamicVector<ET2,true>            RT2;  //!< Reference type 2
+   typedef typename blaze::MultTrait<RT1,RT2>::Type  RRE;  //!< Reference result type
 
    //! Type of the outer product expression
    typedef typename blaze::MultExprTrait<VT1,TVT2>::Type  VecTVecMultExprType;
@@ -193,7 +188,7 @@ class OperationTest
    TOSRE tosres_;  //!< The transpose sparse result matrix with opposite storage order.
    RT1   reflhs_;  //!< The reference left-hand side vector.
    RT2   refrhs_;  //!< The reference right-hand side vector.
-   DRRE  refres_;  //!< The reference result.
+   RRE   refres_;  //!< The reference result.
 
    std::string test_;   //!< Label of the currently performed test.
    std::string error_;  //!< Description of the current error type.
@@ -202,58 +197,59 @@ class OperationTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1    );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT2   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT2    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( DRRE   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SRRE   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( ODRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TDRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TODRRE );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TOSRRE );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( DRE    );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SRE    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( ODRE   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSRE   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TDRE   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSRE   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TODRE  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TOSRE  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( VT1    );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( VT2    );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TVT1   );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TVT2   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( RT1    );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( RT2    );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( DRE    );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( SRE    );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRE   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRE   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRE   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRE   );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRE  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRE  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( DRRE   );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( SRRE   );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRRE );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRRE );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT2  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( RRE   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( DRE   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SRE   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( ODRE  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSRE  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TDRE  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSRE  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TODRE );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TOSRE );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( VT1   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( VT2   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TVT1  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TVT2  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE      ( RT1   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( RT2   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( DRE   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( SRE   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRE  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODRE  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRE  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDRE  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRE );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( TODRE );
+
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TVT1::ElementType   );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TVT2::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename DRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename ODRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TDRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TODRE::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename SRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename SRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename OSRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TSRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TOSRE::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename DRE::ElementType    );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, typename TVT1::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, typename TVT2::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename ORE::OppositeType   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RE , typename TRE::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, typename ODRE::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, typename TDRE::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, typename OSRE::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, typename TSRE::TransposeType );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTVECMULTEXPR_TYPE( VecTVecMultExprType );
-   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE    ( VecTVecMultExprType );
+
+   BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( VecTVecMultExprType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -2628,8 +2624,8 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 void OperationTest<VT1,VT2>::initResults()
 {
-   const typename blaze::BaseElementType<RE>::Type min( randmin );
-   const typename blaze::BaseElementType<RE>::Type max( randmax );
+   const typename blaze::BaseElementType<DRE>::Type min( randmin );
+   const typename blaze::BaseElementType<DRE>::Type max( randmax );
 
    resize( dres_, size( lhs_ ), size( rhs_ ) );
    randomize( dres_, min, max );
@@ -2654,8 +2650,8 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side sparse vector
 void OperationTest<VT1,VT2>::initTransposeResults()
 {
-   const typename blaze::BaseElementType<RE>::Type min( randmin );
-   const typename blaze::BaseElementType<RE>::Type max( randmax );
+   const typename blaze::BaseElementType<TDRE>::Type min( randmin );
+   const typename blaze::BaseElementType<TDRE>::Type max( randmax );
 
    resize( tdres_, size( rhs_ ), size( lhs_ ) );
    randomize( tdres_, min, max );
