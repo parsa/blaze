@@ -91,33 +91,32 @@ template< typename VT1    // Type of the left-hand side dense vector
 class OperationTest
 {
  private:
-   //**Type definitions****************************************************************************
-   typedef typename VT1::TransposeType                TVT1;  //!< Transpose vector type 1
-   typedef typename VT2::TransposeType                TVT2;  //!< Transpose vector type 2
-   typedef typename blaze::SubTrait<VT1,VT2>::Type    RE;    //!< Default result type
-   typedef typename blaze::SubTrait<TVT1,TVT2>::Type  TRE;   //!< Transpose default result type
-   //**********************************************************************************************
-
    //**Enumerations********************************************************************************
    enum { TF = blaze::IsRowVector<VT1>::value };
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef typename VT1::ElementType        ET1;    //!< Element type 1
-   typedef typename VT2::ElementType        ET2;    //!< Element type 2
-   typedef typename RE::ElementType         RET;    //!< Resulting element type
-   typedef blaze::DynamicVector<ET1,TF>     RT1;    //!< Reference type 1
-   typedef blaze::CompressedVector<ET2,TF>  RT2;    //!< Reference type 2
-   typedef typename RT1::TransposeType      TRT1;   //!< Transpose reference type 1
-   typedef typename RT2::TransposeType      TRT2;   //!< Transpose reference type 2
-   typedef blaze::DynamicVector<RET,TF>     DRRE;   //!< Dense reference result type
-   typedef blaze::CompressedVector<RET,TF>  SRRE;   //!< Sparse reference result type
-   typedef typename DRRE::TransposeType     TDRRE;  //!< Transpose dense reference result type
-   typedef typename SRRE::TransposeType     TSRRE;  //!< Transpose sparse reference result type
-   typedef RE                               DRE;    //!< Dense result type
-   typedef SRRE                             SRE;    //!< Sparse result type
-   typedef TRE                              TDRE;   //!< Transpose dense result type
-   typedef TSRRE                            TSRE;   //!< Transpose sparse result type
+   typedef typename VT1::ElementType  ET1;  //!< Element type 1
+   typedef typename VT2::ElementType  ET2;  //!< Element type 2
+
+   typedef typename VT1::TransposeType  TVT1;  //!< Transpose vector type 1
+   typedef typename VT2::TransposeType  TVT2;  //!< Transpose vector type 2
+
+   typedef typename blaze::SubTrait<VT1,VT2>::Type    DRE;   //!< Dense result type
+   typedef typename blaze::SubTrait<TVT1,TVT2>::Type  TDRE;  //!< Transpose dense result type
+   typedef typename DRE::ElementType                  DET;   //!< Element type of the dense result
+
+   typedef blaze::CompressedVector<DET,TF>  SRE;   //!< Sparse result type
+   typedef typename SRE::TransposeType      TSRE;  //!< Transpose sparse result type
+   typedef typename SRE::ElementType        SET;   //!< Element type of the sparse result
+
+   typedef blaze::DynamicVector<ET1,TF>             RT1;  //!< Reference type 1
+   typedef blaze::CompressedVector<ET2,TF>          RT2;  //!< Reference type 2
+   typedef typename blaze::SubTrait<RT1,RT2>::Type  RRE;  //!< Reference result type
+
+   typedef typename RT1::TransposeType                TRT1;  //!< Transpose reference type 1
+   typedef typename RT2::TransposeType                TRT2;  //!< Transpose reference type 2
+   typedef typename blaze::SubTrait<TRT1,TRT2>::Type  TRRE;  //!< Transpose reference result type
 
    //! Type of the vector/vector subtraction expression
    typedef typename blaze::SubExprTrait<VT1,VT2>::Type  VecVecSubExprType;
@@ -177,20 +176,20 @@ class OperationTest
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   VT1   lhs_;      //!< The left-hand side dense vector.
-   VT2   rhs_;      //!< The right-hand side dense vector.
-   DRE   dres_;     //!< The dense vector for the result of the vector subtraction.
-   SRE   sres_;     //!< The sparse vector for the result of the vector subtraction.
-   RT1   reflhs_;   //!< The reference left-hand side vector.
-   RT2   refrhs_;   //!< The reference right-hand side vector.
-   DRRE  refres_;   //!< The reference result.
-   TVT1  tlhs_;     //!< The transpose left-hand side vector.
-   TVT2  trhs_;     //!< The transpose right-hand side vector.
-   TDRE  tdres_;    //!< The dense vector for the result of the transpose vector subtraction.
-   TSRE  tsres_;    //!< The sparse vector for the result of the transpose vector subtraction.
-   TRT1  treflhs_;  //!< The reference left-hand side transpose vector.
-   TRT2  trefrhs_;  //!< The reference right-hand side transpose vector.
-   TDRRE trefres_;  //!< The transpose reference result.
+   VT1  lhs_;      //!< The left-hand side dense vector.
+   VT2  rhs_;      //!< The right-hand side dense vector.
+   DRE  dres_;     //!< The dense vector for the result of the vector subtraction.
+   SRE  sres_;     //!< The sparse vector for the result of the vector subtraction.
+   RT1  reflhs_;   //!< The reference left-hand side vector.
+   RT2  refrhs_;   //!< The reference right-hand side vector.
+   RRE  refres_;   //!< The reference result.
+   TVT1 tlhs_;     //!< The transpose left-hand side vector.
+   TVT2 trhs_;     //!< The transpose right-hand side vector.
+   TDRE tdres_;    //!< The dense vector for the result of the transpose vector subtraction.
+   TSRE tsres_;    //!< The sparse vector for the result of the transpose vector subtraction.
+   TRT1 treflhs_;  //!< The reference left-hand side transpose vector.
+   TRT2 trefrhs_;  //!< The reference right-hand side transpose vector.
+   TRRE trefres_;  //!< The transpose reference result.
 
    std::string test_;   //!< Label of the currently performed test.
    std::string error_;  //!< Description of the current error type.
@@ -199,42 +198,50 @@ class OperationTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT2  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT2   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TRT1  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRT2  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( DRE   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SRE   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( DRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SRRE  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TDRE  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TSRE  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TDRRE );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TSRRE );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , VT2   );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , RT1   );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TVT2  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TRT1  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( RT1 , RT2   );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TRT1, TRT2  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , DRE   );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , SRE   );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( RT1 , DRRE  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( RT1 , SRRE  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TDRE  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TSRE  );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TRT1, TDRRE );
-   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TRT1, TSRRE );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT1  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TVT2 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RT1  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT2  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( RRE  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TRT1 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRT2 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TRRE );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( DRE  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SRE  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TDRE );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TSRE );
+
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , VT2  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , RT1  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TVT2 );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TRT1 );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( RT1 , RT2  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TRT1, TRT2 );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , RRE  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , DRE  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( VT1 , SRE  );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TRRE );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TDRE );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TSRE );
+
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, typename TVT1::ElementType   );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, typename TVT2::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename DRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename TDRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, typename SRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename SRE::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename TSRE::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, typename DRE::ElementType    );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, typename TVT1::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, typename TVT2::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, typename TRT1::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, typename TRT2::TransposeType );
+
    BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( VecVecSubExprType   );
    BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE( TVecTVecSubExprType );
+
    BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( VecVecSubExprType   );
    BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE( TVecTVecSubExprType );
    /*! \endcond */
@@ -3791,8 +3798,8 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initResults()
 {
-   const typename blaze::BaseElementType<RE>::Type min( randmin );
-   const typename blaze::BaseElementType<RE>::Type max( randmax );
+   const typename blaze::BaseElementType<DRE>::Type min( randmin );
+   const typename blaze::BaseElementType<DRE>::Type max( randmax );
 
    resize( dres_, size( lhs_ ) );
    randomize( dres_, min, max );
@@ -3815,8 +3822,8 @@ template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initTransposeResults()
 {
-   const typename blaze::BaseElementType<RE>::Type min( randmin );
-   const typename blaze::BaseElementType<RE>::Type max( randmax );
+   const typename blaze::BaseElementType<TDRE>::Type min( randmin );
+   const typename blaze::BaseElementType<TDRE>::Type max( randmax );
 
    resize( tdres_, size( tlhs_ ) );
    randomize( tdres_, min, max );
