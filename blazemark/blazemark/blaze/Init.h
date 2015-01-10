@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blazemark/blaze/init/CompressedLower.h>
 #include <blazemark/blaze/init/CompressedMatrix.h>
 #include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/init/DynamicLower.h>
