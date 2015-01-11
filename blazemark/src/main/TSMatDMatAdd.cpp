@@ -278,7 +278,7 @@ void tsmatdmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
 */
 int main( int argc, char** argv )
 {
-   std::cout << "\n Transpose sparse Matrix/Dense Matrix Addition:\n";
+   std::cout << "\n Transpose Sparse Matrix/Dense Matrix Addition:\n";
 
    Benchmarks benchmarks;
 

@@ -299,7 +299,7 @@ void tsmattdmatadd( std::vector<Run>& runs, Benchmarks benchmarks )
 */
 int main( int argc, char** argv )
 {
-   std::cout << "\n Transpose sparse Matrix/Transpose Dense Matrix Addition:\n";
+   std::cout << "\n Transpose Sparse Matrix/Transpose Dense Matrix Addition:\n";
 
    Benchmarks benchmarks;
 

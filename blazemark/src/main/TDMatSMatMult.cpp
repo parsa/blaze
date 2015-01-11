@@ -320,7 +320,7 @@ void tdmatsmatmult( std::vector<Run>& runs, Benchmarks benchmarks )
 */
 int main( int argc, char** argv )
 {
-   std::cout << "\n Transpose dense Matrix/Sparse Matrix Multiplication:\n";
+   std::cout << "\n Transpose Dense Matrix/Sparse Matrix Multiplication:\n";
 
    Benchmarks benchmarks;
 
