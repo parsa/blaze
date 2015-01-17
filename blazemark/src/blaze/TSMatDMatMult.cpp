@@ -38,8 +38,8 @@
 //*************************************************************************************************
 
 #include <iostream>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/util/Timing.h>
 #include <blazemark/blaze/init/CompressedMatrix.h>
 #include <blazemark/blaze/init/DynamicMatrix.h>
