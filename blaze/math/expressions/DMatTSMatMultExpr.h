@@ -234,8 +234,8 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       {
          CT2 B( rhs_ );  // Evaluation of the right-hand side sparse matrix operand
 
-         const ConstIterator end( B.end(j) );
-         ConstIterator element( B.begin(j) );
+         const ConstIterator end( ( IsLower<MT1>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
+         ConstIterator element( ( IsUpper<MT1>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
 
          // Early exit in case column j is empty
          if( element == end )
@@ -249,9 +249,14 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       }
 
       // Default computation in case the right-hand side sparse matrix doesn't provide iterators
-      else {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+      else
+      {
+         const size_t kbegin( ( IsUpper<MT1>::value || IsLower<MT2>::value )?( i ):( 0UL ) );
+         const size_t kend  ( ( IsLower<MT1>::value || IsUpper<MT2>::value )?( i+1UL ):( lhs_.columns() ) );
+         BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
@@ -406,21 +411,30 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<C.rows(); ++i ) {
+      const size_t block( 4UL );
+
+      for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
+            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
 
-            if( element == end ) {
-               reset( C(i,j) );
-               continue;
+            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
+
+            for( size_t i=ii; i<iend; ++i )
+            {
+               if( begin == end ) {
+                  reset( C(i,j) );
+                  continue;
+               }
+
+               ConstIterator element( begin );
+
+               C(i,j) = A(i,element->index()) * element->value();
+               ++element;
+               for( ; element!=end; ++element )
+                  C(i,j) += A(i,element->index()) * element->value();
             }
-
-            C(i,j) = A(i,element->index()) * element->value();
-            ++element;
-            for( ; element!=end; ++element )
-               C(i,j) += A(i,element->index()) * element->value();
          }
       }
    }
@@ -581,14 +595,23 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<C.rows(); ++i ) {
+      const size_t block( 4UL );
+
+      for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
+            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
 
-            for( ; element!=end; ++element )
-               C(i,j) += A(i,element->index()) * element->value();
+            if( begin == end )
+               continue;
+
+            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
+
+            for( size_t i=ii; i<iend; ++i ) {
+               for( ConstIterator element=begin; element!=end; ++element )
+                  C(i,j) += A(i,element->index()) * element->value();
+            }
          }
       }
    }
@@ -714,14 +737,23 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<C.rows(); ++i ) {
+      const size_t block( 4UL );
+
+      for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
+            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
 
-            for( ; element!=end; ++element )
-               C(i,j) -= A(i,element->index()) * element->value();
+            if( begin == end )
+               continue;
+
+            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
+
+            for( size_t i=ii; i<iend; ++i ) {
+               for( ConstIterator element=begin; element!=end; ++element )
+                  C(i,j) -= A(i,element->index()) * element->value();
+            }
          }
       }
    }
