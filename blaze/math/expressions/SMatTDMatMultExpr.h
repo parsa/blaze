@@ -235,8 +235,8 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
          // Evaluation of the left-hand side sparse matrix operand
          CT1 A( lhs_ );
 
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const ConstIterator end( ( IsUpper<MT2>::value )?( A.upperBound(i,j) ):( A.end(i) ) );
+         ConstIterator element( ( IsLower<MT2>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
 
          // Early exit in case row i is empty
          if( element == end )
@@ -250,9 +250,14 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
       }
 
       // Default computation in case the left-hand side sparse matrix doesn't provide iterators
-      else {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+      else
+      {
+         const size_t kbegin( ( IsUpper<MT1>::value || IsLower<MT2>::value )?( i ):( 0UL ) );
+         const size_t kend  ( ( IsLower<MT1>::value || IsUpper<MT2>::value )?( i+1UL ):( lhs_.columns() ) );
+         BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
@@ -412,15 +417,17 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
 
       const size_t block( 256UL );
 
-      const size_t jend( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( B.columns() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t ii=0UL; ii<A.rows(); ii+=block ) {
          const size_t iend( ( ii+block > A.rows() )?( A.rows() ):( ii+block ) );
-         for( size_t j=0UL; j<jend; j+=4UL ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=0UL; j<jpos; j+=4UL ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j+4UL) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                if( element!=end ) {
                   C(i,j    ) = element->value() * B(element->index(),j    );
                   C(i,j+1UL) = element->value() * B(element->index(),j+1UL);
@@ -442,10 +449,12 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
                }
             }
          }
-         for( size_t j=jend; j<B.columns(); ++j ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=jpos; j<B.columns(); ++j ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                if( element!=end ) {
                   C(i,j) = element->value() * B(element->index(),j);
                   ++element;
@@ -591,15 +600,17 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
 
       const size_t block( 256UL );
 
-      const size_t jend( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( B.columns() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t ii=0UL; ii<A.rows(); ii+=block ) {
          const size_t iend( ( ii+block > A.rows() )?( A.rows() ):( ii+block ) );
-         for( size_t j=0UL; j<jend; j+=4UL ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=0UL; j<jpos; j+=4UL ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j+4UL) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                for( ; element!=end; ++element ) {
                   C(i,j    ) += element->value() * B(element->index(),j    );
                   C(i,j+1UL) += element->value() * B(element->index(),j+1UL);
@@ -608,10 +619,12 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
                }
             }
          }
-         for( size_t j=jend; j<B.columns(); ++j ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=jpos; j<B.columns(); ++j ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                for( ; element!=end; ++element ) {
                   C(i,j) += element->value() * B(element->index(),j);
                }
@@ -715,15 +728,17 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
 
       const size_t block( 256UL );
 
-      const size_t jend( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( B.columns() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t ii=0UL; ii<A.rows(); ii+=block ) {
          const size_t iend( ( ii+block > A.rows() )?( A.rows() ):( ii+block ) );
-         for( size_t j=0UL; j<jend; j+=4UL ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=0UL; j<jpos; j+=4UL ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j+4UL) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                for( ; element!=end; ++element ) {
                   C(i,j    ) -= element->value() * B(element->index(),j    );
                   C(i,j+1UL) -= element->value() * B(element->index(),j+1UL);
@@ -732,10 +747,12 @@ class SMatTDMatMultExpr : public DenseMatrix< SMatTDMatMultExpr<MT1,MT2>, false 
                }
             }
          }
-         for( size_t j=jend; j<B.columns(); ++j ) {
-            for( size_t i=ii; i<iend; ++i ) {
-               const ConstIterator end( A.end(i) );
-               ConstIterator element( A.begin(i) );
+         for( size_t j=jpos; j<B.columns(); ++j ) {
+            for( size_t i=ii; i<iend; ++i )
+            {
+               const ConstIterator end( ( IsUpper<MT5>::value )?( A.upperBound(i,j) ):( A.end(i) ) );
+               ConstIterator element( ( IsLower<MT5>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
+
                for( ; element!=end; ++element ) {
                   C(i,j) -= element->value() * B(element->index(),j);
                }
