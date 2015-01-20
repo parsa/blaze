@@ -194,7 +194,7 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    struct UseOptimizedKernel {
       enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
-                     !IsResizable<ET1>::value };
+                     !IsResizable<ET2>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -286,8 +286,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       {
          CT2 B( rhs_ );  // Evaluation of the right-hand side sparse matrix operand
 
-         const ConstIterator end( B.end(j) );
-         ConstIterator element( B.begin(j) );
+         const ConstIterator end( ( IsLower<MT1>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
+         ConstIterator element( ( IsUpper<MT1>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
 
          // Early exit in case column j is empty
          if( element == end )
@@ -301,9 +301,14 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       }
 
       // Default computation in case the right-hand side sparse matrix doesn't provide iterators
-      else {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+      else
+      {
+         const size_t kbegin( ( IsUpper<MT1>::value || IsLower<MT2>::value )?( i ):( 0UL ) );
+         const size_t kend  ( ( IsLower<MT1>::value || IsUpper<MT2>::value )?( i+1UL ):( lhs_.columns() ) );
+         BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
@@ -461,14 +466,14 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=4UL ) {
+      for( size_t i=0UL; i<ipos; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i+4UL,j) ):( B.end(j) ) );
 
             if( element == end ) {
                reset( (~C)(i    ,j) );
@@ -492,11 +497,11 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
          }
       }
 
-      for( size_t i=iend; i<A.rows(); ++i ) {
+      for( size_t i=ipos; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
 
             if( element == end ) {
                reset( (~C)(i,j) );
@@ -535,14 +540,21 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t j=0UL; j<B.columns(); ++j ) {
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
          for( size_t i=0UL; i<(~C).rows(); ++i ) {
             reset( (~C)(i,j) );
          }
+
          ConstIterator element( B.begin(j) );
          const ConstIterator end( B.end(j) );
+
+         const size_t ibegin( ( IsLower<MT4>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT4>::value )?( j+1UL ):( A.rows() ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<A.rows(); ++i ) {
+            for( size_t i=ibegin; i<iend; ++i ) {
                if( isDefault( (~C)(i,j) ) )
                   (~C)(i,j) = A(i,element->index()) * element->value();
                else
@@ -576,9 +588,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
-
       reset( ~C );
 
       for( size_t j=0UL; j<B.columns(); ++j )
@@ -586,9 +595,12 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
             ++element;
@@ -602,26 +614,48 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ET2    v4( element->value() );
             ++element;
 
-            for( size_t i=0UL; i<iend; i+=4UL ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
                (~C)(i    ,j) += A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
                (~C)(i+1UL,j) += A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
                (~C)(i+2UL,j) += A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
                (~C)(i+3UL,j) += A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
+            for( size_t i=ipos; i<iend; ++i ) {
                (~C)(i,j) += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
             }
          }
 
-         for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<iend; i+=4UL ) {
-               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
-               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
-               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
-               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+         for( ; element!=end; ++element )
+         {
+            const size_t j1( element->index() );
+            const ET2    v1( element->value() );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,j1) * v1;
+               (~C)(i+1UL,j) += A(i+1UL,j1) * v1;
+               (~C)(i+2UL,j) += A(i+2UL,j1) * v1;
+               (~C)(i+3UL,j) += A(i+3UL,j1) * v1;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
-               (~C)(i,j) += A(i,element->index()) * element->value();
+            for( size_t i=ipos; i<iend; ++i ) {
+               (~C)(i,j) += A(i,j1) * v1;
             }
          }
       }
@@ -652,8 +686,6 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t M( A.rows() );
-
       reset( ~C );
 
       for( size_t j=0UL; j<B.columns(); ++j )
@@ -661,9 +693,12 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
             ++element;
@@ -677,16 +712,27 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v4( set( element->value() ) );
             ++element;
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
             }
          }
 
-         for( ; element!=end; ++element ) {
+         for( ; element!=end; ++element )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) + A.load(i,j1) * v1 );
             }
          }
@@ -828,14 +874,14 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=4UL ) {
+      for( size_t i=0UL; i<ipos; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i+4UL,j) ):( B.end(j) ) );
 
             for( ; element!=end; ++element ) {
                (~C)(i    ,j) += A(i    ,element->index()) * element->value();
@@ -846,11 +892,11 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
          }
       }
 
-      for( size_t i=iend; i<A.rows(); ++i ) {
+      for( size_t i=ipos; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
 
             for( ; element!=end; ++element )
                (~C)(i,j) += A(i,element->index()) * element->value();
@@ -882,11 +928,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t j=0UL; j<B.columns(); ++j ) {
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
          ConstIterator element( B.begin(j) );
          const ConstIterator end( B.end(j) );
+
+         const size_t ibegin( ( IsLower<MT4>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT4>::value )?( j+1UL ):( A.rows() ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<A.rows(); ++i ) {
+            for( size_t i=ibegin; i<iend; ++i ) {
                if( isDefault( (~C)(i,j) ) )
                   (~C)(i,j) = A(i,element->index()) * element->value();
                else
@@ -920,17 +972,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
-
       for( size_t j=0UL; j<B.columns(); ++j )
       {
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
             ++element;
@@ -944,26 +996,48 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ET2    v4( element->value() );
             ++element;
 
-            for( size_t i=0UL; i<iend; i+=4UL ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
                (~C)(i    ,j) += A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
                (~C)(i+1UL,j) += A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
                (~C)(i+2UL,j) += A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
                (~C)(i+3UL,j) += A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
+            for( size_t i=ipos; i<iend; ++i ) {
                (~C)(i,j) += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
             }
          }
 
-         for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<iend; i+=4UL ) {
-               (~C)(i    ,j) += A(i    ,element->index()) * element->value();
-               (~C)(i+1UL,j) += A(i+1UL,element->index()) * element->value();
-               (~C)(i+2UL,j) += A(i+2UL,element->index()) * element->value();
-               (~C)(i+3UL,j) += A(i+3UL,element->index()) * element->value();
+         for( ; element!=end; ++element )
+         {
+            const size_t j1( element->index() );
+            const ET2    v1( element->value() );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
+               (~C)(i    ,j) += A(i    ,j1) * v1;
+               (~C)(i+1UL,j) += A(i+1UL,j1) * v1;
+               (~C)(i+2UL,j) += A(i+2UL,j1) * v1;
+               (~C)(i+3UL,j) += A(i+3UL,j1) * v1;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
-               (~C)(i,j) += A(i,element->index()) * element->value();
+            for( size_t i=ipos; i<iend; ++i ) {
+               (~C)(i,j) += A(i,j1) * v1;
             }
          }
       }
@@ -994,16 +1068,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t M( A.rows() );
-
       for( size_t j=0UL; j<B.columns(); ++j )
       {
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
             ++element;
@@ -1017,16 +1092,27 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v4( set( element->value() ) );
             ++element;
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
             }
          }
 
-         for( ; element!=end; ++element ) {
+         for( ; element!=end; ++element )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) + A.load(i,j1) * v1 );
             }
          }
@@ -1133,14 +1219,14 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( A.rows() & size_t(-4) );
+      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=4UL ) {
+      for( size_t i=0UL; i<ipos; i+=4UL ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i+4UL,j) ):( B.end(j) ) );
 
             for( ; element!=end; ++element ) {
                (~C)(i    ,j) -= A(i    ,element->index()) * element->value();
@@ -1151,11 +1237,11 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
          }
       }
 
-      for( size_t i=iend; i<A.rows(); ++i ) {
+      for( size_t i=ipos; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<B.columns(); ++j )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            ConstIterator element( ( IsUpper<MT4>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
 
             for( ; element!=end; ++element )
                (~C)(i,j) -= A(i,element->index()) * element->value();
@@ -1187,11 +1273,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      for( size_t j=0UL; j<B.columns(); ++j ) {
+      for( size_t j=0UL; j<B.columns(); ++j )
+      {
          ConstIterator element( B.begin(j) );
          const ConstIterator end( B.end(j) );
+
+         const size_t ibegin( ( IsLower<MT4>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT4>::value )?( j+1UL ):( A.rows() ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<A.rows(); ++i ) {
+            for( size_t i=ibegin; i<iend; ++i ) {
                if( isDefault( (~C)(i,j) ) )
                   (~C)(i,j) = -A(i,element->index()) * element->value();
                else
@@ -1225,17 +1317,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t iend( A.rows() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( A.rows() - ( A.rows() % 4UL ) ) == iend, "Invalid end calculation" );
-
       for( size_t j=0UL; j<B.columns(); ++j )
       {
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t j1( element->index() );
             const ET2    v1( element->value() );
             ++element;
@@ -1249,26 +1341,48 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const ET2    v4( element->value() );
             ++element;
 
-            for( size_t i=0UL; i<iend; i+=4UL ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
                (~C)(i    ,j) -= A(i    ,j1) * v1 + A(i    ,j2) * v2 + A(i    ,j3) * v3 + A(i    ,j4) * v4;
                (~C)(i+1UL,j) -= A(i+1UL,j1) * v1 + A(i+1UL,j2) * v2 + A(i+1UL,j3) * v3 + A(i+1UL,j4) * v4;
                (~C)(i+2UL,j) -= A(i+2UL,j1) * v1 + A(i+2UL,j2) * v2 + A(i+2UL,j3) * v3 + A(i+2UL,j4) * v4;
                (~C)(i+3UL,j) -= A(i+3UL,j1) * v1 + A(i+3UL,j2) * v2 + A(i+3UL,j3) * v3 + A(i+3UL,j4) * v4;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
+            for( size_t i=ipos; i<iend; ++i ) {
                (~C)(i,j) -= A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
             }
          }
 
-         for( ; element!=end; ++element ) {
-            for( size_t i=0UL; i<iend; i+=4UL ) {
-               (~C)(i    ,j) -= A(i    ,element->index()) * element->value();
-               (~C)(i+1UL,j) -= A(i+1UL,element->index()) * element->value();
-               (~C)(i+2UL,j) -= A(i+2UL,element->index()) * element->value();
-               (~C)(i+3UL,j) -= A(i+3UL,element->index()) * element->value();
+         for( ; element!=end; ++element )
+         {
+            const size_t j1( element->index() );
+            const ET2    v1( element->value() );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            const size_t inum( iend - ibegin );
+            const size_t ipos( ibegin + ( inum & size_t(-4) ) );
+            BLAZE_INTERNAL_ASSERT( ( ibegin + inum - ( inum % 4UL ) ) == ipos, "Invalid end calculation" );
+
+            for( size_t i=ibegin; i<ipos; i+=4UL ) {
+               (~C)(i    ,j) -= A(i    ,j1) * v1;
+               (~C)(i+1UL,j) -= A(i+1UL,j1) * v1;
+               (~C)(i+2UL,j) -= A(i+2UL,j1) * v1;
+               (~C)(i+3UL,j) -= A(i+3UL,j1) * v1;
             }
-            for( size_t i=iend; i<A.rows(); ++i ) {
-               (~C)(i,j) -= A(i,element->index()) * element->value();
+            for( size_t i=ipos; i<iend; ++i ) {
+               (~C)(i,j) -= A(i,j1) * v1;
             }
          }
       }
@@ -1299,16 +1413,17 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT5::ConstIterator  ConstIterator;
 
-      const size_t M( A.rows() );
-
       for( size_t j=0UL; j<B.columns(); ++j )
       {
          const ConstIterator end( B.end(j) );
          ConstIterator element( B.begin(j) );
 
-         const size_t kend( B.nonZeros(j) & size_t(-4) );
+         const size_t nonzeros( B.nonZeros(j) );
+         const size_t kpos( nonzeros & size_t(-4) );
+         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-         for( size_t k=0UL; k<kend; k+=4UL ) {
+         for( size_t k=0UL; k<kpos; k+=4UL )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
             ++element;
@@ -1322,16 +1437,27 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
             const IntrinsicType v4( set( element->value() ) );
             ++element;
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse matrix index detected" );
+
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j4+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) - A.load(i,j1) * v1 - A.load(i,j2) * v2 - A.load(i,j3) * v3 - A.load(i,j4) * v4 );
             }
          }
 
-         for( ; element!=end; ++element ) {
+         for( ; element!=end; ++element )
+         {
             const size_t        j1( element->index() );
             const IntrinsicType v1( set( element->value() ) );
 
-            for( size_t i=0UL; i<M; i+=IT::size ) {
+            const size_t ibegin( ( IsLower<MT4>::value )?( j1 & size_t(-IT::size) ):( 0UL ) );
+            const size_t iend  ( ( IsUpper<MT4>::value )?( j1+1UL ):( A.rows() ) );
+            BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+            for( size_t i=ibegin; i<iend; i+=IT::size ) {
                (~C).store( i, j, (~C).load(i,j) - A.load(i,j1) * v1 );
             }
          }
