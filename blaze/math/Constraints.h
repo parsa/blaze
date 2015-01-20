@@ -84,6 +84,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/VecAbsExpr.h>
