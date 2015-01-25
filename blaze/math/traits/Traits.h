@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TYPETRAITS_TRAITS_H_
-#define _BLAZE_MATH_TYPETRAITS_TRAITS_H_
+#ifndef _BLAZE_MATH_TRAITS_TRAITS_H_
+#define _BLAZE_MATH_TRAITS_TRAITS_H_
 
 
 //=================================================================================================
