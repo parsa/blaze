@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <stdexcept>
-#include <boost/cast.hpp>
+#include <blaze/math/blas/Level2.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -71,9 +71,6 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Complex.h>
-#include <blaze/util/constraints/Double.h>
-#include <blaze/util/constraints/Float.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/DisableIf.h>
@@ -287,9 +284,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    // \param mat The right-hand side matrix operand of the multiplication expression.
    */
    explicit inline TDVecDMatMultExpr( const VT& vec, const MT& mat )
-      : vec_( vec )                                      // Left-hand side dense vector of the multiplication expression
-      , mat_( mat )                                      // Right-hand side dense matrix of the multiplication expression
-      , end_( ( (mat.rows()-1UL) & size_t(-2) ) + 1UL )  // End of the unrolled calculation loop
+      : vec_( vec )  // Left-hand side dense vector of the multiplication expression
+      , mat_( mat )  // Right-hand side dense matrix of the multiplication expression
    {
       BLAZE_INTERNAL_ASSERT( vec_.size() == mat_.rows(), "Invalid vector and matrix sizes" );
    }
@@ -304,19 +300,24 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      ElementType res;
+      ElementType res = ElementType();
 
-      if( mat_.rows() != 0UL ) {
-         res = vec_[0UL] * mat_(0UL,index);
-         for( size_t j=1UL; j<end_; j+=2UL ) {
-            res += vec_[j] * mat_(j,index) + vec_[j+1UL] * mat_(j+1UL,index);
+      if( mat_.rows() != 0UL )
+      {
+         const size_t ibegin( ( IsLower<MT>::value )?( index ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )?( index+1UL ):( mat_.rows() ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         const size_t inum( iend - ibegin );
+         const size_t ipos( ibegin + ( ( inum - 1UL ) & size_t(-2) ) + 1UL );
+
+         res = vec_[ibegin] * mat_(ibegin,index);
+         for( size_t i=ibegin+1UL; i<ipos; i+=2UL ) {
+            res += vec_[i] * mat_(i,index) + vec_[i+1UL] * mat_(i+1UL,index);
          }
-         if( end_ < mat_.rows() ) {
-            res += vec_[end_] * mat_(end_,index);
+         if( ipos < iend ) {
+            res += vec_[ipos] * mat_(ipos,index);
          }
-      }
-      else {
-         reset( res );
       }
 
       return res;
@@ -404,171 +405,6 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    //**Member variables****************************************************************************
    LeftOperand  vec_;  //!< Left-hand side dense vector of the multiplication expression.
    RightOperand mat_;  //!< Right-hand side dense matrix of the multiplication expression.
-   const size_t end_;  //!< End of the unrolled calculation loop.
-   //**********************************************************************************************
-
-   //**BLAS kernel (single precision)**************************************************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for single
-   //        precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision operands based on the BLAS cblas_sgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void sgemv( VT1& y, const VT2& x, const MT1& A, float alpha, float beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasRowMajor, CblasTrans, M, N, alpha,
-                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (double precision)**************************************************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for double
-   //        precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision operands based on the BLAS cblas_dgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void dgemv( VT1& y, const VT2& x, const MT1& A, double alpha, double beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasRowMajor, CblasTrans, M, N, alpha,
-                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (single precision complex)******************************************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for single
-   //        precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision complex operands based on the BLAS cblas_cgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void cgemv( VT1& y, const VT2& x, const MT1& A,
-                             complex<float> alpha, complex<float> beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_cgemv( CblasRowMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
-   }
-   /*! \endcond */
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (double precision complex)******************************************************
-#if BLAZE_BLAS_MODE
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for double
-   //        precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision complex operands based on the BLAS cblas_zgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void zgemv( VT1& y, const VT2& x, const MT1& A,
-                             complex<double> alpha, complex<float> beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_zgemv( CblasRowMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
-   }
-   /*! \endcond */
-#endif
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
@@ -660,19 +496,35 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == ( N & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( N & size_t(-2) );
+      if( !IsLower<MT1>::value )
+      {
+         const size_t jpos( N & size_t(-2) );
+         BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         y[j] = x[0UL] * A(0UL,j);
+         for( size_t j=0UL; j<jpos; j+=2 ) {
+            y[j    ] = x[0UL] * A(0UL,j    );
+            y[j+1UL] = x[0UL] * A(0UL,j+1UL);
+         }
+         if( jpos < N ) {
+            y[jpos] = x[0UL] * A(0UL,jpos);
+         }
       }
-      for( size_t i=1UL; i<M; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+      for( size_t i=( IsLower<MT1>::value )?( 0UL ):( 1UL ); i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
+         const size_t jnum  ( jend - jbegin );
+         const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
             y[j    ] += x[i] * A(i,j    );
             y[j+1UL] += x[i] * A(i,j+1UL);
          }
-         if( jend < N ) {
-            y[jend] += x[i] * A(i,jend);
+         if( jpos < jend ) {
+            y[jpos] += x[i] * A(i,jpos);
+         }
+         if( IsLower<MT1>::value ) {
+            y[i] = x[i] * A(i,i);
          }
       }
    }
@@ -706,9 +558,15 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
@@ -719,6 +577,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
             xmm7 = xmm7 + x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 + x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
@@ -728,47 +587,79 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*6UL, xmm7 );
          y.store( j+IT::size*7UL, xmm8 );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 + x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
          y.store( j+IT::size*3UL, xmm4 );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j         );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , xmm1 );
          y.store( j+IT::size, xmm2 );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 + set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, xmm1 );
       }
    }
@@ -821,7 +712,13 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      sgemv( y, x, A, 1.0F, 0.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, x );
+         strmv( y, A );
+      }
+      else {
+         sgemv( y, x, A, 1.0F, 0.0F );
+      }
    }
    /*! \endcond */
 #endif
@@ -848,7 +745,13 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      dgemv( y, x, A, 1.0, 0.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, x );
+         dtrmv( y, A );
+      }
+      else {
+         dgemv( y, x, A, 1.0, 0.0 );
+      }
    }
    /*! \endcond */
 #endif
@@ -875,7 +778,13 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, x );
+         ctrmv( y, A );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -902,7 +811,13 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, x );
+         ztrmv( y, A );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -1023,16 +938,21 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == ( N & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( N & size_t(-2) );
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
             y[j    ] += x[i] * A(i,j    );
             y[j+1UL] += x[i] * A(i,j+1UL);
          }
-         if( jend < N ) {
-            y[jend] += x[i] * A(i,jend);
+         if( jpos < jend ) {
+            y[jpos] += x[i] * A(i,jpos);
          }
       }
    }
@@ -1066,7 +986,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
@@ -1075,7 +1000,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          IntrinsicType xmm6( y.load(j+IT::size*5UL) );
          IntrinsicType xmm7( y.load(j+IT::size*6UL) );
          IntrinsicType xmm8( y.load(j+IT::size*7UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
@@ -1086,6 +1012,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
             xmm7 = xmm7 + x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 + x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
@@ -1095,53 +1022,85 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*6UL, xmm7 );
          y.store( j+IT::size*7UL, xmm8 );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
          IntrinsicType xmm4( y.load(j+IT::size*3UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 + x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
          y.store( j+IT::size*3UL, xmm4 );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j         ) );
          IntrinsicType xmm2( y.load(j+IT::size) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j         );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , xmm1 );
          y.store( j+IT::size, xmm2 );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 + set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, xmm1 );
       }
    }
@@ -1194,7 +1153,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      sgemv( y, x, A, 1.0F, 1.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         strmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         sgemv( y, x, A, 1.0F, 1.0F );
+      }
    }
    /*! \endcond */
 #endif
@@ -1221,7 +1187,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      dgemv( y, x, A, 1.0, 1.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         dtrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         dgemv( y, x, A, 1.0, 1.0 );
+      }
    }
    /*! \endcond */
 #endif
@@ -1248,7 +1221,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         ctrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -1275,7 +1255,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         ztrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -1370,16 +1357,21 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == ( N & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( N & size_t(-2) );
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
             y[j    ] -= x[i] * A(i,j    );
             y[j+1UL] -= x[i] * A(i,j+1UL);
          }
-         if( jend < N ) {
-            y[jend] -= x[i] * A(i,jend);
+         if( jpos < jend ) {
+            y[jpos] -= x[i] * A(i,jpos);
          }
       }
    }
@@ -1413,7 +1405,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
@@ -1422,7 +1419,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          IntrinsicType xmm6( y.load(j+IT::size*5UL) );
          IntrinsicType xmm7( y.load(j+IT::size*6UL) );
          IntrinsicType xmm8( y.load(j+IT::size*7UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 - x1 * A.load(i,j             );
             xmm2 = xmm2 - x1 * A.load(i,j+IT::size    );
@@ -1433,6 +1431,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
             xmm7 = xmm7 - x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 - x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
@@ -1442,53 +1441,85 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*6UL, xmm7 );
          y.store( j+IT::size*7UL, xmm8 );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
          IntrinsicType xmm4( y.load(j+IT::size*3UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 - x1 * A.load(i,j             );
             xmm2 = xmm2 - x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 - x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 - x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
          y.store( j+IT::size*3UL, xmm4 );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j             ) );
          IntrinsicType xmm2( y.load(j+IT::size    ) );
          IntrinsicType xmm3( y.load(j+IT::size*2UL) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 - x1 * A.load(i,j             );
             xmm2 = xmm2 - x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 - x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , xmm1 );
          y.store( j+IT::size    , xmm2 );
          y.store( j+IT::size*2UL, xmm3 );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j         ) );
          IntrinsicType xmm2( y.load(j+IT::size) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 - x1 * A.load(i,j         );
             xmm2 = xmm2 - x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , xmm1 );
          y.store( j+IT::size, xmm2 );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1( y.load(j) );
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 - set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, xmm1 );
       }
    }
@@ -1541,7 +1572,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      sgemv( y, x, A, -1.0F, 1.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         strmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         sgemv( y, x, A, -1.0F, 1.0F );
+      }
    }
    /*! \endcond */
 #endif
@@ -1568,7 +1606,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      dgemv( y, x, A, -1.0, 1.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         dtrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         dgemv( y, x, A, -1.0, 1.0 );
+      }
    }
    /*! \endcond */
 #endif
@@ -1595,7 +1640,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      cgemv( y, x, A, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         ctrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -1622,7 +1674,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      zgemv( y, x, A, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( x );
+         ztrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      }
    }
    /*! \endcond */
 #endif
@@ -2176,162 +2235,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
    //**********************************************************************************************
 
-   //**BLAS kernel (single precision)**************************************************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for single
-   //        precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision operands based on the BLAS cblas_sgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void sgemv( VT1& y, const VT2& x, const MT1& A, float alpha, float beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_sgemv( CblasRowMajor, CblasTrans, M, N, alpha,
-                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (double precision)**************************************************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for double
-   //        precision operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision operands based on the BLAS cblas_dgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void dgemv( VT1& y, const VT2& x, const MT1& A, double alpha, double beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT1::ElementType );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_dgemv( CblasRowMajor, CblasTrans, M, N, alpha,
-                   A.data(), lda, x.data(), 1, beta, y.data(), 1 );
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (single precision complex)******************************************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for single
-   //        precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for single
-   // precision complex operands based on the BLAS cblas_cgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void cgemv( VT1& y, const VT2& x, const MT1& A,
-                             complex<float> alpha, complex<float> beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_cgemv( CblasRowMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
-   }
-#endif
-   //**********************************************************************************************
-
-   //**BLAS kernel (double precision complex)******************************************************
-#if BLAZE_BLAS_MODE
-   /*!\brief BLAS kernel for a transpose dense vector-dense matrix multiplication for double
-   //        precision complex operands (\f$ \vec{y}^T=\alpha*\vec{x}^T*A+\beta*\vec{y}^T \f$).
-   // \ingroup dense_vector
-   //
-   // \param y The target left-hand side dense vector.
-   // \param x The left-hand side dense vector operand.
-   // \param A The right-hand side dense matrix operand.
-   // \param alpha The scaling factor for \f$ \vec{x}^T*A \f$.
-   // \param beta The scaling factor for \f$ \vec{y}^T \f$.
-   // \return void
-   //
-   // This function performs the transpose dense vector-dense matrix multiplication for double
-   // precision complex operands based on the BLAS cblas_zgemv() function.
-   */
-   template< typename VT1    // Type of the left-hand side target vector
-           , typename VT2    // Type of the left-hand side vector operand
-           , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline void zgemv( VT1& y, const VT2& x, const MT1& A,
-                             complex<double> alpha, complex<float> beta )
-   {
-      using boost::numeric_cast;
-
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT2::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT1::ElementType );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT1::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT2::ElementType::value_type );
-      BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT1::ElementType::value_type );
-
-      const int M  ( numeric_cast<int>( A.rows() )    );
-      const int N  ( numeric_cast<int>( A.columns() ) );
-      const int lda( numeric_cast<int>( A.spacing() ) );
-
-      cblas_zgemv( CblasRowMajor, CblasTrans, M, N, &alpha,
-                   A.data(), lda, x.data(), 1, &beta, y.data(), 1 );
-   }
-#endif
-   //**********************************************************************************************
-
    //**Assignment to dense vectors*****************************************************************
    /*!\brief Assignment of a scaled transpose dense vector-dense matrix multiplication to a
    //        transpose dense vector (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
@@ -2423,19 +2326,35 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == ( N & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( N & size_t(-2) );
+      if( !IsLower<MT1>::value )
+      {
+         const size_t jpos( N & size_t(-2) );
+         BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         y[j] = x[0UL] * A(0UL,j);
+         for( size_t j=0UL; j<jpos; j+=2 ) {
+            y[j    ] = x[0UL] * A(0UL,j    );
+            y[j+1UL] = x[0UL] * A(0UL,j+1UL);
+         }
+         if( jpos < N ) {
+            y[jpos] = x[0UL] * A(0UL,jpos);
+         }
       }
-      for( size_t i=1UL; i<M; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
-            y[j    ] += x[i] * A(i,j  );
+      for( size_t i=( IsLower<MT1>::value )?( 0UL ):( 1UL ); i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
+         const size_t jnum  ( jend - jbegin );
+         const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            y[j    ] += x[i] * A(i,j    );
             y[j+1UL] += x[i] * A(i,j+1UL);
          }
-         if( jend < N ) {
-            y[jend] += x[i] * A(i,jend);
+         if( jpos < jend ) {
+            y[jpos] += x[i] * A(i,jpos);
+         }
+         if( IsLower<MT1>::value ) {
+            y[i] = x[i] * A(i,i);
          }
       }
       for( size_t j=0UL; j<N; ++j ) {
@@ -2474,9 +2393,15 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
@@ -2487,6 +2412,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
             xmm7 = xmm7 + x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 + x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , xmm1*factor );
          y.store( j+IT::size    , xmm2*factor );
          y.store( j+IT::size*2UL, xmm3*factor );
@@ -2496,47 +2422,79 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*6UL, xmm7*factor );
          y.store( j+IT::size*7UL, xmm8*factor );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 + x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , xmm1*factor );
          y.store( j+IT::size    , xmm2*factor );
          y.store( j+IT::size*2UL, xmm3*factor );
          y.store( j+IT::size*3UL, xmm4*factor );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , xmm1*factor );
          y.store( j+IT::size    , xmm2*factor );
          y.store( j+IT::size*2UL, xmm3*factor );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j         );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , xmm1*factor );
          y.store( j+IT::size, xmm2*factor );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 + set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, xmm1*factor );
       }
    }
@@ -2588,7 +2546,13 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      sgemv( y, x, A, scalar, 0.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, scalar * x );
+         strmv( y, A );
+      }
+      else {
+         sgemv( y, x, A, scalar, 0.0F );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2615,7 +2579,13 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      dgemv( y, x, A, scalar, 0.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, scalar * x );
+         dtrmv( y, A );
+      }
+      else {
+         dgemv( y, x, A, scalar, 0.0 );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2642,7 +2612,13 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, scalar * x );
+         ctrmv( y, A );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2669,7 +2645,13 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         assign( y, scalar * x );
+         ztrmv( y, A );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2820,9 +2802,15 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
@@ -2833,6 +2821,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
             xmm7 = xmm7 + x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 + x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , y.load(j             ) + xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) + xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
@@ -2842,47 +2831,79 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*6UL, y.load(j+IT::size*6UL) + xmm7*factor );
          y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8*factor );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 + x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , y.load(j             ) + xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) + xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
          y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4*factor );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , y.load(j             ) + xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) + xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j         );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , y.load(j         ) + xmm1*factor );
          y.store( j+IT::size, y.load(j+IT::size) + xmm2*factor );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 + set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, y.load(j) + xmm1*factor );
       }
    }
@@ -2935,7 +2956,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      sgemv( y, x, A, scalar, 1.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         strmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         sgemv( y, x, A, scalar, 1.0F );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2962,7 +2990,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      dgemv( y, x, A, scalar, 1.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         dtrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         dgemv( y, x, A, scalar, 1.0 );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -2989,7 +3024,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         ctrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -3016,7 +3058,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         ztrmv( tmp, A );
+         addAssign( y, tmp );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -3143,9 +3192,15 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*8UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
@@ -3156,6 +3211,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
             xmm7 = xmm7 + x1 * A.load(i,j+IT::size*6UL);
             xmm8 = xmm8 + x1 * A.load(i,j+IT::size*7UL);
          }
+
          y.store( j             , y.load(j             ) - xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) - xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3*factor );
@@ -3165,47 +3221,79 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*6UL, y.load(j+IT::size*6UL) - xmm7*factor );
          y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) - xmm8*factor );
       }
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*4UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
             xmm4 = xmm4 + x1 * A.load(i,j+IT::size*3UL);
          }
+
          y.store( j             , y.load(j             ) - xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) - xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3*factor );
          y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) - xmm4*factor );
       }
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL ) {
+
+      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*3UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2, xmm3;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j             );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size    );
             xmm3 = xmm3 + x1 * A.load(i,j+IT::size*2UL);
          }
+
          y.store( j             , y.load(j             ) - xmm1*factor );
          y.store( j+IT::size    , y.load(j+IT::size    ) - xmm2*factor );
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3*factor );
       }
-      for( ; (j+IT::size) < N; j+=IT::size*2UL ) {
+
+      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size*2UL, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1, xmm2;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             const IntrinsicType x1( set( x[i] ) );
             xmm1 = xmm1 + x1 * A.load(i,j         );
             xmm2 = xmm2 + x1 * A.load(i,j+IT::size);
          }
+
          y.store( j         , y.load(j         ) - xmm1*factor );
          y.store( j+IT::size, y.load(j+IT::size) - xmm2*factor );
       }
-      if( j < N ) {
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( min( j+IT::size, M ) ):( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
          IntrinsicType xmm1;
-         for( size_t i=0UL; i<M; ++i ) {
+
+         for( size_t i=ibegin; i<iend; ++i ) {
             xmm1 = xmm1 + set( x[i] ) * A.load(i,j);
          }
+
          y.store( j, y.load(j) - xmm1*factor );
       }
    }
@@ -3258,7 +3346,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      sgemv( y, x, A, -scalar, 1.0F );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         strmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         sgemv( y, x, A, -scalar, 1.0F );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -3285,7 +3380,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      dgemv( y, x, A, -scalar, 1.0 );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         dtrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         dgemv( y, x, A, -scalar, 1.0 );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -3312,7 +3414,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      cgemv( y, x, A, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         ctrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         cgemv( y, x, A, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+      }
    }
 #endif
    //**********************************************************************************************
@@ -3339,7 +3448,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      zgemv( y, x, A, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+         typename VT1::ResultType tmp( scalar * x );
+         ztrmv( tmp, A );
+         subAssign( y, tmp );
+      }
+      else {
+         zgemv( y, x, A, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+      }
    }
 #endif
    //**********************************************************************************************
