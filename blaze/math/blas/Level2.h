@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
@@ -491,7 +492,7 @@ BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,
 // \return void
 //
 // This function performs the triangular dense matrix/dense vector multiplication for single
-// precision operands based on the BLAS cblas_dtrmv() function. Note that the function only
+// precision operands based on the BLAS cblas_strmv() function. Note that the function only
 // works for vectors and matrices with \c float element type. The attempt to call the function
 // with vectors and matrices of any other element type results in a compile time error.
 */
@@ -511,14 +512,11 @@ BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_strmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_strmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_strmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasNoTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -535,7 +533,7 @@ BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 // \return void
 //
 // This function performs the transpose dense vector/triangular dense matrix multiplication for
-// single precision operands based on the BLAS cblas_dtrmv() function. Note that the function only
+// single precision operands based on the BLAS cblas_strmv() function. Note that the function only
 // works for vectors and matrices with \c float element type. The attempt to call the function
 // with vectors and matrices of any other element type results in a compile time error.
 */
@@ -555,14 +553,11 @@ BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_strmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_strmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_strmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -599,14 +594,11 @@ BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_dtrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_dtrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_dtrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasNoTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -643,14 +635,11 @@ BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_dtrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_dtrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_dtrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -690,14 +679,11 @@ BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_ctrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_ctrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_ctrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasNoTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -737,14 +723,11 @@ BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_ctrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_ctrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_ctrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -761,7 +744,7 @@ BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
 // \return void
 //
 // This function performs the triangular dense matrix/dense vector multiplication for double
-// precision complex operands based on the BLAS cblas_ctrmv() function. Note that the function
+// precision complex operands based on the BLAS cblas_ztrmv() function. Note that the function
 // only works for vectors and matrices with \c complex<double> element type. The attempt to call
 // the function with vectors and matrices of any other element type results in a compile time
 // error.
@@ -784,14 +767,11 @@ BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_ztrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_ztrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasNoTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_ztrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasNoTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -808,7 +788,7 @@ BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 // \return void
 //
 // This function performs the transpose dense vector/triangular dense matrix multiplication for
-// double precision complex operands based on the BLAS cblas_ctrmv() function. Note that the
+// double precision complex operands based on the BLAS cblas_ztrmv() function. Note that the
 // function only works for vectors and matrices with \c complex<double> element type. The attempt
 // to call the function with vectors and matrices of any other element type results in a compile
 // time error.
@@ -831,14 +811,11 @@ BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
-   if( IsLower<MT>::value ) {
-      cblas_ztrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasLower, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
-   else {
-      cblas_ztrmv( ( SO )?( CblasColMajor ):( CblasRowMajor ), CblasUpper, CblasTrans,
-                   CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
-   }
+   cblas_ztrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
+                CblasTrans,
+                CblasNonUnit,
+                N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
