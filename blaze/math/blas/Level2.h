@@ -68,60 +68,60 @@ namespace blaze {
 #if BLAZE_BLAS_MODE
 
 template< typename VT1, typename MT1, bool SO, typename VT2 >
-inline void sgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, float alpha, float beta );
+BLAZE_ALWAYS_INLINE void sgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, float alpha, float beta );
 
 template< typename VT1, typename VT2, typename MT1, bool SO >
-inline void sgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
-                   const DenseMatrix<MT1,SO>& A, float alpha, float beta );
+BLAZE_ALWAYS_INLINE void sgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
+                                const DenseMatrix<MT1,SO>& A, float alpha, float beta );
 
 template< typename VT1, typename MT1, bool SO, typename VT2 >
-inline void dgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, double alpha, double beta );
+BLAZE_ALWAYS_INLINE void dgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, double alpha, double beta );
 
 template< typename VT1, typename VT2, typename MT1, bool SO >
-inline void dgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
-                   const DenseMatrix<MT1,SO>& A, double alpha, double beta );
+BLAZE_ALWAYS_INLINE void dgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
+                                const DenseMatrix<MT1,SO>& A, double alpha, double beta );
 
 template< typename VT1, typename MT1, bool SO, typename VT2 >
-inline void cgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, complex<float> alpha, complex<float> beta );
+BLAZE_ALWAYS_INLINE void cgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, complex<float> alpha, complex<float> beta );
 
 template< typename VT1, typename VT2, typename MT1, bool SO >
-inline void cgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
-                   const DenseMatrix<MT1,SO>& A, complex<float> alpha, complex<float> beta );
+BLAZE_ALWAYS_INLINE void cgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
+                                const DenseMatrix<MT1,SO>& A, complex<float> alpha, complex<float> beta );
 
 template< typename VT1, typename MT1, bool SO, typename VT2 >
-inline void zgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, complex<double> alpha, complex<double> beta );
+BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, complex<double> alpha, complex<double> beta );
 
 template< typename VT1, typename VT2, typename MT1, bool SO >
-inline void zgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
-                   const DenseMatrix<MT1,SO>& A, complex<double> alpha, complex<double> beta );
+BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,false>& y, const DenseVector<VT2,false>& x,
+                                const DenseMatrix<MT1,SO>& A, complex<double> alpha, complex<double> beta );
 
 template< typename VT, typename MT, bool SO >
-inline void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
 
 template< typename VT, typename MT, bool SO >
-inline void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
 
 #endif
 //@}
@@ -150,8 +150,8 @@ template< typename VT1    // Type of the left-hand side target vector
         , typename MT1    // Type of the left-hand side matrix operand
         , bool SO         // Storage order of the left-hand side matrix operand
         , typename VT2 >  // Type of the right-hand side vector operand
-inline void sgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, float alpha, float beta )
+BLAZE_ALWAYS_INLINE void sgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, float alpha, float beta )
 {
    using boost::numeric_cast;
 
@@ -192,8 +192,8 @@ template< typename VT1  // Type of the left-hand side target vector
         , typename VT2  // Type of the left-hand side vector operand
         , typename MT1  // Type of the right-hand side matrix operand
         , bool SO >     // Storage order of the right-hand side matrix operand
-inline void sgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-                   const DenseMatrix<MT1,SO>& A, float alpha, float beta )
+BLAZE_ALWAYS_INLINE void sgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+                                const DenseMatrix<MT1,SO>& A, float alpha, float beta )
 {
    using boost::numeric_cast;
 
@@ -234,8 +234,8 @@ template< typename VT1    // Type of the left-hand side target vector
         , typename MT1    // Type of the left-hand side matrix operand
         , bool SO         // Storage order of the left-hand side matrix operand
         , typename VT2 >  // Type of the right-hand side vector operand
-inline void dgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, double alpha, double beta )
+BLAZE_ALWAYS_INLINE void dgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, double alpha, double beta )
 {
    using boost::numeric_cast;
 
@@ -276,8 +276,8 @@ template< typename VT1  // Type of the left-hand side target vector
         , typename VT2  // Type of the left-hand side vector operand
         , typename MT1  // Type of the right-hand side matrix operand
         , bool SO >     // Storage order of the right-hand side matrix operand
-inline void dgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-                   const DenseMatrix<MT1,SO>& A, double alpha, double beta )
+BLAZE_ALWAYS_INLINE void dgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+                                const DenseMatrix<MT1,SO>& A, double alpha, double beta )
 {
    using boost::numeric_cast;
 
@@ -319,8 +319,8 @@ template< typename VT1    // Type of the left-hand side target vector
         , typename MT1    // Type of the left-hand side matrix operand
         , bool SO         // Storage order of the left-hand side matrix operand
         , typename VT2 >  // Type of the right-hand side vector operand
-inline void cgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, complex<float> alpha, complex<float> beta )
+BLAZE_ALWAYS_INLINE void cgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, complex<float> alpha, complex<float> beta )
 {
    using boost::numeric_cast;
 
@@ -365,8 +365,8 @@ template< typename VT1  // Type of the left-hand side target vector
         , typename VT2  // Type of the left-hand side vector operand
         , typename MT1  // Type of the right-hand side matrix operand
         , bool SO >     // Storage order of the right-hand side matrix operand
-inline void cgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-                   const DenseMatrix<MT1,SO>& A, complex<float> alpha, complex<float> beta )
+BLAZE_ALWAYS_INLINE void cgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+                                const DenseMatrix<MT1,SO>& A, complex<float> alpha, complex<float> beta )
 {
    using boost::numeric_cast;
 
@@ -411,8 +411,8 @@ template< typename VT1    // Type of the left-hand side target vector
         , typename MT1    // Type of the left-hand side matrix operand
         , bool SO         // Storage order of the left-hand side matrix operand
         , typename VT2 >  // Type of the right-hand side vector operand
-inline void zgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                   const DenseVector<VT2,false>& x, complex<double> alpha, complex<double> beta )
+BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+                                const DenseVector<VT2,false>& x, complex<double> alpha, complex<double> beta )
 {
    using boost::numeric_cast;
 
@@ -457,8 +457,8 @@ template< typename VT1  // Type of the left-hand side target vector
         , typename VT2  // Type of the left-hand side vector operand
         , typename MT1  // Type of the right-hand side matrix operand
         , bool SO >     // Storage order of the right-hand side matrix operand
-inline void zgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-                   const DenseMatrix<MT1,SO>& A, complex<double> alpha, complex<float> beta )
+BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+                                const DenseMatrix<MT1,SO>& A, complex<double> alpha, complex<float> beta )
 {
    using boost::numeric_cast;
 
@@ -498,7 +498,7 @@ inline void zgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -542,7 +542,7 @@ inline void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -586,7 +586,7 @@ inline void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -630,7 +630,7 @@ inline void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -675,7 +675,7 @@ inline void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -722,7 +722,7 @@ inline void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -769,7 +769,7 @@ inline void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
@@ -816,7 +816,7 @@ inline void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-inline void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
 {
    using boost::numeric_cast;
 
