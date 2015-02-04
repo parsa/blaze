@@ -64,7 +64,10 @@
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/BLAS.h>
@@ -712,9 +715,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         strmv( y, A );
+         strmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          sgemv( y, x, A, 1.0F, 0.0F );
@@ -745,9 +748,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         dtrmv( y, A );
+         dtrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          dgemv( y, x, A, 1.0, 0.0 );
@@ -778,9 +781,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         ctrmv( y, A );
+         ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          cgemv( y, x, A, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
@@ -811,9 +814,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, x );
-         ztrmv( y, A );
+         ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          zgemv( y, x, A, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
@@ -1153,9 +1156,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         strmv( tmp, A );
+         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -1187,9 +1190,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         dtrmv( tmp, A );
+         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -1221,9 +1224,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ctrmv( tmp, A );
+         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -1255,9 +1258,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ztrmv( tmp, A );
+         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -1572,9 +1575,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         strmv( tmp, A );
+         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -1606,9 +1609,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         dtrmv( tmp, A );
+         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -1640,9 +1643,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ctrmv( tmp, A );
+         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -1674,9 +1677,9 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( x );
-         ztrmv( tmp, A );
+         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -2546,9 +2549,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         strmv( y, A );
+         strmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          sgemv( y, x, A, scalar, 0.0F );
@@ -2579,9 +2582,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         dtrmv( y, A );
+         dtrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          dgemv( y, x, A, scalar, 0.0 );
@@ -2612,9 +2615,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         ctrmv( y, A );
+         ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          cgemv( y, x, A, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
@@ -2645,9 +2648,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
-         ztrmv( y, A );
+         ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
          zgemv( y, x, A, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
@@ -2956,9 +2959,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         strmv( tmp, A );
+         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -2990,9 +2993,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         dtrmv( tmp, A );
+         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -3024,9 +3027,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ctrmv( tmp, A );
+         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -3058,9 +3061,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ztrmv( tmp, A );
+         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
       else {
@@ -3346,9 +3349,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         strmv( tmp, A );
+         strmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -3380,9 +3383,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         dtrmv( tmp, A );
+         dtrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -3414,9 +3417,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseSinglePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ctrmv( tmp, A );
+         ctrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
@@ -3448,9 +3451,9 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDoublePrecisionComplexKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( IsLower<MT1>::value || IsUpper<MT1>::value ) {
+      if( IsTriangular<MT1>::value ) {
          typename VT1::ResultType tmp( scalar * x );
-         ztrmv( tmp, A );
+         ztrmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
       else {
