@@ -41,11 +41,10 @@
 //*************************************************************************************************
 
 #include <boost/cast.hpp>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -101,28 +100,36 @@ BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,false>& y, const DenseVector<VT2
                                 const DenseMatrix<MT1,SO>& A, complex<double> alpha, complex<double> beta );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A );
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo );
 
 #endif
 //@}
@@ -484,39 +491,41 @@ BLAZE_ALWAYS_INLINE void zgemv( DenseVector<VT1,true>& y, const DenseVector<VT2,
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
-//        precision operands (\f$ \vec{y}*=A \f$).
+//        precision operands (\f$ \vec{y}=A*\vec{y} \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the triangular dense matrix/dense vector multiplication for single
-// precision operands based on the BLAS cblas_strmv() function. Note that the function only
-// works for vectors and matrices with \c float element type. The attempt to call the function
-// with vectors and matrices of any other element type results in a compile time error.
+// This function performs the multiplication of a single precision triangular matrix by a vector
+// based on the cblas_strmv() function. Note that the function only works for vectors and matrices
+// with \c float element type. The attempt to call the function with vectors and matrices of any
+// other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_strmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasNoTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasNoTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -525,39 +534,41 @@ BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication for
-//        single precision operands (\f$ \vec{y}^T*=A \f$).
+//        single precision operands (\f$ \vec{y}^T=\vec{y}^T*A \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the transpose dense vector/triangular dense matrix multiplication for
-// single precision operands based on the BLAS cblas_strmv() function. Note that the function only
-// works for vectors and matrices with \c float element type. The attempt to call the function
-// with vectors and matrices of any other element type results in a compile time error.
+// This function performs the multiplication of a single precision triangular matrix by a vector
+// based on the cblas_strmv() function. Note that the function only works for vectors and matrices
+// with \c float element type. The attempt to call the function with vectors and matrices of any
+// other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE( typename MT::ElementType );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_strmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -566,39 +577,41 @@ BLAZE_ALWAYS_INLINE void strmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
-//        precision operands (\f$ \vec{y}*=A \f$).
+//        precision operands (\f$ \vec{y}=A*\vec{y} \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the triangular dense matrix/dense vector multiplication for double
-// precision operands based on the BLAS cblas_dtrmv() function. Note that the function only
-// works for vectors and matrices with \c double element type. The attempt to call the function
-// with vectors and matrices of any other element type results in a compile time error.
+// This function performs the multiplication of a double precision triangular matrix by a vector
+// based on the cblas_dtrmv() function. Note that the function only works for vectors and matrices
+// with \c double element type. The attempt to call the function with vectors and matrices of any
+// other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_dtrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasNoTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasNoTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -607,39 +620,41 @@ BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication for
-//        double precision operands (\f$ \vec{y}^T*=A \f$).
+//        double precision operands (\f$ \vec{y}^T=\vec{y}^T*A \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the transpose dense vector/triangular dense matrix multiplication for
-// double precision operands based on the BLAS cblas_dtrmv() function. Note that the function only
-// works for vectors and matrices with \c double element type. The attempt to call the function
-// with vectors and matrices of any other element type results in a compile time error.
+// This function performs the multiplication of a double precision triangular matrix by a vector
+// based on the cblas_dtrmv() function. Note that the function only works for vectors and matrices
+// with \c double element type. The attempt to call the function with vectors and matrices of any
+// other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE( typename MT::ElementType );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_dtrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -648,42 +663,43 @@ BLAZE_ALWAYS_INLINE void dtrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
-//        precision complex operands (\f$ \vec{y}*=A \f$).
+//        precision complex operands (\f$ \vec{y}=A*\vec{y} \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the triangular dense matrix/dense vector multiplication for single
-// precision complex operands based on the BLAS cblas_ctrmv() function. Note that the function
-// only works for vectors and matrices with \c complex<float> element type. The attempt to call
-// the function with vectors and matrices of any other element type results in a compile time
-// error.
+// This function performs the multiplication of a single precision complex triangular matrix by a
+// vector based on the cblas_ctrmv() function. Note that the function only works for vectors and
+// matrices with \c complex<float> element type. The attempt to call the function with vectors
+// and matrices of any other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT::ElementType::value_type );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT::ElementType::value_type );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_ctrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasNoTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasNoTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -692,42 +708,43 @@ BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication for
-//        single precision complex operands (\f$ \vec{y}^T*=A \f$).
+//        single precision complex operands (\f$ \vec{y}^T=\vec{y}^T*A \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the transpose dense vector/triangular dense matrix multiplication for
-// single precision complex operands based on the BLAS cblas_ctrmv() function. Note that the
-// function only works for vectors and matrices with \c complex<float> element type. The attempt
-// to call the function with vectors and matrices of any other element type results in a compile
-// time error.
+// This function performs the multiplication of a single precision complex triangular matrix by a
+// vector based on the cblas_ctrmv() function. Note that the function only works for vectors and
+// matrices with \c complex<float> element type. The attempt to call the function with vectors
+// and matrices of any other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename VT::ElementType::value_type );
    BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE  ( typename MT::ElementType::value_type );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_ctrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -736,42 +753,43 @@ BLAZE_ALWAYS_INLINE void ctrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
-//        precision complex operands (\f$ \vec{y}*=A \f$).
+//        precision complex operands (\f$ \vec{y}=A*\vec{y} \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the triangular dense matrix/dense vector multiplication for double
-// precision complex operands based on the BLAS cblas_ztrmv() function. Note that the function
-// only works for vectors and matrices with \c complex<double> element type. The attempt to call
-// the function with vectors and matrices of any other element type results in a compile time
-// error.
+// This function performs the multiplication of a double precision complex triangular matrix by a
+// vector based on the cblas_ztrmv() function. Note that the function only works for vectors and
+// matrices with \c complex<double> element type. The attempt to call the function with vectors
+// and matrices of any other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT::ElementType::value_type );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT::ElementType::value_type );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_ztrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasNoTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasNoTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
@@ -780,42 +798,43 @@ BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,false>& y, const DenseMatrix<MT,S
 //*************************************************************************************************
 #if BLAZE_BLAS_MODE
 /*!\brief BLAS kernel for a transpose dense vector/triangular dense matrix multiplication for
-//        double precision complex operands (\f$ \vec{y}^T*=A \f$).
+//        double precision complex operands (\f$ \vec{y}^T=\vec{y}^T*A \f$).
 // \ingroup math
 //
 // \param y The target left-hand side dense vector.
 // \param A The dense matrix operand.
+// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
 // \return void
 //
-// This function performs the transpose dense vector/triangular dense matrix multiplication for
-// double precision complex operands based on the BLAS cblas_ztrmv() function. Note that the
-// function only works for vectors and matrices with \c complex<double> element type. The attempt
-// to call the function with vectors and matrices of any other element type results in a compile
-// time error.
+// This function performs the multiplication of a double precision complex triangular matrix by a
+// vector based on the cblas_ztrmv() function. Note that the function only works for vectors and
+// matrices with \c complex<double> element type. The attempt to call the function with vectors
+// and matrices of any other element type results in a compile time error.
 */
 template< typename VT  // Type of the target vector
         , typename MT  // Type of the matrix operand
         , bool SO >    // Storage order of the matrix operand
-BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A )
+BLAZE_ALWAYS_INLINE void ztrmv( DenseVector<VT,true>& y, const DenseMatrix<MT,SO>& A,
+                                CBLAS_UPLO uplo )
 {
    using boost::numeric_cast;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename VT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( typename MT::ElementType );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename VT::ElementType::value_type );
    BLAZE_CONSTRAINT_MUST_BE_DOUBLE_TYPE ( typename MT::ElementType::value_type );
 
-   BLAZE_INTERNAL_ASSERT( IsTriangular<MT>::value, "Non-triangular matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~A).rows() == (~A).columns(), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
    const int N  ( numeric_cast<int>( (~A).rows() )    );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
 
    cblas_ztrmv( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
-                ( IsLower<MT>::value )?( CblasLower ):( CblasUpper ),
-                CblasTrans,
-                CblasNonUnit,
-                N, (~A).data(), lda, (~y).data(), 1 );
+                uplo, CblasTrans, CblasNonUnit, N, (~A).data(), lda, (~y).data(), 1 );
 }
 #endif
 //*************************************************************************************************
