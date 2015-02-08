@@ -521,7 +521,7 @@ BLAZE_ALWAYS_INLINE void ctrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,S
                               :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
                 ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
                 CblasNonUnit,
-                M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
+                M, N, &alpha, (~A).data(), lda, (~B).data(), ldb );
 }
 #endif
 //*************************************************************************************************
@@ -578,7 +578,7 @@ BLAZE_ALWAYS_INLINE void ztrmm( DenseMatrix<MT1,SO1>& B, const DenseMatrix<MT2,S
                               :( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
                 ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),
                 CblasNonUnit,
-                M, N, alpha, (~A).data(), lda, (~B).data(), ldb );
+                M, N, &alpha, (~A).data(), lda, (~B).data(), ldb );
 }
 #endif
 //*************************************************************************************************
