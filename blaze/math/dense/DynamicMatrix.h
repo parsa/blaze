@@ -1875,16 +1875,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jend( n_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jend; j+=2UL ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
          v_[i*nn_+j    ] = (~rhs)(i,j    );
          v_[i*nn_+j+1UL] = (~rhs)(i,j+1UL);
       }
-      if( jend < n_ ) {
-         v_[i*nn_+jend] = (~rhs)(i,jend);
+      if( jpos < n_ ) {
+         v_[i*nn_+jpos] = (~rhs)(i,jpos);
       }
    }
 }
@@ -1924,18 +1924,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    }
    else
    {
-      const size_t jend( n_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( n_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m_; ++i ) {
          typename MT::ConstIterator it( (~rhs).begin(i) );
-         for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+         for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
             store( v_+i*nn_+j             , it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size    , it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size*2UL, it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+         for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
             store( v_+i*nn_+j, it.load() );
          }
       }
@@ -2056,16 +2056,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jend( n_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jend; j+=2UL ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
          v_[i*nn_+j    ] += (~rhs)(i,j    );
          v_[i*nn_+j+1UL] += (~rhs)(i,j+1UL);
       }
-      if( jend < n_ ) {
-         v_[i*nn_+jend] += (~rhs)(i,jend);
+      if( jpos < n_ ) {
+         v_[i*nn_+jpos] += (~rhs)(i,jpos);
       }
    }
 }
@@ -2097,18 +2097,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   const size_t jend( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       typename MT::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
          store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
          store( v_+i*nn_+j, load( v_+i*nn_+j ) + it.load() );
       }
    }
@@ -2228,16 +2228,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jend( n_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jend, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<jend; j+=2UL ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
          v_[i*nn_+j    ] -= (~rhs)(i,j    );
          v_[i*nn_+j+1UL] -= (~rhs)(i,j+1UL);
       }
-      if( jend < n_ ) {
-         v_[i*nn_+jend] -= (~rhs)(i,jend);
+      if( jpos < n_ ) {
+         v_[i*nn_+jpos] -= (~rhs)(i,jpos);
       }
    }
 }
@@ -2269,18 +2269,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   const size_t jend( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jend, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<m_; ++i ) {
       typename MT::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jend; j+=IT::size*4UL ) {
+      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
          store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( size_t j=jend; j<n_; j+=IT::size, it+=IT::size ) {
+      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
          store( v_+i*nn_+j, load( v_+i*nn_+j ) - it.load() );
       }
    }
@@ -4099,16 +4099,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t iend( m_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          v_[i    +j*mm_] = (~rhs)(i    ,j);
          v_[i+1UL+j*mm_] = (~rhs)(i+1UL,j);
       }
-      if( iend < m_ ) {
-         v_[iend+j*mm_] = (~rhs)(iend,j);
+      if( ipos < m_ ) {
+         v_[ipos+j*mm_] = (~rhs)(ipos,j);
       }
    }
 }
@@ -4149,18 +4149,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    }
    else
    {
-      const size_t iend( m_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( m_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n_; ++j ) {
          typename MT::ConstIterator it( (~rhs).begin(j) );
-         for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+         for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
             store( v_+i+j*mm_             , it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size    , it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size*2UL, it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+         for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
             store( v_+i+j*mm_, it.load() );
          }
       }
@@ -4285,16 +4285,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t iend( m_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          v_[i    +j*mm_] += (~rhs)(i    ,j);
          v_[i+1UL+j*mm_] += (~rhs)(i+1UL,j);
       }
-      if( iend < m_ ) {
-         v_[iend+j*mm_] += (~rhs)(iend,j);
+      if( ipos < m_ ) {
+         v_[ipos+j*mm_] += (~rhs)(ipos,j);
       }
    }
 }
@@ -4327,18 +4327,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   const size_t iend( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       typename MT::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
          store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
          store( v_+i+j*mm_, load( v_+i+j*mm_ ) + it.load() );
       }
    }
@@ -4462,16 +4462,16 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t iend( m_ & size_t(-2) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == iend, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % 2UL ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          v_[i  +j*mm_] -= (~rhs)(i  ,j);
          v_[i+1+j*mm_] -= (~rhs)(i+1,j);
       }
-      if( iend < m_ ) {
-         v_[iend+j*mm_] -= (~rhs)(iend,j);
+      if( ipos < m_ ) {
+         v_[ipos+j*mm_] -= (~rhs)(ipos,j);
       }
    }
 }
@@ -4505,18 +4505,18 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   const size_t iend( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == iend, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<n_; ++j ) {
       typename MT::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
+      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
          store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( size_t i=iend; i<m_; i+=IT::size, it+=IT::size ) {
+      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
          store( v_+i+j*mm_, load( v_+i+j*mm_ ) - it.load() );
       }
    }

@@ -226,10 +226,10 @@ class SMatDVecMultExpr : public DenseVector< SMatDVecMultExpr<MT,VT>, false >
          // Calculating element 'index' for numeric data types
          if( IsNumeric<ElementType>::value )
          {
-            const size_t last( A.nonZeros(index) & size_t(-2) );
+            const size_t ipos( A.nonZeros(index) & size_t(-2) );
             ElementType tmp2 = ElementType();
 
-            for( size_t i=0UL; i<last; i+=2UL )
+            for( size_t i=0UL; i<ipos; i+=2UL )
             {
                const ElementType value1( element->value() );
                const size_t      index1( element->index() );

@@ -413,15 +413,15 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       const size_t n( size() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( n & size_t(-2) );
+      const size_t ipos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          dv_[i    ] = (~rhs)[i    ];
          dv_[i+1UL] = (~rhs)[i+1UL];
       }
-      if( iend < n )
-         dv_[iend] = (~rhs)[iend];
+      if( ipos < n )
+         dv_[ipos] = (~rhs)[ipos];
    }
    //**********************************************************************************************
 
@@ -470,15 +470,15 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       const size_t n( size() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( n & size_t(-2) );
+      const size_t ipos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          dv_[i    ] += (~rhs)[i    ];
          dv_[i+1UL] += (~rhs)[i+1UL];
       }
-      if( iend < n )
-         dv_[iend] += (~rhs)[iend];
+      if( ipos < n )
+         dv_[ipos] += (~rhs)[ipos];
    }
    //**********************************************************************************************
 
@@ -527,15 +527,15 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       const size_t n( size() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( n & size_t(-2) );
+      const size_t ipos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          dv_[i    ] -= (~rhs)[i    ];
          dv_[i+1UL] -= (~rhs)[i+1UL];
       }
-      if( iend < n )
-         dv_[iend] -= (~rhs)[iend];
+      if( ipos < n )
+         dv_[ipos] -= (~rhs)[ipos];
    }
    //**********************************************************************************************
 
@@ -584,15 +584,15 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
 
       const size_t n( size() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( n & size_t(-2) );
+      const size_t ipos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<iend; i+=2UL ) {
+      for( size_t i=0UL; i<ipos; i+=2UL ) {
          dv_[i    ] *= (~rhs)[i    ];
          dv_[i+1UL] *= (~rhs)[i+1UL];
       }
-      if( iend < n )
-         dv_[iend] *= (~rhs)[iend];
+      if( ipos < n )
+         dv_[ipos] *= (~rhs)[ipos];
    }
    //**********************************************************************************************
 

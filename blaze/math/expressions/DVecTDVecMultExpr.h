@@ -691,16 +691,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t jend( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) = x[i] * y[j  ];
             (~A)(i,j+1UL) = x[i] * y[j+1];
          }
-         if( jend < n ) {
-            (~A)(i,jend) = x[i] * y[jend];
+         if( jpos < n ) {
+            (~A)(i,jpos) = x[i] * y[jpos];
          }
       }
    }
@@ -802,16 +802,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t iend( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) = x[i  ] * y[j];
             (~A)(i+1UL,j) = x[i+1] * y[j];
          }
-         if( iend < m ) {
-            (~A)(iend,j) = x[iend] * y[j];
+         if( ipos < m ) {
+            (~A)(ipos,j) = x[ipos] * y[j];
          }
       }
    }
@@ -951,16 +951,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t jend( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) += x[i] * y[j    ];
             (~A)(i,j+1UL) += x[i] * y[j+1UL];
          }
-         if( jend < n ) {
-            (~A)(i,jend) += x[i] * y[jend];
+         if( jpos < n ) {
+            (~A)(i,jpos) += x[i] * y[jpos];
          }
       }
    }
@@ -1063,16 +1063,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t iend( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) += x[i    ] * y[j];
             (~A)(i+1UL,j) += x[i+1UL] * y[j];
          }
-         if( iend < m ) {
-            (~A)(iend,j) += x[iend] * y[j];
+         if( ipos < m ) {
+            (~A)(ipos,j) += x[ipos] * y[j];
          }
       }
    }
@@ -1180,16 +1180,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t jend( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jend, "Invalid end calculation" );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) -= x[i] * y[j    ];
             (~A)(i,j+1UL) -= x[i] * y[j+1UL];
          }
-         if( jend < n ) {
-            (~A)(i,jend) -= x[i] * y[jend];
+         if( jpos < n ) {
+            (~A)(i,jpos) -= x[i] * y[jpos];
          }
       }
    }
@@ -1292,16 +1292,16 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
       const size_t m( (~A).rows() );
       const size_t n( (~A).columns() );
 
-      const size_t iend( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == iend, "Invalid end calculation" );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) -= x[i    ] * y[j];
             (~A)(i+1UL,j) -= x[i+1UL] * y[j];
          }
-         if( iend < m ) {
-            (~A)(iend,j) -= x[iend] * y[j];
+         if( ipos < m ) {
+            (~A)(ipos,j) -= x[ipos] * y[j];
          }
       }
    }

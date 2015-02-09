@@ -481,16 +481,16 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( n & size_t(-2) );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             dm_(j    ,i) = (~rhs)(i,j    );
             dm_(j+1UL,i) = (~rhs)(i,j+1UL);
          }
-         if( jend < n ) {
-            dm_(jend,i) = (~rhs)(i,jend);
+         if( jpos < n ) {
+            dm_(jpos,i) = (~rhs)(i,jpos);
          }
       }
    }
@@ -609,17 +609,17 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( n & size_t(-2) );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             dm_(j    ,i) += (~rhs)(i,j    );
             dm_(j+1UL,i) += (~rhs)(i,j+1UL);
 
          }
-         if( jend < n ) {
-            dm_(jend,i) += (~rhs)(i,jend);
+         if( jpos < n ) {
+            dm_(jpos,i) += (~rhs)(i,jpos);
          }
       }
    }
@@ -738,17 +738,17 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ( n & size_t(-2) ), "Invalid end calculation" );
-      const size_t jend( n & size_t(-2) );
+      const size_t jpos( n & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jend; j+=2UL ) {
+         for( size_t j=0UL; j<jpos; j+=2UL ) {
             dm_(j    ,i) -= (~rhs)(i,j    );
             dm_(j+1UL,i) -= (~rhs)(i,j+1UL);
 
          }
-         if( jend < n ) {
-            dm_(jend,i) -= (~rhs)(i,jend);
+         if( jpos < n ) {
+            dm_(jpos,i) -= (~rhs)(i,jpos);
          }
       }
    }
@@ -1269,16 +1269,16 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( m & size_t(-2) );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             dm_(j,i    ) = (~rhs)(i    ,j);
             dm_(j,i+1UL) = (~rhs)(i+1UL,j);
          }
-         if( iend < m ) {
-            dm_(j,iend) = (~rhs)(iend,j);
+         if( ipos < m ) {
+            dm_(j,ipos) = (~rhs)(ipos,j);
          }
       }
    }
@@ -1397,16 +1397,16 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( m & size_t(-2) );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             dm_(j,i    ) += (~rhs)(i    ,j);
             dm_(j,i+1UL) += (~rhs)(i+1UL,j);
          }
-         if( iend < m ) {
-            dm_(j,iend) += (~rhs)(iend,j);
+         if( ipos < m ) {
+            dm_(j,ipos) += (~rhs)(ipos,j);
          }
       }
    }
@@ -1525,16 +1525,16 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
       const size_t m( rows() );
       const size_t n( columns() );
 
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ( m & size_t(-2) ), "Invalid end calculation" );
-      const size_t iend( m & size_t(-2) );
+      const size_t ipos( m & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<iend; i+=2UL ) {
+         for( size_t i=0UL; i<ipos; i+=2UL ) {
             dm_(j,i    ) -= (~rhs)(i    ,j);
             dm_(j,i+1UL) -= (~rhs)(i+1UL,j);
          }
-         if( iend < m ) {
-            dm_(j,iend) -= (~rhs)(iend,j);
+         if( ipos < m ) {
+            dm_(j,ipos) -= (~rhs)(ipos,j);
          }
       }
    }
