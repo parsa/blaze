@@ -450,7 +450,7 @@ class SymmetricMatrix<MT,SO,true,false>
    enum { vectorizable = 0 };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable && !IsSMPAssignable<ET>::value };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
