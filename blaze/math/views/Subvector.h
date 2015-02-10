@@ -45,9 +45,11 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
@@ -63,6 +65,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -526,10 +529,17 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,A
 {
    BLAZE_FUNCTION_TRACE;
 
+   typedef typename RemoveReference< typename VT::LeftOperand >::Type  MT;
+
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   return submatrix<AF>( left, index, 0UL, size, left.columns() ) * right;
+   const size_t column( ( IsUpper<MT>::value )?( index ):( 0UL ) );
+   const size_t n     ( ( IsLower<MT>::value )?( index + size )
+                                              :( ( IsUpper<MT>::value )?( left.columns() - column )
+                                                                       :( left.columns() ) ) );
+
+   return submatrix<AF>( left, index, column, size, n ) * subvector<AF>( right, column, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -556,10 +566,17 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,
 {
    BLAZE_FUNCTION_TRACE;
 
+   typedef typename RemoveReference< typename VT::RightOperand>::Type  MT;
+
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   return left * submatrix<AF>( right, 0UL, index, right.rows(), size );
+   const size_t row( ( IsLower<MT>::value )?( index ):( 0UL ) );
+   const size_t m  ( ( IsLower<MT>::value )?( right.rows() - row )
+                                           :( ( IsUpper<MT>::value )?( index + size )
+                                                                    :( right.rows() ) ) );
+
+   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, index, m, size );
 }
 /*! \endcond */
 //*************************************************************************************************

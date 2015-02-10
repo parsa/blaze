@@ -871,7 +871,8 @@ struct SubvectorExprTrait< TSVecTDMatMultExpr<VT,MT>, AF >
 {
  public:
    //**********************************************************************************************
-   typedef typename MultExprTrait< VT, typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
+   typedef typename MultExprTrait< typename SubvectorExprTrait<const VT,AF>::Type
+                                 , typename SubmatrixExprTrait<const MT,AF>::Type >::Type  Type;
    //**********************************************************************************************
 };
 /*! \endcond */
