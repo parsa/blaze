@@ -569,7 +569,7 @@ class LowerMatrix<MT,SO,true>
    enum { vectorizable = MT::vectorizable };
 
    //! Compilation switch for the expression template assignment strategy.
-   enum { smpAssignable = 0 };
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
