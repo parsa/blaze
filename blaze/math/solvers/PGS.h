@@ -43,6 +43,7 @@
 #include <cmath>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/problems/BoxLCP.h>
 #include <blaze/math/problems/ContactLCP.h>
 #include <blaze/math/problems/LCP.h>

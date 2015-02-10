@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
