@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/AlignedArray.h>
@@ -919,11 +920,12 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   inline IntrinsicType load ( size_t index ) const;
+   inline IntrinsicType loadu( size_t index ) const;
+
+   inline void store ( size_t index, const IntrinsicType& value );
+   inline void storeu( size_t index, const IntrinsicType& value );
+   inline void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT2 >
    inline typename DisableIf< VectorizedAssign<VT2> >::Type
@@ -2503,11 +2505,12 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   inline IntrinsicType load ( size_t index ) const;
+   inline IntrinsicType loadu( size_t index ) const;
+
+   inline void store ( size_t index, const IntrinsicType& value );
+   inline void storeu( size_t index, const IntrinsicType& value );
+   inline void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT2 >
    inline typename DisableIf< VectorizedAssign<VT2> >::Type
@@ -3360,7 +3363,7 @@ inline bool DenseSubvector<VT,aligned,TF>::canSMPAssign() const
 */
 template< typename VT       // Type of the dense vector
         , bool TF >         // Transpose flag
-inline typename DenseSubvector<VT,aligned,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
    DenseSubvector<VT,aligned,TF>::load( size_t index ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3390,7 +3393,7 @@ inline typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DenseSubvector<VT,aligned,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
    DenseSubvector<VT,aligned,TF>::loadu( size_t index ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3421,7 +3424,8 @@ inline typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3451,7 +3455,8 @@ inline void DenseSubvector<VT,aligned,TF>::store( size_t index, const IntrinsicT
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,aligned,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,aligned,TF>::storeu( size_t index, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3481,7 +3486,8 @@ inline void DenseSubvector<VT,aligned,TF>::storeu( size_t index, const Intrinsic
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline void DenseSubvector<VT,aligned,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubvector<VT,aligned,TF>::stream( size_t index, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 

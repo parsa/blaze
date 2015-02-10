@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -534,11 +535,12 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -1663,7 +1665,8 @@ inline bool DenseRow<MT,SO,SF>::canSMPAssign() const
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::IntrinsicType DenseRow<MT,SO,SF>::load( size_t index ) const
+BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::IntrinsicType
+   DenseRow<MT,SO,SF>::load( size_t index ) const
 {
    return matrix_.load( row_, index );
 }
@@ -1685,7 +1688,8 @@ inline typename DenseRow<MT,SO,SF>::IntrinsicType DenseRow<MT,SO,SF>::load( size
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline typename DenseRow<MT,SO,SF>::IntrinsicType DenseRow<MT,SO,SF>::loadu( size_t index ) const
+BLAZE_ALWAYS_INLINE typename DenseRow<MT,SO,SF>::IntrinsicType
+   DenseRow<MT,SO,SF>::loadu( size_t index ) const
 {
    return matrix_.loadu( row_, index );
 }
@@ -1708,7 +1712,7 @@ inline typename DenseRow<MT,SO,SF>::IntrinsicType DenseRow<MT,SO,SF>::loadu( siz
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline void DenseRow<MT,SO,SF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,SO,SF>::store( size_t index, const IntrinsicType& value )
 {
    matrix_.store( row_, index, value );
 }
@@ -1731,7 +1735,7 @@ inline void DenseRow<MT,SO,SF>::store( size_t index, const IntrinsicType& value 
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline void DenseRow<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value )
 {
    matrix_.storeu( row_, index, value );
 }
@@ -1754,7 +1758,7 @@ inline void DenseRow<MT,SO,SF>::storeu( size_t index, const IntrinsicType& value
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-inline void DenseRow<MT,SO,SF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,SO,SF>::stream( size_t index, const IntrinsicType& value )
 {
    matrix_.stream( row_, index, value );
 }
@@ -4174,11 +4178,12 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -5299,7 +5304,7 @@ inline bool DenseRow<MT,false,true>::canSMPAssign() const
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::IntrinsicType
    DenseRow<MT,false,true>::load( size_t index ) const
 {
    return matrix_.load( index, row_ );
@@ -5322,7 +5327,7 @@ inline typename DenseRow<MT,false,true>::IntrinsicType
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseRow<MT,false,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseRow<MT,false,true>::IntrinsicType
    DenseRow<MT,false,true>::loadu( size_t index ) const
 {
    return matrix_.loadu( index, row_ );
@@ -5346,7 +5351,7 @@ inline typename DenseRow<MT,false,true>::IntrinsicType
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseRow<MT,false,true>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,false,true>::store( size_t index, const IntrinsicType& value )
 {
    matrix_.store( index, row_, value );
 }
@@ -5369,7 +5374,7 @@ inline void DenseRow<MT,false,true>::store( size_t index, const IntrinsicType& v
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseRow<MT,false,true>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,false,true>::storeu( size_t index, const IntrinsicType& value )
 {
    matrix_.storeu( index, row_, value );
 }
@@ -5392,7 +5397,7 @@ inline void DenseRow<MT,false,true>::storeu( size_t index, const IntrinsicType& 
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseRow<MT,false,true>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseRow<MT,false,true>::stream( size_t index, const IntrinsicType& value )
 {
    matrix_.stream( index, row_, value );
 }

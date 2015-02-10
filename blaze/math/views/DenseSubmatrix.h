@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/AlignedArray.h>
@@ -1021,11 +1022,12 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   inline IntrinsicType load ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu( size_t i, size_t j ) const;
+
+   inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT2 >
    inline typename DisableIf< VectorizedAssign<MT2> >::Type
@@ -4059,11 +4061,12 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   inline IntrinsicType load ( size_t i, size_t j ) const;
+   inline IntrinsicType loadu( size_t i, size_t j ) const;
+
+   inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT2 >
    inline typename DisableIf< VectorizedAssign<MT2> >::Type
@@ -6692,11 +6695,12 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT2 >
    inline typename DisableIf< VectorizedAssign<MT2> >::Type
@@ -8425,7 +8429,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::canSMPAssign() const
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
    DenseSubmatrix<MT,aligned,false>::load( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -8458,7 +8462,7 @@ inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
    DenseSubmatrix<MT,aligned,false>::loadu( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -8491,7 +8495,8 @@ inline typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 // explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,false>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,false>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8523,7 +8528,8 @@ inline void DenseSubmatrix<MT,aligned,false>::store( size_t i, size_t j, const I
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,false>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,false>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8556,7 +8562,8 @@ inline void DenseSubmatrix<MT,aligned,false>::storeu( size_t i, size_t j, const 
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,false>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,false>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9343,11 +9350,12 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT2 >
    inline typename DisableIf< VectorizedAssign<MT2> >::Type
@@ -11025,7 +11033,7 @@ inline bool DenseSubmatrix<MT,aligned,true>::canSMPAssign() const
 // in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
    DenseSubmatrix<MT,aligned,true>::load( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11057,7 +11065,7 @@ inline typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 // in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
    DenseSubmatrix<MT,aligned,true>::loadu( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11089,7 +11097,8 @@ inline typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11121,7 +11130,8 @@ inline void DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const In
 // compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11153,7 +11163,8 @@ inline void DenseSubmatrix<MT,aligned,true>::storeu( size_t i, size_t j, const I
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,aligned,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
