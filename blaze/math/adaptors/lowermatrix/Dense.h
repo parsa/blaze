@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -679,11 +680,12 @@ class LowerMatrix<MT,SO,true>
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storeu( size_t i, size_t j, const IntrinsicType& value );
+   inline void stream( size_t i, size_t j, const IntrinsicType& value );
 
    inline void checkValue( size_t i, size_t j, const IntrinsicType& value );
    //@}
@@ -1916,7 +1918,7 @@ inline bool LowerMatrix<MT,SO,true>::canSMPAssign() const
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline typename LowerMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename LowerMatrix<MT,SO,true>::IntrinsicType
    LowerMatrix<MT,SO,true>::load( size_t i, size_t j ) const
 {
    return matrix_.load( i, j );
@@ -1943,7 +1945,7 @@ inline typename LowerMatrix<MT,SO,true>::IntrinsicType
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline typename LowerMatrix<MT,SO,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename LowerMatrix<MT,SO,true>::IntrinsicType
    LowerMatrix<MT,SO,true>::loadu( size_t i, size_t j ) const
 {
    return matrix_.loadu( i, j );
