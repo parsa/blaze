@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
@@ -392,11 +393,12 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    inline bool isAligned() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT, bool SO2 >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -2476,7 +2478,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline typename StaticMatrix<Type,M,N,SO>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
    StaticMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
 {
    using blaze::load;
@@ -2512,7 +2514,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline typename StaticMatrix<Type,M,N,SO>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
    StaticMatrix<Type,M,N,SO>::loadu( size_t i, size_t j ) const
 {
    using blaze::loadu;
@@ -2548,7 +2550,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -2584,7 +2587,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void StaticMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -2619,7 +2623,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline void StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
 
@@ -3243,11 +3248,12 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    inline bool isAligned() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT, bool SO >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -5340,7 +5346,7 @@ inline bool StaticMatrix<Type,M,N,true>::isAligned() const
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
    StaticMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
 {
    using blaze::load;
@@ -5376,7 +5382,7 @@ inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
    StaticMatrix<Type,M,N,true>::loadu( size_t i, size_t j ) const
 {
    using blaze::loadu;
@@ -5412,7 +5418,8 @@ inline typename StaticMatrix<Type,M,N,true>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -5448,7 +5455,8 @@ inline void StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const Intrin
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -5484,7 +5492,8 @@ inline void StaticMatrix<Type,M,N,true>::storeu( size_t i, size_t j, const Intri
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
 

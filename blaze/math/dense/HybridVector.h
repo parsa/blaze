@@ -51,6 +51,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
@@ -352,11 +353,12 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
 
    inline bool isAligned() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -1591,7 +1593,7 @@ inline bool HybridVector<Type,N,TF>::isAligned() const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
    HybridVector<Type,N,TF>::load( size_t index ) const
 {
    using blaze::load;
@@ -1623,7 +1625,7 @@ inline typename HybridVector<Type,N,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
    HybridVector<Type,N,TF>::loadu( size_t index ) const
 {
    using blaze::loadu;
@@ -1655,7 +1657,7 @@ inline typename HybridVector<Type,N,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -1687,7 +1689,7 @@ inline void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& v
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -1718,7 +1720,7 @@ inline void HybridVector<Type,N,TF>::storeu( size_t index, const IntrinsicType& 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::stream( size_t index, const IntrinsicType& value )
 {
    using blaze::stream;
 

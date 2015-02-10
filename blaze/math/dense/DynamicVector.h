@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
@@ -341,11 +342,12 @@ class DynamicVector : public DenseVector< DynamicVector<Type,TF>, TF >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t index ) const;
-   inline IntrinsicType loadu ( size_t index ) const;
-   inline void          store ( size_t index, const IntrinsicType& value );
-   inline void          storeu( size_t index, const IntrinsicType& value );
-   inline void          stream( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
    template< typename VT >
    inline typename DisableIf< VectorizedAssign<VT> >::Type
@@ -1408,7 +1410,7 @@ inline bool DynamicVector<Type,TF>::canSMPAssign() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
    DynamicVector<Type,TF>::load( size_t index ) const
 {
    using blaze::load;
@@ -1439,7 +1441,7 @@ inline typename DynamicVector<Type,TF>::IntrinsicType
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline typename DynamicVector<Type,TF>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
    DynamicVector<Type,TF>::loadu( size_t index ) const
 {
    using blaze::loadu;
@@ -1470,7 +1472,7 @@ inline typename DynamicVector<Type,TF>::IntrinsicType
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -1501,7 +1503,7 @@ inline void DynamicVector<Type,TF>::store( size_t index, const IntrinsicType& va
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -1531,7 +1533,7 @@ inline void DynamicVector<Type,TF>::storeu( size_t index, const IntrinsicType& v
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline void DynamicVector<Type,TF>::stream( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::stream( size_t index, const IntrinsicType& value )
 {
    using blaze::stream;
 

@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Streaming.h>
@@ -356,11 +357,12 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -1704,7 +1706,7 @@ inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
 {
    using blaze::load;
@@ -1738,7 +1740,7 @@ inline typename DynamicMatrix<Type,SO>::IntrinsicType
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline typename DynamicMatrix<Type,SO>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::loadu( size_t i, size_t j ) const
 {
    using blaze::loadu;
@@ -1772,7 +1774,8 @@ inline typename DynamicMatrix<Type,SO>::IntrinsicType
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -1806,7 +1809,8 @@ inline void DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicTy
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -1839,7 +1843,8 @@ inline void DynamicMatrix<Type,SO>::storeu( size_t i, size_t j, const IntrinsicT
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline void DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
 
@@ -2576,11 +2581,12 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    inline bool isAligned   () const;
    inline bool canSMPAssign() const;
 
-   inline IntrinsicType load  ( size_t i, size_t j ) const;
-   inline IntrinsicType loadu ( size_t i, size_t j ) const;
-   inline void          store ( size_t i, size_t j, const IntrinsicType& value );
-   inline void          storeu( size_t i, size_t j, const IntrinsicType& value );
-   inline void          stream( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
+   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
    template< typename MT >
    inline typename DisableIf< VectorizedAssign<MT> >::Type
@@ -3926,7 +3932,7 @@ inline bool DynamicMatrix<Type,true>::canSMPAssign() const
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
 {
    using blaze::load;
@@ -3960,7 +3966,7 @@ inline typename DynamicMatrix<Type,true>::IntrinsicType
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
-inline typename DynamicMatrix<Type,true>::IntrinsicType
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::loadu( size_t i, size_t j ) const
 {
    using blaze::loadu;
@@ -3994,7 +4000,8 @@ inline typename DynamicMatrix<Type,true>::IntrinsicType
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
-inline void DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::store;
 
@@ -4028,7 +4035,8 @@ inline void DynamicMatrix<Type,true>::store( size_t i, size_t j, const Intrinsic
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
-inline void DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storeu;
 
@@ -4062,7 +4070,8 @@ inline void DynamicMatrix<Type,true>::storeu( size_t i, size_t j, const Intrinsi
 // compilation errors.
 */
 template< typename Type >  // Data type of the matrix
-inline void DynamicMatrix<Type,true>::stream( size_t i, size_t j, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
 
