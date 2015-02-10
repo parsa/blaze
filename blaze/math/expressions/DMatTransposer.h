@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -382,7 +383,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType load( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
    {
       return dm_.load( j, i );
    }
@@ -399,7 +400,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType loadu( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const
    {
       return dm_.loadu( j, i );
    }
@@ -417,7 +418,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void store( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.store( j, i, value );
    }
@@ -435,7 +436,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void storeu( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.storeu( j, i, value );
    }
@@ -453,7 +454,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void stream( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.stream( j, i, value );
    }
@@ -1170,7 +1171,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType load( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
    {
       return dm_.load( j, i );
    }
@@ -1187,7 +1188,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType loadu( size_t i, size_t j ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const
    {
       return dm_.loadu( j, i );
    }
@@ -1205,7 +1206,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void store( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.store( j, i, value );
    }
@@ -1223,7 +1224,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void storeu( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.storeu( j, i, value );
    }
@@ -1241,7 +1242,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void stream( size_t i, size_t j, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.stream( j, i, value );
    }

@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
@@ -416,7 +417,7 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType load( size_t index ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < dv_.size()      , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL , "Invalid vector access index" );

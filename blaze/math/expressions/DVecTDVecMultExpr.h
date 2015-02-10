@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -507,7 +508,7 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType load( size_t i, size_t j ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( i < lhs_.size()    , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.size()    , "Invalid column access index" );

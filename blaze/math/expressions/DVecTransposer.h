@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
@@ -320,7 +321,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType load( size_t index ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const
    {
       return dv_.load( index );
    }
@@ -336,7 +337,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline IntrinsicType loadu( size_t index ) const
+   BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const
    {
       return dv_.loadu( index );
    }
@@ -353,7 +354,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void store( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void store( size_t index, const IntrinsicType& value )
    {
       dv_.store( index, value );
    }
@@ -370,7 +371,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void storeu( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value )
    {
       dv_.storeu( index, value );
    }
@@ -387,7 +388,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    // optimized evaluation of expression templates. Calling this function explicitly might result
    // in erroneous results and/or in compilation errors.
    */
-   inline void stream( size_t index, const IntrinsicType& value )
+   BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value )
    {
       dv_.stream( index, value );
    }

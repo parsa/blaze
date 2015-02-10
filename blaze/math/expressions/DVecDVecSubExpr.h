@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -463,7 +464,7 @@ class DVecDVecSubExpr : public DenseVector< DVecDVecSubExpr<VT1,VT2,TF>, TF >
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   inline IntrinsicType load( size_t index ) const {
+   BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const {
       typedef IntrinsicTrait<ElementType>  IT;
       BLAZE_INTERNAL_ASSERT( index < lhs_.size()    , "Invalid vector access index" );
       BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
