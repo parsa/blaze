@@ -559,9 +559,6 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( (~sm).rows() < 2UL )
       return true;
 
-   if( IsSymmetric<MT>::value || IsUpper<MT>::value )
-      return false;
-
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
