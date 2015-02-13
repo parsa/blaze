@@ -741,9 +741,6 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
    if( (~dm).rows() < 2UL )
       return true;
 
-   if( IsLower<MT>::value || IsUpper<MT>::value )
-      return false;
-
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
