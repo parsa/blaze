@@ -41,6 +41,9 @@
 #include <iostream>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/LowerMatrix.h>
+#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/sparsematrix/OperationTest.h>
 
 
@@ -369,7 +372,6 @@ void OperationTest::testIsDiagonal()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -391,7 +393,6 @@ void OperationTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -417,7 +418,6 @@ void OperationTest::testIsDiagonal()
 
       // Non-diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -473,7 +473,6 @@ void OperationTest::testIsDiagonal()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -495,7 +494,6 @@ void OperationTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -521,7 +519,6 @@ void OperationTest::testIsDiagonal()
 
       // Non-diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -562,11 +559,11 @@ void OperationTest::testIsDiagonal()
 void OperationTest::testIsSymmetric()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major general matrix tests
    //=====================================================================================
 
    {
-      test_ = "Row-major isSymmetric()";
+      test_ = "Row-major isSymmetric() (general matrix)";
 
       // Non-square matrix
       {
@@ -590,7 +587,6 @@ void OperationTest::testIsSymmetric()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -612,7 +608,6 @@ void OperationTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -638,7 +633,6 @@ void OperationTest::testIsSymmetric()
 
       // Non-symmetric matrix (additional element in the lower part)
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -665,7 +659,6 @@ void OperationTest::testIsSymmetric()
 
       // Non-symmetric matrix (additional element in the upper part)
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -692,7 +685,6 @@ void OperationTest::testIsSymmetric()
 
       // Symmetric matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -721,11 +713,256 @@ void OperationTest::testIsSymmetric()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major symmetric matrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major isSymmetric()";
+      test_ = "Row-major isSymmetric() (symmetric matrix)";
+
+      // Default symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSymmetric() (lower matrix)";
+
+      // Default lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,0) = 4;
+         mat(1,1) = 2;
+         mat(2,0) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSymmetric() (upper matrix)";
+
+      // Default upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(1,2) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major general matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (general matrix)";
 
       // Non-square matrix
       {
@@ -750,7 +987,6 @@ void OperationTest::testIsSymmetric()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -772,7 +1008,6 @@ void OperationTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -798,7 +1033,6 @@ void OperationTest::testIsSymmetric()
 
       // Non-symmetric matrix (additional element in the lower part)
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -825,7 +1059,6 @@ void OperationTest::testIsSymmetric()
 
       // Non-symmetric matrix (additional element in the upper part)
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -852,7 +1085,6 @@ void OperationTest::testIsSymmetric()
 
       // Symmetric matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(0,2) = 4;
@@ -869,6 +1101,251 @@ void OperationTest::testIsSymmetric()
          checkNonZeros( mat, 2UL, 2UL );
 
          if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major symmetric matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (symmetric matrix)";
+
+      // Default symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (lower matrix)";
+
+      // Default lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower matrix
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,0) = 4;
+         mat(1,1) = 2;
+         mat(2,0) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (upper matrix)";
+
+      // Default upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Upper matrix
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(1,2) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isSymmetric( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
@@ -922,7 +1399,6 @@ void OperationTest::testIsLower()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -944,7 +1420,6 @@ void OperationTest::testIsLower()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -970,7 +1445,6 @@ void OperationTest::testIsLower()
 
       // Non-lower triangle matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
@@ -999,7 +1473,6 @@ void OperationTest::testIsLower()
 
       // Lower triangular matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,0) = 2;
@@ -1056,7 +1529,6 @@ void OperationTest::testIsLower()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -1078,7 +1550,6 @@ void OperationTest::testIsLower()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -1104,7 +1575,6 @@ void OperationTest::testIsLower()
 
       // Non-lower triangle matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
@@ -1133,7 +1603,6 @@ void OperationTest::testIsLower()
 
       // Lower triangular matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,0) = 2;
@@ -1203,7 +1672,6 @@ void OperationTest::testIsUpper()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -1225,7 +1693,6 @@ void OperationTest::testIsUpper()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -1251,7 +1718,6 @@ void OperationTest::testIsUpper()
 
       // Non-upper triangle matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
@@ -1280,7 +1746,6 @@ void OperationTest::testIsUpper()
 
       // Upper triangular matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
@@ -1337,7 +1802,6 @@ void OperationTest::testIsUpper()
 
       // Default initialized matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
@@ -1359,7 +1823,6 @@ void OperationTest::testIsUpper()
 
       // Diagonal matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
@@ -1385,7 +1848,6 @@ void OperationTest::testIsUpper()
 
       // Non-upper triangle matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
@@ -1414,7 +1876,6 @@ void OperationTest::testIsUpper()
 
       // Upper triangular matrix
       {
-         // Initialization check
          blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(0,2) = 2;
