@@ -772,7 +772,7 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is a lower triangular matrix, \a false if not.
 //
-// This function checks if the given sparse matrix is a lower triangular matrix. The matrix is
+// This function checks if the given dense matrix is a lower triangular matrix. The matrix is
 // considered to be lower triangular if it is a square matrix of the form
 
                         \f[\left(\begin{array}{*{5}{c}}
@@ -850,7 +850,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
 // \param dm The dense matrix to be checked.
 // \return \a true if the matrix is an upper triangular matrix, \a false if not.
 //
-// This function checks if the given sparse matrix is an upper triangular matrix. The matrix is
+// This function checks if the given dense matrix is an upper triangular matrix. The matrix is
 // considered to be upper triangular if it is a square matrix of the form
 
                         \f[\left(\begin{array}{*{5}{c}}
