@@ -41,9 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
@@ -54,6 +56,7 @@
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/math/views/Subvector.h>
@@ -62,6 +65,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -499,11 +503,21 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT,A
 {
    BLAZE_FUNCTION_TRACE;
 
+   typedef typename RemoveReference< typename MT::LeftOperand >::Type   MT1;
+   typedef typename RemoveReference< typename MT::RightOperand >::Type  MT2;
+
    typename MT::LeftOperand  left ( (~matrix).leftOperand()  );
    typename MT::RightOperand right( (~matrix).rightOperand() );
 
-   return submatrix<AF>( left, row, 0UL, m, left.columns() ) *
-          submatrix<AF>( right, 0UL, column, right.rows(), n );
+   const size_t begin( max( ( IsUpper<MT1>::value )?( row ):( 0UL ),
+                            ( IsLower<MT2>::value )?( column ):( 0UL ) ) );
+   const size_t end( min( ( IsLower<MT1>::value )?( row + m ):( left.columns() ),
+                          ( IsUpper<MT2>::value )?( column + n ):( left.columns() ) ) );
+
+   const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
+
+   return submatrix<AF>( left, row, begin, m, diff ) *
+          submatrix<AF>( right, begin, column, diff, n );
 }
 /*! \endcond */
 //*************************************************************************************************
