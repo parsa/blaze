@@ -973,6 +973,15 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -983,7 +992,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
 
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( SparseSubmatrix<MT2,AF2,SO2>& dm );
+      derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -3611,6 +3620,15 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -3621,7 +3639,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
 
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
-      derestrict( SparseSubmatrix<MT2,AF2,SO2>& dm );
+      derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -5756,6 +5774,15 @@ template< typename MT, bool AF, bool SO >
 inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
+inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
+inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b );
 
 template< typename MT, bool AF, bool SO >
@@ -5861,6 +5888,134 @@ inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse submatrix is symmetric.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be checked.
+// \return \a true if the submatrix is symmetric, \a false if not.
+//
+// This function checks if the given sparse submatrix is symmetric. The submatrix is considered to
+// be symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$). The
+// following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isSymmetric( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsSymmetric<MT>::value && sm.row_ == sm.column_ && sm.m_ = sm.n_ )
+      return true;
+   else return isSymmetric( static_cast<BaseType>( sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse submatrix is a lower triangular matrix.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be checked.
+// \return \a true if the submatrix is a lower triangular matrix, \a false if not.
+//
+// This function checks if the given sparse submatrix is a lower triangular matrix. The matrix is
+// considered to be lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_(0,0) & 0       & 0       & \cdots & 0       \\
+                        l_(1,0) & l_(1,1) & 0       & \cdots & 0       \\
+                        l_(2,0) & l_(2,1) & l_(3,3) & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        l_(N,0) & l_(N,1) & l_(N,2) & \cdots & l_(N,N) \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isLower( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsLower<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
+      return true;
+   else return isLower( static_cast<BaseType>( sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse submatrix is an upper triangular matrix.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be checked.
+// \return \a true if the submatrix is an upper triangular matrix, \a false if not.
+//
+// This function checks if the given sparse submatrix is an upper triangular matrix. The matrix
+// is considered to be upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        u_(0,0) & u_(0,1) & u_(0,2) & \cdots & u_(0,N) \\
+                        0       & u_(1,1) & u_(1,2) & \cdots & u_(1,N) \\
+                        0       & 0       & u_(2,2) & \cdots & u_(2,N) \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & u_(N,N) \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isUpper( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsUpper<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
+      return true;
+   else return isUpper( static_cast<BaseType>( sm ) );
 }
 //*************************************************************************************************
 
