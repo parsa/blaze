@@ -1123,6 +1123,15 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -4161,6 +4170,15 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -6777,6 +6795,15 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
@@ -9434,6 +9461,15 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -11760,6 +11796,15 @@ template< typename MT, bool AF, bool SO >
 inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
+inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
+inline bool isUpper( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isSame( const DenseSubmatrix<MT,AF,SO>& a, const DenseMatrix<MT,SO>& b );
 
 template< typename MT, bool AF, bool SO >
@@ -11869,6 +11914,134 @@ inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense submatrix is symmetric.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be checked.
+// \return \a true if the submatrix is symmetric, \a false if not.
+//
+// This function checks if the given dense submatrix is symmetric. The submatrix is considered to
+// be symmetric if it is a square matrix whose transpose is equal to itself (\f$ A = A^T \f$). The
+// following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::DenseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isSymmetric( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsSymmetric<MT>::value && dm.row_ == dm.column_ && dm.m_ = dm.n_ )
+      return true;
+   else return isSymmetric( static_cast<BaseType>( dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense submatrix is a lower triangular matrix.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be checked.
+// \return \a true if the submatrix is a lower triangular matrix, \a false if not.
+//
+// This function checks if the given dense submatrix is a lower triangular matrix. The matrix is
+// considered to be lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_(0,0) & 0       & 0       & \cdots & 0       \\
+                        l_(1,0) & l_(1,1) & 0       & \cdots & 0       \\
+                        l_(2,0) & l_(2,1) & l_(3,3) & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        l_(N,0) & l_(N,1) & l_(N,2) & \cdots & l_(N,N) \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::DenseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isLower( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsLower<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
+      return true;
+   else return isLower( static_cast<BaseType>( dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense submatrix is an upper triangular matrix.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be checked.
+// \return \a true if the submatrix is an upper triangular matrix, \a false if not.
+//
+// This function checks if the given sparse submatrix is an upper triangular matrix. The matrix
+// is considered to be upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        u_(0,0) & u_(0,1) & u_(0,2) & \cdots & u_(0,N) \\
+                        0       & u_(1,1) & u_(1,2) & \cdots & u_(1,N) \\
+                        0       & 0       & u_(2,2) & \cdots & u_(2,N) \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & u_(N,N) \\
+                        \end{array}\right).\f]
+
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::DenseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isUpper( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isUpper( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsUpper<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
+      return true;
+   else return isUpper( static_cast<BaseType>( dm ) );
 }
 //*************************************************************************************************
 
