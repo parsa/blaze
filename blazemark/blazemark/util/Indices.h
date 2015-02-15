@@ -81,6 +81,7 @@ class Indices
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+   inline size_t   size () const;
    inline Iterator begin() const;
    inline Iterator end  () const;
    //@}
@@ -136,6 +137,18 @@ inline Indices::Indices( size_t N, size_t F )
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns the total number of random indices.
+//
+// \return The total number of random indices.
+*/
+inline size_t Indices::size() const
+{
+   return indices_.size();
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Returns an iterator to the beginning of the vector.
