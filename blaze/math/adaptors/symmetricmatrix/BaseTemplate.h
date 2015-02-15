@@ -400,11 +400,11 @@ namespace blaze {
 
 // \n \section symmetricmatrix_performance Performance Considerations
 //
-// When the symmetric property of a matrix is know beforehands using the SymmetricMatrix adaptor
+// When the symmetric property of a matrix is known beforehands using the SymmetricMatrix adaptor
 // instead of a general matrix can be a considerable performance advantage. The \b Blaze library
 // tries to exploit the properties of symmetric matrices whenever possible. However, there are
 // also situations when using a symmetric matrix introduces some overhead. The following examples
-// demonstrate several situations, where symmetric matrices can positively or negatively impact
+// demonstrate several situations where symmetric matrices can positively or negatively impact
 // performance.
 //
 // \n \subsection symmetricmatrix_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
