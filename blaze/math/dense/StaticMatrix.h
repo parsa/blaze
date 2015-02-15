@@ -79,6 +79,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
+#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -6132,26 +6133,6 @@ inline void move( StaticMatrix<Type,M,N,SO>& dst, StaticMatrix<Type,M,N,SO>& src
 
 //=================================================================================================
 //
-//  ISSQUARE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool SO >
-struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ROWS SPECIALIZATIONS
 //
 //=================================================================================================
@@ -6159,10 +6140,8 @@ struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Rows< StaticMatrix<T,M,N,SO> >
-{
-   static const size_t value = M;
-};
+struct Rows< StaticMatrix<T,M,N,SO> > : public SizeT<M>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -6178,9 +6157,27 @@ struct Rows< StaticMatrix<T,M,N,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Columns< StaticMatrix<T,M,N,SO> >
+struct Columns< StaticMatrix<T,M,N,SO> > : public SizeT<N>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSQUARE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool SO >
+struct IsSquare< StaticMatrix<T,N,N,SO> > : public TrueType
 {
-   static const size_t value = N;
+   enum { value = 1 };
+   typedef TrueType  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
