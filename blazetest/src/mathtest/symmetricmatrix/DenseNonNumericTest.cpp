@@ -369,7 +369,7 @@ void DenseNonNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix default constructor (DynamicMatrix)";
 
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -396,7 +396,7 @@ void DenseNonNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix size constructor (DynamicMatrix)";
 
-      const TST sym( 2UL );
+      const OST sym( 2UL );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
@@ -412,8 +412,8 @@ void DenseNonNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix copy constructor (0x0)";
 
-      const TST sym1;
-      const TST sym2( sym1 );
+      const OST sym1;
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 0UL );
       checkColumns ( sym2, 0UL );
@@ -424,14 +424,14 @@ void DenseNonNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix copy constructor (3x3)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = vec(  1 );
       sym1(0,1) = vec( -4 );
       sym1(0,2) = vec(  7 );
       sym1(1,1) = vec(  2 );
       sym1(2,2) = vec(  3 );
 
-      const TST sym2( sym1 );
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
@@ -463,7 +463,7 @@ void DenseNonNumericTest::testConstructors()
       test_ = "Column-major SymmetricMatrix conversion constructor (0x0)";
 
       const blaze::DynamicMatrix<VT,blaze::columnMajor> mat;
-      const TST sym( mat );
+      const OST sym( mat );
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -483,7 +483,7 @@ void DenseNonNumericTest::testConstructors()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      const TST sym( mat );
+      const OST sym( mat );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -519,7 +519,7 @@ void DenseNonNumericTest::testConstructors()
       mat(2,2) = vec(  3 );
 
       try {
-         const TST sym( mat );
+         const OST sym( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -542,7 +542,7 @@ void DenseNonNumericTest::testConstructors()
       sym1(1,1) = vec(  2 );
       sym1(2,2) = vec(  3 );
 
-      const TST sym2( sym1 );
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
@@ -1094,7 +1094,7 @@ void DenseNonNumericTest::testAssignment()
    {
       test_ = "Column-major SymmetricMatrix copy assignment (0x0)";
 
-      TST sym1, sym2;
+      OST sym1, sym2;
 
       sym2 = sym1;
 
@@ -1107,14 +1107,14 @@ void DenseNonNumericTest::testAssignment()
    {
       test_ = "Column-major SymmetricMatrix copy assignment (3x3)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = vec(  1 );
       sym1(0,1) = vec( -4 );
       sym1(0,2) = vec(  7 );
       sym1(1,1) = vec(  2 );
       sym1(2,2) = vec(  3 );
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -1147,7 +1147,7 @@ void DenseNonNumericTest::testAssignment()
 
       const blaze::DynamicMatrix<VT,blaze::columnMajor> mat;
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 0UL );
@@ -1168,7 +1168,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -1203,7 +1203,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -1238,7 +1238,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -1273,7 +1273,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -1308,7 +1308,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = eval( mat );
 
       checkRows    ( sym, 3UL );
@@ -1343,7 +1343,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,0) = vec(  7 );
       mat(2,2) = vec(  3 );
 
-      TST sym;
+      OST sym;
       sym = eval( mat );
 
       checkRows    ( sym, 3UL );
@@ -1379,7 +1379,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -1406,7 +1406,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -1433,7 +1433,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -1460,7 +1460,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -1487,7 +1487,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = eval( mat );
 
          std::ostringstream oss;
@@ -1514,7 +1514,7 @@ void DenseNonNumericTest::testAssignment()
       mat(2,2) = vec(  3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = eval( mat );
 
          std::ostringstream oss;
@@ -1538,7 +1538,7 @@ void DenseNonNumericTest::testAssignment()
       sym1(1,1) = vec(  2 );
       sym1(2,2) = vec(  3 );
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -1571,7 +1571,7 @@ void DenseNonNumericTest::testAssignment()
       sym1(1,1) = vec(  2 );
       sym1(2,2) = vec(  3 );
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -1930,7 +1930,7 @@ void DenseNonNumericTest::testAddAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = vec( -2 );
       sym1(0,2) = vec(  6 );
       sym1(1,1) = vec(  3 );
@@ -1981,7 +1981,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2022,7 +2022,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2063,7 +2063,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2104,7 +2104,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2144,7 +2144,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2172,7 +2172,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2200,7 +2200,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2228,7 +2228,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2255,7 +2255,7 @@ void DenseNonNumericTest::testAddAssign()
       sym1(0,2) = vec(  6 );
       sym1(1,1) = vec(  3 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,1) = vec( 1 );
       sym2(0,2) = vec( 2 );
       sym2(1,1) = vec( 0 );
@@ -2289,12 +2289,12 @@ void DenseNonNumericTest::testAddAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = vec( -2 );
       sym1(0,2) = vec(  6 );
       sym1(1,1) = vec(  3 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,1) = vec( 1 );
       sym2(0,2) = vec( 2 );
       sym2(1,1) = vec( 0 );
@@ -2661,7 +2661,7 @@ void DenseNonNumericTest::testSubAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = vec(  2 );
       sym1(0,2) = vec( -6 );
       sym1(1,1) = vec( -3 );
@@ -2712,7 +2712,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2753,7 +2753,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2792,7 +2792,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2833,7 +2833,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2873,7 +2873,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2901,7 +2901,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2929,7 +2929,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2957,7 +2957,7 @@ void DenseNonNumericTest::testSubAssign()
       mat(1,1) = vec( -3 );
       mat(2,0) = vec( -6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2984,7 +2984,7 @@ void DenseNonNumericTest::testSubAssign()
       sym1(0,2) = vec( -6 );
       sym1(1,1) = vec( -3 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,1) = vec( 1 );
       sym2(0,2) = vec( 2 );
       sym2(1,1) = vec( 0 );
@@ -3018,12 +3018,12 @@ void DenseNonNumericTest::testSubAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = vec(  2 );
       sym1(0,2) = vec( -6 );
       sym1(1,1) = vec( -3 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,1) = vec( 1 );
       sym2(0,2) = vec( 2 );
       sym2(1,1) = vec( 0 );
@@ -3266,7 +3266,7 @@ void DenseNonNumericTest::testMultAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = vec( 2 );
       sym1(0,1) = vec( 0 );
       sym1(0,2) = vec( 0 );
@@ -3321,7 +3321,7 @@ void DenseNonNumericTest::testMultAssign()
       mat(1,1) = vec( 2 );
       mat(2,2) = vec( 2 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -3363,7 +3363,7 @@ void DenseNonNumericTest::testMultAssign()
       mat(1,1) = vec( 2 );
       mat(2,2) = vec( 2 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -3406,7 +3406,7 @@ void DenseNonNumericTest::testMultAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -3437,7 +3437,7 @@ void DenseNonNumericTest::testMultAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -3470,7 +3470,7 @@ void DenseNonNumericTest::testMultAssign()
       sym1(1,2) = vec( 0 );
       sym1(2,2) = vec( 2 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) = vec(  1 );
       sym2(0,1) = vec( -4 );
       sym2(0,2) = vec(  7 );
@@ -3507,7 +3507,7 @@ void DenseNonNumericTest::testMultAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = vec( 2 );
       sym1(0,1) = vec( 0 );
       sym1(0,2) = vec( 0 );
@@ -3515,7 +3515,7 @@ void DenseNonNumericTest::testMultAssign()
       sym1(1,2) = vec( 0 );
       sym1(2,2) = vec( 2 );
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) = vec(  1 );
       sym2(0,1) = vec( -4 );
       sym2(0,2) = vec(  7 );
@@ -3846,7 +3846,7 @@ void DenseNonNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  1 );
       sym(2,0) = vec( -2 );
       sym(2,2) = vec(  3 );
@@ -3884,7 +3884,7 @@ void DenseNonNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  1 );
       sym(2,0) = vec( -2 );
       sym(2,2) = vec(  3 );
@@ -3922,7 +3922,7 @@ void DenseNonNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  1 );
       sym(2,0) = vec( -2 );
       sym(2,2) = vec(  3 );
@@ -3960,7 +3960,7 @@ void DenseNonNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  2 );
       sym(2,0) = vec( -4 );
       sym(2,2) = vec(  6 );
@@ -3998,7 +3998,7 @@ void DenseNonNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  2 );
       sym(2,0) = vec( -4 );
       sym(2,2) = vec(  6 );
@@ -4037,7 +4037,7 @@ void DenseNonNumericTest::testScaling()
       test_ = "Column-major SymmetricMatrix::scale()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) = vec(  1 );
       sym(2,0) = vec( -2 );
       sym(2,2) = vec(  3 );
@@ -4323,7 +4323,7 @@ void DenseNonNumericTest::testFunctionCall()
    {
       test_ = "Column-major SymmetricMatrix::operator()";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
 
       // Writing the element (1,1)
       sym(1,1) = vec( 1 );
@@ -4802,10 +4802,10 @@ void DenseNonNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef TST::Iterator       Iterator;
-      typedef TST::ConstIterator  ConstIterator;
+      typedef OST::Iterator       Iterator;
+      typedef OST::ConstIterator  ConstIterator;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(1,2) = vec( 2 );
       sym(2,2) = vec( 3 );
@@ -5159,7 +5159,7 @@ void DenseNonNumericTest::testNonZeros()
 
       // Empty matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
 
          checkRows    ( sym, 3UL );
          checkColumns ( sym, 3UL );
@@ -5172,7 +5172,7 @@ void DenseNonNumericTest::testNonZeros()
 
       // Partially filled matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(0,0) = vec(  2 );
          sym(1,2) = vec(  4 );
          sym(2,0) = VT();
@@ -5189,7 +5189,7 @@ void DenseNonNumericTest::testNonZeros()
 
       // Fully filled matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(0,0) = vec(  2 );
          sym(0,1) = vec( -4 );
          sym(0,2) = vec( -6 );
@@ -5344,7 +5344,7 @@ void DenseNonNumericTest::testReset()
       test_ = "Row-major SymmetricMatrix::reset()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec( 1 );
       sym(0,1) = vec( 2 );
       sym(0,2) = vec( 3 );
@@ -5544,7 +5544,7 @@ void DenseNonNumericTest::testClear()
       test_ = "Row-major SymmetricMatrix::clear()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec( 1 );
       sym(0,1) = vec( 2 );
       sym(0,2) = vec( 3 );
@@ -5727,7 +5727,7 @@ void DenseNonNumericTest::testResize()
       test_ = "Column-major SymmetricMatrix::resize()";
 
       // Initialization check
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -5906,7 +5906,7 @@ void DenseNonNumericTest::testExtend()
       test_ = "Column-major SymmetricMatrix::extend()";
 
       // Initialization check
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -6019,7 +6019,7 @@ void DenseNonNumericTest::testReserve()
       test_ = "Column-major SymmetricMatrix::reserve()";
 
       // Initialization check
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -6139,7 +6139,7 @@ void DenseNonNumericTest::testTranspose()
    {
       test_ = "Column-major self-transpose via SymmetricMatrix::transpose()";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 3 );
@@ -6174,7 +6174,7 @@ void DenseNonNumericTest::testTranspose()
    {
       test_ = "Column-major self-transpose via trans()";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 3 );
@@ -6285,12 +6285,12 @@ void DenseNonNumericTest::testSwap()
    {
       test_ = "Column-major SymmetricMatrix swap";
 
-      TST sym1( 2UL );
+      OST sym1( 2UL );
       sym1(0,0) = vec( 1 );
       sym1(0,1) = vec( 2 );
       sym1(1,1) = vec( 3 );
 
-      TST sym2( 2UL );
+      OST sym2( 2UL );
       sym2(0,0) = vec( 4 );
       sym2(0,1) = vec( 5 );
 
@@ -6428,7 +6428,7 @@ void DenseNonNumericTest::testIsDefault()
 
       // isDefault with 0x0 matrix
       {
-         TST sym;
+         OST sym;
 
          if( isDefault( sym ) != true ) {
             std::ostringstream oss;
@@ -6442,7 +6442,7 @@ void DenseNonNumericTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
 
          if( isDefault( sym(0,1) ) != true ) {
             std::ostringstream oss;
@@ -6465,7 +6465,7 @@ void DenseNonNumericTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(0,1) = vec( 1 );
 
          if( isDefault( sym(0,1) ) != false ) {
@@ -7078,9 +7078,9 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (non-overlapping submatrix)";
 
-      typedef blaze::DenseSubmatrix<TST>  SMT;
+      typedef blaze::DenseSubmatrix<OST>  SMT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7176,9 +7176,9 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 1)";
 
-      typedef blaze::DenseSubmatrix<TST>  SMT;
+      typedef blaze::DenseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7288,9 +7288,9 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 2)";
 
-      typedef blaze::DenseSubmatrix<TST>  SMT;
+      typedef blaze::DenseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7400,9 +7400,9 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 3)";
 
-      typedef blaze::DenseSubmatrix<TST>  SMT;
+      typedef blaze::DenseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7512,9 +7512,9 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 4)";
 
-      typedef blaze::DenseSubmatrix<TST>  SMT;
+      typedef blaze::DenseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7797,9 +7797,9 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::DenseRow<TST>  RT;
+      typedef blaze::DenseRow<OST>  RT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -7889,9 +7889,9 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Column-major row() function (assignment test)";
 
-      typedef blaze::DenseRow<TST>  RT;
+      typedef blaze::DenseRow<OST>  RT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -8084,9 +8084,9 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::DenseColumn<TST>  CT;
+      typedef blaze::DenseColumn<OST>  CT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );
@@ -8176,9 +8176,9 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Column-major column() function (assignment test)";
 
-      typedef blaze::DenseColumn<TST>  CT;
+      typedef blaze::DenseColumn<OST>  CT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = vec(  1 );
       sym(0,1) = vec( -4 );
       sym(0,2) = vec(  7 );

@@ -143,9 +143,9 @@ class SymmetricTest
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  SMT;  //!< Row-major compressed matrix type.
    typedef blaze::SymmetricMatrix<SMT>                   MT;   //!< Row-major compressed matrix type.
-   typedef MT::OppositeType                              TMT;  //!< Column-major compressed matrix type.
+   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type.
    typedef blaze::SparseColumn<MT>                       CT;   //!< Sparse column type for row-major matrices.
-   typedef blaze::SparseColumn<TMT>                      TCT;  //!< Sparse column type for column-major matrices.
+   typedef blaze::SparseColumn<OMT>                      OCT;  //!< Sparse column type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -159,7 +159,7 @@ class SymmetricTest
                     0 &  0 &  3 &  4 \\
                     0 & -2 &  4 &  5 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major symmetric matrix.
+   OMT tmat_;  //!< Column-major symmetric matrix.
                /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                     0 &  0 &  0 &  0 \\
@@ -175,11 +175,11 @@ class SymmetricTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OMT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TCT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( OCT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TCT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( OCT );
    /*! \endcond */
    //**********************************************************************************************
 };

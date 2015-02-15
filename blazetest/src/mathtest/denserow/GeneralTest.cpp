@@ -222,7 +222,7 @@ void GeneralTest::testConstructors()
 
       // 0th matrix row
       {
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkCapacity( row0, 4UL );
@@ -241,7 +241,7 @@ void GeneralTest::testConstructors()
 
       // 1st matrix row
       {
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkCapacity( row1, 4UL );
@@ -260,7 +260,7 @@ void GeneralTest::testConstructors()
 
       // 2nd matrix row
       {
-         TRT row2 = row( tmat_, 2UL );
+         ORT row2 = row( tmat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkCapacity( row2, 4UL );
@@ -279,7 +279,7 @@ void GeneralTest::testConstructors()
 
       // 3rd matrix row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkCapacity( row3, 4UL );
@@ -298,7 +298,7 @@ void GeneralTest::testConstructors()
 
       // 4th matrix row
       {
-         TRT row4 = row( tmat_, 4UL );
+         ORT row4 = row( tmat_, 4UL );
 
          checkSize    ( row4, 4UL );
          checkCapacity( row4, 4UL );
@@ -544,7 +544,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
       row1 = 8;
 
       checkSize    ( row1 ,  4UL );
@@ -593,7 +593,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
       row1 = row( tmat_, 2UL );
 
       checkSize    ( row1 ,  4UL );
@@ -642,7 +642,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
       vec1[1] = 8;
@@ -696,7 +696,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TRT row4 = row( tmat_, 4UL );
+      ORT row4 = row( tmat_, 4UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
@@ -919,7 +919,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 += row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
@@ -968,7 +968,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1022,7 +1022,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1246,7 +1246,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 -= row( tmat_, 3UL );
 
       checkSize    ( row2 ,  4UL );
@@ -1295,7 +1295,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1349,7 +1349,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1573,7 +1573,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 *= row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
@@ -1622,7 +1622,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1676,7 +1676,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -2086,7 +2086,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 *= 3;
 
@@ -2136,7 +2136,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = row2 * 3;
 
@@ -2186,7 +2186,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = 3 * row2;
 
@@ -2236,7 +2236,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 /= 0.5;
 
@@ -2286,7 +2286,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = row2 / 0.5;
 
@@ -2338,7 +2338,7 @@ void GeneralTest::testScaling()
 
       // Integral scaling the 3rd row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          row3.scale( 3 );
 
          checkSize    ( row3 ,  4UL );
@@ -2379,7 +2379,7 @@ void GeneralTest::testScaling()
 
       // Floating point scaling the 3rd row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          row3.scale( 0.5 );
 
          checkSize    ( row3 ,  4UL );
@@ -2701,7 +2701,7 @@ void GeneralTest::testSubscript()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -3358,9 +3358,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         TRT::Iterator it = TRT::Iterator();
+         ORT::Iterator it = ORT::Iterator();
 
-         if( it != TRT::Iterator() ) {
+         if( it != ORT::Iterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3372,9 +3372,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         TRT::ConstIterator it = TRT::ConstIterator();
+         ORT::ConstIterator it = ORT::ConstIterator();
 
-         if( it != TRT::ConstIterator() ) {
+         if( it != ORT::ConstIterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3386,8 +3386,8 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         TRT row2 = row( tmat_, 2UL );
-         TRT::ConstIterator it( begin( row2 ) );
+         ORT row2 = row( tmat_, 2UL );
+         ORT::ConstIterator it( begin( row2 ) );
 
          if( it == end( row2 ) || *it != -2 ) {
             std::ostringstream oss;
@@ -3401,7 +3401,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 4UL ) {
@@ -3419,7 +3419,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         TRT row2 = row( tmat_, 2UL );
+         ORT row2 = row( tmat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 4UL ) {
@@ -3437,9 +3437,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TRT row3 = row( tmat_, 3UL );
-         TRT::ConstIterator it ( cbegin( row3 ) );
-         TRT::ConstIterator end( cend( row3 ) );
+         ORT row3 = row( tmat_, 3UL );
+         ORT::ConstIterator it ( cbegin( row3 ) );
+         ORT::ConstIterator end( cend( row3 ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -3534,10 +3534,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
          int value = 6;
 
-         for( TRT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
+         for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it = value++;
          }
 
@@ -3574,10 +3574,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
+         for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it += value++;
          }
 
@@ -3614,10 +3614,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
+         for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it -= value++;
          }
 
@@ -3654,10 +3654,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
          int value = 1;
 
-         for( TRT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
+         for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it *= value++;
          }
 
@@ -3694,9 +3694,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
 
-         for( TRT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
+         for( ORT::Iterator it=begin( row0 ); it!=end( row0 ); ++it ) {
             *it /= 2;
          }
 
@@ -3816,7 +3816,7 @@ void GeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TRT row3 = row( tmat_, 3UL );
+      ORT row3 = row( tmat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkCapacity( row3, 4UL );
@@ -3952,7 +3952,7 @@ void GeneralTest::testReset()
 
       // Resetting a single element in row 3
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -3975,7 +3975,7 @@ void GeneralTest::testReset()
 
       // Resetting the 4th row
       {
-         TRT row4 = row( tmat_, 4UL );
+         ORT row4 = row( tmat_, 4UL );
          reset( row4 );
 
          checkSize    ( row4 , 4UL );
@@ -4059,7 +4059,7 @@ void GeneralTest::testClear()
 
       // Clearing a single element in row 3
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -4166,7 +4166,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default row
       {
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -4189,7 +4189,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -4465,8 +4465,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows
       {
-         TRT row1 = row( tmat_, 1UL );
-         TRT row2 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
+         ORT row2 = row( tmat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -4481,8 +4481,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         TRT row1 = row( tmat_, 1UL );
-         TRT row2 = row( tmat_, 2UL );
+         ORT row1 = row( tmat_, 1UL );
+         ORT row2 = row( tmat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -4497,9 +4497,9 @@ void GeneralTest::testIsSame()
 
       // isSame with row and matching subvector
       {
-         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+         typedef blaze::DenseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -4525,9 +4525,9 @@ void GeneralTest::testIsSame()
 
       // isSame with row and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+         typedef blaze::DenseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -4553,9 +4553,9 @@ void GeneralTest::testIsSame()
 
       // isSame with row and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<TRT>  SubvectorType;
+         typedef blaze::DenseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -4581,7 +4581,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -4601,7 +4601,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -4621,7 +4621,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
          typedef blaze::DenseSubvector<RowType>  SubvectorType;
 
@@ -4643,7 +4643,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
          typedef blaze::DenseSubvector<RowType>  SubvectorType;
 
@@ -4665,7 +4665,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::DenseRow<SubmatrixType>  RowType;
          typedef blaze::DenseSubvector<RowType>  SubvectorType;
 
@@ -4745,9 +4745,9 @@ void GeneralTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<TRT>  SubvectorType;
+      typedef blaze::DenseSubvector<ORT>  SubvectorType;
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {

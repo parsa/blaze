@@ -127,11 +127,11 @@ class AlignedTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>    MT;     //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                             TMT;    //!< Column-major dynamic matrix type
+   typedef MT::OppositeType                             OMT;    //!< Column-major dynamic matrix type
    typedef blaze::DenseSubmatrix<MT,blaze::aligned>     ASMT;   //!< Aligned dense submatrix type for row-major matrices.
    typedef blaze::DenseSubmatrix<MT,blaze::unaligned>   USMT;   //!< Unaligned dense submatrix type for row-major matrices.
-   typedef blaze::DenseSubmatrix<TMT,blaze::aligned>    ATSMT;  //!< Aligned dense submatrix type for column-major matrices.
-   typedef blaze::DenseSubmatrix<TMT,blaze::unaligned>  UTSMT;  //!< Unaligned dense submatrix type for column-major matrices.
+   typedef blaze::DenseSubmatrix<OMT,blaze::aligned>    AOSMT;  //!< Aligned dense submatrix type for column-major matrices.
+   typedef blaze::DenseSubmatrix<OMT,blaze::unaligned>  UOSMT;  //!< Unaligned dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -141,9 +141,9 @@ class AlignedTest
                 /*!< The \f$ 64 \times 64 \f$ row-major dense matrix is randomly initialized. */
    MT  mat2_;   //!< Second row-major dynamic matrix.
                 /*!< The \f$ 64 \times 64 \f$ row-major dense matrix is randomly initialized. */
-   TMT tmat1_;  //!< First column-major dynamic matrix.
+   OMT tmat1_;  //!< First column-major dynamic matrix.
                 /*!< The \f$ 64 \times 64 \f$ column-major dense matrix is randomly initialized. */
-   TMT tmat2_;  //!< Second column-major dynamic matrix.
+   OMT tmat2_;  //!< Second column-major dynamic matrix.
                 /*!< The \f$ 64 \times 64 \f$ column-major dense matrix is randomly initialized. */
 
    std::string test_;  //!< Label of the currently performed test.
@@ -153,11 +153,11 @@ class AlignedTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT    );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ASMT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( USMT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ATSMT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( UTSMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( AOSMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( UOSMT );
    /*! \endcond */
    //**********************************************************************************************
 };

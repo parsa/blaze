@@ -208,7 +208,7 @@ void UnalignedTest::testConstructors()
             for( size_t n=0UL; (column+n)<tmat_.columns(); ++n ) {
                for( size_t m=0UL; (row+m)<tmat_.rows(); ++m )
                {
-                  TSMT sm = submatrix( tmat_, row, column, m, n );
+                  OSMT sm = submatrix( tmat_, row, column, m, n );
 
                   for( size_t j=0UL; j<n; ++j ) {
                      for( size_t i=0UL; i<m; ++i )
@@ -234,7 +234,7 @@ void UnalignedTest::testConstructors()
       }
 
       try {
-         TSMT sm = submatrix( tmat_, 2UL, 2UL, 3UL, 2UL );
+         OSMT sm = submatrix( tmat_, 2UL, 2UL, 3UL, 2UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -246,7 +246,7 @@ void UnalignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm = submatrix( tmat_, 2UL, 2UL, 2UL, 4UL );
+         OSMT sm = submatrix( tmat_, 2UL, 2UL, 2UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -258,7 +258,7 @@ void UnalignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm = submatrix( tmat_, 4UL, 2UL, 2UL, 2UL );
+         OSMT sm = submatrix( tmat_, 4UL, 2UL, 2UL, 2UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -270,7 +270,7 @@ void UnalignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm = submatrix( tmat_, 2UL, 5UL, 2UL, 2UL );
+         OSMT sm = submatrix( tmat_, 2UL, 5UL, 2UL, 2UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -724,7 +724,7 @@ void UnalignedTest::testAssignment()
 
       // Assigning to a 3x2 submatrix
       {
-         TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
+         OSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 2UL );
          sm = 12;
 
          checkRows    ( sm   ,  3UL );
@@ -765,7 +765,7 @@ void UnalignedTest::testAssignment()
 
       // Assigning to a 2x3 submatrix
       {
-         TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+         OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
          sm = 15;
 
          checkRows    ( sm   ,  2UL );
@@ -814,12 +814,12 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TMT mat( 4UL, 5UL, 0 );
+      OMT mat( 4UL, 5UL, 0 );
       mat(0,1) = 11;
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
       sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -866,7 +866,7 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
       sm = submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -915,7 +915,7 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -966,7 +966,7 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1022,7 +1022,7 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1073,7 +1073,7 @@ void UnalignedTest::testAssignment()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1463,12 +1463,12 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TMT mat( 4UL, 5UL, 0 );
+      OMT mat( 4UL, 5UL, 0 );
       mat(0,1) = 11;
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
       sm += submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -1515,7 +1515,7 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
       sm += submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -1564,7 +1564,7 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1615,7 +1615,7 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = 11;
@@ -1671,7 +1671,7 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -1722,7 +1722,7 @@ void UnalignedTest::testAddAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = 11;
@@ -2112,12 +2112,12 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TMT mat( 4UL, 5UL, 0 );
+      OMT mat( 4UL, 5UL, 0 );
       mat(0,1) = 11;
       mat(0,2) = 12;
       mat(2,2) = 13;
 
-      TSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( mat, 0UL, 1UL, 3UL, 2UL );
       sm -= submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -2164,7 +2164,7 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
       sm -= submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
 
       checkRows    ( sm   ,  3UL );
@@ -2213,7 +2213,7 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -2264,7 +2264,7 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 0 );
       mat(1,0) = -11;
@@ -2320,7 +2320,7 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2371,7 +2371,7 @@ void UnalignedTest::testSubAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 4UL );
       mat(1,0) = -11;
@@ -2762,13 +2762,13 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TMT mat( 4UL, 5UL, 0 );
+      OMT mat( 4UL, 5UL, 0 );
       mat(0,1) = 1;
       mat(0,2) = 1;
       mat(1,1) = 1;
       mat(1,2) = 1;
 
-      TSMT sm = submatrix( mat, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( mat, 0UL, 1UL, 2UL, 2UL );
       sm *= submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
       checkRows    ( sm   ,  2UL );
@@ -2814,7 +2814,7 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
       sm *= submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
       checkRows    ( sm   ,  2UL );
@@ -2862,7 +2862,7 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2912,7 +2912,7 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 0 );
       mat(0,0) =  11;
@@ -2967,7 +2967,7 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -3017,7 +3017,7 @@ void UnalignedTest::testMultAssign()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 2UL );
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 2UL, 4UL );
       mat(0,0) =  11;
@@ -3646,7 +3646,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       sm *= 3;
 
@@ -3691,7 +3691,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
       sm *= 3;
 
@@ -3740,7 +3740,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       sm = sm * 3;
 
@@ -3785,7 +3785,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
       sm = sm * 3;
 
@@ -3834,7 +3834,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       sm = 3 * sm;
 
@@ -3879,7 +3879,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
       sm = 3 * sm;
 
@@ -3928,7 +3928,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       sm /= 0.5;
 
@@ -3973,7 +3973,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
       sm /= 0.5;
 
@@ -4022,7 +4022,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
 
       sm = sm / 0.5;
 
@@ -4067,7 +4067,7 @@ void UnalignedTest::testScaling()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 2UL, 2UL, 3UL );
 
       sm = sm / 0.5;
 
@@ -4117,7 +4117,7 @@ void UnalignedTest::testScaling()
       initialize();
 
       // Initialization check
-      TSMT sm = submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
+      OSMT sm = submatrix( tmat_, 1UL, 2UL, 2UL, 2UL );
 
       checkRows    ( sm, 2UL );
       checkColumns ( sm, 2UL );
@@ -4529,7 +4529,7 @@ void UnalignedTest::testFunctionCall()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
 
       // Assignment to the element (0,1)
       {
@@ -5233,15 +5233,15 @@ void UnalignedTest::testIterator()
    {
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
       // Testing the Iterator default constructor
       {
          test_ = "Column-major Iterator default constructor";
 
-         TSMT::Iterator it = TSMT::Iterator();
+         OSMT::Iterator it = OSMT::Iterator();
 
-         if( it != TSMT::Iterator() ) {
+         if( it != OSMT::Iterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -5253,9 +5253,9 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         TSMT::ConstIterator it = TSMT::ConstIterator();
+         OSMT::ConstIterator it = OSMT::ConstIterator();
 
-         if( it != TSMT::ConstIterator() ) {
+         if( it != OSMT::ConstIterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -5267,7 +5267,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         TSMT::ConstIterator it( begin( sm, 1UL ) );
+         OSMT::ConstIterator it( begin( sm, 1UL ) );
 
          if( it == end( sm, 1UL ) || *it != -2 ) {
             std::ostringstream oss;
@@ -5315,8 +5315,8 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TSMT::ConstIterator it ( cbegin( sm, 2UL ) );
-         TSMT::ConstIterator end( cend( sm, 2UL ) );
+         OSMT::ConstIterator it ( cbegin( sm, 2UL ) );
+         OSMT::ConstIterator end( cend( sm, 2UL ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -5413,7 +5413,7 @@ void UnalignedTest::testIterator()
 
          int value = 7;
 
-         for( TSMT::Iterator it=begin( sm, 2UL ); it!=end( sm, 2UL ); ++it ) {
+         for( OSMT::Iterator it=begin( sm, 2UL ); it!=end( sm, 2UL ); ++it ) {
             *it = value++;
          }
 
@@ -5452,7 +5452,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
+         for( OSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it += value++;
          }
 
@@ -5491,7 +5491,7 @@ void UnalignedTest::testIterator()
 
          int value = 4;
 
-         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
+         for( OSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it -= value++;
          }
 
@@ -5530,7 +5530,7 @@ void UnalignedTest::testIterator()
 
          int value = 2;
 
-         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
+         for( OSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it *= value++;
          }
 
@@ -5567,7 +5567,7 @@ void UnalignedTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         for( TSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
+         for( OSMT::Iterator it=begin( sm, 1UL ); it!=end( sm, 1UL ); ++it ) {
             *it /= 2;
          }
 
@@ -5696,7 +5696,7 @@ void UnalignedTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TSMT sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+      OSMT sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
 
       checkRows    ( sm, 3UL );
       checkColumns ( sm, 2UL );
@@ -5973,7 +5973,7 @@ void UnalignedTest::testReset()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       reset( sm(1,0) );
 
@@ -6021,7 +6021,7 @@ void UnalignedTest::testReset()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       reset( sm );
 
@@ -6069,7 +6069,7 @@ void UnalignedTest::testReset()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       // Resetting the 0th column
       {
@@ -6220,7 +6220,7 @@ void UnalignedTest::testClear()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 2UL, 3UL );
 
       clear( sm(1,0) );
 
@@ -6381,7 +6381,7 @@ void UnalignedTest::testTranspose()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
       sm.transpose();
 
@@ -6426,7 +6426,7 @@ void UnalignedTest::testTranspose()
 
       initialize();
 
-      TSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+      OSMT sm = submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
 
       sm = trans( sm );
 
@@ -6552,7 +6552,7 @@ void UnalignedTest::testIsDefault()
 
       // isDefault with default submatrix
       {
-         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 1UL );
+         OSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 1UL );
 
          if( isDefault( sm(1,0) ) != true ) {
             std::ostringstream oss;
@@ -6575,7 +6575,7 @@ void UnalignedTest::testIsDefault()
 
       // isDefault with non-default submatrix
       {
-         TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
+         OSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
          if( isDefault( sm(1,0) ) != false ) {
             std::ostringstream oss;
@@ -6834,7 +6834,7 @@ void UnalignedTest::testIsSame()
 
       // isSame with matrix and matching submatrix
       {
-         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
 
          if( blaze::isSame( sm, tmat_ ) == false ) {
             std::ostringstream oss;
@@ -6859,7 +6859,7 @@ void UnalignedTest::testIsSame()
 
       // isSame with matrix and non-matching submatrix (different number of rows)
       {
-         TSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 5UL );
+         OSMT sm = submatrix( tmat_, 0UL, 0UL, 3UL, 5UL );
 
          if( blaze::isSame( sm, tmat_ ) == true ) {
             std::ostringstream oss;
@@ -6884,7 +6884,7 @@ void UnalignedTest::testIsSame()
 
       // isSame with matrix and non-matching submatrix (different number of columns)
       {
-         TSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
+         OSMT sm = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
 
          if( blaze::isSame( sm, tmat_ ) == true ) {
             std::ostringstream oss;
@@ -6909,7 +6909,7 @@ void UnalignedTest::testIsSame()
 
       // isSame with matrix and non-matching submatrix (different row index)
       {
-         TSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 5UL );
+         OSMT sm = submatrix( tmat_, 1UL, 0UL, 3UL, 5UL );
 
          if( blaze::isSame( sm, tmat_ ) == true ) {
             std::ostringstream oss;
@@ -6934,7 +6934,7 @@ void UnalignedTest::testIsSame()
 
       // isSame with matrix and non-matching submatrix (different column index)
       {
-         TSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 4UL );
+         OSMT sm = submatrix( tmat_, 0UL, 1UL, 4UL, 4UL );
 
          if( blaze::isSame( sm, tmat_ ) == true ) {
             std::ostringstream oss;
@@ -6959,8 +6959,8 @@ void UnalignedTest::testIsSame()
 
       // isSame with matching submatrices
       {
-         TSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
-         TSMT sm2 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm2 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
 
          if( blaze::isSame( sm1, sm2 ) == false ) {
             std::ostringstream oss;
@@ -6975,8 +6975,8 @@ void UnalignedTest::testIsSame()
 
       // isSame with non-matching submatrices (different number of rows)
       {
-         TSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
-         TSMT sm2 = submatrix( tmat_, 0UL, 0UL, 3UL, 5UL );
+         OSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm2 = submatrix( tmat_, 0UL, 0UL, 3UL, 5UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -6991,8 +6991,8 @@ void UnalignedTest::testIsSame()
 
       // isSame with non-matching submatrices (different number of columns)
       {
-         TSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
-         TSMT sm2 = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
+         OSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm2 = submatrix( tmat_, 0UL, 0UL, 4UL, 4UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -7007,8 +7007,8 @@ void UnalignedTest::testIsSame()
 
       // isSame with non-matching submatrices (different row index)
       {
-         TSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
-         TSMT sm2 = submatrix( tmat_, 1UL, 0UL, 3UL, 5UL );
+         OSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm2 = submatrix( tmat_, 1UL, 0UL, 3UL, 5UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -7023,8 +7023,8 @@ void UnalignedTest::testIsSame()
 
       // isSame with non-matching submatrices (different column index)
       {
-         TSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
-         TSMT sm2 = submatrix( tmat_, 0UL, 1UL, 4UL, 4UL );
+         OSMT sm1 = submatrix( tmat_, 0UL, 0UL, 4UL, 5UL );
+         OSMT sm2 = submatrix( tmat_, 0UL, 1UL, 4UL, 4UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -7150,8 +7150,8 @@ void UnalignedTest::testSubmatrix()
       initialize();
 
       {
-         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 3UL );
+         OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         OSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 3UL );
 
          if( sm2(1,1) != -6 ) {
             std::ostringstream oss;
@@ -7175,8 +7175,8 @@ void UnalignedTest::testSubmatrix()
       }
 
       try {
-         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-         TSMT sm2 = submatrix( sm1  , 3UL, 1UL, 2UL, 3UL );
+         OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         OSMT sm2 = submatrix( sm1  , 3UL, 1UL, 2UL, 3UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7188,8 +7188,8 @@ void UnalignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-         TSMT sm2 = submatrix( sm1  , 1UL, 4UL, 2UL, 3UL );
+         OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         OSMT sm2 = submatrix( sm1  , 1UL, 4UL, 2UL, 3UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7201,8 +7201,8 @@ void UnalignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 3UL, 3UL );
+         OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         OSMT sm2 = submatrix( sm1  , 1UL, 1UL, 3UL, 3UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7214,8 +7214,8 @@ void UnalignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-         TSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 4UL );
+         OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+         OSMT sm2 = submatrix( sm1  , 1UL, 1UL, 2UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7286,9 +7286,9 @@ void UnalignedTest::testRow()
 
       initialize();
 
-      typedef blaze::DenseRow<TSMT>  RowType;
+      typedef blaze::DenseRow<OSMT>  RowType;
 
-      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       RowType row1 = row( sm1, 1UL );
 
       if( row1[1] != -3 ) {
@@ -7371,9 +7371,9 @@ void UnalignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::DenseColumn<TSMT>  ColumnType;
+      typedef blaze::DenseColumn<OSMT>  ColumnType;
 
-      TSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      OSMT sm1 = submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
       ColumnType col1 = column( sm1, 1UL );
 
       if( col1[1] != -3 ) {

@@ -135,9 +135,9 @@ class SymmetricTest
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  DMT;  //!< Row-major dynamic matrix type.
    typedef blaze::SymmetricMatrix<DMT>                MT;   //!< Row-major dynamic matrix type.
-   typedef MT::OppositeType                           TMT;  //!< Column-major dynamic matrix type.
+   typedef MT::OppositeType                           OMT;  //!< Column-major dynamic matrix type.
    typedef blaze::DenseColumn<MT>                     CT;   //!< Dense column type for row-major matrices.
-   typedef blaze::DenseColumn<TMT>                    TCT;  //!< Dense column type for column-major matrices.
+   typedef blaze::DenseColumn<OMT>                    OCT;  //!< Dense column type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -151,7 +151,7 @@ class SymmetricTest
                     0 &  0 &  3 &  4 \\
                     0 & -2 &  4 &  5 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major symmetric matrix.
+   OMT tmat_;  //!< Column-major symmetric matrix.
                /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                     0 &  0 &  0 &  0 \\
@@ -167,11 +167,11 @@ class SymmetricTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( OMT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( TCT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( OCT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( CT  );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TCT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( OCT );
    /*! \endcond */
    //**********************************************************************************************
 };

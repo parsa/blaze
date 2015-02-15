@@ -205,7 +205,7 @@ void SymmetricTest::testConstructors()
 
       // 0th matrix row
       {
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
 
          checkSize    ( row0, 4UL );
          checkNonZeros( row0, 0UL );
@@ -223,7 +223,7 @@ void SymmetricTest::testConstructors()
 
       // 1st matrix row
       {
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
 
          checkSize    ( row1, 4UL );
          checkNonZeros( row1, 2UL );
@@ -241,7 +241,7 @@ void SymmetricTest::testConstructors()
 
       // 2nd matrix row
       {
-         TRT row2 = row( tmat_, 2UL );
+         ORT row2 = row( tmat_, 2UL );
 
          checkSize    ( row2, 4UL );
          checkNonZeros( row2, 2UL );
@@ -259,7 +259,7 @@ void SymmetricTest::testConstructors()
 
       // 3rd matrix row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
 
          checkSize    ( row3, 4UL );
          checkNonZeros( row3, 3UL );
@@ -446,7 +446,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
       row1 = row( tmat_, 2UL );
 
       checkSize    ( row1 , 4UL );
@@ -492,7 +492,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
       vec1[1] = 8;
@@ -543,7 +543,7 @@ void SymmetricTest::testAssignment()
 
       initialize();
 
-      TRT row3 = row( tmat_, 3UL );
+      ORT row3 = row( tmat_, 3UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec1( 4UL );
       vec1[3] = 9;
@@ -754,7 +754,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 += row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
@@ -800,7 +800,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -851,7 +851,7 @@ void SymmetricTest::testAddAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1063,7 +1063,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 -= row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
@@ -1109,7 +1109,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1160,7 +1160,7 @@ void SymmetricTest::testSubAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1372,7 +1372,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
       row2 *= row( tmat_, 3UL );
 
       checkSize    ( row2 , 4UL );
@@ -1418,7 +1418,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1469,7 +1469,7 @@ void SymmetricTest::testMultAssign()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL );
       vec[0] =  2;
@@ -1855,7 +1855,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 *= 3;
 
@@ -1902,7 +1902,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = row2 * 3;
 
@@ -1949,7 +1949,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = 3 * row2;
 
@@ -1996,7 +1996,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 /= 0.5;
 
@@ -2043,7 +2043,7 @@ void SymmetricTest::testScaling()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       row2 = row2 / 0.5;
 
@@ -2092,7 +2092,7 @@ void SymmetricTest::testScaling()
 
       // Integral scaling the 3rd row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          row3.scale( 3 );
 
          checkSize    ( row3 , 4UL );
@@ -2130,7 +2130,7 @@ void SymmetricTest::testScaling()
 
       // Floating point scaling the 3rd row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          row3.scale( 0.5 );
 
          checkSize    ( row3 , 4UL );
@@ -2428,7 +2428,7 @@ void SymmetricTest::testSubscript()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       // Assignment to the element at index 1
       row2[1] = 9;
@@ -2991,9 +2991,9 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         TRT::Iterator it = TRT::Iterator();
+         ORT::Iterator it = ORT::Iterator();
 
-         if( it != TRT::Iterator() ) {
+         if( it != ORT::Iterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3005,9 +3005,9 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         TRT::ConstIterator it = TRT::ConstIterator();
+         ORT::ConstIterator it = ORT::ConstIterator();
 
-         if( it != TRT::ConstIterator() ) {
+         if( it != ORT::ConstIterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3019,8 +3019,8 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         TRT row2 = row( tmat_, 2UL );
-         TRT::ConstIterator it( begin( row2 ) );
+         ORT row2 = row( tmat_, 2UL );
+         ORT::ConstIterator it( begin( row2 ) );
 
          if( it == end( row2 ) || it->value() != 3 ) {
             std::ostringstream oss;
@@ -3034,7 +3034,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          const size_t number( end( row1 ) - begin( row1 ) );
 
          if( number != 2UL ) {
@@ -3052,7 +3052,7 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         TRT row2 = row( tmat_, 2UL );
+         ORT row2 = row( tmat_, 2UL );
          const size_t number( cend( row2 ) - cbegin( row2 ) );
 
          if( number != 2UL ) {
@@ -3070,9 +3070,9 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TRT row2 = row( tmat_, 2UL );
-         TRT::ConstIterator it ( cbegin( row2 ) );
-         TRT::ConstIterator end( cend( row2 ) );
+         ORT row2 = row( tmat_, 2UL );
+         ORT::ConstIterator it ( cbegin( row2 ) );
+         ORT::ConstIterator end( cend( row2 ) );
 
          if( it == end || it->value() != 3 ) {
             std::ostringstream oss;
@@ -3104,10 +3104,10 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          int value = 6;
 
-         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
+         for( ORT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it = value++;
          }
 
@@ -3142,10 +3142,10 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
+         for( ORT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it += value++;
          }
 
@@ -3180,10 +3180,10 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          int value = 2;
 
-         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
+         for( ORT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it -= value++;
          }
 
@@ -3218,10 +3218,10 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          int value = 1;
 
-         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
+         for( ORT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it *= value++;
          }
 
@@ -3256,9 +3256,9 @@ void SymmetricTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
 
-         for( TRT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
+         for( ORT::Iterator it=begin( row3 ); it!=end( row3 ); ++it ) {
             *it /= 2;
          }
 
@@ -3373,7 +3373,7 @@ void SymmetricTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TRT row3 = row( tmat_, 3UL );
+      ORT row3 = row( tmat_, 3UL );
 
       checkSize    ( row3, 4UL );
       checkNonZeros( row3, 3UL );
@@ -3504,7 +3504,7 @@ void SymmetricTest::testReset()
 
       // Resetting a single element in row 3
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          reset( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -3526,7 +3526,7 @@ void SymmetricTest::testReset()
 
       // Resetting the 3rd row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          reset( row3 );
 
          checkSize    ( row3 , 4UL );
@@ -3608,7 +3608,7 @@ void SymmetricTest::testClear()
 
       // Clearing a single element in row 3
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
          clear( row3[1] );
 
          checkSize    ( row3 , 4UL );
@@ -3797,11 +3797,11 @@ void SymmetricTest::testSet()
 
       initialize();
 
-      TRT row0 = row( tmat_, 0UL );
+      ORT row0 = row( tmat_, 0UL );
 
       // Setting a non-zero element at the end of the row
       {
-         TRT::Iterator pos = row0.set( 3UL, 1 );
+         ORT::Iterator pos = row0.set( 3UL, 1 );
 
          checkSize    ( row0 , 4UL );
          checkNonZeros( row0 , 1UL );
@@ -3834,7 +3834,7 @@ void SymmetricTest::testSet()
 
       // Setting a non-zero element at the beginning of the row
       {
-         TRT::Iterator pos = row0.set( 0UL, 2 );
+         ORT::Iterator pos = row0.set( 0UL, 2 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  2UL );
@@ -3867,7 +3867,7 @@ void SymmetricTest::testSet()
 
       // Setting a non-zero element at the center of the row
       {
-         TRT::Iterator pos = row0.set( 2UL, 3 );
+         ORT::Iterator pos = row0.set( 2UL, 3 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
@@ -3900,7 +3900,7 @@ void SymmetricTest::testSet()
 
       // Setting an already existing element
       {
-         TRT::Iterator pos = row0.set( 3UL, 4 );
+         ORT::Iterator pos = row0.set( 3UL, 4 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
@@ -4081,11 +4081,11 @@ void SymmetricTest::testInsert()
 
       initialize();
 
-      TRT row0 = row( tmat_, 0UL );
+      ORT row0 = row( tmat_, 0UL );
 
       // Inserting a non-zero element at the end of the row
       {
-         TRT::Iterator pos = row0.insert( 3UL, 1 );
+         ORT::Iterator pos = row0.insert( 3UL, 1 );
 
          checkSize    ( row0 , 4UL );
          checkNonZeros( row0 , 1UL );
@@ -4118,7 +4118,7 @@ void SymmetricTest::testInsert()
 
       // Inserting a non-zero element at the beginning of the row
       {
-         TRT::Iterator pos = row0.insert( 0UL, 2 );
+         ORT::Iterator pos = row0.insert( 0UL, 2 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  2UL );
@@ -4151,7 +4151,7 @@ void SymmetricTest::testInsert()
 
       // Inserting a non-zero element at the center of the row
       {
-         TRT::Iterator pos = row0.insert( 2UL, 3 );
+         ORT::Iterator pos = row0.insert( 2UL, 3 );
 
          checkSize    ( row0 ,  4UL );
          checkNonZeros( row0 ,  3UL );
@@ -4293,9 +4293,9 @@ void SymmetricTest::testAppend()
    {
       test_ = "Column-major SparseRow::append()";
 
-      TMT mat( 9UL );
+      OMT mat( 9UL );
 
-      TRT row1 = row( mat, 1UL );
+      ORT row1 = row( mat, 1UL );
       row1.reserve( 4UL );
 
       // Appending one non-zero element
@@ -4701,7 +4701,7 @@ void SymmetricTest::testErase()
 
       initialize();
 
-      TRT row3 = row( tmat_, 3UL );
+      ORT row3 = row( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
       row3.erase( 3UL );
@@ -4771,11 +4771,11 @@ void SymmetricTest::testErase()
 
       initialize();
 
-      TRT row3 = row( tmat_, 3UL );
+      ORT row3 = row( tmat_, 3UL );
 
       // Erasing the non-zero element at the end of the row
       {
-         TRT::Iterator pos = row3.erase( row3.find( 3UL ) );
+         ORT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 2UL );
@@ -4805,7 +4805,7 @@ void SymmetricTest::testErase()
 
       // Erasing the non-zero element at the beginning of the row
       {
-         TRT::Iterator pos = row3.erase( row3.find( 1UL ) );
+         ORT::Iterator pos = row3.erase( row3.find( 1UL ) );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 1UL );
@@ -4838,7 +4838,7 @@ void SymmetricTest::testErase()
 
       // Trying to erase an already erased element
       {
-         TRT::Iterator pos = row3.erase( row3.find( 3UL ) );
+         ORT::Iterator pos = row3.erase( row3.find( 3UL ) );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 1UL );
@@ -4879,9 +4879,9 @@ void SymmetricTest::testErase()
 
       // Erasing the 2nd row
       {
-         TRT row2 = row( tmat_, 2UL );
+         ORT row2 = row( tmat_, 2UL );
 
-         TRT::Iterator pos = row2.erase( row2.begin(), row2.end() );
+         ORT::Iterator pos = row2.erase( row2.begin(), row2.end() );
 
          checkSize    ( row2 , 4UL );
          checkNonZeros( row2 , 0UL );
@@ -4911,9 +4911,9 @@ void SymmetricTest::testErase()
 
       // Erasing the first half of the 3th row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
 
-         TRT::Iterator pos = row3.erase( row3.begin(), row3.find( 3UL ) );
+         ORT::Iterator pos = row3.erase( row3.begin(), row3.find( 3UL ) );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 1UL );
@@ -4946,9 +4946,9 @@ void SymmetricTest::testErase()
 
       // Erasing the second half of the 4th row
       {
-         TRT row3 = row( tmat_, 3UL );
+         ORT row3 = row( tmat_, 3UL );
 
-         TRT::Iterator pos = row3.erase( row3.find( 3UL ), row3.end() );
+         ORT::Iterator pos = row3.erase( row3.find( 3UL ), row3.end() );
 
          checkSize    ( row3 , 4UL );
          checkNonZeros( row3 , 0UL );
@@ -4978,9 +4978,9 @@ void SymmetricTest::testErase()
 
       // Trying to erase an empty range
       {
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
 
-         TRT::Iterator pos = row1.erase( row1.find( 1UL ), row1.find( 1UL ) );
+         ORT::Iterator pos = row1.erase( row1.find( 1UL ), row1.find( 1UL ) );
 
          checkSize    ( row1 , 4UL );
          checkNonZeros( row1 , 1UL );
@@ -5057,9 +5057,9 @@ void SymmetricTest::testReserve()
    {
       test_ = "Column-major SparseRow::reserve()";
 
-      TMT mat( 20UL );
+      OMT mat( 20UL );
 
-      TRT row0 = row( mat, 0UL );
+      ORT row0 = row( mat, 0UL );
 
       // Increasing the capacity of the row
       row0.reserve( 10UL );
@@ -5184,11 +5184,11 @@ void SymmetricTest::testFind()
 
       initialize();
 
-      TRT row2 = row( tmat_, 2UL );
+      ORT row2 = row( tmat_, 2UL );
 
       // Searching for the first element
       {
-         TRT::Iterator pos = row2.find( 2UL );
+         ORT::Iterator pos = row2.find( 2UL );
 
          if( pos == row2.end() ) {
             std::ostringstream oss;
@@ -5215,7 +5215,7 @@ void SymmetricTest::testFind()
 
       // Searching for the second element
       {
-         TRT::Iterator pos = row2.find( 3UL );
+         ORT::Iterator pos = row2.find( 3UL );
 
          if( pos == row2.end() ) {
             std::ostringstream oss;
@@ -5242,7 +5242,7 @@ void SymmetricTest::testFind()
 
       // Searching for a non-existing non-zero element
       {
-         TRT::Iterator pos = row2.find( 1UL );
+         ORT::Iterator pos = row2.find( 1UL );
 
          if( pos != row2.end() ) {
             std::ostringstream oss;
@@ -5376,11 +5376,11 @@ void SymmetricTest::testLowerBound()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
 
       // Determining the lower bound for index 0
       {
-         TRT::Iterator pos = row1.lowerBound( 0UL );
+         ORT::Iterator pos = row1.lowerBound( 0UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5407,7 +5407,7 @@ void SymmetricTest::testLowerBound()
 
       // Determining the lower bound for index 1
       {
-         TRT::Iterator pos = row1.lowerBound( 1UL );
+         ORT::Iterator pos = row1.lowerBound( 1UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5434,7 +5434,7 @@ void SymmetricTest::testLowerBound()
 
       // Determining the lower bound for index 2
       {
-         TRT::Iterator pos = row1.lowerBound( 2UL );
+         ORT::Iterator pos = row1.lowerBound( 2UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5577,11 +5577,11 @@ void SymmetricTest::testUpperBound()
 
       initialize();
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
 
       // Determining the upper bound for index 0
       {
-         TRT::Iterator pos = row1.upperBound( 0UL );
+         ORT::Iterator pos = row1.upperBound( 0UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5608,7 +5608,7 @@ void SymmetricTest::testUpperBound()
 
       // Determining the upper bound for index 1
       {
-         TRT::Iterator pos = row1.upperBound( 1UL );
+         ORT::Iterator pos = row1.upperBound( 1UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5635,7 +5635,7 @@ void SymmetricTest::testUpperBound()
 
       // Determining the upper bound for index 2
       {
-         TRT::Iterator pos = row1.upperBound( 2UL );
+         ORT::Iterator pos = row1.upperBound( 2UL );
 
          if( pos == row1.end() ) {
             std::ostringstream oss;
@@ -5746,7 +5746,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with default row
       {
-         TRT row0 = row( tmat_, 0UL );
+         ORT row0 = row( tmat_, 0UL );
 
          if( isDefault( row0[1] ) != true ) {
             std::ostringstream oss;
@@ -5769,7 +5769,7 @@ void SymmetricTest::testIsDefault()
 
       // isDefault with non-default row
       {
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
 
          if( isDefault( row1[1] ) != false ) {
             std::ostringstream oss;
@@ -6045,8 +6045,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching rows
       {
-         TRT row1 = row( tmat_, 1UL );
-         TRT row2 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
+         ORT row2 = row( tmat_, 1UL );
 
          if( blaze::isSame( row1, row2 ) == false ) {
             std::ostringstream oss;
@@ -6061,8 +6061,8 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching rows
       {
-         TRT row1 = row( tmat_, 1UL );
-         TRT row2 = row( tmat_, 2UL );
+         ORT row1 = row( tmat_, 1UL );
+         ORT row2 = row( tmat_, 2UL );
 
          if( blaze::isSame( row1, row2 ) == true ) {
             std::ostringstream oss;
@@ -6077,9 +6077,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and matching subvector
       {
-         typedef blaze::SparseSubvector<TRT>  SubvectorType;
+         typedef blaze::SparseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 4UL );
 
          if( blaze::isSame( row1, sv ) == false ) {
@@ -6105,9 +6105,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different size)
       {
-         typedef blaze::SparseSubvector<TRT>  SubvectorType;
+         typedef blaze::SparseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 0UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6133,9 +6133,9 @@ void SymmetricTest::testIsSame()
 
       // isSame with row and non-matching subvector (different offset)
       {
-         typedef blaze::SparseSubvector<TRT>  SubvectorType;
+         typedef blaze::SparseSubvector<ORT>  SubvectorType;
 
-         TRT row1 = row( tmat_, 1UL );
+         ORT row1 = row( tmat_, 1UL );
          SubvectorType sv = subvector( row1, 1UL, 3UL );
 
          if( blaze::isSame( row1, sv ) == true ) {
@@ -6161,7 +6161,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching rows on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::SparseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::SparseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -6181,7 +6181,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching rows on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::SparseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::SparseRow<SubmatrixType>  RowType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
@@ -6201,7 +6201,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with matching row subvectors on submatrices
       {
-         typedef blaze::SparseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::SparseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::SparseRow<SubmatrixType>  RowType;
          typedef blaze::SparseSubvector<RowType>  SubvectorType;
 
@@ -6223,7 +6223,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different size)
       {
-         typedef blaze::SparseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::SparseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::SparseRow<SubmatrixType>  RowType;
          typedef blaze::SparseSubvector<RowType>  SubvectorType;
 
@@ -6245,7 +6245,7 @@ void SymmetricTest::testIsSame()
 
       // isSame with non-matching row subvectors on submatrices (different offset)
       {
-         typedef blaze::SparseSubmatrix<TMT>      SubmatrixType;
+         typedef blaze::SparseSubmatrix<OMT>      SubmatrixType;
          typedef blaze::SparseRow<SubmatrixType>  RowType;
          typedef blaze::SparseSubvector<RowType>  SubvectorType;
 
@@ -6325,9 +6325,9 @@ void SymmetricTest::testSubvector()
 
       initialize();
 
-      typedef blaze::SparseSubvector<TRT>  SubvectorType;
+      typedef blaze::SparseSubvector<ORT>  SubvectorType;
 
-      TRT row1 = row( tmat_, 1UL );
+      ORT row1 = row( tmat_, 1UL );
       SubvectorType sv = subvector( row1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {

@@ -140,9 +140,9 @@ class GeneralTest
 
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
-   typedef MT::OppositeType                              TMT;  //!< Column-major compressed matrix type
+   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type
    typedef blaze::SparseRow<MT>                          RT;   //!< Sparse row type for row-major matrices.
-   typedef blaze::SparseRow<TMT>                         TRT;  //!< Sparse row type for column-major matrices.
+   typedef blaze::SparseRow<OMT>                         ORT;  //!< Sparse row type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -157,7 +157,7 @@ class GeneralTest
                      0 &  4 &  5 & -6 \\
                      7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major compressed matrix.
+   OMT tmat_;  //!< Column-major compressed matrix.
                /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                      0 &  0 &  0 &  0 \\
@@ -174,11 +174,11 @@ class GeneralTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OMT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ORT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( ORT );
    /*! \endcond */
    //**********************************************************************************************
 };

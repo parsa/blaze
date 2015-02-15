@@ -142,9 +142,9 @@ class ClassTest
 
    //**Type definitions****************************************************************************
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;    //!< Row-major compressed matrix type
-   typedef MT::OppositeType                              TMT;   //!< Column-major compressed matrix type
+   typedef MT::OppositeType                              OMT;   //!< Column-major compressed matrix type
    typedef blaze::SparseSubmatrix<MT>                    SMT;   //!< Sparse submatrix type for row-major matrices.
-   typedef blaze::SparseSubmatrix<TMT>                   TSMT;  //!< Sparse submatrix type for column-major matrices.
+   typedef blaze::SparseSubmatrix<OMT>                   OSMT;  //!< Sparse submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -159,7 +159,7 @@ class ClassTest
                      0 &  4 &  5 & -6 \\
                      7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major compressed matrix.
+   OMT tmat_;  //!< Column-major compressed matrix.
                /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                      0 &  0 & -2 &  0 &  7 \\
@@ -175,9 +175,9 @@ class ClassTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TMT  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OMT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SMT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSMT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSMT );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -127,9 +127,9 @@ class UnalignedTest
 
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;    //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                           TMT;   //!< Column-major dynamic matrix type
+   typedef MT::OppositeType                           OMT;   //!< Column-major dynamic matrix type
    typedef blaze::DenseSubmatrix<MT>                  SMT;   //!< Dense submatrix type for row-major matrices.
-   typedef blaze::DenseSubmatrix<TMT>                 TSMT;  //!< Dense submatrix type for column-major matrices.
+   typedef blaze::DenseSubmatrix<OMT>                 OSMT;  //!< Dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -144,7 +144,7 @@ class UnalignedTest
                      0 &  4 &  5 & -6 \\
                      7 & -8 &  9 & 10 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major dynamic matrix.
+   OMT tmat_;  //!< Column-major dynamic matrix.
                /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                      0 &  0 & -2 &  0 &  7 \\
@@ -160,9 +160,9 @@ class UnalignedTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( SMT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TSMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OSMT );
    /*! \endcond */
    //**********************************************************************************************
 };

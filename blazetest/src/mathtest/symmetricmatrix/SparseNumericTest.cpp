@@ -302,7 +302,7 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix default constructor (CompressedMatrix)";
 
-      const TST sym;
+      const OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -318,7 +318,7 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix size constructor (CompressedMatrix)";
 
-      const TST sym( 2UL );
+      const OST sym( 2UL );
 
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
@@ -334,8 +334,8 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix copy constructor (0x0)";
 
-      const TST sym1;
-      const TST sym2( sym1 );
+      const OST sym1;
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 0UL );
       checkColumns ( sym2, 0UL );
@@ -346,14 +346,14 @@ void SparseNumericTest::testConstructors()
    {
       test_ = "Column-major SymmetricMatrix copy constructor (3x3)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) =  1;
       sym1(0,1) = -4;
       sym1(0,2) =  7;
       sym1(1,1) =  2;
       sym1(2,2) =  3;
 
-      const TST sym2( sym1 );
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
@@ -383,7 +383,7 @@ void SparseNumericTest::testConstructors()
       test_ = "Column-major SymmetricMatrix conversion constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
-      const TST sym( mat );
+      const OST sym( mat );
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -398,7 +398,7 @@ void SparseNumericTest::testConstructors()
                                                                      -4,  2, 0,
                                                                       7,  0, 3 );
 
-      const TST sym( mat );
+      const OST sym( mat );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -427,7 +427,7 @@ void SparseNumericTest::testConstructors()
                                                                      -5,  0, 3 );
 
       try {
-         const TST sym( mat );
+         const OST sym( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -450,7 +450,7 @@ void SparseNumericTest::testConstructors()
       sym1(1,1) =  2;
       sym1(2,2) =  3;
 
-      const TST sym2( sym1 );
+      const OST sym2( sym1 );
 
       checkRows    ( sym2, 3UL );
       checkColumns ( sym2, 3UL );
@@ -722,7 +722,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major SymmetricMatrix copy assignment (0x0)";
 
-      TST sym1, sym2;
+      OST sym1, sym2;
 
       sym2 = sym1;
 
@@ -735,14 +735,14 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major SymmetricMatrix copy assignment (3x3)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) =  1;
       sym1(0,1) = -4;
       sym1(0,2) =  7;
       sym1(1,1) =  2;
       sym1(2,2) =  3;
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -773,7 +773,7 @@ void SparseNumericTest::testAssignment()
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 0UL );
@@ -789,7 +789,7 @@ void SparseNumericTest::testAssignment()
                                                                   -4,  2, 0,
                                                                    7,  0, 3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -817,7 +817,7 @@ void SparseNumericTest::testAssignment()
                                                                      -4,  2, 0,
                                                                       7,  0, 3 );
 
-      TST sym;
+      OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
@@ -846,7 +846,7 @@ void SparseNumericTest::testAssignment()
                                                                   -5,  0, 3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -868,7 +868,7 @@ void SparseNumericTest::testAssignment()
                                                                      -5,  0, 3 );
 
       try {
-         TST sym;
+         OST sym;
          sym = mat;
 
          std::ostringstream oss;
@@ -892,7 +892,7 @@ void SparseNumericTest::testAssignment()
       sym1(1,1) =  2;
       sym1(2,2) =  3;
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -923,7 +923,7 @@ void SparseNumericTest::testAssignment()
       sym1(1,1) =  2;
       sym1(2,2) =  3;
 
-      TST sym2;
+      OST sym2;
       sym2 = sym1;
 
       checkRows    ( sym2, 3UL );
@@ -1146,7 +1146,7 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
@@ -1197,7 +1197,7 @@ void SparseNumericTest::testAddAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1238,7 +1238,7 @@ void SparseNumericTest::testAddAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1278,7 +1278,7 @@ void SparseNumericTest::testAddAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1308,7 +1308,7 @@ void SparseNumericTest::testAddAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1337,7 +1337,7 @@ void SparseNumericTest::testAddAssign()
       sym1(0,2) =  6;
       sym1(1,1) =  3;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -1371,12 +1371,12 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -1609,7 +1609,7 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
@@ -1660,7 +1660,7 @@ void SparseNumericTest::testSubAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1701,7 +1701,7 @@ void SparseNumericTest::testSubAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1741,7 +1741,7 @@ void SparseNumericTest::testSubAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1771,7 +1771,7 @@ void SparseNumericTest::testSubAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -1800,7 +1800,7 @@ void SparseNumericTest::testSubAssign()
       sym1(0,2) =  6;
       sym1(1,1) =  3;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -1834,12 +1834,12 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -2068,7 +2068,7 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = 2;
       sym1(1,1) = 2;
       sym1(2,2) = 2;
@@ -2117,7 +2117,7 @@ void SparseNumericTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -2156,7 +2156,7 @@ void SparseNumericTest::testMultAssign()
       mat(1,1) = 2;
       mat(2,2) = 2;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -2196,7 +2196,7 @@ void SparseNumericTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -2226,7 +2226,7 @@ void SparseNumericTest::testMultAssign()
       mat(1,1) =  3;
       mat(2,0) =  6;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -2255,7 +2255,7 @@ void SparseNumericTest::testMultAssign()
       sym1(1,1) = 2;
       sym1(2,2) = 2;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -2289,12 +2289,12 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
 
-      TST sym1( 3UL );
+      OST sym1( 3UL );
       sym1(0,0) = 2;
       sym1(1,1) = 2;
       sym1(2,2) = 2;
 
-      TST sym2( 3UL );
+      OST sym2( 3UL );
       sym2(0,0) =  1;
       sym2(0,1) = -4;
       sym2(0,2) =  7;
@@ -2637,7 +2637,7 @@ void SparseNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  1;
       sym(2,0) = -2;
       sym(2,2) =  3;
@@ -2673,7 +2673,7 @@ void SparseNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  1;
       sym(2,0) = -2;
       sym(2,2) =  3;
@@ -2709,7 +2709,7 @@ void SparseNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  1;
       sym(2,0) = -2;
       sym(2,2) =  3;
@@ -2745,7 +2745,7 @@ void SparseNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  2;
       sym(2,0) = -4;
       sym(2,2) =  6;
@@ -2781,7 +2781,7 @@ void SparseNumericTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  2;
       sym(2,0) = -4;
       sym(2,2) =  6;
@@ -2818,7 +2818,7 @@ void SparseNumericTest::testScaling()
       test_ = "Row-major SymmetricMatrix::scale()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(1,2) =  1;
       sym(2,0) = -2;
       sym(2,2) =  3;
@@ -3115,7 +3115,7 @@ void SparseNumericTest::testFunctionCall()
    {
       test_ = "Column-major SymmetricMatrix::operator()";
 
-      TST sym( 3UL );
+      OST sym( 3UL );
 
       // Writing the element (1,1)
       sym(1,1) = 1;
@@ -3533,10 +3533,10 @@ void SparseNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef TST::Iterator       Iterator;
-      typedef TST::ConstIterator  ConstIterator;
+      typedef OST::Iterator       Iterator;
+      typedef OST::ConstIterator  ConstIterator;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,1) =  1;
       sym(1,2) = -2;
       sym(2,2) =  3;
@@ -3878,7 +3878,7 @@ void SparseNumericTest::testNonZeros()
 
       // Empty matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
 
          checkRows    ( sym, 3UL );
          checkColumns ( sym, 3UL );
@@ -3902,7 +3902,7 @@ void SparseNumericTest::testNonZeros()
 
       // Partially filled matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(0,0) =  1;
          sym(1,2) = -2;
          sym(2,0) =  0;
@@ -3931,7 +3931,7 @@ void SparseNumericTest::testNonZeros()
 
       // Fully filled matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(0,0) = -1;
          sym(0,1) =  2;
          sym(0,2) = -3;
@@ -4090,7 +4090,7 @@ void SparseNumericTest::testReset()
       test_ = "Column-major SymmetricMatrix::reset()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = 1;
       sym(0,1) = 2;
       sym(0,2) = 3;
@@ -4278,7 +4278,7 @@ void SparseNumericTest::testClear()
       test_ = "Column-major SymmetricMatrix::clear()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) = 1;
       sym(0,1) = 2;
       sym(0,2) = 3;
@@ -4524,10 +4524,10 @@ void SparseNumericTest::testSet()
    {
       test_ = "Column-major SymmetricMatrix::set()";
 
-      typedef TST::Iterator  Iterator;
+      typedef OST::Iterator  Iterator;
 
       // Initialization check
-      TST sym( 4UL );
+      OST sym( 4UL );
 
       checkRows    ( sym, 4UL );
       checkColumns ( sym, 4UL );
@@ -4847,10 +4847,10 @@ void SparseNumericTest::testInsert()
    {
       test_ = "Column-major SymmetricMatrix::insert()";
 
-      typedef TST::Iterator  Iterator;
+      typedef OST::Iterator  Iterator;
 
       // Initialization check
-      TST sym( 4UL );
+      OST sym( 4UL );
 
       checkRows    ( sym, 4UL );
       checkColumns ( sym, 4UL );
@@ -5195,7 +5195,7 @@ void SparseNumericTest::testAppend()
       // Appending with pre-allocation in each column
       {
          // Initialization check
-         TST sym( 4UL, 9UL );
+         OST sym( 4UL, 9UL );
          sym.reserve( 0UL, 2UL );
          sym.reserve( 1UL, 2UL );
          sym.reserve( 2UL, 2UL );
@@ -5288,7 +5288,7 @@ void SparseNumericTest::testAppend()
       // Appending with column finalization
       {
          // Initialization check
-         TST sym( 4UL, 9UL );
+         OST sym( 4UL, 9UL );
          sym.reserve( 0UL, 2UL );
          sym.reserve( 1UL, 4UL );
          sym.reserve( 2UL, 1UL );
@@ -5921,7 +5921,7 @@ void SparseNumericTest::testErase()
       test_ = "Column-major SymmetricMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      TST sym( 4UL );
+      OST sym( 4UL );
       sym(0,0) = 1;
       sym(0,2) = 2;
       sym(0,3) = 3;
@@ -6061,10 +6061,10 @@ void SparseNumericTest::testErase()
    {
       test_ = "Column-major SymmetricMatrix::erase( size_t, Iterator )";
 
-      typedef TST::Iterator  Iterator;
+      typedef OST::Iterator  Iterator;
 
       // Initialization check
-      TST sym( 4UL );
+      OST sym( 4UL );
       sym(0,0) = 1;
       sym(0,2) = 2;
       sym(0,3) = 3;
@@ -6254,10 +6254,10 @@ void SparseNumericTest::testErase()
    {
       test_ = "Column-major SymmetricMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef TST::Iterator  Iterator;
+      typedef OST::Iterator  Iterator;
 
       // Initialization check
-      TST sym( 4UL );
+      OST sym( 4UL );
       sym(0,0) = 1;
       sym(0,2) = 2;
       sym(0,3) = 3;
@@ -6553,7 +6553,7 @@ void SparseNumericTest::testResize()
       test_ = "Column-major SymmetricMatrix::resize()";
 
       // Initialization check
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -6690,7 +6690,7 @@ void SparseNumericTest::testReserve()
       test_ = "Column-major SymmetricMatrix::reserve()";
 
       // Initialization check
-      TST sym;
+      OST sym;
 
       checkRows    ( sym, 0UL );
       checkColumns ( sym, 0UL );
@@ -6826,7 +6826,7 @@ void SparseNumericTest::testTrim()
       test_ = "Column-major SymmetricMatrix::trim()";
 
       // Initialization check
-      TST sym( 3UL );
+      OST sym( 3UL );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -6859,7 +6859,7 @@ void SparseNumericTest::testTrim()
       test_ = "Column-major SymmetricMatrix::trim( size_t )";
 
       // Initialization check
-      TST sym( 3UL, 3UL );
+      OST sym( 3UL, 3UL );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
@@ -7009,7 +7009,7 @@ void SparseNumericTest::testTranspose()
    {
       test_ = "Column-major self-transpose via SymmetricMatrix::transpose()";
 
-      TST sym( 4UL );
+      OST sym( 4UL );
       sym(0,0) = 1;
       sym(0,2) = 2;
       sym(0,3) = 3;
@@ -7046,7 +7046,7 @@ void SparseNumericTest::testTranspose()
    {
       test_ = "Column-major self-transpose via trans()";
 
-      TST sym( 4UL );
+      OST sym( 4UL );
       sym(0,0) = 1;
       sym(0,2) = 2;
       sym(0,3) = 3;
@@ -7155,12 +7155,12 @@ void SparseNumericTest::testSwap()
    {
       test_ = "Column-major SymmetricMatrix swap";
 
-      TST sym1( 2UL );
+      OST sym1( 2UL );
       sym1(0,0) = 1;
       sym1(0,1) = 2;
       sym1(1,1) = 3;
 
-      TST sym2( 2UL );
+      OST sym2( 2UL );
       sym2(0,0) = 4;
       sym2(0,1) = 5;
 
@@ -7351,10 +7351,10 @@ void SparseNumericTest::testFind()
    {
       test_ = "Column-major SymmetricMatrix::find()";
 
-      typedef TST::ConstIterator  ConstIterator;
+      typedef OST::ConstIterator  ConstIterator;
 
       // Initialization check
-      TST sym( 8UL, 3UL );
+      OST sym( 8UL, 3UL );
       sym(2,1) = 1;
       sym(3,2) = 2;
       sym(5,6) = 3;
@@ -7643,10 +7643,10 @@ void SparseNumericTest::testLowerBound()
    {
       test_ = "Column-major SymmetricMatrix::lowerBound()";
 
-      typedef TST::ConstIterator  ConstIterator;
+      typedef OST::ConstIterator  ConstIterator;
 
       // Initialization check
-      TST sym( 6UL, 3UL );
+      OST sym( 6UL, 3UL );
       sym(2,1) = 1;
       sym(4,1) = 2;
 
@@ -7944,10 +7944,10 @@ void SparseNumericTest::testUpperBound()
    {
       test_ = "Column-major SymmetricMatrix::upperBound()";
 
-      typedef TST::ConstIterator  ConstIterator;
+      typedef OST::ConstIterator  ConstIterator;
 
       // Initialization check
-      TST sym( 6UL, 3UL );
+      OST sym( 6UL, 3UL );
       sym(2,1) = 1;
       sym(4,1) = 2;
 
@@ -8167,7 +8167,7 @@ void SparseNumericTest::testIsDefault()
 
       // isDefault with 0x0 matrix
       {
-         TST sym;
+         OST sym;
 
          if( isDefault( sym ) != true ) {
             std::ostringstream oss;
@@ -8181,7 +8181,7 @@ void SparseNumericTest::testIsDefault()
 
       // isDefault with default matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
 
          if( isDefault( sym(0,1) ) != true ) {
             std::ostringstream oss;
@@ -8204,7 +8204,7 @@ void SparseNumericTest::testIsDefault()
 
       // isDefault with non-default matrix
       {
-         TST sym( 3UL );
+         OST sym( 3UL );
          sym(1,0) = 1;
 
          if( isDefault( sym(0,1) ) != false ) {
@@ -8797,9 +8797,9 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::SparseSubmatrix<TST>  SMT;
+      typedef blaze::SparseSubmatrix<OST>  SMT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -8890,9 +8890,9 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 1)";
 
-      typedef blaze::SparseSubmatrix<TST>  SMT;
+      typedef blaze::SparseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -8997,9 +8997,9 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 2)";
 
-      typedef blaze::SparseSubmatrix<TST>  SMT;
+      typedef blaze::SparseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9104,9 +9104,9 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 3)";
 
-      typedef blaze::SparseSubmatrix<TST>  SMT;
+      typedef blaze::SparseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9211,9 +9211,9 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (assignment test 4)";
 
-      typedef blaze::SparseSubmatrix<TST>  SMT;
+      typedef blaze::SparseSubmatrix<OST>  SMT;
 
-      TST sym( 6UL );
+      OST sym( 6UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9490,9 +9490,9 @@ void SparseNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::SparseRow<TST>  RT;
+      typedef blaze::SparseRow<OST>  RT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9578,9 +9578,9 @@ void SparseNumericTest::testRow()
    {
       test_ = "Column-major row() function (assignment test)";
 
-      typedef blaze::SparseRow<TST>  RT;
+      typedef blaze::SparseRow<OST>  RT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9765,9 +9765,9 @@ void SparseNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::SparseColumn<TST>  CT;
+      typedef blaze::SparseColumn<OST>  CT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;
@@ -9853,9 +9853,9 @@ void SparseNumericTest::testColumn()
    {
       test_ = "Column-major column() function (assignment test)";
 
-      typedef blaze::SparseColumn<TST>  CT;
+      typedef blaze::SparseColumn<OST>  CT;
 
-      TST sym( 3UL );
+      OST sym( 3UL );
       sym(0,0) =  1;
       sym(0,1) = -4;
       sym(0,2) =  7;

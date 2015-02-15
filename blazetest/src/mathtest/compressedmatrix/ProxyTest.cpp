@@ -302,7 +302,7 @@ void ProxyTest::testAssignment()
    {
       test_ = "Column-major MatrixAccessProxy homogeneous assignment";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 3UL, 2 );
 
       mat(0,1) = 4;
@@ -339,7 +339,7 @@ void ProxyTest::testAssignment()
       test_ = "Column-major MatrixAccessProxy array assignment";
 
       const int array[3] = { 1, 2, 3 };
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 1UL, 2 );
 
       mat(0,1) = array;
@@ -375,7 +375,7 @@ void ProxyTest::testAssignment()
    {
       test_ = "Column-major MatrixAccessProxy copy assignment";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 3UL, 2 );
 
       mat(1,0) = mat(0,1);
@@ -417,7 +417,7 @@ void ProxyTest::testAssignment()
       tmp[0] = 1;
       tmp[1] = 2;
       tmp[2] = 3;
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
 
       mat(0,1) = tmp;
 
@@ -1117,7 +1117,7 @@ void ProxyTest::testScaling()
    {
       test_ = "Column-major MatrixAccessProxy self-scaling (v*=s)";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DV( 1UL, 2 );
 
       mat(1,1) *= 2;
@@ -1153,7 +1153,7 @@ void ProxyTest::testScaling()
    {
       test_ = "Column-major MatrixAccessProxy self-scaling (v*=s)";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DV( 1UL, 2 );
 
       mat(1,1) /= 2;
@@ -1189,7 +1189,7 @@ void ProxyTest::testScaling()
    {
       test_ = "Column-major MatrixAccessProxy::scale()";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DV( 1UL, 2 );
 
       mat(1,1).scale( 2 );
@@ -1274,7 +1274,7 @@ void ProxyTest::testSubscript()
    {
       test_ = "Column-major MatrixAccessProxy::operator[]";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DV( 1UL, 2 );
       mat(1,1)[0] = 3;
 
@@ -1362,7 +1362,7 @@ void ProxyTest::testFunctionCall()
    {
       test_ = "Column-major MatrixAccessProxy::operator()";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DM( 1UL, 1UL, 2 );
       mat(1,1)(0,0) = 3;
 
@@ -1500,7 +1500,7 @@ void ProxyTest::testIterator()
    //=====================================================================================
 
    {
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 4UL, 4 );
 
       // Counting the number of elements via Iterator
@@ -1544,7 +1544,7 @@ void ProxyTest::testIterator()
    //=====================================================================================
 
    {
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 4UL, 4UL, 4 );
 
       // Counting the number of elements via Iterator
@@ -1658,7 +1658,7 @@ void ProxyTest::testNonZeros()
    {
       test_ = "Column-major MatrixAccessProxy::nonZeros()";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DV( 8UL, 8 );
 
       checkRows    ( mat, 2UL );
@@ -1682,7 +1682,7 @@ void ProxyTest::testNonZeros()
    {
       test_ = "Row-major MatrixAccessProxy::nonZeros()";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = DM( 3UL, 3UL, 3 );
 
       checkRows    ( mat, 2UL );
@@ -1783,7 +1783,7 @@ void ProxyTest::testReset()
    {
       test_ = "Column-major MatrixAccessProxy::reset()";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 8UL, 8 );
       mat(0,1).reset();
 
@@ -1808,7 +1808,7 @@ void ProxyTest::testReset()
    {
       test_ = "Column-major MatrixAccessProxy::reset( size_t )";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 3UL, 3UL, 3 );
       mat(0,1).reset( 1UL );
 
@@ -1876,7 +1876,7 @@ void ProxyTest::testClear()
    {
       test_ = "Column-major MatrixAccessProxy::clear()";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 8UL, 8 );
       mat(0,1).clear();
 
@@ -1986,7 +1986,7 @@ void ProxyTest::testSet()
    {
       test_ = "Column-major MatrixAccessProxy::set( size_t, ElementType )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SV( 3UL, 1UL );
       mat(1,1).set( 1UL, 5 );
 
@@ -2021,7 +2021,7 @@ void ProxyTest::testSet()
    {
       test_ = "Column-major MatrixAccessProxy::set( size_t, size_t, ElementType )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SM( 2UL, 2UL, 1UL );
       mat(1,1).set( 0UL, 1UL, 5 );
 
@@ -2147,7 +2147,7 @@ void ProxyTest::testInsert()
    {
       test_ = "Column-major MatrixAccessProxy::insert( size_t, ElementType )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SV( 3UL, 1UL );
       mat(1,1).insert( 1UL, 5 );
 
@@ -2182,7 +2182,7 @@ void ProxyTest::testInsert()
    {
       test_ = "Column-major MatrixAccessProxy::insert( size_t, size_t, ElementType )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SM( 2UL, 2UL, 1UL );
       mat(1,1).insert( 0UL, 1UL, 5 );
 
@@ -2311,7 +2311,7 @@ void ProxyTest::testAppend()
    {
       test_ = "Column-major MatrixAccessProxy::append( size_t, ElementType )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SV( 3UL );
       mat(1,1).reserve( 1UL );
       mat(1,1).append( 1UL, 5 );
@@ -2347,7 +2347,7 @@ void ProxyTest::testAppend()
    {
       test_ = "Column-major MatrixAccessProxy::append( size_t, size_t, ElementType )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(1,1) = SM( 2UL, 2UL );
       mat(1,1).reserve( 0UL, 1UL );
       mat(1,1).append( 0UL, 1UL, 5 );
@@ -2544,7 +2544,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( size_t )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SV( 3UL, 1UL );
       mat(0,0).insert( 1UL, 5 );
       mat(0,0).erase( 1UL );
@@ -2564,7 +2564,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SV( 3UL, 1UL );
       mat(0,0).erase( mat(0,0).insert( 1UL, 5 ) );
 
@@ -2583,7 +2583,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( Iterator, Iterator )";
 
-      TSVM mat( 2UL, 2UL, 1UL );
+      OSVM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SV( 3UL, 1UL );
       mat(0,0).insert( 0UL, 1 );
       mat(0,0).insert( 1UL, 2 );
@@ -2610,7 +2610,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( size_t, size_t )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SM( 2UL, 2UL, 1UL );
       mat(0,0).insert( 0UL, 1UL, 5 );
       mat(0,0).erase( 0UL, 1UL );
@@ -2634,7 +2634,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SM( 2UL, 2UL, 1UL );
       mat(0,0).erase( 0UL, mat(0,0).insert( 0UL, 1UL, 5 ) );
 
@@ -2657,7 +2657,7 @@ void ProxyTest::testErase()
    {
       test_ = "Column-major MatrixAccessProxy::erase( Iterator )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SM( 2UL, 2UL, 1UL );
       mat(0,0).insert( 0UL, 0UL, 1 );
       mat(0,0).insert( 0UL, 1UL, 2 );
@@ -2750,7 +2750,7 @@ void ProxyTest::testResize()
    {
       test_ = "Row-major MatrixAccessProxy::resize( size_t )";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,0).resize( 5UL );
 
       checkRows    ( mat, 2UL );
@@ -2773,7 +2773,7 @@ void ProxyTest::testResize()
    {
       test_ = "Column-major MatrixAccessProxy::resize( size_t, size_t )";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(0,0).resize( 5UL, 5UL );
 
       checkRows    ( mat, 2UL );
@@ -2863,7 +2863,7 @@ void ProxyTest::testExtend()
    {
       test_ = "Row-major MatrixAccessProxy::extend( size_t )";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,0).extend( 5UL );
 
       checkRows    ( mat, 2UL );
@@ -2886,7 +2886,7 @@ void ProxyTest::testExtend()
    {
       test_ = "Column-major MatrixAccessProxy::extend( size_t, size_t )";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(0,0).extend( 5UL, 5UL );
 
       checkRows    ( mat, 2UL );
@@ -2980,7 +2980,7 @@ void ProxyTest::testReserve()
    {
       test_ = "Column-major MatrixAccessProxy::reserve( size_t )";
 
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,0).resize( 5UL );
       mat(0,0).reserve( 10UL );
 
@@ -3004,7 +3004,7 @@ void ProxyTest::testReserve()
    {
       test_ = "Column-major MatrixAccessProxy::reserve( size_t, size_t )";
 
-      TSMM mat( 2UL, 2UL, 1UL );
+      OSMM mat( 2UL, 2UL, 1UL );
       mat(0,0) = SM( 2UL, 2UL, 1UL );
       mat(0,0).reserve( 0UL, 1UL );
 
@@ -3144,7 +3144,7 @@ void ProxyTest::testTrim()
    {
       test_ = "Column-major MatrixAccessProxy::trim()";
 
-      TSMM mat( 2UL, 2UL, 4UL );
+      OSMM mat( 2UL, 2UL, 4UL );
       mat(0,0).resize( 2UL, 2UL );
       mat(0,0).reserve( 10UL );
       mat(0,0).reserve( 0UL, 6UL );
@@ -3190,7 +3190,7 @@ void ProxyTest::testTrim()
    {
       test_ = "Column-major MatrixAccessProxy::trim( size_t )";
 
-      TSMM mat( 2UL, 2UL, 4UL );
+      OSMM mat( 2UL, 2UL, 4UL );
       mat(0,0).resize( 2UL, 2UL );
       mat(0,0).reserve( 10UL );
       mat(0,0).reserve( 0UL, 6UL );
@@ -3282,7 +3282,7 @@ void ProxyTest::testTranspose()
    {
       test_ = "Column-major MatrixAccessProxy::transpose()";
 
-      TDMM mat( 2UL, 2UL, 1UL );
+      ODMM mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 5UL, 3UL );
       mat(1,1).transpose();
 
@@ -3398,7 +3398,7 @@ void ProxyTest::testSwap()
    test_ = "Column-major MatrixAccessProxy swap";
 
    {
-      TDVM mat( 2UL, 2UL, 2UL );
+      ODVM mat( 2UL, 2UL, 2UL );
       mat(0,0) = DV( 2UL, 0 );
       mat(1,1) = DV( 6UL, 0 );
 
@@ -3420,7 +3420,7 @@ void ProxyTest::testSwap()
    }
 
    {
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 2UL, 2 );
       DV tmp( 6UL, 6 );
 
@@ -3443,7 +3443,7 @@ void ProxyTest::testSwap()
    }
 
    {
-      TDVM mat( 2UL, 2UL, 1UL );
+      ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 2UL, 2 );
       DV tmp( 6UL, 6 );
 
@@ -3592,7 +3592,7 @@ void ProxyTest::testFind()
    {
       test_ = "Column-major MatrixAccessProxy::find( size_t )";
 
-      TSVM mat( 2UL, 2UL, 4UL );
+      OSVM mat( 2UL, 2UL, 4UL );
       mat(0,0) = SV( 5UL, 3UL );
       mat(0,0)[1] = 2;
       mat(0,0)[2] = 3;
@@ -3643,7 +3643,7 @@ void ProxyTest::testFind()
    {
       test_ = "Column-major MatrixAccessProxy::find( size_t, size_t )";
 
-      TSMM mat( 2UL, 2UL, 4UL );
+      OSMM mat( 2UL, 2UL, 4UL );
       mat(0,0) = SM( 2UL, 5UL, 3UL );
       mat(0,0)(1,1) = 2;
       mat(0,0)(1,2) = 3;

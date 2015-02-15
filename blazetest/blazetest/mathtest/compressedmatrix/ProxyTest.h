@@ -152,57 +152,57 @@ class ProxyTest
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>      DM;  //!< Type of the dense matrix elements.
    typedef blaze::CompressedMatrix<int,blaze::rowMajor>   SM;  //!< Type of the sparse matrix elements.
 
-   //! Type of the compressed matrix with dense vector elements.
+   //! Row-major compressed matrix type with dense vector elements.
    typedef blaze::CompressedMatrix<DV,blaze::rowMajor>  DVM;
 
-   //! Transpose compressed matrix type with dense vector elements.
-   typedef DVM::TransposeType  TDVM;
+   //! Column-major compressed matrix type with dense vector elements.
+   typedef DVM::OppositeType  ODVM;
 
-   //! Type of the compressed matrix with sparse vector elements.
+   //! Row-major compressed matrix type with sparse vector elements.
    typedef blaze::CompressedMatrix<SV,blaze::rowMajor>  SVM;
 
-   //! Transpose compressed matrix type with sparse vector elements.
-   typedef SVM::TransposeType  TSVM;
+   //! Column-major compressed matrix type with sparse vector elements.
+   typedef SVM::OppositeType  OSVM;
 
-   //! Type of the compressed matrix with dense matrix elements.
+   //! Row-major compressed matrix type with dense matrix elements.
    typedef blaze::CompressedMatrix<DM,blaze::rowMajor>  DMM;
 
-   //! Transpose compressed matrix type with dense matrix elements.
-   typedef DMM::TransposeType  TDMM;
+   //! Column-major compressed matrix type with dense matrix elements.
+   typedef DMM::OppositeType  ODMM;
 
-   //! Type of the compressed matrix with sparse matrix elements.
+   //! Row-major compressed matrix type with sparse matrix elements.
    typedef blaze::CompressedMatrix<SM,blaze::rowMajor>  SMM;
 
-   //! Transpose compressed matrix type with sparse matrix elements.
-   typedef SMM::TransposeType  TSMM;
+   //! Column-major compressed matrix type with sparse matrix elements.
+   typedef SMM::OppositeType  OSMM;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( DVM  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TDVM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ODVM );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SVM  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSVM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSVM );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( DMM  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TDMM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ODMM );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SMM  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TSMM );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OSMM );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( DVM );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( SVM );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( DMM );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( SMM );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDVM );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TSVM );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TDMM );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( TSMM );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM, TDVM::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM, TSVM::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM, TDMM::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM, TSMM::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM::ElementType, TDVM::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM::ElementType, TSVM::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM::ElementType, TDMM::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM::ElementType, TSMM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODVM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OSVM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ODMM );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OSMM );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM, ODVM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM, OSVM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM, ODMM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM, OSMM::TransposeType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DVM::ElementType, ODVM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SVM::ElementType, OSVM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DMM::ElementType, ODMM::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SMM::ElementType, OSMM::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };

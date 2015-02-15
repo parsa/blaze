@@ -134,9 +134,9 @@ class SymmetricTest
    //**Type definitions****************************************************************************
    typedef blaze::DynamicMatrix<int,blaze::rowMajor>  DMT;  //!< Row-major dynamic matrix type.
    typedef blaze::SymmetricMatrix<DMT>                MT;   //!< Symmetric row-major matrix type.
-   typedef MT::OppositeType                           TMT;  //!< Symmetric column-major matrix type.
+   typedef MT::OppositeType                           OMT;  //!< Symmetric column-major matrix type.
    typedef blaze::DenseRow<MT>                        RT;   //!< Dense row type for row-major matrices.
-   typedef blaze::DenseRow<TMT>                       TRT;  //!< Dense row type for column-major matrices.
+   typedef blaze::DenseRow<OMT>                       ORT;  //!< Dense row type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -150,7 +150,7 @@ class SymmetricTest
                     0 &  0 &  3 &  4 \\
                     0 & -2 &  4 &  5 \\
                     \end{array}\right)\f]. */
-   TMT tmat_;  //!< Column-major symmetric matrix.
+   OMT tmat_;  //!< Column-major symmetric matrix.
                /*!< The \f$ 4 \times 4 \f$ matrix is initialized as
                     \f[\left(\begin{array}{*{4}{c}}
                     0 &  0 &  0 &  0 \\
@@ -166,11 +166,11 @@ class SymmetricTest
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ORT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( TRT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ORT );
    /*! \endcond */
    //**********************************************************************************************
 };

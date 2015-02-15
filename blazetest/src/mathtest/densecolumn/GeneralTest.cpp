@@ -220,7 +220,7 @@ void GeneralTest::testConstructors()
 
       // 0th matrix column
       {
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
 
          checkSize    ( col0, 4UL );
          checkCapacity( col0, 4UL );
@@ -239,7 +239,7 @@ void GeneralTest::testConstructors()
 
       // 1st matrix column
       {
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
 
          checkSize    ( col1, 4UL );
          checkCapacity( col1, 4UL );
@@ -258,7 +258,7 @@ void GeneralTest::testConstructors()
 
       // 2nd matrix column
       {
-         TCT col2 = column( tmat_, 2UL );
+         OCT col2 = column( tmat_, 2UL );
 
          checkSize    ( col2, 4UL );
          checkCapacity( col2, 4UL );
@@ -277,7 +277,7 @@ void GeneralTest::testConstructors()
 
       // 3rd matrix column
       {
-         TCT col3 = column( tmat_, 3UL );
+         OCT col3 = column( tmat_, 3UL );
 
          checkSize    ( col3, 4UL );
          checkCapacity( col3, 4UL );
@@ -296,7 +296,7 @@ void GeneralTest::testConstructors()
 
       // 4th matrix column
       {
-         TCT col4 = column( tmat_, 4UL );
+         OCT col4 = column( tmat_, 4UL );
 
          checkSize    ( col4, 4UL );
          checkCapacity( col4, 4UL );
@@ -534,7 +534,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TCT col1 = column( tmat_, 1UL );
+      OCT col1 = column( tmat_, 1UL );
       col1 = 8;
 
       checkSize    ( col1 ,  4UL );
@@ -581,7 +581,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TCT col1 = column( tmat_, 1UL );
+      OCT col1 = column( tmat_, 1UL );
       col1 = column( tmat_, 2UL );
 
       checkSize    ( col1 ,  4UL );
@@ -628,7 +628,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TCT col1 = column( tmat_, 1UL );
+      OCT col1 = column( tmat_, 1UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec1( 4UL, 0 );
       vec1[1] = 8;
@@ -680,7 +680,7 @@ void GeneralTest::testAssignment()
 
       initialize();
 
-      TCT col4 = column( tmat_, 4UL );
+      OCT col4 = column( tmat_, 4UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec1( 4UL );
       vec1[3] = 9;
@@ -895,7 +895,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
       col2 += column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
@@ -942,7 +942,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -994,7 +994,7 @@ void GeneralTest::testAddAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1210,7 +1210,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
       col2 -= column( tmat_, 3UL );
 
       checkSize    ( col2 ,  4UL );
@@ -1257,7 +1257,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1309,7 +1309,7 @@ void GeneralTest::testSubAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -1525,7 +1525,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
       col2 *= column( tmat_, 3UL );
 
       checkSize    ( col2 , 4UL );
@@ -1572,7 +1572,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::DynamicVector<int,blaze::columnVector> vec( 4UL, 0 );
       vec[0] =  2;
@@ -1624,7 +1624,7 @@ void GeneralTest::testMultAssign()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       blaze::CompressedVector<int,blaze::columnVector> vec( 4UL );
       vec[0] =  2;
@@ -2018,7 +2018,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       col2 *= 3;
 
@@ -2066,7 +2066,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       col2 = col2 * 3;
 
@@ -2114,7 +2114,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       col2 = 3 * col2;
 
@@ -2162,7 +2162,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       col2 /= 0.5;
 
@@ -2210,7 +2210,7 @@ void GeneralTest::testScaling()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       col2 = col2 / 0.5;
 
@@ -2260,7 +2260,7 @@ void GeneralTest::testScaling()
 
       // Integral scaling the 3rd column
       {
-         TCT col3 = column( tmat_, 3UL );
+         OCT col3 = column( tmat_, 3UL );
          col3.scale( 3 );
 
          checkSize    ( col3 ,  4UL );
@@ -2299,7 +2299,7 @@ void GeneralTest::testScaling()
 
       // Floating point scaling the 3rd column
       {
-         TCT col3 = column( tmat_, 3UL );
+         OCT col3 = column( tmat_, 3UL );
          col3.scale( 0.5 );
 
          checkSize    ( col3 ,  4UL );
@@ -2605,7 +2605,7 @@ void GeneralTest::testSubscript()
 
       initialize();
 
-      TCT col2 = column( tmat_, 2UL );
+      OCT col2 = column( tmat_, 2UL );
 
       // Assignment to the element at index 1
       col2[1] = 9;
@@ -3238,9 +3238,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         TCT::Iterator it = TCT::Iterator();
+         OCT::Iterator it = OCT::Iterator();
 
-         if( it != TCT::Iterator() ) {
+         if( it != OCT::Iterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3252,9 +3252,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         TCT::ConstIterator it = TCT::ConstIterator();
+         OCT::ConstIterator it = OCT::ConstIterator();
 
-         if( it != TCT::ConstIterator() ) {
+         if( it != OCT::ConstIterator() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator default constructor\n";
@@ -3266,8 +3266,8 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         TCT col2 = column( tmat_, 2UL );
-         TCT::ConstIterator it( begin( col2 ) );
+         OCT col2 = column( tmat_, 2UL );
+         OCT::ConstIterator it( begin( col2 ) );
 
          if( it == end( col2 ) || *it != -2 ) {
             std::ostringstream oss;
@@ -3281,7 +3281,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction";
 
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
          const size_t number( end( col1 ) - begin( col1 ) );
 
          if( number != 4UL ) {
@@ -3299,7 +3299,7 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction";
 
-         TCT col2 = column( tmat_, 2UL );
+         OCT col2 = column( tmat_, 2UL );
          const size_t number( cend( col2 ) - cbegin( col2 ) );
 
          if( number != 4UL ) {
@@ -3317,9 +3317,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         TCT col3 = column( tmat_, 3UL );
-         TCT::ConstIterator it ( cbegin( col3 ) );
-         TCT::ConstIterator end( cend( col3 ) );
+         OCT col3 = column( tmat_, 3UL );
+         OCT::ConstIterator it ( cbegin( col3 ) );
+         OCT::ConstIterator end( cend( col3 ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -3414,10 +3414,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
          int value = 6;
 
-         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
+         for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it = value++;
          }
 
@@ -3452,10 +3452,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
+         for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it += value++;
          }
 
@@ -3490,10 +3490,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
          int value = 2;
 
-         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
+         for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it -= value++;
          }
 
@@ -3528,10 +3528,10 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
          int value = 1;
 
-         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
+         for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it *= value++;
          }
 
@@ -3566,9 +3566,9 @@ void GeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
 
-         for( TCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
+         for( OCT::Iterator it=begin( col0 ); it!=end( col0 ); ++it ) {
             *it /= 2;
          }
 
@@ -3686,7 +3686,7 @@ void GeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      TCT col3 = column( tmat_, 3UL );
+      OCT col3 = column( tmat_, 3UL );
 
       checkSize    ( col3, 4UL );
       checkCapacity( col3, 4UL );
@@ -3822,7 +3822,7 @@ void GeneralTest::testReset()
 
       // Resetting a single element in column 3
       {
-         TCT col3 = column( tmat_, 3UL );
+         OCT col3 = column( tmat_, 3UL );
          reset( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -3845,7 +3845,7 @@ void GeneralTest::testReset()
 
       // Resetting the 4th column
       {
-         TCT col4 = column( tmat_, 4UL );
+         OCT col4 = column( tmat_, 4UL );
          reset( col4 );
 
          checkSize    ( col4 , 4UL );
@@ -3929,7 +3929,7 @@ void GeneralTest::testClear()
 
       // Clearing a single element in column 3
       {
-         TCT col3 = column( tmat_, 3UL );
+         OCT col3 = column( tmat_, 3UL );
          clear( col3[1] );
 
          checkSize    ( col3 , 4UL );
@@ -4036,7 +4036,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with default column
       {
-         TCT col0 = column( tmat_, 0UL );
+         OCT col0 = column( tmat_, 0UL );
 
          if( isDefault( col0[1] ) != true ) {
             std::ostringstream oss;
@@ -4059,7 +4059,7 @@ void GeneralTest::testIsDefault()
 
       // isDefault with non-default column
       {
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
 
          if( isDefault( col1[1] ) != false ) {
             std::ostringstream oss;
@@ -4335,8 +4335,8 @@ void GeneralTest::testIsSame()
 
       // isSame with matching columns
       {
-         TCT col1 = column( tmat_, 1UL );
-         TCT col2 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
+         OCT col2 = column( tmat_, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -4351,8 +4351,8 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching columns
       {
-         TCT col1 = column( tmat_, 1UL );
-         TCT col2 = column( tmat_, 2UL );
+         OCT col1 = column( tmat_, 1UL );
+         OCT col2 = column( tmat_, 2UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -4367,9 +4367,9 @@ void GeneralTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::DenseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<OCT>  SubvectorType;
 
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
@@ -4395,9 +4395,9 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::DenseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<OCT>  SubvectorType;
 
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -4423,9 +4423,9 @@ void GeneralTest::testIsSame()
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::DenseSubvector<TCT>  SubvectorType;
+         typedef blaze::DenseSubvector<OCT>  SubvectorType;
 
-         TCT col1 = column( tmat_, 1UL );
+         OCT col1 = column( tmat_, 1UL );
          SubvectorType sv = subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
@@ -4451,7 +4451,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
@@ -4471,7 +4471,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching columns on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
 
          SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
@@ -4491,7 +4491,7 @@ void GeneralTest::testIsSame()
 
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
          typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
@@ -4513,7 +4513,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
          typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
@@ -4535,7 +4535,7 @@ void GeneralTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::DenseSubmatrix<TMT>         SubmatrixType;
+         typedef blaze::DenseSubmatrix<OMT>         SubmatrixType;
          typedef blaze::DenseColumn<SubmatrixType>  ColumnType;
          typedef blaze::DenseSubvector<ColumnType>  SubvectorType;
 
@@ -4615,9 +4615,9 @@ void GeneralTest::testSubvector()
 
       initialize();
 
-      typedef blaze::DenseSubvector<TCT>  SubvectorType;
+      typedef blaze::DenseSubvector<OCT>  SubvectorType;
 
-      TCT col1 = column( tmat_, 1UL );
+      OCT col1 = column( tmat_, 1UL );
       SubvectorType sv = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
