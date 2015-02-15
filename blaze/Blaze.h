@@ -91,7 +91,8 @@ namespace blaze {}
 //          </li>
 //          <li> Adaptors
 //             <ul>
-//                <li> \ref adaptors_symmetric_matrix </li>
+//                <li> \ref adaptors_symmetric_matrices </li>
+//                <li> \ref adaptors_triangular_matrices </li>
 //             </ul>
 //          </li>
 //          <li> Views
@@ -1418,7 +1419,7 @@ namespace blaze {}
 //**Matrix Operations******************************************************************************
 /*!\page matrix_operations Matrix Operations
 //
-// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrix </center>
+// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices </center>
 //
 //
 // \tableofcontents
@@ -2123,6 +2124,34 @@ namespace blaze {}
 // Note that non-square matrices are never considered to be symmetric!
 //
 //
+// \n \subsection matrix_operations_islower isLower
+//
+// Via the \c isLower() function it is possible to check whether a dense or sparse matrix is
+// lower triangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isLower( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be lower triangular!
+//
+//
+// \n \subsection matrix_operations_isUpper isUpper
+//
+// Via the \c isUpper() function it is possible to check whether a dense or sparse matrix is
+// upper triangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isUpper( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be upper triangular!
+//
+//
 // \n \subsection matrix_operators_abs Absolute Values
 //
 // The \c abs() function can be used to compute the absolute values of each element of a matrix.
@@ -2205,15 +2234,15 @@ namespace blaze {}
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
 
-// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrix </center>
+// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices </center>
 */
 //*************************************************************************************************
 
 
 //**Symmetric Matrices*****************************************************************************
-/*!\page adaptors_symmetric_matrix Symmetric Matrices
+/*!\page adaptors_symmetric_matrices Symmetric Matrices
 //
-// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_subvectors </center>
+// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices </center>
 //
 //
 // \tableofcontents
@@ -2225,11 +2254,11 @@ namespace blaze {}
 // symmetric matrix is always equal to its transpose (\f$ A = A^T \f$) and that all non-diagonal
 // values have an identical counterpart (\f$ a_{ij} == a_{ji} \f$). This symmetry property can
 // be exploited to provide higher efficiency and/or lower memory consumption. Within the \b Blaze
-// library, symmetric matrices are realized by the \ref adaptors_symmetric_matrix_symmetricmatrix
+// library, symmetric matrices are realized by the \ref adaptors_symmetric_matrices_symmetricmatrix
 // class template.
 //
 //
-// \n \section adaptors_symmetric_matrix_symmetricmatrix SymmetricMatrix
+// \n \section adaptors_symmetric_matrices_symmetricmatrix SymmetricMatrix
 // <hr>
 //
 // The SymmetricMatrix class template is an adapter for existing dense and sparse matrix types.
@@ -2276,18 +2305,18 @@ namespace blaze {}
 // will also be a column-major matrix.
 //
 //
-// \n \section adaptors_symmetric_matrix_special_properties Special Properties of Symmetric Matrices
+// \n \section adaptors_symmetric_matrices_special_properties Special Properties of Symmetric Matrices
 // <hr>
 //
 // A symmetric matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
 // some important exceptions resulting from the symmetry constraint:
 //
-//  -# <b>\ref symmetricmatrix_square</b>
-//  -# <b>\ref symmetricmatrix_symmetry</b>
-//  -# <b>\ref symmetricmatrix_initialization</b>
+//  -# <b>\ref adaptors_symmetric_matrices_square</b>
+//  -# <b>\ref adaptors_symmetric_matrices_symmetry</b>
+//  -# <b>\ref adaptors_symmetric_matrices_initialization</b>
 //
-// \n \subsection adaptors_symmetric_matrix_square Symmetric Matrices Must Always be Square!
+// \n \subsection adaptors_symmetric_matrices_square Symmetric Matrices Must Always be Square!
 //
 // In case a resizable matrix is used (as for instance blaze::HybridMatrix, blaze::DynamicMatrix,
 // or blaze::CompressedMatrix), this means that the according constructors, the \c resize() and
@@ -2324,7 +2353,7 @@ namespace blaze {}
    SymmetricMatrix< StaticMatrix<int,3UL,4UL,columnMajor> > B;
    \endcode
 
-// \n \subsection adaptors_symmetric_matrix_symmetry The Symmetric Property is Always Enforced!
+// \n \subsection adaptors_symmetric_matrices_symmetry The Symmetric Property is Always Enforced!
 //
 // This means that modifying the element \f$ a_{ij} \f$ of a symmetric matrix also modifies its
 // counterpart element \f$ a_{ji} \f$. Also, it is only possible to assign matrices that are
@@ -2479,7 +2508,7 @@ namespace blaze {}
    submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 
-// \n \subsection adaptors_symmetric_matrix_initialization The Elements of a Dense Symmetric Matrix are Always Default Initialized!
+// \n \subsection adaptors_symmetric_matrices_initialization The Elements of a Dense Symmetric Matrix are Always Default Initialized!
 //
 // Although this results in a small loss of efficiency (especially in case all default values are
 // overridden afterwards), this property is important since otherwise the symmetric property of
@@ -2496,7 +2525,7 @@ namespace blaze {}
    SymmetricMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
-// \n \section adaptors_symmetric_matrix_arithmetic_operations Arithmetic Operations
+// \n \section adaptors_symmetric_matrices_arithmetic_operations Arithmetic Operations
 // <hr>
 //
 // A SymmetricMatrix matrix can participate in numerical operations in any way any other dense
@@ -2530,7 +2559,7 @@ namespace blaze {}
    G *= A * E;    // Multiplication assignment
    \endcode
 
-// \n \section adaptors_symmetric_matrix_block_structured Block-Structured Symmetric Matrices
+// \n \section adaptors_symmetric_matrices_block_structured Block-Structured Symmetric Matrices
 // <hr>
 //
 // It is also possible to use block-structured symmetric matrices:
@@ -2558,17 +2587,17 @@ namespace blaze {}
    A(2,4)(1,1) = -5;
    \endcode
 
-// \n \section adaptors_symmetric_matrix_performance Performance Considerations
+// \n \section adaptors_symmetric_matrices_performance Performance Considerations
 // <hr>
 //
-// When the symmetric property of a matrix is know beforehands using the SymmetricMatrix adaptor
+// When the symmetric property of a matrix is known beforehands using the SymmetricMatrix adaptor
 // instead of a general matrix can be a considerable performance advantage. The \b Blaze library
 // tries to exploit the properties of symmetric matrices whenever possible. However, there are
 // also situations when using a symmetric matrix introduces some overhead. The following examples
-// demonstrate several situations, where symmetric matrices can positively or negatively impact
+// demonstrate several situations where symmetric matrices can positively or negatively impact
 // performance.
 //
-// \n \subsection adaptors_symmetric_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
+// \n \subsection adaptors_symmetric_matrices_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
 //
 // When multiplying two matrices, at least one of which is symmetric, \b Blaze can exploit the fact
 // that \f$ A = A^T \f$ and choose the fastest and most suited combination of storage orders for the
@@ -2601,7 +2630,7 @@ namespace blaze {}
 // optimized form can be vectorized. Therefore, in the context of matrix multiplications, using the
 // SymmetricMatrix adapter is obviously an advantage.
 //
-// \n \subsection adaptors_symmetric_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
+// \n \subsection adaptors_symmetric_matrices_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
 //
 // A similar optimization is possible in case of matrix/vector multiplications:
 
@@ -2633,7 +2662,7 @@ namespace blaze {}
 
 // which also significantly increases the performance.
 //
-// \n \subsection adaptors_symmetric_matrix_views Positive Impact: Row/Column Views on Column/Row-Major Matrices
+// \n \subsection adaptors_symmetric_matrices_views Positive Impact: Row/Column Views on Column/Row-Major Matrices
 //
 // Another example is the optimization of a row view on a column-major symmetric matrix:
 
@@ -2656,7 +2685,7 @@ namespace blaze {}
 // this also works for column views on row-major matrices, where \b Blaze can use the according
 // row instead of a column in order to provide maximum performance.
 //
-// \n \subsection adaptors_symmetric_matrix_assignment Negative Impact: Assignment of a General Matrix
+// \n \subsection adaptors_symmetric_matrices_assignment Negative Impact: Assignment of a General Matrix
 //
 // In contrast to using a symmetric matrix on the right-hand side of an assignment (i.e. for read
 // access), which introduces absolutely no performance penalty, using a symmetric matrix on the
@@ -2691,7 +2720,567 @@ namespace blaze {}
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 
-// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref views_subvectors </center>
+// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices </center>
+*/
+//*************************************************************************************************
+
+
+//**Triangular Matrices****************************************************************************
+/*!\page adaptors_triangular_matrices Triangular Matrices
+//
+// <center> Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref views_subvectors </center>
+//
+//
+// \tableofcontents
+//
+//
+// Triangular matrices come in two flavors: lower triangular matrices provide the compile time
+// guarantee to be square matrices and that the upper part of the matrix contains only default
+// elements that cannot be modified. Upper triangular matrices on the other hand provide the
+// compile time guarantee to be square and that the lower part of the matrix contains only
+// default elements that cannot be modified. These properties can be exploited to gain higher
+// performance and/or to save memory. Within the \b Blaze library, lower and upper triangular
+// matrices are realized by the \ref adaptors_triangular_matrices_lowermatrix and
+// \ref adaptors_triangular_matrices_uppermatrix class templates.
+//
+//
+// \n \section adaptors_triangular_matrices_lowermatrix LowerMatrix
+// <hr>
+//
+// The blaze::LowerMatrix class template is an adapter for existing dense and sparse matrix types.
+// It inherits the properties and the interface of the given matrix type \a MT and extends it by
+// enforcing the additional invariant that all matrix elements above the diagonal are 0 (lower
+// triangular matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_{0,0} & 0       & 0       & \cdots & 0       \\
+                        l_{1,0} & l_{1,1} & 0       & \cdots & 0       \\
+                        l_{2,0} & l_{2,1} & l_{3,3} & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/LowerMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class LowerMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::LowerMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Note
+// that the given matrix type must be either resizable (as for instance blaze::HybridMatrix or
+// blaze::DynamicMatrix) or must be square at compile time (as for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible lower matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense lower matrix with static memory
+   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense lower matrix based on HybridMatrix
+   blaze::LowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense lower matrix based on DynamicMatrix
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision lower matrix
+   blaze::LowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a lower matrix is depending on the storage order of the adapted matrix
+// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// as blaze::rowMajor), the lower matrix will also be a row-major matrix. Otherwise, if the
+// adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the lower matrix
+// will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_uppermatrix UpperMatrix
+// <hr>
+//
+// The blaze::UpperMatrix class template is an adapter for existing dense and sparse matrix types.
+// It inherits the properties and the interface of the given matrix type \a MT and extends it by
+// enforcing the additional invariant that all matrix elements below the diagonal are 0 (upper
+// triangular matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        u_{0,0} & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0       & u_{1,1} & u_{1,2} & \cdots & u_{1,N} \\
+                        0       & 0       & u_{2,2} & \cdots & u_{2,N} \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & u_{N,N} \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/UpperMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class UpperMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::UpperMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Note
+// that the given matrix type must be either resizable (as for instance blaze::HybridMatrix or
+// blaze::DynamicMatrix) or must be square at compile time (as for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible upper matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense upper matrix with static memory
+   blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense upper matrix based on HybridMatrix
+   blaze::UpperMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense upper matrix based on DynamicMatrix
+   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision upper matrix
+   blaze::UpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of an upper matrix is depending on the storage order of the adapted matrix
+// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// as blaze::rowMajor), the upper matrix will also be a row-major matrix. Otherwise, if the
+// adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the upper matrix
+// will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_special_properties Special Properties of Triangular Matrices
+// <hr>
+//
+// A triangular matrix is used exactly like a matrix of the underlying, adapted matrix type \a MT.
+// It also provides (nearly) the same interface as the underlying matrix type. However, there are
+// some important exceptions resulting from the triangular matrix constraint:
+//
+//  -# <b>\ref adaptors_triangular_matrices_square</b>
+//  -# <b>\ref adaptors_triangular_matrices_symmetry</b>
+//  -# <b>\ref adaptors_triangular_matrices_initialization</b>
+//
+// \n \subsection adaptors_triangular_matrices_square Triangular Matrices Must Always be Square!
+//
+// In case a resizable matrix is used (as for instance blaze::HybridMatrix, blaze::DynamicMatrix,
+// or blaze::CompressedMatrix), this means that the according constructors, the \c resize() and
+// the \c extend() functions only expect a single parameter, which specifies both the number of
+// rows and columns, instead of two (one for the number of rows and one for the number of columns):
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowMajor;
+
+   // Default constructed, default initialized, row-major 3x3 lower dynamic matrix
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A( 3 );
+
+   // Resizing the matrix to 5x5
+   A.resize( 5 );
+
+   // Extending the number of rows and columns by 2, resulting in a 7x7 matrix
+   A.extend( 2 );
+   \endcode
+
+// In case a matrix with a fixed size is used (as for instance blaze::StaticMatrix), the number
+// of rows and number of columns must be specified equally:
+
+   \code
+   using blaze::StaticMatrix;
+   using blaze::LowerMatrix;
+   using blaze::columnMajor;
+
+   // Correct setup of a fixed size column-major 3x3 lower static matrix
+   LowerMatrix< StaticMatrix<int,3UL,3UL,columnMajor> > A;
+
+   // Compilation error: the provided matrix type is not a square matrix type
+   LowerMatrix< StaticMatrix<int,3UL,4UL,columnMajor> > B;
+   \endcode
+
+// \n \subsection adaptors_triangular_matrices_symmetry The Triangular Property is Always Enforced!
+//
+// This means that it is only allowed to modify elements in the lower part or the diagonal of
+// a lower triangular matrix and in the upper part or the diagonal of an upper triangular matrix.
+// Also, it is only possible to assign lower matrices to lower triangular matrices and upper
+// matrices to upper triangular matrices. The following example demonstrates this restriction
+// by means of the blaze::LowerMatrix adaptor. For an example with upper triangular matrices see
+// the blaze::UpperMatrix class documentation.
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::StaticMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowMajor;
+
+   typedef LowerMatrix< CompressedMatrix<double,rowMajor> >  CompressedLower;
+
+   // Default constructed, row-major 3x3 lower compressed matrix
+   CompressedLower A( 3 );
+
+   // Initializing elements via the function call operator
+   A(0,0) = 1.0;  // Initialization of the diagonal element (0,0)
+   A(2,0) = 2.0;  // Initialization of the lower element (2,0)
+   A(1,2) = 9.0;  // Throws an exception; invalid modification of upper element
+
+   // Inserting two more elements via the insert() function
+   A.insert( 1, 0, 3.0 );  // Inserting the lower element (1,0)
+   A.insert( 2, 1, 4.0 );  // Inserting the lower element (2,1)
+   A.insert( 0, 2, 9.0 );  // Throws an exception; invalid insertion of upper element
+
+   // Appending an element via the append() function
+   A.reserve( 1, 3 );      // Reserving enough capacity in row 1
+   A.append( 1, 1, 5.0 );  // Appending the diagonal element (1,1)
+   A.append( 1, 2, 9.0 );  // Throws an exception; appending an element in the upper part
+
+   // Access via a non-const iterator
+   CompressedLower::Iterator it = A.begin(1);
+   *it = 6.0;  // Modifies the element (1,0)
+   it += 2;
+   *it = 9.0;  // Throws an exception; modifies the upper element (1,2)
+
+   // Erasing elements via the erase() function
+   A.erase( 0, 0 );  // Erasing the diagonal element (0,0)
+   A.erase( 2, 0 );  // Erasing the lower element (2,0)
+
+   // Construction from a lower dense matrix
+   StaticMatrix<double,3UL,3UL> B(  3.0,  0.0,  0.0,
+                                    8.0,  0.0,  0.0,
+                                   -2.0, -1.0,  4.0 );
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
+
+   // Assignment of a non-lower dense matrix
+   StaticMatrix<double,3UL,3UL> D(  3.0,  0.0, -2.0,
+                                    8.0,  0.0,  0.0,
+                                   -2.0, -1.0,  4.0 );
+
+   C = D;  // Throws an exception; lower matrix invariant would be violated!
+   \endcode
+
+// The lower/upper matrix property is also enforced for views (rows, columns, submatrices, ...)
+// on the triangular matrix. The following example demonstrates that modifying the elements of
+// an entire row and submatrix of a lower matrix only affects the lower and diagonal matrix
+// elements. Again, this example uses blaze::LowerMatrix, for an example with upper triangular
+// matrices, see the blaze::UpperMatrix class documentation.
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+
+   // Setup of the lower matrix
+   //
+   //       ( 0 0 0 0 )
+   //   A = ( 1 2 0 0 )
+   //       ( 0 3 0 0 )
+   //       ( 4 0 5 0 )
+   //
+   LowerMatrix< DynamicMatrix<int> > A( 4 );
+   A(1,0) = 1;
+   A(1,1) = 2;
+   A(2,1) = 3;
+   A(3,0) = 4;
+   A(3,2) = 5;
+
+   // Setting the lower and diagonal elements in the 2nd row to 9 results in the matrix
+   //
+   //       ( 0 0 0 0 )
+   //   A = ( 1 2 0 0 )
+   //       ( 9 9 9 0 )
+   //       ( 4 0 5 0 )
+   //
+   row( A, 2 ) = 9;
+
+   // Setting the lower and diagonal elements in the 1st and 2nd column to 7 results in
+   //
+   //       ( 0 0 0 0 )
+   //   A = ( 1 7 0 0 )
+   //       ( 9 7 7 0 )
+   //       ( 4 7 7 0 )
+   //
+   submatrix( A, 0, 1, 4, 2 ) = 7;
+   \endcode
+
+// The next example demonstrates the (compound) assignment to rows/columns and submatrices of
+// triangular matrices. Since only lower/upper and diagonal elements may be modified the matrix
+// to be assigned must be structured such that the triangular matrix invariant of the matrix is
+// preserved. Otherwise a \a std::invalid_argument exception is thrown:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::LowerMatrix;
+   using blaze::rowVector;
+
+   // Setup of two default 4x4 lower matrices
+   LowerMatrix< DynamicMatrix<int> > A1( 4 ), A2( 4 );
+
+   // Setup of a 4-dimensional vector
+   //
+   //   v = ( 1 2 3 0 )
+   //
+   DynamicVector<int,rowVector> v( 4, 0 );
+   v[0] = 1;
+   v[1] = 2;
+   v[2] = 3;
+
+   // OK: Assigning v to the 2nd row of A1 preserves the lower matrix invariant
+   //
+   //        ( 0 0 0 0 )
+   //   A1 = ( 0 0 0 0 )
+   //        ( 1 2 3 0 )
+   //        ( 0 0 0 0 )
+   //
+   row( A1, 2 ) = v;  // OK
+
+   // Error: Assigning v to the 1st row of A1 violates the lower matrix invariant! The element
+   //   marked with X cannot be assigned and triggers an exception.
+   //
+   //        ( 0 0 0 0 )
+   //   A1 = ( 1 2 X 0 )
+   //        ( 1 2 3 0 )
+   //        ( 0 0 0 0 )
+   //
+   row( A1, 1 ) = v;  // Assignment throws an exception!
+
+   // Setup of the 3x2 dynamic matrix
+   //
+   //       ( 0 0 )
+   //   B = ( 7 0 )
+   //       ( 8 9 )
+   //
+   DynamicMatrix<int> B( 3UL, 2UL, 0 );
+   B(1,0) = 7;
+   B(2,1) = 8;
+   B(2,2) = 9;
+
+   // OK: Assigning B to a submatrix of A2 such that the lower matrix invariant can be preserved
+   //
+   //        ( 0 0 0 0 )
+   //   A2 = ( 0 7 0 0 )
+   //        ( 0 8 9 0 )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // OK
+
+   // Error: Assigning B to a submatrix of A2 such that the lower matrix invariant cannot be
+   //   preserved! The elements marked with X cannot be assigned without violating the invariant!
+   //
+   //        ( 0 0 0 0 )
+   //   A2 = ( 0 7 X 0 )
+   //        ( 0 8 8 X )
+   //        ( 0 0 0 0 )
+   //
+   submatrix( A2, 0UL, 2UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
+   \endcode
+
+// \n \subsection adaptors_triangular_matrices_initialization The Elements of a Dense Triangular Matrix are Always Default Initialized!
+//
+// Although this results in a small loss of efficiency during the creation of a dense lower or
+// upper matrix this initialization is important since otherwise the lower/upper matrix property
+// of dense lower matrices would not be guaranteed:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+
+   // Uninitialized, 5x5 row-major dynamic matrix
+   DynamicMatrix<int,rowMajor> A( 5, 5 );
+
+   // 5x5 row-major lower dynamic matrix with default initialized upper matrix
+   LowerMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
+
+   // 7x7 column-major upper dynamic matrix with default initialized lower matrix
+   UpperMatrix< DynamicMatrix<int,columnMajor> > B( 7 );
+   \endcode
+
+// \n \section adaptors_triangular_matrices_arithmetic_operations Arithmetic Operations
+// <hr>
+//
+// A lower and upper triangular matrix can participate in numerical operations in any way any other
+// dense or sparse matrix can participate. It can also be combined with any other dense or sparse
+// vector or matrix. The following code example gives an impression of the use of blaze::LowerMatrix
+// and blaze::UpperMatrix within arithmetic operations:
+
+   \code
+   using blaze::LowerMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::HybridMatrix;
+   using blaze::StaticMatrix;
+   using blaze::CompressedMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   DynamicMatrix<double,rowMajor> A( 3, 3 );
+   CompressedMatrix<double,rowMajor> B( 3, 3 );
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > C( 3 );
+   UpperMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
+
+   LowerMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
+   UpperMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
+
+   E = A + B;     // Matrix addition and assignment to a row-major lower matrix
+   F = C - D;     // Matrix subtraction and assignment to a column-major upper matrix
+   F = A * D;     // Matrix multiplication between a dense and a sparse matrix
+
+   C *= 2.0;      // In-place scaling of matrix C
+   E  = 2.0 * B;  // Scaling of matrix B
+   F  = C * 2.0;  // Scaling of matrix C
+
+   E += A - B;    // Addition assignment
+   F -= C + D;    // Subtraction assignment
+   F *= A * D;    // Multiplication assignment
+   \endcode
+
+// \n \section adaptors_triangular_matrices_block_structured Block-Structured Triangular Matrices
+// <hr>
+//
+// It is also possible to use block-structured triangular matrices:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::StaticMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+
+   // Definition of a 5x5 block-structured lower matrix based on DynamicMatrix
+   LowerMatrix< DynamicMatrix< StaticMatrix<int,3UL,3UL> > > A( 5 );
+
+   // Definition of a 7x7 block-structured upper matrix based on CompressedMatrix
+   UpperMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > B( 7 );
+   \endcode
+
+// Also in this case the triangular matrix invariant is enforced, i.e. it is not possible to
+// manipulate elements in the upper part (lower triangular matrix) or the lower part (upper
+// triangular matrix) of the matrix:
+
+   \code
+   const StaticMatrix<int,3UL,3UL> C( 1, -4,  5,
+                                      6,  8, -3,
+                                      2, -1,  2 )
+
+   A(2,4)(1,1) = -5;     // Invalid manipulation of upper matrix element; Results in an exception
+   B.insert( 4, 2, C );  // Invalid insertion of the elements (4,2); Results in an exception
+   \endcode
+
+// \n \section adaptors_triangular_matrices_performance Performance Considerations
+// <hr>
+//
+// The \b Blaze library tries to exploit the properties of lower and upper triangular matrices
+// whenever and wherever possible. Therefore using triangular matrices instead of a general
+// matrices can result in a considerable performance improvement. However, there are also
+// situations when using a triangular matrix introduces some overhead. The following examples
+// demonstrate several common situations where triangular matrices can positively or negatively
+// impact performance.
+//
+// \n \subsection adaptors_triangular_matrices_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
+//
+// When multiplying two matrices, at least one of which is triangular, \b Blaze can exploit the
+// fact that either the lower or upper part of the matrix contains only default elements and
+// restrict the algorithm to the non-zero elements. The following example demonstrates this by
+// means of a dense matrix/dense matrix multiplication with lower triangular matrices:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A;
+   LowerMatrix< DynamicMatrix<double,columnMajor> > B;
+   DynamicMatrix<double,columnMajor> C;
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// In comparison to a general matrix multiplication, the performance advantage is significant,
+// especially for large matrices. Therefore is it highly recommended to use the blaze::LowerMatrix
+// and blaze::UpperMatrix adaptors when a matrix is known to be lower or upper triangular,
+// respectively. Note however that the performance advantage is most pronounced for dense matrices
+// and much less so for sparse matrices.
+//
+// \n \subsection adaptors_triangular_matrices_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
+//
+// A similar performance improvement can be gained when using a triangular matrix in a matrix/vector
+// multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A;
+   DynamicVector<double,columnVector> x, y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// In this example, \b Blaze also exploits the structure of the matrix and approx. halves the
+// runtime of the multiplication. Also in case of matrix/vector multiplications the performance
+// improvement is most pronounced for dense matrices and much less so for sparse matrices.
+//
+// \n \subsection adaptors_triangular_matrices_assignment Negative Impact: Assignment of a General Matrix
+//
+// In contrast to using a triangular matrix on the right-hand side of an assignment (i.e. for
+// read access), which introduces absolutely no performance penalty, using a triangular matrix
+// on the left-hand side of an assignment (i.e. for write access) may introduce additional
+// overhead when it is assigned a general matrix, which is not triangular at compile time:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+
+   LowerMatrix< DynamicMatrix<double> > A, C;
+   DynamicMatrix<double> B;
+
+   B = A;  // Only read-access to the lower matrix; no performance penalty
+   C = A;  // Assignment of a lower matrix to another lower matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to a lower matrix; some runtime overhead
+   \endcode
+
+// When assigning a general (potentially not lower triangular) matrix to a lower matrix or a
+// general (potentially not upper triangular) matrix to an upper matrix it is necessary to check
+// whether the matrix is lower or upper at runtime in order to guarantee the triangular property
+// of the matrix. In case it turns out to be lower or upper, respectively, it is assigned as
+// efficiently as possible, if it is not, an exception is thrown. In order to prevent this runtime
+// overhead it is therefore generally advisable to assign lower or upper triangular matrices to
+// other lower or upper triangular matrices.\n
+// In this context it is especially noteworthy that the addition, subtraction, and multiplication
+// of two triangular matrices of the same structure always results in another triangular matrix:
+
+   \code
+   LowerMatrix< DynamicMatrix<double> > A, B, C;
+
+   C = A + B;  // Results in a lower matrix; no runtime overhead
+   C = A - B;  // Results in a lower matrix; no runtime overhead
+   C = A * B;  // Results in a lower matrix; no runtime overhead
+   \endcode
+
+   \code
+   UpperMatrix< DynamicMatrix<double> > A, B, C;
+
+   C = A + B;  // Results in a upper matrix; no runtime overhead
+   C = A - B;  // Results in a upper matrix; no runtime overhead
+   C = A * B;  // Results in a upper matrix; no runtime overhead
+   \endcode
+
+// \n <center> Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref views_subvectors </center>
 */
 //*************************************************************************************************
 
@@ -2699,7 +3288,7 @@ namespace blaze {}
 //**Subvectors*************************************************************************************
 /*!\page views_subvectors Subvectors
 //
-// <center> Previous: \ref adaptors_symmetric_matrix &nbsp; &nbsp; Next: \ref views_submatrices </center> \n
+// <center> Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices </center> \n
 //
 //
 // \tableofcontents
@@ -3117,7 +3706,7 @@ namespace blaze {}
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 
-// \n <center> Previous: \ref adaptors_symmetric_matrix &nbsp; &nbsp; Next: \ref views_submatrices </center>
+// \n <center> Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices </center>
 */
 //*************************************************************************************************
 
