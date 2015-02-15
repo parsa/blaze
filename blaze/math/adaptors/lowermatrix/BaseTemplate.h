@@ -406,6 +406,99 @@ namespace blaze {
    A.insert( 4, 2, B );  // Inserting the elements (4,2)
    A(2,4)(1,1) = -5;     // Invalid manipulation of upper matrix element; Results in an exception
    \endcode
+
+// \n \section lowermatrix_performance Performance Considerations
+//
+// The \b Blaze library tries to exploit the properties of lower matrices whenever and wherever
+// possible. Thus using a lower triangular matrix instead of a general matrix can result in a
+// considerable performance improvement. However, there are also situations when using a lower
+// triangular matrix introduces some overhead. The following examples demonstrate several common
+// situations where lower matrices can positively or negatively impact performance.
+//
+// \n \subsection lowermatrix_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
+//
+// When multiplying two matrices, at least one of which is lower triangular, \b Blaze can exploit
+// the fact that the upper part of the matrix contains only default elements and restrict the
+// algorithm to the lower and diagonal elements. The following example demonstrates this by means
+// of a dense matrix/dense matrix multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A;
+   LowerMatrix< DynamicMatrix<double,columnMajor> > B;
+   DynamicMatrix<double,columnMajor> C;
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// In comparison to a general matrix multiplication, the performance advantage is significant,
+// especially for large matrices. Therefore is it highly recommended to use the LowerMatrix
+// adaptor when a matrix is known to be lower triangular. Note however that the performance
+// advantage is most pronounced for dense matrices and much less so for sparse matrices.
+//
+// \n \subsection lowermatrix_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
+//
+// A similar performance improvement can be gained when using a lower matrix in a matrix/vector
+// multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A;
+   DynamicVector<double,columnVector> x, y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// In this example, \b Blaze also exploits the structure of the matrix and approx. halves the
+// runtime of the multiplication. Also in case of matrix/vector multiplications the performance
+// improvement is most pronounced for dense matrices and much less so for sparse matrices.
+//
+// \n \subsection lowermatrix_assignment Negative Impact: Assignment of a General Matrix
+//
+// In contrast to using a lower triangular matrix on the right-hand side of an assignment (i.e.
+// for read access), which introduces absolutely no performance penalty, using a lower matrix on
+// the left-hand side of an assignment (i.e. for write access) may introduce additional overhead
+// when it is assigned a general matrix, which is not lower triangular at compile time:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+
+   LowerMatrix< DynamicMatrix<double> > A, C;
+   DynamicMatrix<double> B;
+
+   B = A;  // Only read-access to the lower matrix; no performance penalty
+   C = A;  // Assignment of a lower matrix to another lower matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to a lower matrix; some runtime overhead
+   \endcode
+
+// When assigning a general, potentially not lower matrix to a lower matrix it is necessary to
+// check whether the matrix is lower at runtime in order to guarantee the lower triangular property
+// of the lower matrix. In case it turns out to be lower triangular, it is assigned as efficiently
+// as possible, if it is not, an exception is thrown. In order to prevent this runtime overhead it
+// is therefore generally advisable to assign lower matrices to other lower matrices.\n
+// In this context it is especially noteworthy that the addition, subtraction, and multiplication
+// of two lower triangular matrices always results in another lower matrix:
+
+   \code
+   LowerMatrix< DynamicMatrix<double> > A, B, C;
+
+   C = A + B;  // Results in a lower matrix; no runtime overhead
+   C = A - B;  // Results in a lower matrix; no runtime overhead
+   C = A * B;  // Results in a lower matrix; no runtime overhead
+   \endcode
 */
 template< typename MT                               // Type of the adapted matrix
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
