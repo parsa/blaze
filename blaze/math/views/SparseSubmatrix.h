@@ -5921,7 +5921,7 @@ inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsSymmetric<MT>::value && sm.row_ == sm.column_ && sm.m_ = sm.n_ )
+   if( IsSymmetric<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
       return true;
    else return isSymmetric( static_cast<BaseType>( sm ) );
 }

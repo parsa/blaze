@@ -11947,7 +11947,7 @@ inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm )
 {
    typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsSymmetric<MT>::value && dm.row_ == dm.column_ && dm.m_ = dm.n_ )
+   if( IsSymmetric<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
       return true;
    else return isSymmetric( static_cast<BaseType>( dm ) );
 }
