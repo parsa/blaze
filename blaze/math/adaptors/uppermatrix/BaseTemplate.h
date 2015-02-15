@@ -406,6 +406,99 @@ namespace blaze {
    A.insert( 2, 4, B );  // Inserting the elements (2,4)
    A(4,2)(1,1) = -5;     // Invalid manipulation of lower matrix element; Results in an exception
    \endcode
+
+// \n \section uppermatrix_performance Performance Considerations
+//
+// The \b Blaze library tries to exploit the properties of upper matrices whenever and wherever
+// possible. Thus using a upper triangular matrix instead of a general matrix can result in a
+// considerable performance improvement. However, there are also situations when using a upper
+// triangular matrix introduces some overhead. The following examples demonstrate several common
+// situations where upper matrices can positively or negatively impact performance.
+//
+// \n \subsection uppermatrix_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
+//
+// When multiplying two matrices, at least one of which is upper triangular, \b Blaze can exploit
+// the fact that the lower part of the matrix contains only default elements and restrict the
+// algorithm to the upper and diagonal elements. The following example demonstrates this by means
+// of a dense matrix/dense matrix multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UpperMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   UpperMatrix< DynamicMatrix<double,rowMajor> > A;
+   UpperMatrix< DynamicMatrix<double,columnMajor> > B;
+   DynamicMatrix<double,columnMajor> C;
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// In comparison to a general matrix multiplication, the performance advantage is significant,
+// especially for large matrices. Therefore is it highly recommended to use the UpperMatrix
+// adaptor when a matrix is known to be upper triangular. Note however that the performance
+// advantage is most pronounced for dense matrices and much less so for sparse matrices.
+//
+// \n \subsection uppermatrix_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
+//
+// A similar performance improvement can be gained when using a upper matrix in a matrix/vector
+// multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   UpperMatrix< DynamicMatrix<double,rowMajor> > A;
+   DynamicVector<double,columnVector> x, y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// In this example, \b Blaze also exploits the structure of the matrix and approx. halves the
+// runtime of the multiplication. Also in case of matrix/vector multiplications the performance
+// improvement is most pronounced for dense matrices and much less so for sparse matrices.
+//
+// \n \subsection uppermatrix_assignment Negative Impact: Assignment of a General Matrix
+//
+// In contrast to using a upper triangular matrix on the right-hand side of an assignment (i.e.
+// for read access), which introduces absolutely no performance penalty, using a upper matrix on
+// the left-hand side of an assignment (i.e. for write access) may introduce additional overhead
+// when it is assigned a general matrix, which is not upper triangular at compile time:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UpperMatrix;
+
+   UpperMatrix< DynamicMatrix<double> > A, C;
+   DynamicMatrix<double> B;
+
+   B = A;  // Only read-access to the upper matrix; no performance penalty
+   C = A;  // Assignment of a upper matrix to another upper matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to a upper matrix; some runtime overhead
+   \endcode
+
+// When assigning a general, potentially not upper matrix to a upper matrix it is necessary to
+// check whether the matrix is upper at runtime in order to guarantee the upper triangular property
+// of the upper matrix. In case it turns out to be upper triangular, it is assigned as efficiently
+// as possible, if it is not, an exception is thrown. In order to prevent this runtime overhead it
+// is therefore generally advisable to assign upper matrices to other upper matrices.\n
+// In this context it is especially noteworthy that the addition, subtraction, and multiplication
+// of two upper triangular matrices always results in another upper matrix:
+
+   \code
+   UpperMatrix< DynamicMatrix<double> > A, B, C;
+
+   C = A + B;  // Results in a upper matrix; no runtime overhead
+   C = A - B;  // Results in a upper matrix; no runtime overhead
+   C = A * B;  // Results in a upper matrix; no runtime overhead
+   \endcode
 */
 template< typename MT                               // Type of the adapted matrix
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order of the adapted matrix
