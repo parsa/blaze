@@ -5996,7 +5996,7 @@ inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm )
 
    if( IsSymmetric<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
       return true;
-   else return isSymmetric( static_cast<BaseType>( sm ) );
+   else return isSymmetric( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
@@ -6042,7 +6042,7 @@ inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm )
 
    if( IsLower<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
       return true;
-   else return isLower( static_cast<BaseType>( sm ) );
+   else return isLower( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
@@ -6088,7 +6088,7 @@ inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm )
 
    if( IsUpper<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
       return true;
-   else return isUpper( static_cast<BaseType>( sm ) );
+   else return isUpper( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
