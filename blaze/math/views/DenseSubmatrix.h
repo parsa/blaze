@@ -12015,7 +12015,7 @@ inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm )
 
    if( IsSymmetric<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
       return true;
-   else return isSymmetric( static_cast<BaseType>( dm ) );
+   else return isSymmetric( static_cast<const BaseType&>( dm ) );
 }
 //*************************************************************************************************
 
@@ -12061,7 +12061,7 @@ inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm )
 
    if( IsLower<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
       return true;
-   else return isLower( static_cast<BaseType>( dm ) );
+   else return isLower( static_cast<const BaseType&>( dm ) );
 }
 //*************************************************************************************************
 
@@ -12107,7 +12107,7 @@ inline bool isUpper( const DenseSubmatrix<MT,AF,SO>& dm )
 
    if( IsUpper<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
       return true;
-   else return isUpper( static_cast<BaseType>( dm ) );
+   else return isUpper( static_cast<const BaseType&>( dm ) );
 }
 //*************************************************************************************************
 
