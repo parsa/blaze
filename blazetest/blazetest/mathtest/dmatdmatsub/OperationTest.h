@@ -71,6 +71,7 @@
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/MatchAdaptor.h>
+#include <blazetest/mathtest/MatchSymmetric.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -126,9 +127,11 @@ class OperationTest
    typedef typename SRE::TransposeType   TSRE;   //!< Transpose sparse result type
    typedef typename OSRE::TransposeType  TOSRE;  //!< Transpose sparse result type with opposite storage order
 
-   typedef blaze::DynamicMatrix<ET1,false>          RT1;  //!< Reference type 1
-   typedef blaze::CompressedMatrix<ET2,false>       RT2;  //!< Reference type 2
-   typedef typename blaze::SubTrait<RT1,RT2>::Type  RRE;  //!< Reference result type
+   typedef blaze::DynamicMatrix<ET1,false>     RT1;  //!< Reference type 1
+   typedef blaze::CompressedMatrix<ET2,false>  RT2;  //!< Reference type 2
+
+   //! Reference result type
+   typedef typename MatchSymmetric< DRE, typename blaze::SubTrait<RT1,RT2>::Type >::Type  RRE;
 
    //! Type of the matrix/matrix subtraction expression
    typedef typename blaze::SubExprTrait<MT1,MT2>::Type  MatMatSubExprType;
