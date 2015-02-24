@@ -91,7 +91,9 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -850,14 +852,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //@{
    inline SparseSubmatrix& operator=( const SparseSubmatrix& rhs );
 
-   template< typename MT2, bool SO2 >
-   inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
-
-   template< typename MT2, bool SO2 >
-   inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix& >::Type
-      operator=( const Matrix<MT2,SO2>& rhs );
-
+   template< typename MT2, bool SO2 > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO2>& rhs );
    template< typename MT2, bool SO2 > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO2>& rhs );
@@ -942,7 +937,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    inline bool hasOverlap() const;
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
+   inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
       preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
@@ -1331,16 +1326,16 @@ inline SparseSubmatrix<MT,AF,SO>&
    if( !preservesInvariant( matrix_, rhs ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       reset();
-      assign( lhs, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( lhs, rhs );
+      assign( left, rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1371,7 +1366,7 @@ template< typename MT   // Type of the sparse matrix
         , bool SO >     // Storage order
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >::Type
+inline SparseSubmatrix<MT,AF,SO>&
    SparseSubmatrix<MT,AF,SO>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    using blaze::assign;
@@ -1381,64 +1376,23 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   typedef typename MT2::CompositeType  Right;
+   Right right( ~rhs );
+
+   if( !preservesInvariant( matrix_, right ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const typename MT2::ResultType tmp( right );
       reset();
-      assign( lhs, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( lhs, ~rhs );
+      assign( left, right );
    }
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Assignment operator for different matrices.
-//
-// \param rhs Matrix to be assigned.
-// \return Reference to the assigned submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
-//
-// The sparse submatrix is initialized as a copy of the given matrix. In case the current sizes
-// of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also, if
-// the underlying matrix \a MT is a lower triangular, upper triangular, or symmetric matrix
-// and the assignment would violate its lower, upper, or symmetry property, respectively, a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename MT   // Type of the sparse matrix
-        , bool AF       // Alignment flag
-        , bool SO >     // Storage order
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,SO>& >::Type
-   SparseSubmatrix<MT,AF,SO>::operator=( const Matrix<MT2,SO2>& rhs )
-{
-   using blaze::assign;
-
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
-
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
-
-   const typename MT2::ResultType tmp( ~rhs );
-
-   if( !preservesInvariant( matrix_, rhs ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
-
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
-
-   reset();
-   assign( lhs, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -1485,13 +1439,13 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -1538,13 +1492,13 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -1592,13 +1546,13 @@ inline SparseSubmatrix<MT,AF,SO>&
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -2074,10 +2028,10 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    return *this;
 }
@@ -2148,9 +2102,11 @@ template< typename MT2  // Type of the left-hand side sparse matrix
         , bool SO2      // Storage order of the left-hand side sparse matrix
         , typename MT3  // Type of the right-hand side matrix
         , bool SO3 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
+inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
+   UNUSED_PARAMETER( lhs, rhs );
+
    return true;
 }
 //*************************************************************************************************
@@ -2177,7 +2133,9 @@ template< typename MT2  // Type of the left-hand side sparse matrix
 inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( !hasOverlap() )
       return true;
@@ -2217,7 +2175,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -2257,7 +2217,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -2297,9 +2259,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -2339,9 +2303,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -2381,7 +2347,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -2421,7 +2389,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -2461,9 +2431,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -2503,9 +2475,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -3534,14 +3508,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //@{
    inline SparseSubmatrix& operator=( const SparseSubmatrix& rhs );
 
-   template< typename MT2, bool SO >
-   inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
-
-   template< typename MT2, bool SO >
-   inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix& >::Type
-      operator=( const Matrix<MT2,SO>& rhs );
-
+   template< typename MT2, bool SO > inline SparseSubmatrix& operator= ( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator-=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline SparseSubmatrix& operator*=( const Matrix<MT2,SO>& rhs );
@@ -3626,7 +3593,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    inline bool hasOverlap() const;
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
+   inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
       preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
@@ -3991,16 +3958,16 @@ inline SparseSubmatrix<MT,AF,true>&
    if( !preservesInvariant( matrix_, rhs ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       reset();
-      assign( lhs, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( lhs, rhs );
+      assign( left, rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4032,7 +3999,7 @@ template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO >     // Storage order of the right-hand side matrix
-inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>& >::Type
+inline SparseSubmatrix<MT,AF,true>&
    SparseSubmatrix<MT,AF,true>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
@@ -4042,69 +4009,23 @@ inline typename DisableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>&
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   typedef typename MT2::CompositeType  Right;
+   Right right( ~rhs );
+
+   if( !preservesInvariant( matrix_, right ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
-      const typename MT2::ResultType tmp( ~rhs );
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const typename MT2::ResultType tmp( right );
       reset();
-      assign( lhs, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( lhs, ~rhs );
+      assign( left, right );
    }
-
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Assignment operator for different matrices.
-//
-// \param rhs Matrix to be assigned.
-// \return Reference to the assigned submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
-//
-// The sparse submatrix is initialized as a copy of the given matrix. In case the current sizes
-// of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also, if
-// the underlying matrix \a MT is a lower triangular, upper triangular, or symmetric matrix
-// and the assignment would violate its lower, upper, or symmetry property, respectively, a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename MT   // Type of the sparse matrix
-        , bool AF >     // Alignment flag
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO >     // Storage order of the right-hand side matrix
-inline typename EnableIf< RequiresEvaluation<MT2>, SparseSubmatrix<MT,AF,true>& >::Type
-   SparseSubmatrix<MT,AF,true>::operator=( const Matrix<MT2,SO>& rhs )
-{
-   using blaze::assign;
-
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
-
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
-
-   const typename MT2::ResultType tmp( ~rhs );
-
-   if( !preservesInvariant( matrix_, rhs ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
-
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
-
-   reset();
-   assign( lhs, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -4152,13 +4073,13 @@ inline SparseSubmatrix<MT,AF,true>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -4206,13 +4127,13 @@ inline SparseSubmatrix<MT,AF,true>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -4261,13 +4182,13 @@ inline SparseSubmatrix<MT,AF,true>&
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !preservesInvariant( matrix_, tmp ) )
       throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -4737,10 +4658,10 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
    if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
       throw std::runtime_error( "Invalid transpose of an upper matrix" );
 
-   typename DerestrictTrait<This>::Type lhs( derestrict( *this ) );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
    reset();
-   assign( lhs, tmp );
+   assign( left, tmp );
 
    return *this;
 }
@@ -4814,9 +4735,11 @@ template< typename MT2  // Type of the left-hand side sparse matrix
         , bool SO2      // Storage order of the left-hand side sparse matrix
         , typename MT3  // Type of the right-hand side matrix
         , bool SO3 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
+inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
+   UNUSED_PARAMETER( lhs, rhs );
+
    return true;
 }
 /*! \endcond */
@@ -4844,7 +4767,9 @@ template< typename MT2  // Type of the left-hand side sparse matrix
 inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( !hasOverlap() )
       return true;
@@ -4885,7 +4810,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -4926,7 +4853,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -4967,9 +4896,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -5010,9 +4941,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( row_ + 1UL >= column_ + n_ )
       return true;
@@ -5053,7 +4986,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -5094,7 +5029,9 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -5135,9 +5072,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
@@ -5178,9 +5117,11 @@ template< typename MT2    // Type of the left-hand side sparse matrix
 inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
    SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
 
-   typedef typename MT2::ConstIterator  RhsIterator;
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
 
    if( column_ + 1UL >= row_ + m_ )
       return true;
