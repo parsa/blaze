@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
 
 
@@ -58,7 +59,7 @@ namespace blazetest {
 
 
 //*************************************************************************************************
-/*!\brief Adapts the given type to the default result type.
+/*!\brief Matches the adaptor of two matrix types.
 //
 // The MatchAdaptor type trait uses the same matrix adapter on the given type \a T2 as is used on
 // the type \a T1: In case \a T1 has an adaptor (LowerMatrix, UpperMatrix, SymmetricMatrix, ...)
@@ -69,15 +70,22 @@ template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
 struct MatchAdaptor
 {
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef typename blaze::RemoveAdaptor<T2>::Type  Tmp;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    typedef typename blaze::If< blaze::IsLower<T1>
-                             , blaze::LowerMatrix<T2>
+                             , blaze::LowerMatrix<Tmp>
                              , typename blaze::If< blaze::IsUpper<T1>
-                                                 , blaze::UpperMatrix<T2>
+                                                 , blaze::UpperMatrix<Tmp>
                                                  , typename blaze::If< blaze::IsSymmetric<T1>
-                                                                     , blaze::SymmetricMatrix<T2>
+                                                                     , blaze::SymmetricMatrix<Tmp>
                                                                      , T2
                                                                      >::Type
                                                  >::Type
