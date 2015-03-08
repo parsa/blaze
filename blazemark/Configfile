@@ -112,9 +112,12 @@ GMM_INCLUDE_PATH=
 # library. For a correct compilation, at least Armadillo 2.4.2 is required. If the switch
 # is set to 'yes' all Armadillo kernels are included in the compilation process. In case
 # the Armadillo include directory is not set, Blaze expects the according headers in the
-# standard paths (as for instance '/usr/include/').
+# standard paths (as for instance '/usr/include/'). Optionally it is possible to specify
+# the path of the Armadillo library. If a path is specified, the Armadillo library with
+# the standard name 'libarmadillo.*' will be considered during the linking process.
 ARMADILLO="no"
 ARMADILLO_INCLUDE_PATH=
+ARMADILLO_LIBRARY_PATH=
 
 # Configuration of the FLENS library (optional)
 # This switch includes all FLENS (Flexible Library for Efficient Numerical Solutions)
