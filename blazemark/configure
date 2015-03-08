@@ -285,6 +285,13 @@ if [ "$BLITZ" = "yes" ]; then
    LIBRARIES="${LIBRARIES%" "} -lblitz"
 fi
 
+if [ -n "$ARMADILLO_LIBRARY_PATH" ]; then
+   if [[ ! "$LIBRARIES" =~ "$ARMADILLO_LIBRARY_PATH " ]]; then
+      LIBRARIES="${LIBRARIES%" "} -L$ARMADILLO_LIBRARY_PATH "
+   fi
+   LIBRARIES="${LIBRARIES%" "} -larmadillo "
+fi
+
 LIBRARIES=${LIBRARIES%" "}
 
 # Configuration of the modules
