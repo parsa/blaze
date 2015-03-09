@@ -2253,8 +2253,12 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
+   if( m_ == 0UL || begin_[0] == NULL )
+      return;
+
+   for( size_t i=0UL; i<m_; ++i ) {
       begin_[i+1UL] = end_[i] = std::copy( (~rhs).begin(i), (~rhs).end(i), begin_[i] );
    }
 }
@@ -2282,6 +2286,7 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
    typedef typename MT::ConstIterator  RhsIterator;
 
@@ -4480,8 +4485,12 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,true>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
+   if( n_ == 0UL || begin_[0] == NULL )
+      return;
+
+   for( size_t j=0UL; j<n_; ++j ) {
       begin_[j+1UL] = end_[j] = std::copy( (~rhs).begin(j), (~rhs).end(j), begin_[j] );
    }
 }
@@ -4510,6 +4519,7 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
+   BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
    typedef typename MT::ConstIterator  RhsIterator;
 
