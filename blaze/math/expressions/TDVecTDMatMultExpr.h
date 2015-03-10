@@ -464,7 +464,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
-         TDVecTDMatMultExpr::selectDefaultAssignKernel( y, x, A );
+         TDVecTDMatMultExpr::selectSmallAssignKernel( y, x, A );
       else
          TDVecTDMatMultExpr::selectBlasAssignKernel( y, x, A );
    }
@@ -488,17 +488,41 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   static inline void selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       y.assign( x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to dense vectors**********************************************
+   //**Default assignment to dense vectors (small matrices)****************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default assignment of a transpose dense vector-transpose dense matrix
+   /*!\brief Default assignment of a small transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a transpose dense
+   // vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (small matrices)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a small transpose dense vector-transpose dense matrix
    //        multiplication (\f$ \vec{y}^T=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
@@ -508,13 +532,13 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function implements the vectorized default assignment kernel for the transpose dense
-   // vector-transpose dense matrix multiplication.
+   // vector-transpose dense matrix multiplication. This kernel is optimized for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A )
+      selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -631,6 +655,220 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Default assignment to dense vectors (large matrices)****************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a large transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a transpose dense
+   // vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (large matrices)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a large transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the transpose dense
+   // vector-transpose dense matrix multiplication. This kernel is optimized for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      reset( y );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) );
+         }
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+         }
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+         }
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] += sum( x1 * A.load(i,j) );
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**BLAS-based assignment to dense vectors (default)********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default assignment of a transpose dense vector-transpose dense matrix multiplication
@@ -642,8 +880,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function relays to the default implementation of the assignment of a transpose dense
-   // vector-transpose dense matrix multiplication expression to a dense vector.
+   // This function relays to the default implementation of the assignment of a large transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -651,7 +889,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      selectDefaultAssignKernel( y, x, A );
+      selectLargeAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -873,7 +1111,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
-         TDVecTDMatMultExpr::selectDefaultAddAssignKernel( y, x, A );
+         TDVecTDMatMultExpr::selectSmallAddAssignKernel( y, x, A );
       else
          TDVecTDMatMultExpr::selectBlasAddAssignKernel( y, x, A );
    }
@@ -897,18 +1135,17 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   static inline void selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       y.addAssign( x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to dense vectors*************************************
+   //**Default addition assignment to dense vectors (small matrices)*******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default addition assignment of a transpose dense vector-transpose dense
-   //        matrix multiplication (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   /*!\brief Default addition assignment of a small transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -916,14 +1153,40 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side column-major dense matrix operand.
    // \return void
    //
-   // This function implements the vectorized default addition assignment kernel for the transpose
-   // dense vector-transpose dense matrix multiplication.
+   // This function relays to the default implementation of the addition assignment of a transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultAddAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (small matrices)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a small transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized
+   // for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+      selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1040,6 +1303,219 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Default addition assignment to dense vectors (large matrices)*******************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a large transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultAddAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (large matrices)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a large transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T+=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized
+   // for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) );
+         }
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+         }
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+         }
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] += sum( x1 * A.load(i,j) );
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**BLAS-based addition assignment to dense vectors (default)***********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a transpose dense vector-transpose dense matrix
@@ -1051,8 +1527,8 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function relays to the default implementation of the addition assignment of a transpose
-   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   // This function relays to the default implementation of the addition assignment of a large
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -1060,7 +1536,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      selectDefaultAddAssignKernel( y, x, A );
+      selectLargeAddAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1260,7 +1736,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
-         TDVecTDMatMultExpr::selectDefaultSubAssignKernel( y, x, A );
+         TDVecTDMatMultExpr::selectSmallSubAssignKernel( y, x, A );
       else
          TDVecTDMatMultExpr::selectBlasSubAssignKernel( y, x, A );
    }
@@ -1284,17 +1760,41 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   static inline void selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       y.subAssign( x * A );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to dense vectors**********************************
+   //**Default subtraction assignment to dense vectors (small matrices)****************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default subtraction assignment of a transpose dense vector-transpose
+   /*!\brief Default subtraction assignment of a small transpose dense vector-transpose dense
+   //        matrix multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultSubAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (small matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a small transpose dense vector-transpose
    //        dense matrix multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
@@ -1304,13 +1804,14 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \return void
    //
    // This function implements the vectorized default subtraction assignment kernel for the
-   // transpose dense vector-transpose dense matrix multiplication.
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized
+   // for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+      selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1427,6 +1928,219 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Default subtraction assignment to dense vectors (large matrices)****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a large transpose dense vector-transpose dense
+   //        matrix multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      selectDefaultSubAssignKernel( y, x, A );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (large matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a large transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T-=\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side transpose dense vector operand.
+   // \param A The right-hand side column-major dense matrix operand.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized
+   // for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
+      selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) );
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) );
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) );
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) );
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) );
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) );
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) );
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) );
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) );
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) );
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) );
+         }
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) );
+         }
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) );
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) );
+         }
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] -= sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] -= sum( x1 * A.load(i,j) + x2 * A.load(i1,j) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] -= sum( x1 * A.load(i,j) );
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**BLAS-based subtraction assignment to dense vectors (default)********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a transpose dense vector-transpose dense matrix
@@ -1438,7 +2152,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function relays to the default implementation of the subtraction assignment of a
+   // This function relays to the default implementation of the subtraction assignment of a large
    // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
@@ -1447,7 +2161,7 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      selectDefaultSubAssignKernel( y, x, A );
+      selectLargeSubAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2194,7 +2908,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECTDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAssignKernel( y, x, A, scalar );
+         DVecScalarMultExpr::selectSmallAssignKernel( y, x, A, scalar );
       else
          DVecScalarMultExpr::selectBlasAssignKernel( y, x, A, scalar );
    }
@@ -2218,16 +2932,40 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   static inline void selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       y.assign( x * A * scalar );
    }
    //**********************************************************************************************
 
-   //**Vectorized default assignment to dense vectors**********************************************
-   /*!\brief Vectorized default assignment of a scaled transpose dense vector-transpose dense
-   //        matrix multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
+   //**Default assignment to dense vectors (small matrices)****************************************
+   /*!\brief Default assignment of a small scaled transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (small matrices)*****************************
+   /*!\brief Vectorized default assignment of a small scaled transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -2237,14 +2975,15 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function implements the vectorized default assignment kernel for the scaled transpose
-   // dense vector-transpose dense matrix multiplication.
+   // dense vector-transpose dense matrix multiplication. This kernel is optimized for small
+   // matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+      selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2360,6 +3099,240 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    }
    //**********************************************************************************************
 
+   //**Default assignment to dense vectors (large matrices)****************************************
+   /*!\brief Default assignment of a large scaled transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled transpose
+   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (large matrices)*****************************
+   /*!\brief Vectorized default assignment of a large scaled transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the scaled transpose
+   // dense vector-transpose dense matrix multiplication. This kernel is optimized for large
+   // matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      reset( y );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) );
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) );
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) );
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) );
+         }
+
+         y[j    ] *= scalar;
+         y[j+1UL] *= scalar;
+         y[j+2UL] *= scalar;
+         y[j+3UL] *= scalar;
+         y[j+4UL] *= scalar;
+         y[j+5UL] *= scalar;
+         y[j+6UL] *= scalar;
+         y[j+7UL] *= scalar;
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) );
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) );
+         }
+
+         y[j    ] *= scalar;
+         y[j+1UL] *= scalar;
+         y[j+2UL] *= scalar;
+         y[j+3UL] *= scalar;
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) );
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) );
+         }
+
+         y[j    ] *= scalar;
+         y[j+1UL] *= scalar;
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) );
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) );
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] += sum( x1 * A.load(i,j) );
+         }
+
+         y[j] *= scalar;
+      }
+   }
+   //**********************************************************************************************
+
    //**BLAS-based assignment to dense vectors (default)********************************************
    /*!\brief Default assignment of a scaled transpose dense vector-transpose dense matrix
    //        multiplication (\f$ \vec{y}^T=\vec{x}^T*A \f$).
@@ -2370,8 +3343,8 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \param A The right-hand side dense matrix operand.
    // \return void
    //
-   // This function relays to the default implementation of the assignment of a scaled transpose
-   // dense vector-transpose dense matrix multiplication expression to a dense vector.
+   // This function relays to the default implementation of the assignment of a large scaled
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
@@ -2380,7 +3353,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      selectDefaultAssignKernel( y, x, A, scalar );
+      selectLargeAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
@@ -2605,7 +3578,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAddAssignKernel( y, x, A, scalar );
+         DVecScalarMultExpr::selectSmallAddAssignKernel( y, x, A, scalar );
       else
          DVecScalarMultExpr::selectBlasAddAssignKernel( y, x, A, scalar );
    }
@@ -2629,16 +3602,40 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   static inline void selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       y.addAssign( x * A * scalar );
    }
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to dense vectors*************************************
-   /*!\brief Vectorized default addition assignment of a scaled transpose dense vector-transpose
-   //        dense matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   //**Default addition assignment to dense vectors (small matrices)*******************************
+   /*!\brief Default addition assignment of a small scaled transpose dense vector-transpose dense
+   //        matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a scaled
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (small matrices)********************
+   /*!\brief Vectorized default addition assignment of a small scaled transpose dense vector-
+   //        transpose dense matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -2648,14 +3645,15 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function implements the vectorized default addition assignment kernel for the scaled
-   // transpose dense vector-transpose dense matrix multiplication.
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized for
+   // small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+      selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2771,9 +3769,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    }
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense vectors (default)***********************************
-   /*!\brief Default addition assignment of a scaled transpose dense vector-transpose dense matrix
-   //        multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   //**Default addition assignment to dense vectors (large matrices)*******************************
+   /*!\brief Default addition assignment of a large scaled transpose dense vector-transpose dense
+   //        matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -2789,10 +3787,224 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (large matrices)********************
+   /*!\brief Vectorized default addition assignment of a large scaled transpose dense vector-
+   //        transpose dense matrix multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the scaled
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized for
+   // large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) ) * scalar;
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) ) * scalar;
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) ) * scalar;
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) ) * scalar;
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) ) * scalar;
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) ) * scalar;
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) ) * scalar;
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) ) * scalar;
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) ) * scalar;
+            y[j+4UL] += sum( x1 * A.load(i,j+4UL) ) * scalar;
+            y[j+5UL] += sum( x1 * A.load(i,j+5UL) ) * scalar;
+            y[j+6UL] += sum( x1 * A.load(i,j+6UL) ) * scalar;
+            y[j+7UL] += sum( x1 * A.load(i,j+7UL) ) * scalar;
+         }
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) ) * scalar;
+            y[j+2UL] += sum( x1 * A.load(i,j+2UL) ) * scalar;
+            y[j+3UL] += sum( x1 * A.load(i,j+3UL) ) * scalar;
+         }
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] += sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] += sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] += sum( x1 * A.load(i,j+1UL) ) * scalar;
+         }
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] += sum( x1 * A.load(i,j) + x2 * A.load(i1,j) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] += sum( x1 * A.load(i,j) ) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense vectors (default)***********************************
+   /*!\brief Default addition assignment of a scaled transpose dense vector-transpose dense matrix
+   //        multiplication (\f$ \vec{y}^T+=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // scaled transpose dense vector-transpose dense matrix multiplication expression to a dense
+   // vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      selectDefaultAddAssignKernel( y, x, A, scalar );
+      selectLargeAddAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
@@ -2996,7 +4208,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultSubAssignKernel( y, x, A, scalar );
+         DVecScalarMultExpr::selectSmallSubAssignKernel( y, x, A, scalar );
       else
          DVecScalarMultExpr::selectBlasSubAssignKernel( y, x, A, scalar );
    }
@@ -3020,16 +4232,40 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   static inline void selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       y.subAssign( x * A * scalar );
    }
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to dense vectors**********************************
-   /*!\brief Vectorized default subtraction assignment of a scaled transpose dense vector-transpose
-   //        matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
+   //**Default subtraction assignment to dense vectors (small matrices)****************************
+   /*!\brief Default subtraction assignment of a small scaled transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a scaled
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (small matrices)*****************
+   /*!\brief Vectorized default subtraction assignment of a small scaled transpose dense vector-
+   //        transpose matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -3039,14 +4275,15 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \return void
    //
    // This function implements the vectorized default subtraction assignment kernel for the scaled
-   // transpose dense vector-transpose dense matrix multiplication.
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized for
+   // small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+      selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3162,6 +4399,219 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    }
    //**********************************************************************************************
 
+   //**Default subtraction assignment to dense vectors (large matrices)****************************
+   /*!\brief Default subtraction assignment of a large scaled transpose dense vector-transpose
+   //        dense matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a scaled
+   // transpose dense vector-transpose dense matrix multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( y, x, A, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (large matrices)*****************
+   /*!\brief Vectorized default subtraction assignment of a large scaled transpose dense vector-
+   //        transpose matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param x The left-hand side dense vector operand.
+   // \param A The right-hand side dense matrix operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the scaled
+   // transpose dense vector-transpose dense matrix multiplication. This kernel is optimized for
+   // large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename VT2    // Type of the left-hand side vector operand
+           , typename MT1    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      size_t j( 0UL );
+
+      for( ; (j+8UL) <= N; j+=8UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+8UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) ) * scalar;
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) + x3 * A.load(i2,j+4UL) + x4 * A.load(i3,j+4UL) ) * scalar;
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) + x3 * A.load(i2,j+5UL) + x4 * A.load(i3,j+5UL) ) * scalar;
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) + x3 * A.load(i2,j+6UL) + x4 * A.load(i3,j+6UL) ) * scalar;
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) + x3 * A.load(i2,j+7UL) + x4 * A.load(i3,j+7UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) ) * scalar;
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) + x2 * A.load(i1,j+4UL) ) * scalar;
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) + x2 * A.load(i1,j+5UL) ) * scalar;
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) + x2 * A.load(i1,j+6UL) ) * scalar;
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) + x2 * A.load(i1,j+7UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) ) * scalar;
+            y[j+4UL] -= sum( x1 * A.load(i,j+4UL) ) * scalar;
+            y[j+5UL] -= sum( x1 * A.load(i,j+5UL) ) * scalar;
+            y[j+6UL] -= sum( x1 * A.load(i,j+6UL) ) * scalar;
+            y[j+7UL] -= sum( x1 * A.load(i,j+7UL) ) * scalar;
+         }
+      }
+
+      for( ; (j+4UL) <= N; j+=4UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+4UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) + x3 * A.load(i2,j+2UL) + x4 * A.load(i3,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) + x3 * A.load(i2,j+3UL) + x4 * A.load(i3,j+3UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) + x2 * A.load(i1,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) + x2 * A.load(i1,j+3UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) ) * scalar;
+            y[j+2UL] -= sum( x1 * A.load(i,j+2UL) ) * scalar;
+            y[j+3UL] -= sum( x1 * A.load(i,j+3UL) ) * scalar;
+         }
+      }
+
+      for( ; (j+2UL) <= N; j+=2UL )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+2UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) + x3 * A.load(i2,j    ) + x4 * A.load(i3,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) + x3 * A.load(i2,j+1UL) + x4 * A.load(i3,j+1UL) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) + x2 * A.load(i1,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) + x2 * A.load(i1,j+1UL) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j    ] -= sum( x1 * A.load(i,j    ) ) * scalar;
+            y[j+1UL] -= sum( x1 * A.load(i,j+1UL) ) * scalar;
+         }
+      }
+
+      if( j < N )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )?( j & size_t(-IT::size) ):( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT1>::value )?( j+1UL ):( M ) );
+
+         size_t i( ibegin );
+
+         for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+            const size_t i1( i+IT::size     );
+            const size_t i2( i+IT::size*2UL );
+            const size_t i3( i+IT::size*3UL );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            const IntrinsicType x3( x.load(i2) );
+            const IntrinsicType x4( x.load(i3) );
+            y[j] -= sum( x1 * A.load(i,j) + x2 * A.load(i1,j) + x3 * A.load(i2,j) + x4 * A.load(i3,j) ) * scalar;
+         }
+
+         for( ; (i+IT::size) < iend; i+=IT::size*2UL ) {
+            const size_t i1( i+IT::size );
+            const IntrinsicType x1( x.load(i ) );
+            const IntrinsicType x2( x.load(i1) );
+            y[j] -= sum( x1 * A.load(i,j) + x2 * A.load(i1,j) ) * scalar;
+         }
+
+         if( i < iend ) {
+            const IntrinsicType x1( x.load(i) );
+            y[j] -= sum( x1 * A.load(i,j) ) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
    //**BLAS-based subtraction assignment to dense vectors (default)********************************
    /*!\brief Default subtraction assignment of a scaled transpose dense vector-transpose dense
    //        matrix multiplication (\f$ \vec{y}^T-=s*\vec{x}^T*A \f$).
@@ -3173,7 +4623,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function relays to the default implementation of the subtraction assignment of a
+   // This function relays to the default implementation of the subtraction assignment of a large
    // scaled transpose dense vector-transpose dense matrix multiplication expression to a dense
    // vector.
    */
@@ -3184,7 +4634,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      selectDefaultSubAssignKernel( y, x, A, scalar );
+      selectLargeSubAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
