@@ -469,7 +469,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultAssignKernel( y, A, x );
+         TDMatDVecMultExpr::selectSmallAssignKernel( y, A, x );
       else
          TDMatDVecMultExpr::selectBlasAssignKernel( y, A, x );
    }
@@ -493,8 +493,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline void selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
@@ -534,9 +533,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to dense vectors**********************************************
+   //**Default assignment to dense vectors (small matrices)****************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default assignment of a transpose dense matrix-dense vector multiplication
+   /*!\brief Default assignment of a small transpose dense matrix-dense vector multiplication
    //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -545,14 +544,39 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    // \param x The right-hand side dense vector operand.
    // \return void
    //
+   // This function relays to the default implementation of the assignment of a transpose dense
+   // matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (small matrices)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a small transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
    // This function implements the vectorized default assignment kernel for the transpose dense
-   // matrix-dense vector multiplication.
+   // matrix-dense vector multiplication. This kernel is optimized for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -669,9 +693,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense vectors (default)********************************************
+   //**Default assignment to dense vectors (large matrices)****************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a transpose dense matrix-dense vector multiplication
+   /*!\brief Default assignment of a large transpose dense matrix-dense vector multiplication
    //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -686,10 +710,166 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (large matrices)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a large transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the transpose dense
+   // matrix-dense vector multiplication. This kernel is optimized for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      reset( y );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5 );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6 );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7 );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8 );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) + xmm1 );
+               y.store( i+IT::size, y.load(i+IT::size) + xmm2 );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) + xmm1 );
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense vectors (default)********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a transpose dense matrix-dense vector multiplication
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a large transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      selectDefaultAssignKernel( y, A, x );
+      selectLargeAssignKernel( y, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -911,7 +1091,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultAddAssignKernel( y, A, x );
+         TDMatDVecMultExpr::selectSmallAddAssignKernel( y, A, x );
       else
          TDMatDVecMultExpr::selectBlasAddAssignKernel( y, A, x );
    }
@@ -935,8 +1115,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline void selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
@@ -962,9 +1141,34 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to dense vectors*************************************
+   //**Default addition assignment to dense vectors (small matrices)*******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default addition assignment of a transpose dense matrix-dense vector
+   /*!\brief Default addition assignment of a small transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultAddAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (small matrices)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a small transpose dense matrix-dense vector
    //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -974,13 +1178,13 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    // \return void
    //
    // This function implements the vectorized default addition assignment kernel for the transpose
-   // dense matrix-dense vector multiplication.
+   // dense matrix-dense vector multiplication. This kernel is optimized for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1110,10 +1314,10 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense vectors (default)***********************************
+   //**Default addition assignment to dense vectors (large matrices)*******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default addition assignment of a transpose dense matrix-dense vector multiplication
-   //        (\f$ \vec{y}+=A*\vec{x} \f$).
+   /*!\brief Default addition assignment of a large transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -1127,10 +1331,164 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultAddAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (large matrices)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a large transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the transpose
+   // dense matrix-dense vector multiplication. This kernel is optimized for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5 );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6 );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7 );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8 );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4 );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3 );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) + xmm1 );
+               y.store( i+IT::size, y.load(i+IT::size) + xmm2 );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) + xmm1 );
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense vectors (default)***********************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a transpose dense matrix-dense vector multiplication
+   //        (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // transpose dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      selectDefaultAddAssignKernel( y, A, x );
+      selectLargeAddAssignKernel( y, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1330,7 +1688,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         TDMatDVecMultExpr::selectDefaultSubAssignKernel( y, A, x );
+         TDMatDVecMultExpr::selectSmallSubAssignKernel( y, A, x );
       else
          TDMatDVecMultExpr::selectBlasSubAssignKernel( y, A, x );
    }
@@ -1354,8 +1712,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline void selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
@@ -1381,9 +1738,9 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to dense vectors**********************************
+   //**Default subtraction assignment to dense vectors (small matrices)****************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default subtraction assignment of a transpose dense matrix-dense vector
+   /*!\brief Default subtraction assignment of a small transpose dense matrix-dense vector
    //        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -1392,14 +1749,40 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    // \param x The right-hand side dense vector operand.
    // \return void
    //
+   // This function relays to the default implementation of the addition assignment of a transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultSubAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (small matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a small transpose dense matrix-dense
+   //        vector multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
    // This function implements the vectorized default subtraction assignment kernel for the
-   // transpose dense matrix-dense vector multiplication.
+   // transpose dense matrix-dense vector multiplication. This kernel is optimized for small
+   // matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1529,6 +1912,161 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Default subtraction assignment to dense vectors (large matrices)****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a large transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      selectDefaultSubAssignKernel( y, A, x );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (large matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a large transpose dense matrix-dense
+   //        vector multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the
+   // transpose dense matrix-dense vector multiplication. This kernel is optimized for large
+   // matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2 >  // Type of the right-hand side vector operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4 );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) - xmm5 );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) - xmm6 );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) - xmm7 );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) - xmm8 );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4 );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1 );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2 );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3 );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) - xmm1 );
+               y.store( i+IT::size, y.load(i+IT::size) - xmm2 );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) - xmm1 );
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
    //**BLAS-based subtraction assignment to dense vectors (default)********************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a transpose dense matrix-dense vector
@@ -1540,7 +2078,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    // \param x The right-hand side dense vector operand.
    // \return void
    //
-   // This function relays to the default implementation of the subtraction assignment of a
+   // This function relays to the default implementation of the subtraction assignment of a large
    // transpose dense matrix-dense vector multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
@@ -1549,7 +2087,7 @@ class TDMatDVecMultExpr : public DenseVector< TDMatDVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2> >::Type
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      selectDefaultSubAssignKernel( y, A, x );
+      selectLargeSubAssignKernel( y, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2300,7 +2838,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAssignKernel( y, A, x, scalar );
+         DVecScalarMultExpr::selectSmallAssignKernel( y, A, x, scalar );
       else
          DVecScalarMultExpr::selectBlasAssignKernel( y, A, x, scalar );
    }
@@ -2324,8 +2862,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   static inline void selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
@@ -2367,8 +2904,33 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default assignment to dense vectors**********************************************
-   /*!\brief Vectorized default assignment of a scaled transpose dense matrix-dense vector
+   //**Default assignment to dense vectors (small matrices)****************************************
+   /*!\brief Default assignment of a small scaled transpose dense matrix-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (small matrices)*****************************
+   /*!\brief Vectorized default assignment of a small scaled transpose dense matrix-dense vector
    //        multiplication (\f$ \vec{y}=s*A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2379,14 +2941,14 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // \return void
    //
    // This function implements the vectorized default assignment kernel for the scaled transpose
-   // dense matrix-dense vector multiplication.
+   // dense matrix-dense vector multiplication. This kernel is optimized for small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+      selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2505,6 +3067,164 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    }
    //**********************************************************************************************
 
+   //**Default assignment to dense vectors (large matrices)****************************************
+   /*!\brief Default assignment of a large scaled transpose dense matrix-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled transpose
+   // dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to dense vectors (large matrices)*****************************
+   /*!\brief Vectorized default assignment of a large scaled transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the scaled transpose
+   // dense matrix-dense vector multiplication. This kernel is optimized for large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      reset( y );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5*factor );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6*factor );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7*factor );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8*factor );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) + xmm1*factor );
+               y.store( i+IT::size, y.load(i+IT::size) + xmm2*factor );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) + xmm1*factor );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
    //**BLAS-based assignment to dense vectors (default)********************************************
    /*!\brief Default assignment of a scaled transpose dense matrix-dense vector multiplication
    //        (\f$ \vec{y}=s*A*\vec{x} \f$).
@@ -2516,8 +3236,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function relays to the default implementation of the assignment of a scaled transpose
-   // dense matrix-dense vector multiplication expression to a dense vector.
+   // This function relays to the default implementation of the assignment of a large scaled
+   // transpose dense matrix-dense vector multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
@@ -2526,7 +3246,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2,ST2> >::Type
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      selectDefaultAssignKernel( y, A, x, scalar );
+      selectLargeAssignKernel( y, A, x, scalar );
    }
    //**********************************************************************************************
 
@@ -2747,7 +3467,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultAddAssignKernel( y, A, x, scalar );
+         DVecScalarMultExpr::selectSmallAddAssignKernel( y, A, x, scalar );
       else
          DVecScalarMultExpr::selectBlasAddAssignKernel( y, A, x, scalar );
    }
@@ -2771,15 +3491,39 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   static inline void selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       y.addAssign( A * x * scalar );
    }
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to dense vectors*************************************
-   /*!\brief Vectorized default addition assignment of a scaled transpose dense matrix-dense
+   //**Default addition assignment to dense vectors (small matrices)*******************************
+   /*!\brief Default addition assignment of a small scaled transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a scaled
+   // transpose dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (small matrices)********************
+   /*!\brief Vectorized default addition assignment of a small scaled transpose dense matrix-dense
    //        vector multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2790,14 +3534,15 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // \return void
    //
    // This function implements the vectorized default addition assignment kernel for the scaled
-   // transpose dense matrix-dense vector multiplication.
+   // transpose dense matrix-dense vector multiplication. This kernel is optimized for small
+   // matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+      selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2915,8 +3660,8 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    }
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense vectors (default)***********************************
-   /*!\brief Default addition assignment of a scaled transpose dense matrix-dense vector
+   //**Default addition assignment to dense vectors (large matrices)*******************************
+   /*!\brief Default addition assignment of a large scaled transpose dense matrix-dense vector
    //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2933,10 +3678,167 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (large matrices)********************
+   /*!\brief Vectorized default addition assignment of a large scaled transpose dense matrix-dense
+   //        vector multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the scaled
+   // transpose dense matrix-dense vector multiplication. This kernel is optimized for large
+   // matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) + xmm5*factor );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) + xmm6*factor );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) + xmm7*factor );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) + xmm8*factor );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) + xmm4*factor );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) + xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) + xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) + xmm3*factor );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) + xmm1*factor );
+               y.store( i+IT::size, y.load(i+IT::size) + xmm2*factor );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) + xmm1*factor );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense vectors (default)***********************************
+   /*!\brief Default addition assignment of a scaled transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // scaled transpose dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2,ST2> >::Type
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      selectDefaultAddAssignKernel( y, A, x, scalar );
+      selectLargeAddAssignKernel( y, A, x, scalar );
    }
    //**********************************************************************************************
 
@@ -3137,7 +4039,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    {
       if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDMATDVECMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectDefaultSubAssignKernel( y, A, x, scalar );
+         DVecScalarMultExpr::selectSmallSubAssignKernel( y, A, x, scalar );
       else
          DVecScalarMultExpr::selectBlasSubAssignKernel( y, A, x, scalar );
    }
@@ -3161,16 +4063,15 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   static inline void selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       y.subAssign( A * x * scalar );
    }
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to dense vectors**********************************
-   /*!\brief Vectorized default subtraction assignment of a scaled transpose dense matrix-dense
-   //        vector multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   //**Default subtraction assignment to dense vectors (small matrices)****************************
+   /*!\brief Default subtraction assignment of a small scaled transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
    // \ingroup dense_vector
    //
    // \param y The target left-hand side dense vector.
@@ -3179,15 +4080,41 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function implements the vectorized default subtraction assignment kernel for the scaled
-   // transpose dense matrix-dense vector multiplication.
+   // This function relays to the default implementation of the subtraction assignment of a scaled
+   // transpose dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (small matrices)*****************
+   /*!\brief Vectorized default subtraction assignment of a small scaled transpose dense matrix-
+   //        dense vector multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the
+   // scaled transpose dense matrix-dense vector multiplication. This kernel is optimized for
+   // small matrices.
    */
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
-      selectDefaultSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+      selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3304,6 +4231,163 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    }
    //**********************************************************************************************
 
+   //**Default subtraction assignment to dense vectors (large matrices)****************************
+   /*!\brief Default subtraction assignment of a large scaled transpose dense matrix-dense vector
+   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a scaled
+   // transpose dense matrix-dense vector multiplication expression to a dense vector.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (large matrices)*****************
+   /*!\brief Vectorized default subtraction assignment of a large scaled transpose dense matrix-
+   //        dense vector multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense matrix operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the
+   // scaled transpose dense matrix-dense vector multiplication. This kernel is optimized for
+   // large matrices.
+   */
+   template< typename VT1    // Type of the left-hand side target vector
+           , typename MT1    // Type of the left-hand side matrix operand
+           , typename VT2    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >::Type
+      selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
+   {
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
+
+      const size_t iblock( 32768UL / sizeof( ElementType ) );
+      const size_t jblock( ( N < iblock )?( 8UL ):( 4UL ) );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      BLAZE_INTERNAL_ASSERT( ( iblock % IT::size ) == 0UL, "Invalid block size detected" );
+
+      for( size_t ii=0U; ii<M; ii+=iblock ) {
+         for( size_t jj=0UL; jj<N; jj+=jblock )
+         {
+            const size_t jend( min( jj+jblock, N ) );
+            const size_t itmp( min( ii+iblock, M ) );
+            const size_t iend( ( IsUpper<MT1>::value )?( min( itmp, jend ) ):( itmp ) );
+
+            size_t i( ( IsLower<MT1>::value )?( max( ii, jj & size_t(-IT::size) ) ):( ii ) );
+
+            for( ; (i+IT::size*7UL) < iend; i+=IT::size*8UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+                  xmm5 = xmm5 + A.load(i+IT::size*4UL,j) * x1;
+                  xmm6 = xmm6 + A.load(i+IT::size*5UL,j) * x1;
+                  xmm7 = xmm7 + A.load(i+IT::size*6UL,j) * x1;
+                  xmm8 = xmm8 + A.load(i+IT::size*7UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
+               y.store( i+IT::size*4UL, y.load(i+IT::size*4UL) - xmm5*factor );
+               y.store( i+IT::size*5UL, y.load(i+IT::size*5UL) - xmm6*factor );
+               y.store( i+IT::size*6UL, y.load(i+IT::size*6UL) - xmm7*factor );
+               y.store( i+IT::size*7UL, y.load(i+IT::size*7UL) - xmm8*factor );
+            }
+
+            for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+                  xmm4 = xmm4 + A.load(i+IT::size*3UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
+               y.store( i+IT::size*3UL, y.load(i+IT::size*3UL) - xmm4*factor );
+            }
+
+            for( ; (i+IT::size*2UL) < iend; i+=IT::size*3UL )
+            {
+               IntrinsicType xmm1, xmm2, xmm3;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i             ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size    ,j) * x1;
+                  xmm3 = xmm3 + A.load(i+IT::size*2UL,j) * x1;
+               }
+
+               y.store( i             , y.load(i             ) - xmm1*factor );
+               y.store( i+IT::size    , y.load(i+IT::size    ) - xmm2*factor );
+               y.store( i+IT::size*2UL, y.load(i+IT::size*2UL) - xmm3*factor );
+            }
+
+            for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+            {
+               IntrinsicType xmm1, xmm2;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  const IntrinsicType x1( set( x[j] ) );
+                  xmm1 = xmm1 + A.load(i         ,j) * x1;
+                  xmm2 = xmm2 + A.load(i+IT::size,j) * x1;
+               }
+
+               y.store( i         , y.load(i         ) - xmm1*factor );
+               y.store( i+IT::size, y.load(i+IT::size) - xmm2*factor );
+            }
+
+            if( i < iend )
+            {
+               IntrinsicType xmm1;
+
+               for( size_t j=jj; j<jend; ++j ) {
+                  xmm1 = xmm1 + A.load(i,j) * set( x[j] );
+               }
+
+               y.store( i, y.load(i) - xmm1*factor );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
    //**BLAS-based subtraction assignment to dense vectors (default)********************************
    /*!\brief Default subtraction assignment of a scaled transpose dense matrix-dense vector
    //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
@@ -3315,7 +4399,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function relays to the default implementation of the subtraction assignment of a
+   // This function relays to the default implementation of the subtraction assignment of a large
    // scaled transpose dense matrix-dense vector multiplication expression to a dense vector.
    */
    template< typename VT1    // Type of the left-hand side target vector
@@ -3325,7 +4409,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    static inline typename EnableIf< UseDefaultKernel<VT1,MT1,VT2,ST2> >::Type
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      selectDefaultSubAssignKernel( y, A, x, scalar );
+      selectLargeSubAssignKernel( y, A, x, scalar );
    }
    //**********************************************************************************************
 
