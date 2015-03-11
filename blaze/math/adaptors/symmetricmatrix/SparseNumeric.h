@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
