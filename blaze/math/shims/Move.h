@@ -53,12 +53,12 @@ namespace blaze {
 // \return void
 //
 // The move shim implements the most efficient way to move the contents of \a src to \a dst.
-// Depending on the given type \a Type, this may be a C++11 move operation, a swap operation
-// or a simple copy operation. Semantically, \a dst may be modified during this operation,
-// but is guaranteed to be in a valid and destructible but unspecified state.
+// Depending on the given types \a Src and \a Dst, this may be a C++11 move operation, a swap
+// operation or a simple copy operation. Semantically, \a dst may be modified during this
+// operation, but is guaranteed to be in a valid and destructible but unspecified state.
 */
-template< typename Type >
-inline void move( Type& dst, Type& src )
+template< typename Dst, typename Src >
+inline void move( Dst& dst, Src& src )
 {
    dst = src;
 }
