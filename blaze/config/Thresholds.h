@@ -85,10 +85,10 @@ const size_t TDMATDVECMULT_THRESHOLD = 62500UL;
 // kernels are prefered over the custom Blaze kernels. In case the number of elements in the
 // dense matrix is smaller, the Blaze kernels are used.
 //
-// The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// The default setting for this threshold is 62500 (which for instance corresponds to a matrix
+// size of \f$ 250 \times 250 \f$).
 */
-const size_t TDVECDMATMULT_THRESHOLD = 10000UL;
+const size_t TDVECDMATMULT_THRESHOLD = 62500UL;
 //*************************************************************************************************
 
 
