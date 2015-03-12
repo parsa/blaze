@@ -3060,8 +3060,8 @@ namespace blaze {}
    //
    DynamicMatrix<int> B( 3UL, 2UL, 0 );
    B(1,0) = 7;
-   B(2,1) = 8;
-   B(2,2) = 9;
+   B(2,0) = 8;
+   B(2,1) = 9;
 
    // OK: Assigning B to a submatrix of A2 such that the lower matrix invariant can be preserved
    //
