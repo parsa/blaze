@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 
 
 namespace blaze {
@@ -82,13 +81,13 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsUpper : public FalseType
+struct IsUpper : public IsDiagonal<T>::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = IsDiagonal<T>::value };
+   typedef typename IsDiagonal<T>::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
