@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/DivExpr.h>
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
