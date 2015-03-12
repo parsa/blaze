@@ -190,9 +190,9 @@ namespace blaze {
 
    // Access via a non-const iterator
    CompressedUpper::Iterator it = A.begin(1);
-   *it = 9.0;  // Throws an exception; modifies the lower element (1,0)
+   *it = 9.0;  // Modifies the diagonal element (1,1)
    ++it;
-   *it = 6.0;  // Modifies the diagonal element (1,1)
+   *it = 6.0;  // Modifies the upper element (1,2)
 
    // Erasing elements via the erase() function
    A.erase( 0, 0 );  // Erasing the diagonal element (0,0)
