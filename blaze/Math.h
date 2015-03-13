@@ -46,6 +46,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Constants.h>
 #include <blaze/math/Constraints.h>
+#include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Epsilon.h>
