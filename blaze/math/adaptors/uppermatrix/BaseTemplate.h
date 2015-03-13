@@ -450,6 +450,7 @@ namespace blaze {
    \code
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
+   using blaze::UpperMatrix;
    using blaze::rowMajor;
    using blaze::columnVector;
 
