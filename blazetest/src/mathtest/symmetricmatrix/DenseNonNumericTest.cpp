@@ -630,12 +630,12 @@ void DenseNonNumericTest::testAssignment()
 
 
    //=====================================================================================
-   // Row-major conversion assignment
+   // Row-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Row-major SymmetricMatrix conversion assignment (0x0)";
+      test_ = "Row-major SymmetricMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<VT,blaze::rowMajor> mat;
 
@@ -647,9 +647,9 @@ void DenseNonNumericTest::testAssignment()
       checkNonZeros( sym, 0UL );
    }
 
-   // Row-major/row-major conversion assignment (symmetric, dense)
+   // Row-major/row-major dense matrix assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (symmetric, dense)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = vec(  1 );
@@ -682,9 +682,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (symmetric, dense)
+   // Row-major/column-major dense matrix assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (symmetric, dense)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = vec(  1 );
@@ -717,9 +717,148 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/row-major conversion assignment (symmetric, sparse)
+   // Row-major/row-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (symmetric, sparse)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major dense matrix assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major dense matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> > sym1;
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major dense matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> > sym1;
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Row-major SymmetricMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<VT,blaze::rowMajor> mat;
+
+      ST sym;
+      sym = mat;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Row-major/row-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
       blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
       mat(0,0) = vec(  1 );
@@ -752,9 +891,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (symmetric, sparse)
+   // Row-major/column-major sparse matrix assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (symmetric, sparse)";
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
       blaze::CompressedMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
       mat(0,0) = vec(  1 );
@@ -787,9 +926,134 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/row-major conversion assignment (symmetric, computation)
+   // Row-major/row-major sparse matrix assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (symmetric, computation)";
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense matrix computation assignment
+   //=====================================================================================
+
+   // Row-major/row-major dense matrix computation assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix computation assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = vec(  1 );
@@ -822,9 +1086,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (symmetric, computation)
+   // Row-major/column-major dense matrix computation assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (symmetric, computation)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix computation assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = vec(  1 );
@@ -857,117 +1121,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Row-major/row-major conversion assignment (non-symmetric, dense)
+   // Row-major/row-major dense matrix computation assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (non-symmetric, dense)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         ST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/column-major conversion assignment (non-symmetric, dense)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (non-symmetric, dense)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         ST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/row-major conversion assignment (non-symmetric, sparse)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (non-symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         ST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/column-major conversion assignment (non-symmetric, sparse)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (non-symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         ST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/row-major conversion assignment (non-symmetric, computation)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (non-symmetric, computation)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix computation assignment (non-symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = vec(  1 );
@@ -992,9 +1148,9 @@ void DenseNonNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major conversion assignment (non-symmetric, computation)
+   // Row-major/column-major dense matrix computation assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (non-symmetric, computation)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix computation assignment (non-symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = vec(  1 );
@@ -1017,72 +1173,6 @@ void DenseNonNumericTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/row-major conversion assignment (SymmetricMatrix)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
-
-      blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> > sym1;
-      sym1(0,0) = vec(  1 );
-      sym1(0,1) = vec( -4 );
-      sym1(0,2) = vec(  7 );
-      sym1(1,1) = vec(  2 );
-      sym1(2,2) = vec(  3 );
-
-      ST sym2;
-      sym2 = sym1;
-
-      checkRows    ( sym2, 3UL );
-      checkColumns ( sym2, 3UL );
-      checkNonZeros( sym2, 7UL );
-
-      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
-          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
-          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Row-major/column-major conversion assignment (SymmetricMatrix)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
-
-      blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> > sym1;
-      sym1(0,0) = vec(  1 );
-      sym1(0,1) = vec( -4 );
-      sym1(0,2) = vec(  7 );
-      sym1(1,1) = vec(  2 );
-      sym1(2,2) = vec(  3 );
-
-      ST sym2;
-      sym2 = sym1;
-
-      checkRows    ( sym2, 3UL );
-      checkColumns ( sym2, 3UL );
-      checkNonZeros( sym2, 7UL );
-
-      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
-          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
-          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym2 << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
    }
 
 
@@ -1138,12 +1228,12 @@ void DenseNonNumericTest::testAssignment()
 
 
    //=====================================================================================
-   // Column-major conversion assignment
+   // Column-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Column-major SymmetricMatrix conversion assignment (0x0)";
+      test_ = "Column-major SymmetricMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<VT,blaze::columnMajor> mat;
 
@@ -1155,9 +1245,9 @@ void DenseNonNumericTest::testAssignment()
       checkNonZeros( sym, 0UL );
    }
 
-   // Column-major/row-major conversion assignment (symmetric, dense)
+   // Column-major/row-major dense matrix assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (symmetric, dense)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = vec(  1 );
@@ -1190,9 +1280,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (symmetric, dense)
+   // Column-major/column-major dense matrix assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (symmetric, dense)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = vec(  1 );
@@ -1225,149 +1315,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Column-major/row-major conversion assignment (symmetric, sparse)
+   // Column-major/row-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec(  7 );
-      mat(2,2) = vec(  3 );
-
-      OST sym;
-      sym = mat;
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-
-      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
-          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/column-major conversion assignment (symmetric, sparse)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec(  7 );
-      mat(2,2) = vec(  3 );
-
-      OST sym;
-      sym = mat;
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-
-      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
-          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/row-major conversion assignment (symmetric, computation)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (symmetric, computation)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec(  7 );
-      mat(2,2) = vec(  3 );
-
-      OST sym;
-      sym = eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-
-      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
-          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/column-major conversion assignment (symmetric, computation)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (symmetric, computation)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec(  7 );
-      mat(2,2) = vec(  3 );
-
-      OST sym;
-      sym = eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
-
-      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
-          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Construction failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
-                                     "( ( -4 ) (  2 ) (   ) )\n"
-                                     "( (  7 ) (    ) ( 3 ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/row-major conversion assignment (non-symmetric, dense)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (non-symmetric, dense)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = vec(  1 );
@@ -1392,9 +1342,9 @@ void DenseNonNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major conversion assignment (non-symmetric, dense)
+   // Column-major/column-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (non-symmetric, dense)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = vec(  1 );
@@ -1419,117 +1369,9 @@ void DenseNonNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major conversion assignment (non-symmetric, sparse)
+   // Column-major/row-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (non-symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         OST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/column-major conversion assignment (non-symmetric, sparse)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (non-symmetric, sparse)";
-
-      blaze::CompressedMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         OST sym;
-         sym = mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/row-major conversion assignment (non-symmetric, computation)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (non-symmetric, computation)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         OST sym;
-         sym = eval( mat );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/column-major conversion assignment (non-symmetric, computation)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (non-symmetric, computation)";
-
-      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
-      mat(0,0) = vec(  1 );
-      mat(0,1) = vec( -4 );
-      mat(0,2) = vec(  7 );
-      mat(1,0) = vec( -4 );
-      mat(1,1) = vec(  2 );
-      mat(2,0) = vec( -5 );
-      mat(2,2) = vec(  3 );
-
-      try {
-         OST sym;
-         sym = eval( mat );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/row-major conversion assignment (SymmetricMatrix)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> > sym1;
       sym1(0,0) = vec(  1 );
@@ -1560,9 +1402,9 @@ void DenseNonNumericTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (SymmetricMatrix)
+   // Column-major/column-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> > sym1;
       sym1(0,0) = vec(  1 );
@@ -1592,6 +1434,344 @@ void DenseNonNumericTest::testAssignment()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Column-major SymmetricMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<VT,blaze::columnMajor> mat;
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Column-major/row-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec(  7 );
+      mat(2,2) = vec(  3 );
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
+          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec(  7 );
+      mat(2,2) = vec(  3 );
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
+          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         OST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         OST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      OST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,0) = vec(  1 );
+      sym1(0,1) = vec( -4 );
+      sym1(0,2) = vec(  7 );
+      sym1(1,1) = vec(  2 );
+      sym1(2,2) = vec(  3 );
+
+      OST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) != vec(  1 ) || sym2(0,1) != vec( -4 )  || sym2(0,2) != vec( 7 )   ||
+          sym2(1,0) != vec( -4 ) || sym2(1,1) != vec(  2 )  || !isDefault( sym2(1,2) ) ||
+          sym2(2,0) != vec(  7 ) || !isDefault( sym2(2,1) ) || sym2(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix computation assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix computation assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix computation assignment (symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec(  7 );
+      mat(2,2) = vec(  3 );
+
+      OST sym;
+      sym = eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
+          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major dense matrix computation assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix computation assignment (symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec(  7 );
+      mat(2,2) = vec(  3 );
+
+      OST sym;
+      sym = eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != vec(  1 ) || sym(0,1) != vec( -4 )  || sym(0,2) != vec( 7 )   ||
+          sym(1,0) != vec( -4 ) || sym(1,1) != vec(  2 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  7 ) || !isDefault( sym(2,1) ) || sym(2,2) != vec( 3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (  1 ) ( -4 ) ( 7 ) )\n"
+                                     "( ( -4 ) (  2 ) (   ) )\n"
+                                     "( (  7 ) (    ) ( 3 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major dense matrix computation assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix computation assignment (non-symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::rowMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         OST sym;
+         sym = eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major dense matrix computation assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix computation assignment (non-symmetric)";
+
+      blaze::StaticMatrix<VT,3UL,3UL,blaze::columnMajor> mat;
+      mat(0,0) = vec(  1 );
+      mat(0,1) = vec( -4 );
+      mat(0,2) = vec(  7 );
+      mat(1,0) = vec( -4 );
+      mat(1,1) = vec(  2 );
+      mat(2,0) = vec( -5 );
+      mat(2,2) = vec(  3 );
+
+      try {
+         OST sym;
+         sym = eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
@@ -1611,9 +1791,9 @@ void DenseNonNumericTest::testAddAssign()
    // Row-major addition assignment
    //=====================================================================================
 
-   // Row-major/row-major addition assignment (symmetric, non-computation)
+   // Row-major/row-major addition assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -1652,9 +1832,9 @@ void DenseNonNumericTest::testAddAssign()
       }
    }
 
-   // Row-major/column-major addition assignment (symmetric, non-computation)
+   // Row-major/column-major addition assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (symmetric, non-computation)";
+      test_ = "Row-major/column-major SymmetricMatrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -1693,91 +1873,9 @@ void DenseNonNumericTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major addition assignment (symmetric, computation)
+   // Row-major/row-major addition assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,0) = vec( -2 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym += eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Row-major/column-major addition assignment (symmetric, computation)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,0) = vec( -2 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym += eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Row-major/row-major addition assignment (non-symmetric, non-computation)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -1803,9 +1901,9 @@ void DenseNonNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major addition assignment (non-symmetric, non-computation)
+   // Row-major/column-major addition assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/column-major SymmetricMatrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -1820,62 +1918,6 @@ void DenseNonNumericTest::testAddAssign()
 
       try {
          sym += mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/row-major addition assignment (non-symmetric, computation)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym += eval( mat );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/column-major addition assignment (non-symmetric, computation)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym += eval( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1967,12 +2009,12 @@ void DenseNonNumericTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major addition assignment
+   // Row-major computation addition assignment
    //=====================================================================================
 
-   // Column-major/row-major addition assignment (symmetric, non-computation)
+   // Row-major/row-major computation addition assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix computation addition assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -1981,89 +2023,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym += mat;
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/column-major addition assignment (symmetric, non-computation)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (symmetric, non-computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,0) = vec( -2 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym += mat;
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/row-major addition assignment (symmetric, computation)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec( -2 );
-      mat(0,2) = vec(  6 );
-      mat(1,0) = vec( -2 );
-      mat(1,1) = vec(  3 );
-      mat(2,0) = vec(  6 );
-
-      OST sym( 3UL );
+      ST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2093,9 +2053,9 @@ void DenseNonNumericTest::testAddAssign()
       }
    }
 
-   // Column-major/column-major addition assignment (symmetric, computation)
+   // Row-major/column-major computation addition assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (symmetric, computation)";
+      test_ = "Row-major/column-major SymmetricMatrix computation addition assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -2104,7 +2064,7 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      OST sym( 3UL );
+      ST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
@@ -2134,9 +2094,9 @@ void DenseNonNumericTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major addition assignment (non-symmetric, non-computation)
+   // Row-major/row-major computation addition assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix computation addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -2144,13 +2104,13 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      OST sym( 3UL );
+      ST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
 
       try {
-         sym += mat;
+         sym += eval( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2162,9 +2122,9 @@ void DenseNonNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major addition assignment (non-symmetric, non-computation)
+   // Row-major/column-major computation addition assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/column-major SymmetricMatrix computation addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -2172,13 +2132,13 @@ void DenseNonNumericTest::testAddAssign()
       mat(1,1) = vec(  3 );
       mat(2,0) = vec(  6 );
 
-      OST sym( 3UL );
+      ST sym( 3UL );
       sym(0,1) = vec( 1 );
       sym(0,2) = vec( 2 );
       sym(1,1) = vec( 0 );
 
       try {
-         sym += mat;
+         sym += eval( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2190,9 +2150,96 @@ void DenseNonNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major addition assignment (non-symmetric, computation)
+
+   //=====================================================================================
+   // Column-major addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major addition assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (non-symmetric, computation)";
+      test_ = "Column-major/row-major SymmetricMatrix addition assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,0) = vec( -2 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major addition assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix addition assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,0) = vec( -2 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major addition assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -2206,7 +2253,7 @@ void DenseNonNumericTest::testAddAssign()
       sym(1,1) = vec( 0 );
 
       try {
-         sym += eval( mat );
+         sym += mat;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2218,9 +2265,9 @@ void DenseNonNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major addition assignment (non-symmetric, computation)
+   // Column-major/column-major addition assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (non-symmetric, computation)";
+      test_ = "Column-major/column-major SymmetricMatrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec( -2 );
@@ -2234,7 +2281,7 @@ void DenseNonNumericTest::testAddAssign()
       sym(1,1) = vec( 0 );
 
       try {
-         sym += eval( mat );
+         sym += mat;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2323,6 +2370,149 @@ void DenseNonNumericTest::testAddAssign()
          throw std::runtime_error( oss.str() );
       }
    }
+
+
+   //=====================================================================================
+   // Column-major computation addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major computation addition assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix computation addition assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,0) = vec( -2 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym += eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major computation addition assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix computation addition assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,0) = vec( -2 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym += eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major computation addition assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix computation addition assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym += eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major computation addition assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix computation addition assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec( -2 );
+      mat(0,2) = vec(  6 );
+      mat(1,1) = vec(  3 );
+      mat(2,0) = vec(  6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym += eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
@@ -2342,9 +2532,9 @@ void DenseNonNumericTest::testSubAssign()
    // Row-major subtraction assignment
    //=====================================================================================
 
-   // Row-major/row-major subtraction assignment (symmetric, non-computation)
+   // Row-major/row-major subtraction assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2383,9 +2573,9 @@ void DenseNonNumericTest::testSubAssign()
       }
    }
 
-   // Row-major/column-major subtraction assignment (symmetric, non-computation)
+   // Row-major/column-major subtraction assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (symmetric, non-computation)";
+      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2424,91 +2614,9 @@ void DenseNonNumericTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major subtraction assignment (symmetric, computation)
+   // Row-major/row-major subtraction assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,0) = vec(  2 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym -= eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Row-major/column-major subtraction assignment (symmetric, computation)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,0) = vec(  2 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym -= eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Row-major/row-major subtraction assignment (non-symmetric, non-computation)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2534,9 +2642,9 @@ void DenseNonNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major subtraction assignment (non-symmetric, non-computation)
+   // Row-major/column-major subtraction assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (non-symmetric, non-computation)";
+      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2551,62 +2659,6 @@ void DenseNonNumericTest::testSubAssign()
 
       try {
          sym -= mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/row-major subtraction assignment (non-symmetric, computation)
-   {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym -= eval( mat );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Row-major/column-major subtraction assignment (non-symmetric, computation)
-   {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      ST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym -= eval( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2698,12 +2750,155 @@ void DenseNonNumericTest::testSubAssign()
 
 
    //=====================================================================================
+   // Row-major computation subtraction assignment
+   //=====================================================================================
+
+   // Row-major/row-major subtraction assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,0) = vec(  2 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      ST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym -= eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major subtraction assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,0) = vec(  2 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      ST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym -= eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major subtraction assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      ST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym -= eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major subtraction assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      ST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym -= eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
    // Column-major subtraction assignment
    //=====================================================================================
 
-   // Column-major/row-major subtraction assignment (symmetric, non-computation)
+   // Column-major/row-major subtraction assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (symmetric, non-computation)";
+      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2742,9 +2937,9 @@ void DenseNonNumericTest::testSubAssign()
       }
    }
 
-   // Column-major/column-major subtraction assignment (symmetric, non-computation)
+   // Column-major/column-major subtraction assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (symmetric, non-computation)";
+      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2781,91 +2976,9 @@ void DenseNonNumericTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major subtraction assignment (symmetric, computation)
+   // Column-major/row-major subtraction assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,0) = vec(  2 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym -= eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/column-major subtraction assignment (symmetric, computation)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,0) = vec(  2 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      sym -= eval( mat );
-
-      checkRows    ( sym, 3UL );
-      checkColumns ( sym, 3UL );
-      checkCapacity( sym, 9UL );
-      checkNonZeros( sym, 5UL );
-      checkNonZeros( sym, 0UL, 2UL );
-      checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 1UL );
-
-      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
-          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
-          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n"
-             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
-                                     "( ( -1 ) (  3 ) (   ) )\n"
-                                     "( (  8 ) (    ) (   ) )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   // Column-major/row-major subtraction assignment (non-symmetric, non-computation)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (non-symmetric, non-computation)";
+      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2891,9 +3004,9 @@ void DenseNonNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major subtraction assignment (non-symmetric, non-computation)
+   // Column-major/column-major subtraction assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (non-symmetric, non-computation)";
+      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
       mat(0,1) = vec(  2 );
@@ -2908,62 +3021,6 @@ void DenseNonNumericTest::testSubAssign()
 
       try {
          sym -= mat;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/row-major subtraction assignment (non-symmetric, computation)
-   {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym -= eval( mat );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sym << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-   }
-
-   // Column-major/column-major subtraction assignment (non-symmetric, computation)
-   {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (non-symmetric, computation)";
-
-      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
-      mat(0,1) = vec(  2 );
-      mat(0,2) = vec( -6 );
-      mat(1,1) = vec( -3 );
-      mat(2,0) = vec( -6 );
-
-      OST sym( 3UL );
-      sym(0,1) = vec( 1 );
-      sym(0,2) = vec( 2 );
-      sym(1,1) = vec( 0 );
-
-      try {
-         sym -= eval( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -3051,6 +3108,149 @@ void DenseNonNumericTest::testSubAssign()
                                      "( (  8 ) (    ) (   ) )\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+
+
+   //=====================================================================================
+   // Column-major computation subtraction assignment
+   //=====================================================================================
+
+   // Column-major/row-major computation subtraction assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix computation subtraction assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,0) = vec(  2 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym -= eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major computation subtraction assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix computation subtraction assignment (symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,0) = vec(  2 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      sym -= eval( mat );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 5UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 1UL );
+
+      if( !isDefault( sym(0,0) ) || sym(0,1) != vec( -1 )  || sym(0,2) != vec( 8 )   ||
+          sym(1,0) != vec( -1 )  || sym(1,1) != vec(  3 )  || !isDefault( sym(1,2) ) ||
+          sym(2,0) != vec(  8 )  || !isDefault( sym(2,1) ) || !isDefault( sym(2,2) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( (    ) ( -1 ) ( 8 ) )\n"
+                                     "( ( -1 ) (  3 ) (   ) )\n"
+                                     "( (  8 ) (    ) (   ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major computation subtraction assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix computation subtraction assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::rowMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym -= eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major computation subtraction assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix computation subtraction assignment (non-symmetric)";
+
+      blaze::DynamicMatrix<VT,blaze::columnMajor> mat( 3UL, 3UL );
+      mat(0,1) = vec(  2 );
+      mat(0,2) = vec( -6 );
+      mat(1,1) = vec( -3 );
+      mat(2,0) = vec( -6 );
+
+      OST sym( 3UL );
+      sym(0,1) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 0 );
+
+      try {
+         sym -= eval( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
