@@ -39,7 +39,7 @@ all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-     lowermatrix uppermatrix symmetricmatrix \
+     symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
      densesubvector sparsesubvector \
      densesubmatrix sparsesubmatrix \
      denserow densecolumn sparserow sparsecolumn \
@@ -64,7 +64,7 @@ noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-      lowermatrix uppermatrix symmetricmatrix \
+      symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
       densesubvector sparsesubvector \
       densesubmatrix sparsesubmatrix \
       denserow densecolumn sparserow sparsecolumn \
@@ -147,6 +147,11 @@ compressedmatrix:
 	@echo "Building the CompressedMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./compressedmatrix $(MAKECMDGOALS)
 
+symmetricmatrix:
+	@echo
+	@echo "Building the SymmetricMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./symmetricmatrix $(MAKECMDGOALS)
+
 lowermatrix:
 	@echo
 	@echo "Building the LowerMatrix tests..."
@@ -157,10 +162,10 @@ uppermatrix:
 	@echo "Building the UpperMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./uppermatrix $(MAKECMDGOALS)
 
-symmetricmatrix:
+diagonalmatrix:
 	@echo
-	@echo "Building the SymmetricMatrix tests..."
-	@$(MAKE) --no-print-directory -C ./symmetricmatrix $(MAKECMDGOALS)
+	@echo "Building the DiagonalMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./diagonalmatrix $(MAKECMDGOALS)
 
 densesubvector:
 	@echo
@@ -450,9 +455,10 @@ clean:
 	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
+	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
 	@$(MAKE) --no-print-directory -C ./lowermatrix clean
 	@$(MAKE) --no-print-directory -C ./uppermatrix clean
-	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
+	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./densesubvector clean
 	@$(MAKE) --no-print-directory -C ./sparsesubvector clean
 	@$(MAKE) --no-print-directory -C ./densesubmatrix clean
@@ -516,7 +522,7 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-        lowermatrix uppermatrix symmetricmatrix \
+        symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
