@@ -57,6 +57,7 @@
 #include <blazetest/mathtest/creator/HybridSymmetric.h>
 #include <blazetest/mathtest/creator/HybridUpper.h>
 #include <blazetest/mathtest/creator/HybridVector.h>
+#include <blazetest/mathtest/creator/StaticDiagonal.h>
 #include <blazetest/mathtest/creator/StaticLower.h>
 #include <blazetest/mathtest/creator/StaticMatrix.h>
 #include <blazetest/mathtest/creator/StaticSymmetric.h>
