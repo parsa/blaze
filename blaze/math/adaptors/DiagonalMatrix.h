@@ -42,6 +42,7 @@
 
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/diagonalmatrix/Dense.h>
+#include <blaze/math/adaptors/diagonalmatrix/Sparse.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
