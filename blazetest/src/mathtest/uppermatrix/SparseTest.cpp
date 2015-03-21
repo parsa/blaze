@@ -1608,7 +1608,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/row-major UpperMatrix dense matrix addition assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -1625,10 +1625,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 3UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) != 13 ||
@@ -1648,7 +1648,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/column-major UpperMatrix dense matrix addition assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -1665,10 +1665,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 3UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) != 13 ||
@@ -1829,7 +1829,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/row-major UpperMatrix sparse matrix addition assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 4UL );
+      UT upper1( 3UL, 4UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -1869,7 +1869,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/column-major UpperMatrix sparse matrix addition assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 4UL );
+      OUT upper1( 3UL, 4UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -2048,7 +2048,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/row-major UpperMatrix dense matrix addition assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -2065,10 +2065,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 1UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 3UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) != 13 ||
@@ -2088,7 +2088,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/column-major UpperMatrix dense matrix addition assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -2105,10 +2105,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 1UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 3UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) != 13 ||
@@ -2269,7 +2269,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/row-major UpperMatrix sparse matrix addition assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 4UL );
+      UT upper1( 3UL, 4UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -2309,7 +2309,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/column-major UpperMatrix sparse matrix addition assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 4UL );
+      OUT upper1( 3UL, 4UL );
       upper1(0,1) =  2;
       upper1(0,2) =  6;
       upper1(1,1) = -2;
@@ -2501,7 +2501,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/row-major UpperMatrix dense matrix subtraction assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2518,10 +2518,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 3UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) !=  1 ||
@@ -2541,7 +2541,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/column-major UpperMatrix dense matrix subtraction assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2558,10 +2558,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 3UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 1UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) !=  1 ||
@@ -2722,7 +2722,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/row-major UpperMatrix sparse matrix subtraction assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 4UL );
+      UT upper1( 3UL, 4UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2762,7 +2762,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/column-major UpperMatrix sparse matrix subtraction assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 4UL );
+      OUT upper1( 3UL, 4UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2941,7 +2941,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/row-major UpperMatrix dense matrix subtraction assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2958,10 +2958,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 1UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 3UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) !=  1 ||
@@ -2981,7 +2981,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/column-major UpperMatrix dense matrix subtraction assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -2998,10 +2998,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( upper2, 3UL );
       checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 6UL );
-      checkNonZeros( upper2, 6UL );
+      checkCapacity( upper2, 5UL );
+      checkNonZeros( upper2, 5UL );
       checkNonZeros( upper2, 0UL, 1UL );
-      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 1UL, 1UL );
       checkNonZeros( upper2, 2UL, 3UL );
 
       if( upper2(0,0) != 1 || upper2(0,1) != -2 || upper2(0,2) !=  1 ||
@@ -3162,7 +3162,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/row-major UpperMatrix sparse matrix subtraction assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 4UL );
+      UT upper1( 3UL, 4UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -3202,7 +3202,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/column-major UpperMatrix sparse matrix subtraction assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 4UL );
+      OUT upper1( 3UL, 4UL );
       upper1(0,1) = -2;
       upper1(0,2) =  6;
       upper1(1,1) =  2;
@@ -3398,7 +3398,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/row-major UpperMatrix dense matrix multiplication assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -3437,7 +3437,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/column-major UpperMatrix dense matrix multiplication assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -3621,7 +3621,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/row-major UpperMatrix sparse matrix multiplication assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 3UL );
+      UT upper1( 3UL, 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -3660,7 +3660,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/column-major UpperMatrix sparse matrix multiplication assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 3UL );
+      OUT upper1( 3UL, 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -3842,7 +3842,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/row-major UpperMatrix dense matrix multiplication assignment (UpperMatrix)";
 
-      UT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -3881,7 +3881,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/column-major UpperMatrix dense matrix multiplication assignment (UpperMatrix)";
 
-      OUT upper1( 3UL );
+      blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -4065,7 +4065,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/row-major UpperMatrix sparse matrix multiplication assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > upper1( 3UL, 3UL );
+      UT upper1( 3UL, 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -4104,7 +4104,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/column-major UpperMatrix sparse matrix multiplication assignment (UpperMatrix)";
 
-      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > upper1( 3UL, 3UL );
+      OUT upper1( 3UL, 3UL );
       upper1(0,0) = 2;
       upper1(1,1) = 2;
       upper1(2,2) = 2;
@@ -4424,7 +4424,7 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::UpperMatrix< blaze::DynamicMatrix<complex<float>,blaze::rowMajor> > upper( 2UL );
+      blaze::UpperMatrix< blaze::CompressedMatrix<complex<float>,blaze::rowMajor> > upper( 2UL );
       upper(0,0) = complex<float>( 1.0F, 0.0F );
       upper(0,1) = complex<float>( 2.0F, 0.0F );
       upper(1,1) = complex<float>( 4.0F, 0.0F );
@@ -4722,7 +4722,7 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::UpperMatrix< blaze::DynamicMatrix<complex<float>,blaze::columnMajor> > upper( 2UL );
+      blaze::UpperMatrix< blaze::CompressedMatrix<complex<float>,blaze::columnMajor> > upper( 2UL );
       upper(0,0) = complex<float>( 1.0F, 0.0F );
       upper(0,1) = complex<float>( 2.0F, 0.0F );
       upper(1,1) = complex<float>( 4.0F, 0.0F );
@@ -7255,7 +7255,7 @@ void SparseTest::testErase()
       test_ = "Row-major UpperMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      UT upper( 4UL );
+      UT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,2) = 2;
       upper(0,3) = 3;
@@ -7399,7 +7399,7 @@ void SparseTest::testErase()
       typedef UT::Iterator  Iterator;
 
       // Initialization check
-      UT upper( 4UL );
+      UT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,2) = 2;
       upper(0,3) = 3;
@@ -7593,7 +7593,7 @@ void SparseTest::testErase()
       typedef UT::Iterator  Iterator;
 
       // Initialization check
-      UT upper( 4UL );
+      UT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,2) = 2;
       upper(0,3) = 3;
@@ -7788,7 +7788,7 @@ void SparseTest::testErase()
       test_ = "Column-major UpperMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      OUT upper( 4UL );
+      OUT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,1) = 2;
       upper(0,2) = 3;
@@ -7927,7 +7927,7 @@ void SparseTest::testErase()
       typedef OUT::Iterator  Iterator;
 
       // Initialization check
-      OUT upper( 4UL );
+      OUT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,1) = 2;
       upper(0,2) = 3;
@@ -8116,7 +8116,7 @@ void SparseTest::testErase()
       typedef OUT::Iterator  Iterator;
 
       // Initialization check
-      OUT upper( 4UL );
+      OUT upper( 4UL, 8UL );
       upper(0,0) = 1;
       upper(0,1) = 2;
       upper(0,2) = 3;
