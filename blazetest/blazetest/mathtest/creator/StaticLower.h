@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
 
