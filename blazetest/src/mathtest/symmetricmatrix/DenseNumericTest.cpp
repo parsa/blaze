@@ -39,6 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
@@ -596,12 +597,12 @@ void DenseNumericTest::testAssignment()
 
 
    //=====================================================================================
-   // Row-major conversion assignment
+   // Row-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Row-major SymmetricMatrix conversion assignment (0x0)";
+      test_ = "Row-major SymmetricMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
 
@@ -613,9 +614,9 @@ void DenseNumericTest::testAssignment()
       checkNonZeros( sym, 0UL );
    }
 
-   // Row-major/row-major conversion assignment (symmetric)
+   // Row-major/row-major dense matrix assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
                                                                   -4,  2, 0,
@@ -641,9 +642,9 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (symmetric)
+   // Row-major/column-major dense matrix assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
                                                                      -4,  2, 0,
@@ -669,9 +670,9 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Row-major/row-major conversion assignment (non-symmetric)
+   // Row-major/row-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (non-symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
                                                                   -4,  2, 0,
@@ -691,9 +692,9 @@ void DenseNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major conversion assignment (non-symmetric)
+   // Row-major/column-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (non-symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
                                                                      -4,  2, 0,
@@ -713,9 +714,9 @@ void DenseNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major conversion assignment (SymmetricMatrix)
+   // Row-major/row-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/row-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > sym1;
       sym1(0,0) =  1;
@@ -744,11 +745,212 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Row-major/column-major conversion assignment (SymmetricMatrix)
+   // Row-major/column-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/column-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > sym1;
+      sym1(0,0) =  1;
+      sym1(0,1) = -4;
+      sym1(0,2) =  7;
+      sym1(1,1) =  2;
+      sym1(2,2) =  3;
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
+          sym2(1,0) != -4 || sym2(1,1) !=  2 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  7 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Row-major SymmetricMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+      ST sym;
+      sym = mat;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Row-major/row-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      ST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
+          sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
+          sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      ST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
+          sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
+          sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) = -5;
+      mat(2,2) =  3;
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) = -5;
+      mat(2,2) =  3;
+
+      try {
+         ST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 7UL );
+      sym1(0,0) =  1;
+      sym1(0,1) = -4;
+      sym1(0,2) =  7;
+      sym1(1,1) =  2;
+      sym1(2,2) =  3;
+
+      ST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
+          sym2(1,0) != -4 || sym2(1,1) !=  2 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  7 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 7UL );
       sym1(0,0) =  1;
       sym1(0,1) = -4;
       sym1(0,2) =  7;
@@ -826,12 +1028,12 @@ void DenseNumericTest::testAssignment()
 
 
    //=====================================================================================
-   // Column-major conversion assignment
+   // Column-major dense matrix assignment
    //=====================================================================================
 
    // Conversion assignment (0x0)
    {
-      test_ = "Column-major SymmetricMatrix conversion assignment (0x0)";
+      test_ = "Column-major SymmetricMatrix dense matrix assignment (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
 
@@ -843,9 +1045,9 @@ void DenseNumericTest::testAssignment()
       checkNonZeros( sym, 0UL );
    }
 
-   // Column-major/row-major conversion assignment (symmetric)
+   // Column-major/row-major dense matrix assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (symmetric)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
                                                                   -4,  2, 0,
@@ -871,9 +1073,9 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (symmetric)
+   // Column-major/column-major dense matrix assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
                                                                      -4,  2, 0,
@@ -899,9 +1101,9 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Column-major/row-major conversion assignment (non-symmetric)
+   // Column-major/row-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (non-symmetric)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat(  1, -4, 7,
                                                                   -4,  2, 0,
@@ -921,9 +1123,9 @@ void DenseNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major conversion assignment (non-symmetric)
+   // Column-major/column-major dense matrix assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (non-symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (non-symmetric)";
 
       const blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat(  1, -4, 7,
                                                                      -4,  2, 0,
@@ -943,9 +1145,9 @@ void DenseNumericTest::testAssignment()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major conversion assignment (SymmetricMatrix)
+   // Column-major/row-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/row-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > sym1;
       sym1(0,0) =  1;
@@ -974,11 +1176,212 @@ void DenseNumericTest::testAssignment()
       }
    }
 
-   // Column-major/column-major conversion assignment (SymmetricMatrix)
+   // Column-major/column-major dense matrix assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/column-major SymmetricMatrix conversion assignment (SymmetricMatrix)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix assignment (SymmetricMatrix)";
 
       blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > sym1;
+      sym1(0,0) =  1;
+      sym1(0,1) = -4;
+      sym1(0,2) =  7;
+      sym1(1,1) =  2;
+      sym1(2,2) =  3;
+
+      OST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
+          sym2(1,0) != -4 || sym2(1,1) !=  2 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  7 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix assignment
+   //=====================================================================================
+
+   // Conversion assignment (0x0)
+   {
+      test_ = "Column-major SymmetricMatrix sparse matrix assignment (0x0)";
+
+      const blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 0UL );
+      checkColumns ( sym, 0UL );
+      checkNonZeros( sym, 0UL );
+   }
+
+   // Column-major/row-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
+          sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
+          sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) =  7;
+      mat(2,2) =  3;
+
+      OST sym;
+      sym = mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
+          sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
+          sym(2,0) !=  7 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) = -5;
+      mat(2,2) =  3;
+
+      try {
+         OST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      mat(0,0) =  1;
+      mat(0,1) = -4;
+      mat(0,2) =  7;
+      mat(1,0) = -4;
+      mat(1,1) =  2;
+      mat(2,0) = -5;
+      mat(2,2) =  3;
+
+      try {
+         OST sym;
+         sym = mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 7UL );
+      sym1(0,0) =  1;
+      sym1(0,1) = -4;
+      sym1(0,2) =  7;
+      sym1(1,1) =  2;
+      sym1(2,2) =  3;
+
+      OST sym2;
+      sym2 = sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkNonZeros( sym2, 7UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -4 || sym2(0,2) != 7 ||
+          sym2(1,0) != -4 || sym2(1,1) !=  2 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  7 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 7UL );
       sym1(0,0) =  1;
       sym1(0,1) = -4;
       sym1(0,2) =  7;
@@ -1020,12 +1423,12 @@ void DenseNumericTest::testAssignment()
 void DenseNumericTest::testAddAssign()
 {
    //=====================================================================================
-   // Row-major addition assignment
+   // Row-major dense matrix addition assignment
    //=====================================================================================
 
-   // Row-major/row-major addition assignment (symmetric)
+   // Row-major/row-major dense matrix addition assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1064,9 +1467,9 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Row-major/column-major addition assignment (symmetric)
+   // Row-major/column-major dense matrix addition assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1105,9 +1508,9 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major addition assignment (non-symmetric)
+   // Row-major/row-major dense matrix addition assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (non-symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1135,9 +1538,9 @@ void DenseNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major addition assignment (non-symmetric)
+   // Row-major/column-major dense matrix addition assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (non-symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1165,9 +1568,9 @@ void DenseNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major addition assignment (SymmetricMatrix)
+   // Row-major/row-major dense matrix addition assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/row-major SymmetricMatrix addition assignment (SymmetricMatrix)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix addition assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1204,9 +1607,9 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Row-major/column-major addition assignment (SymmetricMatrix)
+   // Row-major/column-major dense matrix addition assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix addition assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1245,12 +1648,237 @@ void DenseNumericTest::testAddAssign()
 
 
    //=====================================================================================
-   // Column-major addition assignment
+   // Row-major sparse matrix addition assignment
    //=====================================================================================
 
-   // Column-major/row-major addition assignment (symmetric)
+   // Row-major/row-major sparse matrix addition assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
+          sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
+          sym(2,0) != 13 || sym(2,1) !=  0 || sym(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
+          sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
+          sym(2,0) != 13 || sym(2,1) !=  0 || sym(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix addition assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix addition assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix addition assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix addition assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix addition assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 += sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -6 || sym2(0,2) != 13 ||
+          sym2(1,0) != -6 || sym2(1,1) !=  5 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 13 || sym2(2,1) !=  0 || sym2(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix addition assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix addition assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 += sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -6 || sym2(0,2) != 13 ||
+          sym2(1,0) != -6 || sym2(1,1) !=  5 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 13 || sym2(2,1) !=  0 || sym2(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix addition assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1289,9 +1917,9 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Column-major/column-major addition assignment (symmetric)
+   // Column-major/column-major dense matrix addition assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix addition assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1330,9 +1958,9 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major addition assignment (non-symmetric)
+   // Column-major/row-major dense matrix addition assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (non-symmetric)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1360,9 +1988,9 @@ void DenseNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major addition assignment (non-symmetric)
+   // Column-major/column-major dense matrix addition assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (non-symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix addition assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1390,9 +2018,9 @@ void DenseNumericTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major addition assignment (SymmetricMatrix)
+   // Column-major/row-major dense matrix addition assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/row-major SymmetricMatrix addition assignment (SymmetricMatrix)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix addition assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1429,11 +2057,236 @@ void DenseNumericTest::testAddAssign()
       }
    }
 
-   // Column-major/column-major addition assignment (SymmetricMatrix)
+   // Column-major/column-major dense matrix addition assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/column-major SymmetricMatrix addition assignment (SymmetricMatrix)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix addition assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 += sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -6 || sym2(0,2) != 13 ||
+          sym2(1,0) != -6 || sym2(1,1) !=  5 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 13 || sym2(2,1) !=  0 || sym2(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix addition assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix addition assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
+          sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
+          sym(2,0) != 13 || sym(2,1) !=  0 || sym(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym += mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
+          sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
+          sym(2,0) != 13 || sym(2,1) !=  0 || sym(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix addition assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix addition assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix addition assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym += mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix addition assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix addition assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 += sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -6 || sym2(0,2) != 13 ||
+          sym2(1,0) != -6 || sym2(1,1) !=  5 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 13 || sym2(2,1) !=  0 || sym2(2,2) !=  3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -6 13 )\n( -6  5  0 )\n( 13  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix addition assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix addition assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
@@ -1483,12 +2336,12 @@ void DenseNumericTest::testAddAssign()
 void DenseNumericTest::testSubAssign()
 {
    //=====================================================================================
-   // Row-major subtraction assignment
+   // Row-major dense matrix subtraction assignment
    //=====================================================================================
 
-   // Row-major/row-major subtraction assignment (symmetric)
+   // Row-major/row-major dense matrix subtraction assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1527,9 +2380,9 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Row-major/column-major subtraction assignment (symmetric)
+   // Row-major/column-major dense matrix subtraction assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1568,9 +2421,9 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major subtraction assignment (non-symmetric)
+   // Row-major/row-major dense matrix subtraction assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (non-symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1598,9 +2451,9 @@ void DenseNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major subtraction assignment (non-symmetric)
+   // Row-major/column-major dense matrix subtraction assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (non-symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1628,9 +2481,9 @@ void DenseNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major subtraction assignment (SymmetricMatrix)
+   // Row-major/row-major dense matrix subtraction assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/row-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix subtraction assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1667,9 +2520,9 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Row-major/column-major subtraction assignment (SymmetricMatrix)
+   // Row-major/column-major dense matrix subtraction assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix subtraction assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1708,12 +2561,237 @@ void DenseNumericTest::testSubAssign()
 
 
    //=====================================================================================
-   // Column-major subtraction assignment
+   // Row-major sparse matrix subtraction assignment
    //=====================================================================================
 
-   // Column-major/row-major subtraction assignment (symmetric)
+   // Row-major/row-major sparse matrix subtraction assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym -= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
+          sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
+          sym(2,0) !=  1 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym -= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
+          sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
+          sym(2,0) !=  1 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix subtraction assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix subtraction assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix subtraction assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix subtraction assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix subtraction assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 -= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -2 || sym2(0,2) != 1 ||
+          sym2(1,0) != -2 || sym2(1,1) != -1 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  1 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix subtraction assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix subtraction assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 -= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -2 || sym2(0,2) != 1 ||
+          sym2(1,0) != -2 || sym2(1,1) != -1 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  1 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix subtraction assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix subtraction assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1752,9 +2830,9 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Column-major/column-major subtraction assignment (symmetric)
+   // Column-major/column-major dense matrix subtraction assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix subtraction assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1793,9 +2871,9 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major subtraction assignment (non-symmetric)
+   // Column-major/row-major dense matrix subtraction assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (non-symmetric)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1823,9 +2901,9 @@ void DenseNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major subtraction assignment (non-symmetric)
+   // Column-major/column-major dense matrix subtraction assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (non-symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix subtraction assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -1853,9 +2931,9 @@ void DenseNumericTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major subtraction assignment (SymmetricMatrix)
+   // Column-major/row-major dense matrix subtraction assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/row-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix subtraction assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,1) = -2;
@@ -1892,11 +2970,236 @@ void DenseNumericTest::testSubAssign()
       }
    }
 
-   // Column-major/column-major subtraction assignment (SymmetricMatrix)
+   // Column-major/column-major dense matrix subtraction assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/column-major SymmetricMatrix subtraction assignment (SymmetricMatrix)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix subtraction assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 -= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -2 || sym2(0,2) != 1 ||
+          sym2(1,0) != -2 || sym2(1,1) != -1 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  1 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix subtraction assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix subtraction assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym -= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
+          sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
+          sym(2,0) !=  1 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,0) = -2;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym -= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
+          sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
+          sym(2,0) !=  1 || sym(2,1) !=  0 || sym(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix subtraction assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix subtraction assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix subtraction assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym -= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix subtraction assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix subtraction assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 5UL );
+      sym1(0,1) = -2;
+      sym1(0,2) =  6;
+      sym1(1,1) =  3;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 -= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  1 || sym2(0,1) != -2 || sym2(0,2) != 1 ||
+          sym2(1,0) != -2 || sym2(1,1) != -1 || sym2(1,2) != 0 ||
+          sym2(2,0) !=  1 || sym2(2,1) !=  0 || sym2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  1 -2  1 )\n( -2 -1  0 )\n(  1  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix subtraction assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix subtraction assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 5UL );
       sym1(0,1) = -2;
       sym1(0,2) =  6;
       sym1(1,1) =  3;
@@ -1946,12 +3249,12 @@ void DenseNumericTest::testSubAssign()
 void DenseNumericTest::testMultAssign()
 {
    //=====================================================================================
-   // Row-major multiplication assignment
+   // Row-major dense matrix multiplication assignment
    //=====================================================================================
 
-   // Row-major/row-major multiplication assignment (symmetric)
+   // Row-major/row-major dense matrix multiplication assignment (symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix multiplication assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix multiplication assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -1988,9 +3291,9 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Row-major/column-major multiplication assignment (symmetric)
+   // Row-major/column-major dense matrix multiplication assignment (symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix multiplication assignment (symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix multiplication assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2027,9 +3330,9 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Row-major/row-major multiplication assignment (non-symmetric)
+   // Row-major/row-major dense matrix multiplication assignment (non-symmetric)
    {
-      test_ = "Row-major/row-major SymmetricMatrix multiplication assignment (non-symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix multiplication assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2057,9 +3360,9 @@ void DenseNumericTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major multiplication assignment (non-symmetric)
+   // Row-major/column-major dense matrix multiplication assignment (non-symmetric)
    {
-      test_ = "Row-major/column-major SymmetricMatrix multiplication assignment (non-symmetric)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix multiplication assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2087,9 +3390,9 @@ void DenseNumericTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/row-major multiplication assignment (SymmetricMatrix)
+   // Row-major/row-major dense matrix multiplication assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/row-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
+      test_ = "Row-major/row-major SymmetricMatrix dense matrix multiplication assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,0) = 2;
@@ -2126,9 +3429,9 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Row-major/column-major multiplication assignment (SymmetricMatrix)
+   // Row-major/column-major dense matrix multiplication assignment (SymmetricMatrix)
    {
-      test_ = "Row-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
+      test_ = "Row-major/column-major SymmetricMatrix dense matrix multiplication assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
       sym1(0,0) = 2;
@@ -2167,12 +3470,233 @@ void DenseNumericTest::testMultAssign()
 
 
    //=====================================================================================
-   // Column-major multiplication assignment
+   // Row-major sparse matrix multiplication assignment
    //=====================================================================================
 
-   // Column-major/row-major multiplication assignment (symmetric)
+   // Row-major/row-major sparse matrix multiplication assignment (symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix multiplication assignment (symmetric)";
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym *= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  2 || sym(0,1) != -8 || sym(0,2) != 14 ||
+          sym(1,0) != -8 || sym(1,1) !=  4 || sym(1,2) !=  0 ||
+          sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym *= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  2 || sym(0,1) != -8 || sym(0,2) != 14 ||
+          sym(1,0) != -8 || sym(1,1) !=  4 || sym(1,2) !=  0 ||
+          sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/row-major sparse matrix multiplication assignment (non-symmetric)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix multiplication assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (non-symmetric)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix multiplication assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      ST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Row-major/row-major sparse matrix multiplication assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/row-major SymmetricMatrix sparse matrix multiplication assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 3UL );
+      sym1(0,0) = 2;
+      sym1(1,1) = 2;
+      sym1(2,2) = 2;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 *= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  2 || sym2(0,1) != -8 || sym2(0,2) != 14 ||
+          sym2(1,0) != -8 || sym2(1,1) !=  4 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 14 || sym2(2,1) !=  0 || sym2(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Row-major/column-major sparse matrix multiplication assignment (SymmetricMatrix)
+   {
+      test_ = "Row-major/column-major SymmetricMatrix sparse matrix multiplication assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 3UL );
+      sym1(0,0) = 2;
+      sym1(1,1) = 2;
+      sym1(2,2) = 2;
+
+      ST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 *= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  2 || sym2(0,1) != -8 || sym2(0,2) != 14 ||
+          sym2(1,0) != -8 || sym2(1,1) !=  4 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 14 || sym2(2,1) !=  0 || sym2(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major dense matrix multiplication assignment
+   //=====================================================================================
+
+   // Column-major/row-major dense matrix multiplication assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix multiplication assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2209,9 +3733,9 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Column-major/column-major multiplication assignment (symmetric)
+   // Column-major/column-major dense matrix multiplication assignment (symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix multiplication assignment (symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix multiplication assignment (symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,0) = 2;
@@ -2248,9 +3772,9 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Column-major/row-major multiplication assignment (non-symmetric)
+   // Column-major/row-major dense matrix multiplication assignment (non-symmetric)
    {
-      test_ = "Column-major/row-major SymmetricMatrix multiplication assignment (non-symmetric)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix multiplication assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2278,9 +3802,9 @@ void DenseNumericTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major multiplication assignment (non-symmetric)
+   // Column-major/column-major dense matrix multiplication assignment (non-symmetric)
    {
-      test_ = "Column-major/column-major SymmetricMatrix multiplication assignment (non-symmetric)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix multiplication assignment (non-symmetric)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(0,1) = -2;
@@ -2308,9 +3832,9 @@ void DenseNumericTest::testMultAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/row-major multiplication assignment (SymmetricMatrix)
+   // Column-major/row-major dense matrix multiplication assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/row-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
+      test_ = "Column-major/row-major SymmetricMatrix dense matrix multiplication assignment (SymmetricMatrix)";
 
       ST sym1( 3UL );
       sym1(0,0) = 2;
@@ -2347,11 +3871,232 @@ void DenseNumericTest::testMultAssign()
       }
    }
 
-   // Column-major/column-major multiplication assignment (SymmetricMatrix)
+   // Column-major/column-major dense matrix multiplication assignment (SymmetricMatrix)
    {
-      test_ = "Column-major/column-major SymmetricMatrix multiplication assignment (SymmetricMatrix)";
+      test_ = "Column-major/column-major SymmetricMatrix dense matrix multiplication assignment (SymmetricMatrix)";
 
       OST sym1( 3UL );
+      sym1(0,0) = 2;
+      sym1(1,1) = 2;
+      sym1(2,2) = 2;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 *= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  2 || sym2(0,1) != -8 || sym2(0,2) != 14 ||
+          sym2(1,0) != -8 || sym2(1,1) !=  4 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 14 || sym2(2,1) !=  0 || sym2(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major sparse matrix multiplication assignment
+   //=====================================================================================
+
+   // Column-major/row-major sparse matrix multiplication assignment (symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym *= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  2 || sym(0,1) != -8 || sym(0,2) != 14 ||
+          sym(1,0) != -8 || sym(1,1) !=  4 || sym(1,2) !=  0 ||
+          sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      mat(0,0) = 2;
+      mat(1,1) = 2;
+      mat(2,2) = 2;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      sym *= mat;
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 3UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 2UL );
+
+      if( sym(0,0) !=  2 || sym(0,1) != -8 || sym(0,2) != 14 ||
+          sym(1,0) != -8 || sym(1,1) !=  4 || sym(1,2) !=  0 ||
+          sym(2,0) != 14 || sym(2,1) !=  0 || sym(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/row-major sparse matrix multiplication assignment (non-symmetric)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix multiplication assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-symmetric row-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (non-symmetric)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix multiplication assignment (non-symmetric)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+      mat(0,1) = -2;
+      mat(0,2) =  6;
+      mat(1,1) =  3;
+      mat(2,0) =  6;
+
+      OST sym( 3UL );
+      sym(0,0) =  1;
+      sym(0,1) = -4;
+      sym(0,2) =  7;
+      sym(1,1) =  2;
+      sym(2,2) =  3;
+
+      try {
+         sym *= mat;
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment of non-symmetric column-major matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   // Column-major/row-major sparse matrix multiplication assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/row-major SymmetricMatrix sparse matrix multiplication assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > sym1( 3UL, 3UL );
+      sym1(0,0) = 2;
+      sym1(1,1) = 2;
+      sym1(2,2) = 2;
+
+      OST sym2( 3UL );
+      sym2(0,0) =  1;
+      sym2(0,1) = -4;
+      sym2(0,2) =  7;
+      sym2(1,1) =  2;
+      sym2(2,2) =  3;
+
+      sym2 *= sym1;
+
+      checkRows    ( sym2, 3UL );
+      checkColumns ( sym2, 3UL );
+      checkCapacity( sym2, 9UL );
+      checkNonZeros( sym2, 7UL );
+      checkNonZeros( sym2, 0UL, 3UL );
+      checkNonZeros( sym2, 1UL, 2UL );
+      checkNonZeros( sym2, 2UL, 2UL );
+
+      if( sym2(0,0) !=  2 || sym2(0,1) != -8 || sym2(0,2) != 14 ||
+          sym2(1,0) != -8 || sym2(1,1) !=  4 || sym2(1,2) !=  0 ||
+          sym2(2,0) != 14 || sym2(2,1) !=  0 || sym2(2,2) !=  6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym2 << "\n"
+             << "   Expected result:\n(  2 -8 14 )\n( -8  4  0 )\n( 14  0  6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Column-major/column-major sparse matrix multiplication assignment (SymmetricMatrix)
+   {
+      test_ = "Column-major/column-major SymmetricMatrix sparse matrix multiplication assignment (SymmetricMatrix)";
+
+      blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > sym1( 3UL, 3UL );
       sym1(0,0) = 2;
       sym1(1,1) = 2;
       sym1(2,2) = 2;
