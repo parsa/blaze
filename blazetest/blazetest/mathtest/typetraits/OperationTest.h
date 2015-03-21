@@ -75,6 +75,10 @@ class OperationTest
    //@{
    void testBaseElementType();
    void testNumericElementType();
+   void testIsSymmetric();
+   void testIsLower();
+   void testIsUpper();
+   void testIsDiagonal();
    void testRemoveAdaptor();
    //@}
    //**********************************************************************************************
