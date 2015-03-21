@@ -975,6 +975,22 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    template< typename MT2, bool SO2, typename MT3 >
    inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
       preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -2113,15 +2129,15 @@ inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
 
 
 //*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+/*!\brief Checking for possible invariant violations of the underlying symmetric matrix.
 //
 // \param lhs The symmetric matrix to be assigned to.
 // \param rhs The matrix to be checked.
 // \return \a true in case the invariants of the matrix are preserved, \a false if not.
 //
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given row-major matrix \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
+// This function checks if the invariants of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given row-major matrix \a rhs. In case the matrix would be
+// preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF       // Alignment flag
@@ -2489,6 +2505,154 @@ inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
       RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
       for( ; element!=(~rhs).end(j); ++element ) {
          if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
+//
+// \param lhs The diagonal matrix to be assigned to.
+// \param rhs The dense matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
+// be violated by an assignment of the given row-major dense matrix \a rhs. In case the matrix
+// would be preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         if( ( row_ + i != column_ + j ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
+//
+// \param lhs The diagonal matrix to be assigned to.
+// \param rhs The dense matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
+// be violated by an assignment of the given column-major dense matrix \a rhs. In case the matrix
+// would be preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<m_; ++i ) {
+         if( ( column_ + j != row_ + i ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
+//
+// \param lhs The diagonal matrix to be assigned to.
+// \param rhs The sparse matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
+// be violated by an assignment of the given row-major sparse matrix \a rhs. In case the matrix
+// would be preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side sparse matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         if( ( row_ + i != column_ + element->index() ) && !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
+//
+// \param lhs The diagonal matrix to be assigned to.
+// \param rhs The sparse matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
+// be violated by an assignment of the given column-major sparse matrix \a rhs. In case the matrix
+// would be preserved, the function returns \a true. Otherwise it returns \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF         // Alignment flag
+        , bool SO >       // Storage order
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side sparse matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,SO>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         if( ( column_ + j != row_ + element->index() ) && !isDefault( element->value() ) )
             return false;
       }
    }
@@ -3631,6 +3795,22 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    template< typename MT2, bool SO2, typename MT3 >
    inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
       preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
+
+   template< typename MT2, bool SO2, typename MT3 >
+   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -4748,15 +4928,15 @@ inline typename EnableIf< Not< IsAdaptor<MT2> >, bool >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+/*!\brief Checking for possible invariant violations of the underlying symmetric matrix.
 //
 // \param lhs The symmetric matrix to be assigned to.
 // \param rhs The matrix to be checked.
 // \return \a true in case the invariants of the matrix are preserved, \a false if not.
 //
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given row-major matrix \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
+// This function checks if the invariants of the underlying symmetric matrix of type \a MT would
+// be violated by an assignment of the given row-major matrix \a rhs. In case the matrix would be
+// preserved, the function returns \a true. Otherwise it returns \a false.
 */
 template< typename MT   // Type of the sparse matrix
         , bool AF >     // Alignment flag
@@ -5131,6 +5311,162 @@ inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
       RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
       for( ; element!=(~rhs).end(j); ++element ) {
          if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+//
+// \param lhs The upper matrix to be assigned to.
+// \param rhs The dense matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying upper triangular matrix of type
+// \a MT would be violated by an assignment of the given row-major dense matrix \a rhs. In
+// case the matrix would be preserved, the function returns \a true. Otherwise it returns
+// \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF >       // Alignment flag
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         if( ( row_ + i != column_ + j ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+//
+// \param lhs The upper matrix to be assigned to.
+// \param rhs The dense matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying upper triangular matrix of type
+// \a MT would be violated by an assignment of the given column-major dense matrix \a rhs. In
+// case the matrix would be preserved, the function returns \a true. Otherwise it returns
+// \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF >       // Alignment flag
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side dense matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<m_; ++i ) {
+         if( ( column_ + j != row_ + i ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+//
+// \param lhs The upper matrix to be assigned to.
+// \param rhs The sparse matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying upper triangular matrix of type
+// \a MT would be violated by an assignment of the given row-major sparse matrix \a rhs. In
+// case the matrix would be preserved, the function returns \a true. Otherwise it returns
+// \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF >       // Alignment flag
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side sparse matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         if( ( row_ + i != column_ + element->index() ) && !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
+//
+// \param lhs The upper matrix to be assigned to.
+// \param rhs The sparse matrix to be checked.
+// \return \a true in case the invariants of the matrix are preserved, \a false if not.
+//
+// This function checks if the invariants of the underlying upper triangular matrix of type
+// \a MT would be violated by an assignment of the given column-major sparse matrix \a rhs. In
+// case the matrix would be preserved, the function returns \a true. Otherwise it returns
+// \a false.
+*/
+template< typename MT     // Type of the sparse matrix
+        , bool AF >       // Alignment flag
+template< typename MT2    // Type of the left-hand side sparse matrix
+        , bool SO2        // Storage order of the left-hand side sparse matrix
+        , typename MT3 >  // Type of the right-hand side sparse matrix
+inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   SparseSubmatrix<MT,AF,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT3::ConstIterator  RhsIterator;
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         if( ( column_ + j != row_ + element->index() ) && !isDefault( element->value() ) )
             return false;
       }
    }
