@@ -246,7 +246,7 @@ void SparseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 0 0 )\n(  7 0 3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -439,7 +439,7 @@ void SparseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 0 0 )\n(  7 0 3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1608,7 +1608,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/row-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -1625,10 +1625,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 3UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
@@ -1648,7 +1648,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/column-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -1665,10 +1665,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 3UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
@@ -1829,7 +1829,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/row-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      LT lower1( 3UL, 4UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -1869,7 +1869,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Row-major/column-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      OLT lower1( 3UL, 4UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -2048,7 +2048,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/row-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -2065,10 +2065,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 3UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
@@ -2088,7 +2088,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/column-major LowerMatrix dense matrix addition assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -2105,10 +2105,10 @@ void SparseTest::testAddAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 3UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
@@ -2269,7 +2269,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/row-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      LT lower1( 3UL, 4UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -2309,7 +2309,7 @@ void SparseTest::testAddAssign()
    {
       test_ = "Column-major/column-major LowerMatrix sparse matrix addition assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      OLT lower1( 3UL, 4UL );
       lower1(1,0) =  2;
       lower1(1,1) = -2;
       lower1(2,0) =  6;
@@ -2501,7 +2501,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/row-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2518,10 +2518,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 3UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
@@ -2541,7 +2541,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/column-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2558,10 +2558,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 3UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
@@ -2722,7 +2722,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/row-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      LT lower1( 3UL, 4UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2762,7 +2762,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Row-major/column-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      OLT lower1( 3UL, 4UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2941,7 +2941,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/row-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2958,10 +2958,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 3UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
@@ -2981,7 +2981,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/column-major LowerMatrix dense matrix subtraction assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -2998,10 +2998,10 @@ void SparseTest::testSubAssign()
 
       checkRows    ( lower2, 3UL );
       checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 6UL );
-      checkNonZeros( lower2, 6UL );
+      checkCapacity( lower2, 5UL );
+      checkNonZeros( lower2, 5UL );
       checkNonZeros( lower2, 0UL, 3UL );
-      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 1UL, 1UL );
       checkNonZeros( lower2, 2UL, 1UL );
 
       if( lower2(0,0) !=  1 || lower2(0,1) !=  0 || lower2(0,2) != 0 ||
@@ -3162,7 +3162,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/row-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 4UL );
+      LT lower1( 3UL, 4UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -3202,7 +3202,7 @@ void SparseTest::testSubAssign()
    {
       test_ = "Column-major/column-major LowerMatrix sparse matrix subtraction assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 4UL );
+      OLT lower1( 3UL, 4UL );
       lower1(1,0) = -2;
       lower1(1,1) =  2;
       lower1(2,0) =  6;
@@ -3398,7 +3398,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/row-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -3437,7 +3437,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/column-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -3621,7 +3621,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/row-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 3UL );
+      LT lower1( 3UL, 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -3660,7 +3660,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Row-major/column-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 3UL );
+      OLT lower1( 3UL, 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -3842,7 +3842,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/row-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
-      LT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -3881,7 +3881,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/column-major LowerMatrix dense matrix multiplication assignment (LowerMatrix)";
 
-      OLT lower1( 3UL );
+      blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -4065,7 +4065,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/row-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > lower1( 3UL, 3UL );
+      LT lower1( 3UL, 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -4104,7 +4104,7 @@ void SparseTest::testMultAssign()
    {
       test_ = "Column-major/column-major LowerMatrix sparse matrix multiplication assignment (LowerMatrix)";
 
-      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > lower1( 3UL, 3UL );
+      OLT lower1( 3UL, 3UL );
       lower1(0,0) = 2;
       lower1(1,1) = 2;
       lower1(2,2) = 2;
@@ -4424,7 +4424,7 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::LowerMatrix< blaze::DynamicMatrix<complex<float>,blaze::rowMajor> > lower( 2UL );
+      blaze::LowerMatrix< blaze::CompressedMatrix<complex<float>,blaze::rowMajor> > lower( 2UL );
       lower(0,0) = complex<float>( 1.0F, 0.0F );
       lower(1,0) = complex<float>( 2.0F, 0.0F );
       lower(1,1) = complex<float>( 4.0F, 0.0F );
@@ -4722,7 +4722,7 @@ void SparseTest::testScaling()
 
       using blaze::complex;
 
-      blaze::LowerMatrix< blaze::DynamicMatrix<complex<float>,blaze::columnMajor> > lower( 2UL );
+      blaze::LowerMatrix< blaze::CompressedMatrix<complex<float>,blaze::columnMajor> > lower( 2UL );
       lower(0,0) = complex<float>( 1.0F, 0.0F );
       lower(1,0) = complex<float>( 2.0F, 0.0F );
       lower(1,1) = complex<float>( 4.0F, 0.0F );
@@ -5521,7 +5521,6 @@ void SparseTest::testIterator()
       // Testing multiplication assignment to lower elements via Iterator
       {
          test_ = "Column-major multiplication assignment to lower elements via Iterator";
-
 
          for( Iterator it=begin( lower, 0UL ); it!=end( lower, 0UL ); ++it ) {
             *it *= 2;
@@ -7256,7 +7255,7 @@ void SparseTest::testErase()
       test_ = "Row-major LowerMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      LT lower( 4UL );
+      LT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(1,0) = 2;
       lower(1,1) = 3;
@@ -7400,7 +7399,7 @@ void SparseTest::testErase()
       typedef LT::Iterator  Iterator;
 
       // Initialization check
-      LT lower( 4UL );
+      LT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(1,0) = 2;
       lower(1,1) = 3;
@@ -7594,7 +7593,7 @@ void SparseTest::testErase()
       typedef LT::Iterator  Iterator;
 
       // Initialization check
-      LT lower( 4UL );
+      LT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(1,0) = 2;
       lower(1,1) = 3;
@@ -7789,7 +7788,7 @@ void SparseTest::testErase()
       test_ = "Column-major LowerMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      OLT lower( 4UL );
+      OLT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(2,0) = 2;
       lower(2,1) = 3;
@@ -7928,7 +7927,7 @@ void SparseTest::testErase()
       typedef OLT::Iterator  Iterator;
 
       // Initialization check
-      OLT lower( 4UL );
+      OLT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(2,0) = 2;
       lower(2,1) = 3;
@@ -8117,7 +8116,7 @@ void SparseTest::testErase()
       typedef OLT::Iterator  Iterator;
 
       // Initialization check
-      OLT lower( 4UL );
+      OLT lower( 4UL, 8UL );
       lower(0,0) = 1;
       lower(2,0) = 2;
       lower(2,1) = 3;
@@ -9737,7 +9736,7 @@ void SparseTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << lower(0,1) << "\n";
+                << "   Matrix element:\n" << lower(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -9761,7 +9760,7 @@ void SparseTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << lower(0,1) << "\n";
+                << "   Matrix element:\n" << lower(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 

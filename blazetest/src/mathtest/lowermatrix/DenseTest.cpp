@@ -275,7 +275,7 @@ void DenseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 0 0 )\n(  7 0 3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -501,7 +501,7 @@ void DenseTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 0 0 )\n(  7 0 3 )\n";
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -7216,7 +7216,7 @@ void DenseTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << lower(0,1) << "\n";
+                << "   Matrix element:\n" << lower(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -7240,7 +7240,7 @@ void DenseTest::testIsDefault()
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element:\n" << lower(0,1) << "\n";
+                << "   Matrix element:\n" << lower(1,0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
