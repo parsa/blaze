@@ -59,7 +59,7 @@ int main()
 {
    std::cout << "   Running 'SCbDDb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
