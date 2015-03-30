@@ -1,6 +1,10 @@
 *.d
 *.o
 AliasingTest
+DCaVDa
+DCaVDb
+DCbVDa
+DCbVDb
 LCaVDa
 LCaVDb
 LCbVDa
