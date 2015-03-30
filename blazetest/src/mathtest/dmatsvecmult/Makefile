@@ -49,16 +49,26 @@ BIN = $(SRC:.cpp=)
 default: M3x3aVCa M3x3aVCb M3x3bVCa M3x3bVCb \
          MHaVCa MHaVCb MHbVCa MHbVCb \
          MDaVCa MDaVCb MDbVCa MDbVCb \
+         SDaVCa SDaVCb SDbVCa SDbVCb \
          LDaVCa LDaVCb LDbVCa LDbVCb \
          UDaVCa UDaVCb UDbVCa UDbVCb \
-         SDaVCa SDaVCb SDbVCa SDbVCb \
+         DDaVCa DDaVCb DDbVCa DDbVCb \
          AliasingTest
 all: $(BIN)
-essential: M3x3aVCa MHaVCa MDaVCa LDaVCa UDaVCa SDaVCa AliasingTest
+essential: M3x3aVCa MHaVCa MDaVCa SDaVCa LDaVCa UDaVCa DDaVCa AliasingTest
 single: MDaVCa
 
 
 # Build rules
+DDaVCa: DDaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDaVCb: DDaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbVCa: DDbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbVCb: DDbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 LDaVCa: LDaVCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDaVCb: LDaVCb.o
