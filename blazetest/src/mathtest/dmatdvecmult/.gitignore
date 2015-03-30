@@ -1,6 +1,10 @@
 *.d
 *.o
 AliasingTest
+DDaVDa
+DDaVDb
+DDbVDa
+DDbVDb
 LDaVDa
 LDaVDb
 LDbVDa
