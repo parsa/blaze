@@ -42,6 +42,7 @@
 
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -61,10 +62,11 @@ namespace blazetest {
 //*************************************************************************************************
 /*!\brief Matches the adaptor of two matrix types.
 //
-// The MatchAdaptor type trait uses the same matrix adapter on the given type \a T2 as is used on
-// the type \a T1: In case \a T1 has an adaptor (LowerMatrix, UpperMatrix, SymmetricMatrix, ...)
-// the same adaptor is added to \a T2. Note that this type trait only works for matrix types.
-// The attempt to instantiate it with non-matrix types results in a compile time error.
+// The MatchAdaptor type trait uses the same matrix adapter on the given type \a T2 as is used
+// on the type \a T1: In case \a T1 has an adaptor (SymmetricMatrix, LowerMatrix, UpperMatrix,
+// DiagonalMatrix, ...) the same adaptor is added to \a T2. Note that this type trait only works
+// for matrix types. The attempt to instantiate it with non-matrix types results in a compile
+// time error.
 */
 template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
@@ -80,13 +82,16 @@ struct MatchAdaptor
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::If< blaze::IsLower<T1>
-                             , blaze::LowerMatrix<Tmp>
-                             , typename blaze::If< blaze::IsUpper<T1>
-                                                 , blaze::UpperMatrix<Tmp>
-                                                 , typename blaze::If< blaze::IsSymmetric<T1>
-                                                                     , blaze::SymmetricMatrix<Tmp>
-                                                                     , T2
+   typedef typename blaze::If< blaze::IsSymmetric<T1>
+                             , blaze::SymmetricMatrix<Tmp>
+                             , typename blaze::If< blaze::IsDiagonal<T1>
+                                                 , blaze::DiagonalMatrix<Tmp>
+                                                 , typename blaze::If< blaze::IsLower<T1>
+                                                                     , blaze::LowerMatrix<Tmp>
+                                                                     , typename blaze::If< blaze::IsUpper<T1>
+                                                                                         , blaze::UpperMatrix<Tmp>
+                                                                                         , T2
+                                                                                         >::Type
                                                                      >::Type
                                                  >::Type
                              >::Type  Type;
