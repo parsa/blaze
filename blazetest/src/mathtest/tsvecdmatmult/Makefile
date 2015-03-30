@@ -49,16 +49,21 @@ BIN = $(SRC:.cpp=)
 default: VCaM3x3a VCaM3x3b VCbM3x3a VCbM3x3b \
          VCaMHa VCaMHb VCbMHa VCbMHb \
          VCaMDa VCaMDb VCbMDa VCbMDb \
+         VCaSDa VCaSDb VCbSDa VCbSDb \
          VCaLDa VCaLDb VCbLDa VCbLDb \
          VCaUDa VCaUDb VCbUDa VCbUDb \
-         VCaSDa VCaSDb VCbSDa VCbSDb \
+         VCaDDa VCaDDb VCbDDa VCbDDb \
          AliasingTest
 all: $(BIN)
-essential: VCaM3x3a VCaMHa VCaMDa VCaLDa VCaUDa VCaSDa AliasingTest
+essential: VCaM3x3a VCaMHa VCaMDa VCaSDa VCaLDa VCaUDa VCaDDa AliasingTest
 single: VCaMDa
 
 
 # Build rules
+VCaDDa: VCaDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaDDb: VCaDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaLDa: VCaLDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaLDb: VCaLDb.o
@@ -108,6 +113,10 @@ VCaUDa: VCaUDa.o
 VCaUDb: VCaUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+VCbDDa: VCbDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbDDb: VCbDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbLDa: VCbLDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbLDb: VCbLDb.o

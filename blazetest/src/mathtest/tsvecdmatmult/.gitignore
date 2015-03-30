@@ -1,6 +1,8 @@
 *.d
 *.o
 AliasingTest
+VCaDDa
+VCaDDb
 VCaLDa
 VCaLDb
 VCaM2x2a
@@ -25,6 +27,8 @@ VCaSDa
 VCaSDb
 VCaUDa
 VCaUDb
+VCbDDa
+VCbDDb
 VCbLDa
 VCbLDb
 VCbM2x2a
