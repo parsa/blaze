@@ -1,6 +1,8 @@
 *.d
 *.o
 AliasingTest
+VCaDCa
+VCaDCb
 VCaLCa
 VCaLCb
 VCaMCa
@@ -9,6 +11,8 @@ VCaSCa
 VCaSCb
 VCaUCa
 VCaUCb
+VCbDCa
+VCbDCb
 VCbLCa
 VCbLCb
 VCbMCa

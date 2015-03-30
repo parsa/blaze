@@ -37,6 +37,8 @@ PATH_TSVECSMATMULT=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running sparse vector/sparse matrix multiplication tests...";
 
+EXE=$PATH_TSVECSMATMULT/VCaDCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSMATMULT/VCaDCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCaLCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCaLCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
@@ -46,6 +48,8 @@ EXE=$PATH_TSVECSMATMULT/VCaSCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then 
 EXE=$PATH_TSVECSMATMULT/VCaUCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCaUCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_TSVECSMATMULT/VCbDCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TSVECSMATMULT/VCbDCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCbLCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCbLCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TSVECSMATMULT/VCbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
