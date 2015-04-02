@@ -151,12 +151,35 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Row-major size constructor
+   // Row-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Row-major DiagonalMatrix size constructor (HybridMatrix)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (StaticMatrix)";
+
+      const blaze::DiagonalMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> > diag( 5 );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
+
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major DiagonalMatrix single argument constructor (HybridMatrix)";
 
       const blaze::DiagonalMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > diag( 2UL );
 
@@ -164,11 +187,22 @@ void DenseTest::testConstructors()
       checkColumns ( diag, 2UL );
       checkCapacity( diag, 4UL );
       checkNonZeros( diag, 0UL );
+
+      if( diag(0,0) != 0 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Size constructor (DynamicMatrix)
+   // Single argument constructor (DynamicMatrix)
    {
-      test_ = "Row-major DiagonalMatrix size constructor (DynamicMatrix)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (DynamicMatrix)";
 
       const DT diag( 2UL );
 
@@ -176,65 +210,22 @@ void DenseTest::testConstructors()
       checkColumns ( diag, 2UL );
       checkCapacity( diag, 4UL );
       checkNonZeros( diag, 0UL );
-   }
 
-
-   //=====================================================================================
-   // Row-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Row-major DiagonalMatrix copy constructor (0x0)";
-
-      const DT diag1;
-      const DT diag2( diag1 );
-
-      checkRows    ( diag2, 0UL );
-      checkColumns ( diag2, 0UL );
-      checkNonZeros( diag2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Row-major DiagonalMatrix copy constructor (3x3)";
-
-      DT diag1( 3UL );
-      diag1(0,0) = 1;
-      diag1(1,1) = 2;
-      diag1(2,2) = 3;
-
-      const DT diag2( diag1 );
-
-      checkRows    ( diag2, 3UL );
-      checkColumns ( diag2, 3UL );
-      checkCapacity( diag2, 9UL );
-      checkNonZeros( diag2, 3UL );
-      checkNonZeros( diag2, 0UL, 1UL );
-      checkNonZeros( diag2, 1UL, 1UL );
-      checkNonZeros( diag2, 2UL, 1UL );
-
-      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
-          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
-          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+      if( diag(0,0) != 0 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << diag2 << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Row-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (0x0)
    {
-      test_ = "Row-major DiagonalMatrix conversion constructor (0x0)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
       const DT diag( mat );
@@ -244,9 +235,9 @@ void DenseTest::testConstructors()
       checkNonZeros( diag, 0UL );
    }
 
-   // Conversion constructor (diagonal)
+   // Single argument constructor (diagonal)
    {
-      test_ = "Row-major DiagonalMatrix conversion constructor (diagonal)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (diagonal)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = 1;
@@ -276,9 +267,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (lower)
+   // Single argument constructor (lower)
    {
-      test_ = "Row-major DiagonalMatrix conversion constructor (lower)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = 1;
@@ -299,9 +290,9 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (upper)
+   // Single argument constructor (upper)
    {
-      test_ = "Row-major DiagonalMatrix conversion constructor (upper)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) = 1;
@@ -322,11 +313,111 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (DiagonalMatrix)
+   // Single argument constructor (DiagonalMatrix)
    {
-      test_ = "Row-major DiagonalMatrix conversion constructor (DiagonalMatrix)";
+      test_ = "Row-major DiagonalMatrix single argument constructor (DiagonalMatrix)";
 
       blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > diag1;
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      const DT diag2( diag1 );
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major DiagonalMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::DiagonalMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > diag( 2UL, 5 );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
+
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Row-major DiagonalMatrix two argument constructor (DynamicMatrix)";
+
+      const DT diag( 2UL, 5 );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
+
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Row-major DiagonalMatrix copy constructor (0x0)";
+
+      const DT diag1;
+      const DT diag2( diag1 );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Row-major DiagonalMatrix copy constructor (3x3)";
+
+      DT diag1( 3UL );
       diag1(0,0) = 1;
       diag1(1,1) = 2;
       diag1(2,2) = 3;
@@ -394,88 +485,81 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Column-major size constructor
+   // Column-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Column-major DiagonalMatrix size constructor (HybridMatrix)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (StaticMatrix)";
 
-      blaze::DiagonalMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > diag( 2UL );
+      const blaze::DiagonalMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> > diag( 5 );
 
       checkRows    ( diag, 2UL );
       checkColumns ( diag, 2UL );
-      checkNonZeros( diag, 0UL );
-   }
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
 
-   // Size constructor (DynamicMatrix)
-   {
-      test_ = "Column-major DiagonalMatrix size constructor (DynamicMatrix)";
-
-      ODT diag( 2UL );
-
-      checkRows    ( diag, 2UL );
-      checkColumns ( diag, 2UL );
-      checkNonZeros( diag, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Column-major DiagonalMatrix copy constructor (0x0)";
-
-      const ODT diag1;
-      const ODT diag2( diag1 );
-
-      checkRows    ( diag2, 0UL );
-      checkColumns ( diag2, 0UL );
-      checkNonZeros( diag2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Column-major DiagonalMatrix copy constructor (3x3)";
-
-      ODT diag1( 3UL );
-      diag1(0,0) = 1;
-      diag1(1,1) = 2;
-      diag1(2,2) = 3;
-
-      const ODT diag2( diag1 );
-
-      checkRows    ( diag2, 3UL );
-      checkColumns ( diag2, 3UL );
-      checkCapacity( diag2, 9UL );
-      checkNonZeros( diag2, 3UL );
-      checkNonZeros( diag2, 0UL, 1UL );
-      checkNonZeros( diag2, 1UL, 1UL );
-      checkNonZeros( diag2, 2UL, 1UL );
-
-      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
-          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
-          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << diag2 << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Column-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (HybridMatrix)
    {
-      test_ = "Column-major DiagonalMatrix conversion constructor (0x0)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (HybridMatrix)";
+
+      const blaze::DiagonalMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > diag( 2UL );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 0UL );
+
+      if( diag(0,0) != 0 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major DiagonalMatrix single argument constructor (DynamicMatrix)";
+
+      const ODT diag( 2UL );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 0UL );
+
+      if( diag(0,0) != 0 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (0x0)
+   {
+      test_ = "Column-major DiagonalMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
       const ODT diag( mat );
@@ -485,9 +569,9 @@ void DenseTest::testConstructors()
       checkNonZeros( diag, 0UL );
    }
 
-   // Conversion constructor (diagonal)
+   // Single argument constructor (diagonal)
    {
-      test_ = "Column-major DiagonalMatrix conversion constructor (diagonal)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (diagonal)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = 1;
@@ -517,9 +601,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (lower)
+   // Single argument constructor (lower)
    {
-      test_ = "Column-major DiagonalMatrix conversion constructor (lower)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = 1;
@@ -540,9 +624,9 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (upper)
+   // Single argument constructor (upper)
    {
-      test_ = "Column-major DiagonalMatrix conversion constructor (upper)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) = 1;
@@ -563,11 +647,111 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (DiagonalMatrix)
+   // Single argument constructor (DiagonalMatrix)
    {
-      test_ = "Column-major DiagonalMatrix conversion constructor (DiagonalMatrix)";
+      test_ = "Column-major DiagonalMatrix single argument constructor (DiagonalMatrix)";
 
       blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > diag1;
+      diag1(0,0) = 1;
+      diag1(1,1) = 2;
+      diag1(2,2) = 3;
+
+      const ODT diag2( diag1 );
+
+      checkRows    ( diag2, 3UL );
+      checkColumns ( diag2, 3UL );
+      checkCapacity( diag2, 9UL );
+      checkNonZeros( diag2, 3UL );
+      checkNonZeros( diag2, 0UL, 1UL );
+      checkNonZeros( diag2, 1UL, 1UL );
+      checkNonZeros( diag2, 2UL, 1UL );
+
+      if( diag2(0,0) != 1 || diag2(0,1) != 0 || diag2(0,2) != 0 ||
+          diag2(1,0) != 0 || diag2(1,1) != 2 || diag2(1,2) != 0 ||
+          diag2(2,0) != 0 || diag2(2,1) != 0 || diag2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag2 << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 0 2 0 )\n( 0 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Column-major DiagonalMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::DiagonalMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > diag( 2UL, 5 );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
+
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major DiagonalMatrix two argument constructor (DynamicMatrix)";
+
+      const ODT diag( 2UL, 5 );
+
+      checkRows    ( diag, 2UL );
+      checkColumns ( diag, 2UL );
+      checkCapacity( diag, 4UL );
+      checkNonZeros( diag, 2UL );
+
+      if( diag(0,0) != 5 || diag(0,1) != 0 ||
+          diag(1,0) != 0 || diag(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << diag << "\n"
+             << "   Expected result:\n( 5 0 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Column-major DiagonalMatrix copy constructor (0x0)";
+
+      const ODT diag1;
+      const ODT diag2( diag1 );
+
+      checkRows    ( diag2, 0UL );
+      checkColumns ( diag2, 0UL );
+      checkNonZeros( diag2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Column-major DiagonalMatrix copy constructor (3x3)";
+
+      ODT diag1( 3UL );
       diag1(0,0) = 1;
       diag1(1,1) = 2;
       diag1(2,2) = 3;
