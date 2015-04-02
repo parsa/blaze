@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Square.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
@@ -71,7 +72,9 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -573,11 +576,10 @@ class DiagonalMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DiagonalMatrix();
-   explicit inline DiagonalMatrix( size_t n );
-
-                                      inline DiagonalMatrix( const DiagonalMatrix& m );
-   template< typename MT2, bool SO2 > inline DiagonalMatrix( const Matrix<MT2,SO2>& m );
+                           explicit inline DiagonalMatrix();
+   template< typename A1 > explicit inline DiagonalMatrix( const A1& a1 );
+                           explicit inline DiagonalMatrix( size_t n, const ElementType& init );
+                                    inline DiagonalMatrix( const DiagonalMatrix& m );
    //@}
    //**********************************************************************************************
 
@@ -686,6 +688,17 @@ class DiagonalMatrix<MT,SO,true>
    //**********************************************************************************************
 
  private:
+   //**Construction functions**********************************************************************
+   /*!\name Construction functions */
+   //@{
+   inline const MT construct( size_t n                , TrueType  );
+   inline const MT construct( const ElementType& value, FalseType );
+
+   template< typename MT2, bool SO2, typename T >
+   inline const MT construct( const Matrix<MT2,SO2>& m, T );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -745,16 +758,50 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a matrix of size \f$ n \times n \f$.
+/*!\brief Single argument constructor for a diagonal matrix.
+//
+// \param a1 The single constructor argument.
+// \exception std::invalid_argument Invalid setup of diagonal matrix.
+//
+// This constructor constructs the diagonal matrix based on the given argument and the type
+// of the underlying matrix \a MT:
+//  - in case the given argument is a matrix, the diagonal matrix is initialized as a copy of
+//    the given matrix.
+//  - in case the given argument is not a matrix and the underlying matrix of type \a MT is
+//    resizable, the given argument \a a1 specifies the number of rows and columns of the
+//    diagonal matrix.
+//  - in case the given argument is not a matrix and the underlying matrix of type \a MT is
+//    a matrix with fixed size, the given argument \a a1 specifies the initial value of the
+//    diagonal elements.
+*/
+template< typename MT    // Type of the adapted dense matrix
+        , bool SO >      // Storage order of the adapted dense matrix
+template< typename A1 >  // Type of the constructor argument
+inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const A1& a1 )
+   : matrix_( construct( a1, typename IsResizable<MT>::Type() ) )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for a \f$ n \times n \f$ matrix with initialized diagonal elements.
 //
 // \param n The number of rows and columns of the matrix.
+// \param init The initial value of the diagonal matrix elements.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n )
+inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( size_t n, const ElementType& init )
    : matrix_( n, n, ElementType() )  // The adapted dense matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   for( size_t i=0UL; i<n; ++i )
+      matrix_(i,i) = init;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
 }
@@ -773,32 +820,6 @@ template< typename MT  // Type of the adapted dense matrix
 inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const DiagonalMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
-   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion constructor from different matrices.
-//
-// \param m Matrix to be copied.
-// \exception std::invalid_argument Invalid setup of diagonal matrix.
-//
-// This constructor initializes the diagonal matrix as a copy of the given matrix. In case
-// the given matrix is not a diagonal matrix, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT   // Type of the adapted dense matrix
-        , bool SO >     // Storage order of the adapted dense matrix
-template< typename MT2  // Type of the foreign matrix
-        , bool SO2 >    // Storage order of the foreign matrix
-inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted dense matrix
-{
-   if( !IsDiagonal<MT2>::value && !isDiagonal( matrix_ ) )
-      throw std::invalid_argument( "Invalid setup of diagonal matrix" );
-
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
 }
 /*! \endcond */
@@ -2021,6 +2042,87 @@ inline void DiagonalMatrix<MT,SO,true>::checkValue( size_t i, size_t j, const In
             throw std::invalid_argument( "Invalid assignment to upper matrix element" );
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a resizable matrix of size \f$ n \times n \f$.
+//
+// \param n The number of rows and columns of the matrix.
+// \return The newly constructed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline const MT DiagonalMatrix<MT,SO,true>::construct( size_t n, TrueType )
+{
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   return MT( n, n, ElementType() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a fixed-size matrix with homogeneously initialized diagonal elements.
+//
+// \param init The initial value of the diagonal matrix elements.
+// \return The newly constructed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline const MT DiagonalMatrix<MT,SO,true>::construct( const ElementType& init, FalseType )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SQUARE( MT );
+
+   MT tmp;
+
+   for( size_t i=0UL; i<tmp.rows(); ++i )
+      tmp(i,i) = init;
+
+   return tmp;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a matrix as a copy from another matrix.
+//
+// \param m Matrix to be copied.
+// \exception std::invalid_argument Invalid setup of diagonal matrix.
+// \return The newly constructed matrix.
+//
+// In case the given matrix is not a diagonal matrix, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the foreign matrix
+        , bool SO2      // Storage order of the foreign matrix
+        , typename T >  // Type of the third argument
+inline const MT DiagonalMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T )
+{
+   const MT tmp( ~m );
+
+   if( !IsDiagonal<MT2>::value && !isDiagonal( tmp ) )
+      throw std::invalid_argument( "Invalid setup of diagonal matrix" );
+
+   return tmp;
 }
 /*! \endcond */
 //*************************************************************************************************
