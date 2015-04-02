@@ -151,12 +151,35 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Row-major size constructor
+   // Row-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Row-major UpperMatrix size constructor (HybridMatrix)";
+      test_ = "Row-major UpperMatrix single argument constructor (StaticMatrix)";
+
+      const blaze::UpperMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> > upper( 5 );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
+
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major UpperMatrix single argument constructor (HybridMatrix)";
 
       const blaze::UpperMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > upper( 2UL );
 
@@ -164,11 +187,22 @@ void DenseTest::testConstructors()
       checkColumns ( upper, 2UL );
       checkCapacity( upper, 4UL );
       checkNonZeros( upper, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Size constructor (DynamicMatrix)
+   // Single argument constructor (DynamicMatrix)
    {
-      test_ = "Row-major UpperMatrix size constructor (DynamicMatrix)";
+      test_ = "Row-major UpperMatrix single argument constructor (DynamicMatrix)";
 
       const UT upper( 2UL );
 
@@ -176,67 +210,22 @@ void DenseTest::testConstructors()
       checkColumns ( upper, 2UL );
       checkCapacity( upper, 4UL );
       checkNonZeros( upper, 0UL );
-   }
 
-
-   //=====================================================================================
-   // Row-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Row-major UpperMatrix copy constructor (0x0)";
-
-      const UT upper1;
-      const UT upper2( upper1 );
-
-      checkRows    ( upper2, 0UL );
-      checkColumns ( upper2, 0UL );
-      checkNonZeros( upper2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Row-major UpperMatrix copy constructor (3x3)";
-
-      UT upper1( 3UL );
-      upper1(0,0) =  1;
-      upper1(0,1) = -4;
-      upper1(0,2) =  7;
-      upper1(1,1) =  2;
-      upper1(2,2) =  3;
-
-      const UT upper2( upper1 );
-
-      checkRows    ( upper2, 3UL );
-      checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 9UL );
-      checkNonZeros( upper2, 5UL );
-      checkNonZeros( upper2, 0UL, 3UL );
-      checkNonZeros( upper2, 1UL, 1UL );
-      checkNonZeros( upper2, 2UL, 1UL );
-
-      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
-          upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
-          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
+      if( upper(0,0) != 0 || upper(0,1) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << upper2 << "\n"
-             << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Row-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (0x0)
    {
-      test_ = "Row-major UpperMatrix conversion constructor (0x0)";
+      test_ = "Row-major UpperMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
       const UT upper( mat );
@@ -246,9 +235,9 @@ void DenseTest::testConstructors()
       checkNonZeros( upper, 0UL );
    }
 
-   // Conversion constructor (upper)
+   // Single argument constructor (upper)
    {
-      test_ = "Row-major UpperMatrix conversion constructor (upper)";
+      test_ = "Row-major UpperMatrix single argument constructor (upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -280,9 +269,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (non-upper)
+   // Single argument constructor (non-upper)
    {
-      test_ = "Row-major UpperMatrix conversion constructor (non-upper)";
+      test_ = "Row-major UpperMatrix single argument constructor (non-upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -305,11 +294,113 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (UpperMatrix)
+   // Single argument constructor (UpperMatrix)
    {
-      test_ = "Row-major UpperMatrix conversion constructor (UpperMatrix)";
+      test_ = "Row-major UpperMatrix single argument constructor (UpperMatrix)";
 
       blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > upper1;
+      upper1(0,0) =  1;
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+      upper1(1,1) =  2;
+      upper1(2,2) =  3;
+
+      const UT upper2( upper1 );
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 3UL );
+      checkNonZeros( upper2, 1UL, 1UL );
+      checkNonZeros( upper2, 2UL, 1UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major UpperMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::UpperMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > upper( 2UL, 5 );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
+
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Row-major UpperMatrix two argument constructor (DynamicMatrix)";
+
+      const UT upper( 2UL, 5 );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
+
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Row-major UpperMatrix copy constructor (0x0)";
+
+      const UT upper1;
+      const UT upper2( upper1 );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Row-major UpperMatrix copy constructor (3x3)";
+
+      UT upper1( 3UL );
       upper1(0,0) =  1;
       upper1(0,1) = -4;
       upper1(0,2) =  7;
@@ -379,90 +470,81 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Column-major size constructor
+   // Column-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Column-major UpperMatrix size constructor (HybridMatrix)";
+      test_ = "Column-major UpperMatrix single argument constructor (StaticMatrix)";
 
-      blaze::UpperMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > upper( 2UL );
+      const blaze::UpperMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> > upper( 5 );
 
       checkRows    ( upper, 2UL );
       checkColumns ( upper, 2UL );
-      checkNonZeros( upper, 0UL );
-   }
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
 
-   // Size constructor (DynamicMatrix)
-   {
-      test_ = "Column-major UpperMatrix size constructor (DynamicMatrix)";
-
-      OUT upper( 2UL );
-
-      checkRows    ( upper, 2UL );
-      checkColumns ( upper, 2UL );
-      checkNonZeros( upper, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Column-major UpperMatrix copy constructor (0x0)";
-
-      const OUT upper1;
-      const OUT upper2( upper1 );
-
-      checkRows    ( upper2, 0UL );
-      checkColumns ( upper2, 0UL );
-      checkNonZeros( upper2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Column-major UpperMatrix copy constructor (3x3)";
-
-      OUT upper1( 3UL );
-      upper1(0,0) =  1;
-      upper1(0,1) = -4;
-      upper1(0,2) =  7;
-      upper1(1,1) =  2;
-      upper1(2,2) =  3;
-
-      const OUT upper2( upper1 );
-
-      checkRows    ( upper2, 3UL );
-      checkColumns ( upper2, 3UL );
-      checkCapacity( upper2, 9UL );
-      checkNonZeros( upper2, 5UL );
-      checkNonZeros( upper2, 0UL, 1UL );
-      checkNonZeros( upper2, 1UL, 2UL );
-      checkNonZeros( upper2, 2UL, 2UL );
-
-      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
-          upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
-          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << upper2 << "\n"
-             << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Column-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (HybridMatrix)
    {
-      test_ = "Column-major UpperMatrix conversion constructor (0x0)";
+      test_ = "Column-major UpperMatrix single argument constructor (HybridMatrix)";
+
+      const blaze::UpperMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > upper( 2UL );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major UpperMatrix single argument constructor (DynamicMatrix)";
+
+      const OUT upper( 2UL );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 0 ||
+          upper(1,0) != 0 || upper(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (0x0)
+   {
+      test_ = "Column-major UpperMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
       const OUT upper( mat );
@@ -472,9 +554,9 @@ void DenseTest::testConstructors()
       checkNonZeros( upper, 0UL );
    }
 
-   // Conversion constructor (upper)
+   // Single argument constructor (upper)
    {
-      test_ = "Column-major UpperMatrix conversion constructor (upper)";
+      test_ = "Column-major UpperMatrix single argument constructor (upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -506,9 +588,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (non-upper)
+   // Single argument constructor (non-upper)
    {
-      test_ = "Column-major UpperMatrix conversion constructor (non-upper)";
+      test_ = "Column-major UpperMatrix single argument constructor (non-upper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -531,11 +613,113 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (UpperMatrix)
+   // Single argument constructor (UpperMatrix)
    {
-      test_ = "Column-major UpperMatrix conversion constructor (UpperMatrix)";
+      test_ = "Column-major UpperMatrix single argument constructor (UpperMatrix)";
 
       blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > upper1;
+      upper1(0,0) =  1;
+      upper1(0,1) = -4;
+      upper1(0,2) =  7;
+      upper1(1,1) =  2;
+      upper1(2,2) =  3;
+
+      const OUT upper2( upper1 );
+
+      checkRows    ( upper2, 3UL );
+      checkColumns ( upper2, 3UL );
+      checkCapacity( upper2, 9UL );
+      checkNonZeros( upper2, 5UL );
+      checkNonZeros( upper2, 0UL, 1UL );
+      checkNonZeros( upper2, 1UL, 2UL );
+      checkNonZeros( upper2, 2UL, 2UL );
+
+      if( upper2(0,0) != 1 || upper2(0,1) != -4 || upper2(0,2) != 7 ||
+          upper2(1,0) != 0 || upper2(1,1) !=  2 || upper2(1,2) != 0 ||
+          upper2(2,0) != 0 || upper2(2,1) !=  0 || upper2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper2 << "\n"
+             << "   Expected result:\n( 1 -4  7 )\n( 0  2  0 )\n( 0  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Column-major UpperMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::UpperMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > upper( 2UL, 5 );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
+
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major UpperMatrix two argument constructor (DynamicMatrix)";
+
+      const OUT upper( 2UL, 5 );
+
+      checkRows    ( upper, 2UL );
+      checkColumns ( upper, 2UL );
+      checkCapacity( upper, 4UL );
+      checkNonZeros( upper, 3UL );
+
+      if( upper(0,0) != 5 || upper(0,1) != 5 ||
+          upper(1,0) != 0 || upper(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 5 5 )\n( 0 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Column-major UpperMatrix copy constructor (0x0)";
+
+      const OUT upper1;
+      const OUT upper2( upper1 );
+
+      checkRows    ( upper2, 0UL );
+      checkColumns ( upper2, 0UL );
+      checkNonZeros( upper2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Column-major UpperMatrix copy constructor (3x3)";
+
+      OUT upper1( 3UL );
       upper1(0,0) =  1;
       upper1(0,1) = -4;
       upper1(0,2) =  7;
