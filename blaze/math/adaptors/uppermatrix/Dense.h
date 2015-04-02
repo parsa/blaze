@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
+#include <blaze/math/constraints/Square.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
@@ -74,7 +75,9 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -576,11 +579,10 @@ class UpperMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UpperMatrix();
-   explicit inline UpperMatrix( size_t n );
-
-                                      inline UpperMatrix( const UpperMatrix& m );
-   template< typename MT2, bool SO2 > inline UpperMatrix( const Matrix<MT2,SO2>& m );
+                           explicit inline UpperMatrix();
+   template< typename A1 > explicit inline UpperMatrix( const A1& a1 );
+                           explicit inline UpperMatrix( size_t n, const ElementType& init );
+                                    inline UpperMatrix( const UpperMatrix& m );
    //@}
    //**********************************************************************************************
 
@@ -692,6 +694,17 @@ class UpperMatrix<MT,SO,true>
    //**********************************************************************************************
 
  private:
+   //**Construction functions**********************************************************************
+   /*!\name Construction functions */
+   //@{
+   inline const MT construct( size_t n                , TrueType  );
+   inline const MT construct( const ElementType& value, FalseType );
+
+   template< typename MT2, bool SO2, typename T >
+   inline const MT construct( const Matrix<MT2,SO2>& m, T );
+   //@}
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -751,16 +764,58 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a matrix of size \f$ n \times n \f$.
+/*!\brief Single argument constructor for a upper matrix.
+//
+// \param a1 The single constructor argument.
+// \exception std::invalid_argument Invalid setup of upper matrix.
+//
+// This constructor constructs the upper matrix based on the given argument and the type of
+// the underlying matrix \a MT:
+//  - in case the given argument is a matrix, the upper matrix is initialized as a copy of
+//    the given matrix.
+//  - in case the given argument is not a matrix and the underlying matrix of type \a MT is
+//    resizable, the given argument \a a1 specifies the number of rows and columns of the
+//    upper matrix.
+//  - in case the given argument is not a matrix and the underlying matrix of type \a MT is
+//    a matrix with fixed size, the given argument \a a1 specifies the initial value of the
+//    upper and diagonal elements.
+*/
+template< typename MT    // Type of the adapted dense matrix
+        , bool SO >      // Storage order of the adapted dense matrix
+template< typename A1 >  // Type of the constructor argument
+inline UpperMatrix<MT,SO,true>::UpperMatrix( const A1& a1 )
+   : matrix_( construct( a1, typename IsResizable<MT>::Type() ) )  // The adapted dense matrix
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for a \f$ n \times n \f$ matrix with initialized upper and diagonal elements.
 //
 // \param n The number of rows and columns of the matrix.
+// \param init The initial value of the upper and diagonal matrix elements.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n )
+inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n, const ElementType& init )
    : matrix_( n, n, ElementType() )  // The adapted dense matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) = init;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=i; j<columns(); ++j )
+            matrix_(i,j) = init;
+   }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
 }
@@ -780,33 +835,6 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( const UpperMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Conversion constructor from different matrices.
-//
-// \param m Matrix to be copied.
-// \exception std::invalid_argument Invalid setup of upper matrix.
-//
-// This constructor initializes the upper matrix as a copy of the given matrix. In case the
-// given matrix is not an upper matrix, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT   // Type of the adapted dense matrix
-        , bool SO >     // Storage order of the adapted dense matrix
-template< typename MT2  // Type of the foreign matrix
-        , bool SO2 >    // Storage order of the foreign matrix
-inline UpperMatrix<MT,SO,true>::UpperMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( ~m )  // The adapted dense matrix
-{
-   if( IsSymmetric<MT2>::value || IsLower<MT2>::value ||
-       ( !IsUpper<MT2>::value && !isUpper( matrix_ ) ) )
-      throw std::invalid_argument( "Invalid setup of upper matrix" );
-
-   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uper matrix detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2075,6 +2103,95 @@ inline void UpperMatrix<MT,SO,true>::checkValue( size_t i, size_t j, const Intri
             throw std::invalid_argument( "Invalid assignment to lower matrix element" );
       }
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a resizable matrix of size \f$ n \times n \f$.
+//
+// \param n The number of rows and columns of the matrix.
+// \return The newly constructed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline const MT UpperMatrix<MT,SO,true>::construct( size_t n, TrueType )
+{
+   BLAZE_CONSTRAINT_MUST_BE_RESIZABLE( MT );
+
+   return MT( n, n, ElementType() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a fixed-size matrix with homogeneously initialized upper and diagonal elements.
+//
+// \param init The initial value of the upper and diagonal matrix elements.
+// \return The newly constructed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline const MT UpperMatrix<MT,SO,true>::construct( const ElementType& init, FalseType )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SQUARE( MT );
+
+   MT tmp;
+
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) = init;
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=i; j<columns(); ++j )
+            matrix_(i,j) = init;
+   }
+
+   return tmp;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructing a matrix as a copy from another matrix.
+//
+// \param m Matrix to be copied.
+// \exception std::invalid_argument Invalid setup of upper matrix.
+// \return The newly constructed matrix.
+//
+// In case the given matrix is not an upper matrix, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT   // Type of the adapted dense matrix
+        , bool SO >     // Storage order of the adapted dense matrix
+template< typename MT2  // Type of the foreign matrix
+        , bool SO2      // Storage order of the foreign matrix
+        , typename T >  // Type of the third argument
+inline const MT UpperMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T )
+{
+   const MT tmp( ~m );
+
+   if( !IsUpper<MT2>::value && !isUpper( matrix_ ) )
+      throw std::invalid_argument( "Invalid setup of upper matrix" );
+
+   return tmp;
 }
 /*! \endcond */
 //*************************************************************************************************
