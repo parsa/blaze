@@ -62,8 +62,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
@@ -1165,8 +1163,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value ||
-       ( !IsLower<MT2>::value && !isLower( ~rhs ) ) )
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    matrix_ = ~rhs;
@@ -1197,7 +1194,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    if( IsLower<MT2>::value ) {
@@ -1238,8 +1235,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value ||
-       ( !IsLower<MT2>::value && !isLower( ~rhs ) ) )
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    matrix_ += ~rhs;
@@ -1270,7 +1266,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    if( IsLower<MT2>::value ) {
@@ -1311,8 +1307,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value ||
-       ( !IsLower<MT2>::value && !isLower( ~rhs ) ) )
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    matrix_ -= ~rhs;
@@ -1343,7 +1338,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSymmetric<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to lower matrix" );
 
    if( IsLower<MT2>::value ) {
