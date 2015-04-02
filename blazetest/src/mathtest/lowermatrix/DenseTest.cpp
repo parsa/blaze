@@ -151,12 +151,35 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Row-major size constructor
+   // Row-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Row-major LowerMatrix size constructor (HybridMatrix)";
+      test_ = "Row-major LowerMatrix single argument constructor (StaticMatrix)";
+
+      const blaze::LowerMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::rowMajor> > lower( 5 );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major LowerMatrix single argument constructor (HybridMatrix)";
 
       const blaze::LowerMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > lower( 2UL );
 
@@ -164,11 +187,22 @@ void DenseTest::testConstructors()
       checkColumns ( lower, 2UL );
       checkCapacity( lower, 4UL );
       checkNonZeros( lower, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 ||
+          lower(1,0) != 0 || lower(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
-   // Size constructor (DynamicMatrix)
+   // Single argument constructor (DynamicMatrix)
    {
-      test_ = "Row-major LowerMatrix size constructor (DynamicMatrix)";
+      test_ = "Row-major LowerMatrix single argument constructor (DynamicMatrix)";
 
       const LT lower( 2UL );
 
@@ -176,67 +210,22 @@ void DenseTest::testConstructors()
       checkColumns ( lower, 2UL );
       checkCapacity( lower, 4UL );
       checkNonZeros( lower, 0UL );
-   }
 
-
-   //=====================================================================================
-   // Row-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Row-major LowerMatrix copy constructor (0x0)";
-
-      const LT lower1;
-      const LT lower2( lower1 );
-
-      checkRows    ( lower2, 0UL );
-      checkColumns ( lower2, 0UL );
-      checkNonZeros( lower2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Row-major LowerMatrix copy constructor (3x3)";
-
-      LT lower1( 3UL );
-      lower1(0,0) =  1;
-      lower1(1,0) = -4;
-      lower1(1,1) =  2;
-      lower1(2,0) =  7;
-      lower1(2,2) =  3;
-
-      const LT lower2( lower1 );
-
-      checkRows    ( lower2, 3UL );
-      checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 9UL );
-      checkNonZeros( lower2, 5UL );
-      checkNonZeros( lower2, 0UL, 1UL );
-      checkNonZeros( lower2, 1UL, 2UL );
-      checkNonZeros( lower2, 2UL, 2UL );
-
-      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
-          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
-          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+      if( lower(0,0) != 0 || lower(0,1) != 0 ||
+          lower(1,0) != 0 || lower(1,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Row-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (0x0)
    {
-      test_ = "Row-major LowerMatrix conversion constructor (0x0)";
+      test_ = "Row-major LowerMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat;
       const LT lower( mat );
@@ -246,9 +235,9 @@ void DenseTest::testConstructors()
       checkNonZeros( lower, 0UL );
    }
 
-   // Conversion constructor (lower)
+   // Single argument constructor (lower)
    {
-      test_ = "Row-major LowerMatrix conversion constructor (lower)";
+      test_ = "Row-major LowerMatrix single argument constructor (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -280,9 +269,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (non-lower)
+   // Single argument constructor (non-lower)
    {
-      test_ = "Row-major LowerMatrix conversion constructor (non-lower)";
+      test_ = "Row-major LowerMatrix single argument constructor (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -305,11 +294,113 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (LowerMatrix)
+   // Single argument constructor (LowerMatrix)
    {
-      test_ = "Row-major LowerMatrix conversion constructor (LowerMatrix)";
+      test_ = "Row-major LowerMatrix single argument constructor (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > lower1;
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      const LT lower2( lower1 );
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 1UL );
+      checkNonZeros( lower2, 1UL, 2UL );
+      checkNonZeros( lower2, 2UL, 2UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Row-major LowerMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::LowerMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::rowMajor> > lower( 2UL, 5 );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Row-major LowerMatrix two argument constructor (DynamicMatrix)";
+
+      const LT lower( 2UL, 5 );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Row-major LowerMatrix copy constructor (0x0)";
+
+      const LT lower1;
+      const LT lower2( lower1 );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Row-major LowerMatrix copy constructor (3x3)";
+
+      LT lower1( 3UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
@@ -379,90 +470,81 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
-   // Column-major size constructor
+   // Column-major single argument constructor
    //=====================================================================================
 
-   // Size constructor (HybridMatrix)
+   // Single argument constructor (StaticMatrix)
    {
-      test_ = "Column-major LowerMatrix size constructor (HybridMatrix)";
+      test_ = "Column-major LowerMatrix single argument constructor (StaticMatrix)";
 
-      blaze::LowerMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > lower( 2UL );
+      const blaze::LowerMatrix< blaze::StaticMatrix<int,2UL,2UL,blaze::columnMajor> > lower( 5 );
 
       checkRows    ( lower, 2UL );
       checkColumns ( lower, 2UL );
-      checkNonZeros( lower, 0UL );
-   }
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
 
-   // Size constructor (DynamicMatrix)
-   {
-      test_ = "Column-major LowerMatrix size constructor (DynamicMatrix)";
-
-      OLT lower( 2UL );
-
-      checkRows    ( lower, 2UL );
-      checkColumns ( lower, 2UL );
-      checkNonZeros( lower, 0UL );
-   }
-
-
-   //=====================================================================================
-   // Column-major copy constructor
-   //=====================================================================================
-
-   // Copy constructor (0x0)
-   {
-      test_ = "Column-major LowerMatrix copy constructor (0x0)";
-
-      const OLT lower1;
-      const OLT lower2( lower1 );
-
-      checkRows    ( lower2, 0UL );
-      checkColumns ( lower2, 0UL );
-      checkNonZeros( lower2, 0UL );
-   }
-
-   // Copy constructor (3x3)
-   {
-      test_ = "Column-major LowerMatrix copy constructor (3x3)";
-
-      OLT lower1( 3UL );
-      lower1(0,0) =  1;
-      lower1(1,0) = -4;
-      lower1(1,1) =  2;
-      lower1(2,0) =  7;
-      lower1(2,2) =  3;
-
-      const OLT lower2( lower1 );
-
-      checkRows    ( lower2, 3UL );
-      checkColumns ( lower2, 3UL );
-      checkCapacity( lower2, 9UL );
-      checkNonZeros( lower2, 5UL );
-      checkNonZeros( lower2, 0UL, 3UL );
-      checkNonZeros( lower2, 1UL, 1UL );
-      checkNonZeros( lower2, 2UL, 1UL );
-
-      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
-          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
-          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
              << " Details:\n"
-             << "   Result:\n" << lower2 << "\n"
-             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
 
-
-   //=====================================================================================
-   // Column-major conversion constructor
-   //=====================================================================================
-
-   // Conversion constructor (0x0)
+   // Single argument constructor (HybridMatrix)
    {
-      test_ = "Column-major LowerMatrix conversion constructor (0x0)";
+      test_ = "Column-major LowerMatrix single argument constructor (HybridMatrix)";
+
+      const blaze::LowerMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > lower( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 ||
+          lower(1,0) != 0 || lower(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major LowerMatrix single argument constructor (DynamicMatrix)";
+
+      const OLT lower( 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 ||
+          lower(1,0) != 0 || lower(1,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 )\n( 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Single argument constructor (0x0)
+   {
+      test_ = "Column-major LowerMatrix single argument constructor (0x0)";
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat;
       const OLT lower( mat );
@@ -472,9 +554,9 @@ void DenseTest::testConstructors()
       checkNonZeros( lower, 0UL );
    }
 
-   // Conversion constructor (lower)
+   // Single argument constructor (lower)
    {
-      test_ = "Column-major LowerMatrix conversion constructor (lower)";
+      test_ = "Column-major LowerMatrix single argument constructor (lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -506,9 +588,9 @@ void DenseTest::testConstructors()
       }
    }
 
-   // Conversion constructor (non-lower)
+   // Single argument constructor (non-lower)
    {
-      test_ = "Column-major LowerMatrix conversion constructor (non-lower)";
+      test_ = "Column-major LowerMatrix single argument constructor (non-lower)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> mat;
       mat(0,0) =  1;
@@ -531,11 +613,113 @@ void DenseTest::testConstructors()
       catch( std::invalid_argument& ) {}
    }
 
-   // Conversion constructor (LowerMatrix)
+   // Single argument constructor (LowerMatrix)
    {
-      test_ = "Column-major LowerMatrix conversion constructor (LowerMatrix)";
+      test_ = "Column-major LowerMatrix single argument constructor (LowerMatrix)";
 
       blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::columnMajor> > lower1;
+      lower1(0,0) =  1;
+      lower1(1,0) = -4;
+      lower1(1,1) =  2;
+      lower1(2,0) =  7;
+      lower1(2,2) =  3;
+
+      const OLT lower2( lower1 );
+
+      checkRows    ( lower2, 3UL );
+      checkColumns ( lower2, 3UL );
+      checkCapacity( lower2, 9UL );
+      checkNonZeros( lower2, 5UL );
+      checkNonZeros( lower2, 0UL, 3UL );
+      checkNonZeros( lower2, 1UL, 1UL );
+      checkNonZeros( lower2, 2UL, 1UL );
+
+      if( lower2(0,0) !=  1 || lower2(0,1) != 0 || lower2(0,2) != 0 ||
+          lower2(1,0) != -4 || lower2(1,1) != 2 || lower2(1,2) != 0 ||
+          lower2(2,0) !=  7 || lower2(2,1) != 0 || lower2(2,2) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower2 << "\n"
+             << "   Expected result:\n(  1 0 0 )\n( -4 2 0 )\n(  7 0 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major two argument constructor
+   //=====================================================================================
+
+   // Two argument constructor (HybridMatrix)
+   {
+      test_ = "Column-major LowerMatrix two argument constructor (HybridMatrix)";
+
+      const blaze::LowerMatrix< blaze::HybridMatrix<int,3UL,3UL,blaze::columnMajor> > lower( 2UL, 5 );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Two argument constructor (DynamicMatrix)
+   {
+      test_ = "Column-major LowerMatrix two argument constructor (DynamicMatrix)";
+
+      const OLT lower( 2UL, 5 );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 5 || lower(0,1) != 0 ||
+          lower(1,0) != 5 || lower(1,1) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major copy constructor
+   //=====================================================================================
+
+   // Copy constructor (0x0)
+   {
+      test_ = "Column-major LowerMatrix copy constructor (0x0)";
+
+      const OLT lower1;
+      const OLT lower2( lower1 );
+
+      checkRows    ( lower2, 0UL );
+      checkColumns ( lower2, 0UL );
+      checkNonZeros( lower2, 0UL );
+   }
+
+   // Copy constructor (3x3)
+   {
+      test_ = "Column-major LowerMatrix copy constructor (3x3)";
+
+      OLT lower1( 3UL );
       lower1(0,0) =  1;
       lower1(1,0) = -4;
       lower1(1,1) =  2;
