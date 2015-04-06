@@ -58,11 +58,9 @@
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
