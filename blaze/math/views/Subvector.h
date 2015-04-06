@@ -535,7 +535,8 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,A
    typename VT::RightOperand right( (~vector).rightOperand() );
 
    const size_t column( ( IsUpper<MT>::value )?( index ):( 0UL ) );
-   const size_t n     ( ( IsLower<MT>::value )?( index + size )
+   const size_t n     ( ( IsLower<MT>::value )?( ( IsUpper<MT>::value )?( size )
+                                                                       :( index + size ) )
                                               :( ( IsUpper<MT>::value )?( left.columns() - column )
                                                                        :( left.columns() ) ) );
 
@@ -572,7 +573,8 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,
    typename VT::RightOperand right( (~vector).rightOperand() );
 
    const size_t row( ( IsLower<MT>::value )?( index ):( 0UL ) );
-   const size_t m  ( ( IsLower<MT>::value )?( right.rows() - row )
+   const size_t m  ( ( IsLower<MT>::value )?( ( IsUpper<MT>::value )?( size )
+                                                                    :( right.rows() - row) )
                                            :( ( IsUpper<MT>::value )?( index + size )
                                                                     :( right.rows() ) ) );
 
