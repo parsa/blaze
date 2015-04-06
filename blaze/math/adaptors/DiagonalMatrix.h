@@ -55,10 +55,11 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -281,14 +282,34 @@ struct IsSquare< DiagonalMatrix<MT,SO,DF> > : public TrueType
 
 //=================================================================================================
 //
-//  ISDIAGONAL SPECIALIZATIONS
+//  ISLOWER SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsDiagonal< DiagonalMatrix<MT,SO,DF> > : public TrueType
+struct IsLower< DiagonalMatrix<MT,SO,DF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsUpper< DiagonalMatrix<MT,SO,DF> > : public TrueType
 {
    enum { value = 1 };
    typedef TrueType  Type;
