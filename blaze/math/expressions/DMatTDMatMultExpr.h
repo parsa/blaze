@@ -496,7 +496,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultAssignKernel( C, A, B );
+         DMatTDMatMultExpr::selectSmallAssignKernel( C, A, B );
       else
          DMatTDMatMultExpr::selectBlasAssignKernel( C, A, B );
    }
@@ -520,8 +520,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -550,9 +549,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to row-major dense matrices***********************************
+   //**Default assignment to dense matrices (small matrices)***************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default assignment of a dense matrix-transpose dense matrix multiplication
+   /*!\brief Default assignment of a small dense matrix-transpose dense matrix multiplication
    //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -561,14 +560,40 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \param B The right-hand side multiplication operand.
    // \return void
    //
+   // This function relays to the default implementation of the assignment of a dense matrix-
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to row-major dense matrices (small matrices)******************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a small dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
    // This function implements the vectorized default assignment of a dense matrix-transpose dense
-   // matrix multiplication expression to a row-major dense matrix.
+   // matrix multiplication expression to a row-major dense matrix. This kernel is optimized for
+   // small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -725,10 +750,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default assignment to column-major dense matrices********************************
+   //**Vectorized default assignment to column-major dense matrices (small matrices)***************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default assignment of a dense matrix-transpose dense matrix multiplication
-   //        (\f$ C=A*B \f$).
+   /*!\brief Vectorized default assignment of a small dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -737,13 +762,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the vectorized default assignment of a dense matrix-transpose dense
-   // matrix multiplication expression to a column-major dense matrix.
+   // matrix multiplication expression to a column-major dense matrix. This kernel is optimized for
+   // small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -905,9 +931,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default assignment to dense matrices********************************************************
+   //**Default assignment to dense matrices (large matrices)***************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a dense matrix-transpose dense matrix multiplication
+   /*!\brief Default assignment of a large dense matrix-transpose dense matrix multiplication
    //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -922,10 +948,89 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to row-major dense matrices (large matrices)******************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment of a dense matrix-transpose dense
+   // matrix multiplication expression to a row-major dense matrix. This kernel is optimized for
+   // large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to column-major dense matrices (large matrices)***************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment of a dense matrix-transpose dense
+   // matrix multiplication expression to a column-major dense matrix. This kernel is optimized for
+   // large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices********************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a dense matrix-transpose dense matrix multiplication
+   //        (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a large dense matrix-
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      selectDefaultAssignKernel( C, A, B );
+      selectLargeAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1181,7 +1286,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultAddAssignKernel( C, A, B );
+         DMatTDMatMultExpr::selectSmallAddAssignKernel( C, A, B );
       else
          DMatTDMatMultExpr::selectBlasAddAssignKernel( C, A, B );
    }
@@ -1205,8 +1310,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -1236,9 +1340,34 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to row-major dense matrices**************************
+   //**Default addition assignment to dense matrices (small matrices)******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default addition assignment of a dense matrix-transpose dense matrix
+   /*!\brief Default addition assignment of a small dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a dense
+   // matrix-dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultAddAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to row-major dense matrices (small matrices)*********
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a small dense matrix-transpose dense matrix
    //        multiplication (\f$ C+=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -1248,13 +1377,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the vectorized default addition assignment of a dense matrix-
-   // transpose dense matrix multiplication expression to a row-major dense matrix.
+   // transpose dense matrix multiplication expression to a row-major dense matrix. This
+   // kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1410,9 +1540,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to column-major dense matrices***********************
+   //**Vectorized default addition assignment to column-major dense matrices (small matrices)******
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized default addition assignment of a dense matrix-transpose dense matrix
+   /*!\brief Vectorized default addition assignment of a small dense matrix-transpose dense matrix
    //        multiplication (\f$ C+=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -1422,13 +1552,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the vectorized default addition assignment of a dense matrix-
-   // transpose dense matrix multiplication expression to a column-major dense matrix.
+   // transpose dense matrix multiplication expression to a column-major dense matrix. This
+   // kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -1590,10 +1721,10 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default addition assignment to dense matrices***********************************************
+   //**Default addition assignment to dense matrices (large matrices)******************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default addition assignment of a dense matrix-transpose dense matrix multiplication
-   //        (\f$ C+=A*B \f$).
+   /*!\brief Default addition assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -1607,10 +1738,89 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultAddAssignKernel( C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to row-major dense matrices (large matrices)*********
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment of a dense matrix-
+   // transpose dense matrix multiplication expression to a row-major dense matrix. This
+   // kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallAddAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to column-major dense matrices (large matrices)******
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment of a dense matrix-
+   // transpose dense matrix multiplication expression to a column-major dense matrix. This
+   // kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallAddAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices***********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a dense matrix-transpose dense matrix multiplication
+   //        (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // dense matrix-dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      selectDefaultAddAssignKernel( C, A, B );
+      selectLargeAddAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1841,7 +2051,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatTDMatMultExpr::selectDefaultSubAssignKernel( C, A, B );
+         DMatTDMatMultExpr::selectSmallSubAssignKernel( C, A, B );
       else
          DMatTDMatMultExpr::selectBlasSubAssignKernel( C, A, B );
    }
@@ -1865,8 +2075,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -1896,9 +2105,34 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to row-major dense matrices**********************************
+   //**Default subtraction assignment to dense matrices (small matrices)***************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix
+   /*!\brief Default subtraction assignment of a small dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a dense matrix-
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultSubAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to row-major dense matrices (small matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a small dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -1908,13 +2142,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the default subtraction assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a row-major dense matrix.
+   // dense matrix multiplication expression to a row-major dense matrix. This kernel is
+   // optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2071,9 +2306,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to column-major dense matrices*******************************
+   //**Default subtraction assignment to column-major dense matrices (small matrices)**************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix
+   /*!\brief Default subtraction assignment of a small dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -2083,13 +2318,14 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    // \return void
    //
    // This function implements the default subtraction assignment of a dense matrix-transpose
-   // dense matrix multiplication expression to a column-major dense matrix.
+   // dense matrix multiplication expression to a column-major dense matrix. This kernel is
+   // optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -2250,9 +2486,9 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to dense matrices********************************************
+   //**Default subtraction assignment to dense matrices (large matrices)***************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix
+   /*!\brief Default subtraction assignment of a large dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
@@ -2267,10 +2503,89 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      selectDefaultSubAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to row-major dense matrices (large matrices)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a dense matrix-transpose
+   // dense matrix multiplication expression to a row-major dense matrix. This kernel is
+   // optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallSubAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to column-major dense matrices (large matrices)**************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a large dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a dense matrix-transpose
+   // dense matrix multiplication expression to a column-major dense matrix. This kernel is
+   // optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
+      selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   {
+      // TODO
+      selectSmallSubAssignKernel( ~C, A, B );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a large dense
+   // matrix-dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      selectDefaultSubAssignKernel( C, A, B );
+      selectLargeSubAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3027,7 +3342,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultAssignKernel( C, A, B, scalar );
+         DMatScalarMultExpr::selectSmallAssignKernel( C, A, B, scalar );
       else
          DMatScalarMultExpr::selectBlasAssignKernel( C, A, B, scalar );
    }
@@ -3051,8 +3366,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3081,8 +3395,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default assignment to row-major dense matrices***********************************
-   /*!\brief Vectorized default assignment of a scaled dense matrix-transpose dense matrix
+   //**Default assignment to dense matrices (small matrices)***************************************
+   /*!\brief Default assignment of a small scaled dense matrix-transpose dense matrix
    //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -3092,15 +3406,41 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function implements the vectorized default assignment of a scaled dense matrix-
-   // transpose dense matrix multiplication expression to a row-major dense matrix.
+   // This function relays to the default implementation of the assignment of a scaled dense
+   // matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to row-major dense matrices (small matrices)******************
+   /*!\brief Vectorized default assignment of a small scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default assignment of a small scaled dense matrix-
+   // transpose dense matrix multiplication expression to a row-major dense matrix. This kernel
+   // is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3256,8 +3596,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default assignment to column-major dense matrices********************************
-   /*!\brief Vectorized default assignment of a scaled dense matrix-transpose dense matrix
+   //**Vectorized default assignment to column-major dense matrices (small matrices)***************
+   /*!\brief Vectorized default assignment of a small scaled dense matrix-transpose dense matrix
    //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -3267,15 +3607,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function implements the vectorized default assignment of a scaled dense matrix-
-   // transpose dense matrix multiplication expression to a column-major dense matrix.
+   // This function implements the vectorized default assignment of a small scaled dense matrix-
+   // transpose dense matrix multiplication expression to a column-major dense matrix. This
+   // kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3436,9 +3777,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**BLAS-based assignment to dense matrices (default)*******************************************
-   /*!\brief Default assignment of a scaled dense matrix-transpose dense matrix multiplication
-   //        (\f$ C=s*A*B \f$).
+   //**Default assignment to dense matrices (large matrices)***************************************
+   /*!\brief Default assignment of a large scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -3454,10 +3795,89 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to row-major dense matrices (large matrices)******************
+   /*!\brief Vectorized default assignment of a large scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default assignment of a scaled dense matrix-
+   // transpose dense matrix multiplication expression to a row-major dense matrix. This
+   // kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default assignment to column-major dense matrices (large matrices)***************
+   /*!\brief Vectorized default assignment of a large scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default assignment of a scaled dense matrix-
+   // transpose dense matrix multiplication expression to a column-major dense matrix. This
+   // kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense matrices (default)*******************************************
+   /*!\brief Default assignment of a scaled dense matrix-transpose dense matrix multiplication
+   //        (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a large scaled
+   // dense matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      selectDefaultAssignKernel( C, A, B, scalar );
+      selectLargeAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
@@ -3712,7 +4132,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultAddAssignKernel( C, A, B, scalar );
+         DMatScalarMultExpr::selectSmallAddAssignKernel( C, A, B, scalar );
       else
          DMatScalarMultExpr::selectBlasAddAssignKernel( C, A, B, scalar );
    }
@@ -3736,16 +4156,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
       addAssign( C, tmp );
    }
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to row-major dense matrices**************************
-   /*!\brief Vectorized default addition assignment of a scaled dense matrix-transpose dense
+   //**Default addition assignment to dense matrices (small matrices)******************************
+   /*!\brief Default addition assignment of a small scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a scaled
+   // dense matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to row-major dense matrices (small matrices)*********
+   /*!\brief Vectorized default addition assignment of a small scaled dense matrix-transpose dense
    //        matrix multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -3757,13 +4201,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the vectorized default addition assignment of a scaled dense
    // matrix-transpose dense matrix multiplication expression to a row-major dense matrix.
+   // This kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3919,8 +4364,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default addition assignment to column-major dense matrices***********************
-   /*!\brief Vectorized default addition assignment of a scaled dense matrix-transpose dense
+   //**Vectorized default addition assignment to column-major dense matrices (small matrices)******
+   /*!\brief Vectorized default addition assignment of a small scaled dense matrix-transpose dense
    //        matrix multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -3932,13 +4377,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the vectorized default addition assignment of a scaled dense
    // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
+   // This kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -4099,8 +4545,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**BLAS-based addition assignment to dense matrices (default)**********************************
-   /*!\brief Default addition assignment of a scaled dense matrix-transpose dense matrix
+   //**Default addition assignment to dense matrices (large matrices)******************************
+   /*!\brief Default addition assignment of a large scaled dense matrix-transpose dense matrix
    //        multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -4117,10 +4563,89 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultAddAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to row-major dense matrices (large matrices)*********
+   /*!\brief Vectorized default addition assignment of a large scaled dense matrix-transpose dense
+   //        matrix multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment of a scaled dense
+   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix.
+   // This kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallAddAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to column-major dense matrices (large matrices)******
+   /*!\brief Vectorized default addition assignment of a large scaled dense matrix-transpose dense
+   //        matrix multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment of a scaled dense
+   // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
+   // This kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallAddAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense matrices (default)**********************************
+   /*!\brief Default addition assignment of a scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // scaled dense matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      selectDefaultAddAssignKernel( C, A, B, scalar );
+      selectLargeAddAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
@@ -4352,7 +4877,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectDefaultSubAssignKernel( C, A, B, scalar );
+         DMatScalarMultExpr::selectSmallSubAssignKernel( C, A, B, scalar );
       else
          DMatScalarMultExpr::selectBlasSubAssignKernel( C, A, B, scalar );
    }
@@ -4376,17 +4901,41 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
       subAssign( C, tmp );
    }
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to row-major dense matrices***********************
-   /*!\brief Vectorized default subtraction assignment of a scaled dense matrix-transpose dense
-   //        matrix multiplication (\f$ C-=s*A*B \f$).
+   //**Default subtraction assignment to dense matrices (small matrices)***************************
+   /*!\brief Default subtraction assignment of a small scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a scaled
+   // dense matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to row-major dense matrices (small matrices)******
+   /*!\brief Vectorized default subtraction assignment of a small scaled dense matrix-transpose
+   //        dense matrix multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -4396,14 +4945,15 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    // \return void
    //
    // This function implements the vectorized default subtraction assignment of a scaled dense
-   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix.
+   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix. This
+   // kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -4559,9 +5109,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**Vectorized default subtraction assignment to column-major dense matrices********************
-   /*!\brief Vectorized default subtraction assignment of a scaled dense matrix-transpose dense
-   //        matrix multiplication (\f$ C-=s*A*B \f$).
+   //**Vectorized default subtraction assignment to column-major dense matrices (small matrices)***
+   /*!\brief Vectorized default subtraction assignment of a small scaled dense matrix-transpose
+   //        dense matrix multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -4572,13 +5122,14 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    //
    // This function implements the vectorized default subtraction assignment of a scaled dense
    // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
+   // This kernel is optimized for small matrices.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -4740,8 +5291,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
    }
    //**********************************************************************************************
 
-   //**BLAS-based subtraction assignment to dense matrices (default)*******************************
-   /*!\brief Default subtraction assignment of a scaled dense matrix-transpose dense matrix
+   //**Default subtraction assignment to dense matrices (large matrices)***************************
+   /*!\brief Default subtraction assignment of a large scaled dense matrix-transpose dense matrix
    //        multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
    //
@@ -4758,10 +5309,89 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
+   static inline typename DisableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      selectDefaultSubAssignKernel( C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to row-major dense matrices (large matrices)******
+   /*!\brief Vectorized default subtraction assignment of a large scaled dense matrix-transpose
+   //        dense matrix multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment of a scaled dense
+   // matrix-transpose dense matrix multiplication expression to a row-major dense matrix. This
+   // kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallSubAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to column-major dense matrices (large matrices)***
+   /*!\brief Vectorized default subtraction assignment of a large scaled dense matrix-transpose
+   //        dense matrix multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment of a scaled dense
+   // matrix-transpose dense matrix multiplication expression to a column-major dense matrix.
+   // This kernel is optimized for large matrices.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
+      selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      // TODO
+      selectSmallSubAssignKernel( ~C, A, B, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based subtraction assignment to dense matrices (default)*******************************
+   /*!\brief Default subtraction assignment of a scaled dense matrix-transpose dense matrix
+   //        multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a large
+   // scaled dense matrix-transpose dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      selectDefaultSubAssignKernel( C, A, B, scalar );
+      selectLargeSubAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
