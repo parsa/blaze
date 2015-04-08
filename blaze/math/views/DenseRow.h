@@ -5892,7 +5892,7 @@ struct IsRestricted< DenseRow<MT,SO,SF> > : public If< IsRestricted<MT>, TrueTyp
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< DenseRow<MT,SO,SF> >
 {
-   typedef DenseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, SO, SF >  Type;
+   typedef DenseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
