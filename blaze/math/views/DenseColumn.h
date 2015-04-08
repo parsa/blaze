@@ -5923,7 +5923,7 @@ struct IsRestricted< DenseColumn<MT,SO,SF> > : public If< IsRestricted<MT>, True
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< DenseColumn<MT,SO,SF> >
 {
-   typedef DenseColumn< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, SO, SF >  Type;
+   typedef DenseColumn< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
