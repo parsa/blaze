@@ -6131,7 +6131,7 @@ struct IsRestricted< SparseRow<MT,SO,SF> > : public If< IsRestricted<MT>, TrueTy
 template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< SparseRow<MT,SO,SF> >
 {
-   typedef SparseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, SO, SF >  Type;
+   typedef SparseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
