@@ -65,11 +65,9 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -755,9 +753,6 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
    typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
    typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
 
-   if( IsLower<MT2>::value || IsUpper<MT2>::value )
-      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
-
    Tmp tmp( ~m );
 
    if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) )
@@ -792,9 +787,6 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 
    typedef typename RemoveAdaptor<typename MT2::ResultType>::Type   RT;
    typedef typename If< IsComputation<MT2>, RT, const MT2& >::Type  Tmp;
-
-   if( IsLower<MT2>::value || IsUpper<MT2>::value )
-      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
 
    Tmp tmp( ~m );
 
@@ -1069,8 +1061,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false
 {
    using blaze::resize;
 
-   if( IsLower<MT2>::value || IsUpper<MT2>::value ||
-       ( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) )
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    if( (~rhs).canAlias( this ) ) {
@@ -1113,7 +1104,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>
 {
    using blaze::resize;
 
-   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    typename MT2::ResultType tmp( ~rhs );
@@ -1182,7 +1173,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef typename AddTrait<MT,typename MT2::ResultType>::Type  Tmp;
 
-   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    Tmp tmp( (*this) + ~rhs );
@@ -1251,7 +1242,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef typename SubTrait<MT,typename MT2::ResultType>::Type  Tmp;
 
-   if( IsLower<MT2>::value || IsUpper<MT2>::value || !isSquare( ~rhs ) )
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
       throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
 
    Tmp tmp( (*this) - ~rhs );
