@@ -45,14 +45,12 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Restricted.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
-#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Intrinsics.h>
@@ -4427,12 +4425,10 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const ElementType& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT );
+   const size_t ibegin( ( IsLower<MT>::value )?( row_ ):( 0UL ) );
+   const size_t iend  ( ( IsUpper<MT>::value )?( row_+1UL ):( size() ) );
 
-   const size_t rows( size() );
-
-   for( size_t i=0UL; i<rows; ++i )
+   for( size_t i=ibegin; i<iend; ++i )
       matrix_(i,row_) = rhs;
 
    return *this;
