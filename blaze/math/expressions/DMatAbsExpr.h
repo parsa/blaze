@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -1027,6 +1028,23 @@ struct IsLower< DMatAbsExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatAbsExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISIDENTITY SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsIdentity< DMatAbsExpr<MT,SO> > : public IsTrue< IsIdentity<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
