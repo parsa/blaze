@@ -6541,7 +6541,7 @@ struct IsRestricted< SparseSubmatrix<MT,AF,SO> > : public If< IsRestricted<MT>, 
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< SparseSubmatrix<MT,AF,SO> >
 {
-   typedef SparseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF, SO >  Type;
+   typedef SparseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
