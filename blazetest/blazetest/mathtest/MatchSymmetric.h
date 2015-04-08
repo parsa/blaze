@@ -44,7 +44,9 @@
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 
 
 namespace blazetest {
@@ -72,7 +74,7 @@ struct MatchSymmetric
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::If< blaze::IsSymmetric<T1>
+   typedef typename blaze::If< blaze::And< blaze::IsSymmetric<T1>, blaze::Not< blaze::IsDiagonal<T1> > >
                              , blaze::SymmetricMatrix< typename blaze::RemoveAdaptor<T2>::Type >
                              , T2
                              >::Type  Type;
