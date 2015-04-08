@@ -12815,7 +12815,7 @@ struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public If< IsRestricted<MT>, T
 template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 {
-   typedef DenseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF, SO >  Type;
+   typedef DenseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
