@@ -57,6 +57,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -874,6 +875,23 @@ struct IsLower< SMatTransExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< SMatTransExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISIDENTITY SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsIdentity< SMatTransExpr<MT,SO> > : public IsTrue< IsIdentity<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
