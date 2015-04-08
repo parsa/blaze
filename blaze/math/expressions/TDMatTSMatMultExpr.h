@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -1937,6 +1938,24 @@ struct IsLower< TDMatTSMatMultExpr<MT1,MT2> >
 template< typename MT1, typename MT2 >
 struct IsUpper< TDMatTSMatMultExpr<MT1,MT2> >
    : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISIDENTITY SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsIdentity< TDMatTSMatMultExpr<MT1,MT2> >
+   : public IsTrue< IsIdentity<MT1>::value && IsIdentity<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
