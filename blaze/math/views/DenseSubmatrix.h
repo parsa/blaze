@@ -69,6 +69,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -1074,55 +1075,55 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+   inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
@@ -2260,7 +2261,7 @@ template< typename MT2  // Type of the left-hand side dense matrix
         , bool SO2      // Storage order of the left-hand side dense matrix
         , typename MT3  // Type of the right-hand side matrix
         , bool SO3 >    // Storage order of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2302,7 +2303,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2344,7 +2345,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2386,7 +2387,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2430,7 +2431,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2474,7 +2475,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2516,7 +2517,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2558,7 +2559,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2602,7 +2603,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2645,7 +2646,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2681,7 +2682,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2717,7 +2718,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -2755,7 +2756,7 @@ template< typename MT     // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,AF,SO>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -4269,55 +4270,55 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+   inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
@@ -5411,7 +5412,7 @@ template< typename MT2   // Type of the left-hand side dense matrix
         , bool SO2       // Storage order of the left-hand side dense matrix
         , typename MT3   // Type of the right-hand side matrix
         , bool SO3 >     // Storage order of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5453,7 +5454,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5495,7 +5496,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5537,7 +5538,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5581,7 +5582,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5625,7 +5626,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5667,7 +5668,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5709,7 +5710,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5753,7 +5754,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5796,7 +5797,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5832,7 +5833,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5868,7 +5869,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -5906,7 +5907,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,unaligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -7064,55 +7065,55 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+   inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
@@ -8230,7 +8231,7 @@ template< typename MT2   // Type of the left-hand side dense matrix
         , bool SO2       // Storage order of the left-hand side dense matrix
         , typename MT3   // Type of the right-hand side matrix
         , bool SO3 >     // Storage order of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8272,7 +8273,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8314,7 +8315,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8356,7 +8357,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8400,7 +8401,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8444,7 +8445,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8486,7 +8487,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8528,7 +8529,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8572,7 +8573,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8615,7 +8616,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8651,7 +8652,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8687,7 +8688,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -8725,7 +8726,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,false>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -9876,55 +9877,55 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3, bool SO3 >
-   inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+   inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs );
 
    template< typename MT2, bool SO2, typename MT3 >
-   inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
       preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs );
    //@}
    //**********************************************************************************************
@@ -10994,7 +10995,7 @@ template< typename MT2   // Type of the left-hand side dense matrix
         , bool SO2       // Storage order of the left-hand side dense matrix
         , typename MT3   // Type of the right-hand side matrix
         , bool SO3 >     // Storage order of the right-hand side matrix
-inline typename EnableIf< IsSymmetric<MT2>, bool >::Type
+inline typename EnableIf< And< IsSymmetric<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const Matrix<MT3,SO3>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11036,7 +11037,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11078,7 +11079,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11120,7 +11121,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11164,7 +11165,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, Not< IsUpper<MT2> > >, bool >::Type
+inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11208,7 +11209,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11250,7 +11251,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11292,7 +11293,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11336,7 +11337,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< Not< IsLower<MT2> >, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11379,7 +11380,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11415,7 +11416,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side dense matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const DenseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11451,7 +11452,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
@@ -11489,7 +11490,7 @@ template< typename MT >   // Type of the dense matrix
 template< typename MT2    // Type of the left-hand side dense matrix
         , bool SO2        // Storage order of the left-hand side dense matrix
         , typename MT3 >  // Type of the right-hand side sparse matrix
-inline typename EnableIf< And< IsLower<MT2>, IsUpper<MT2> >, bool >::Type
+inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
    DenseSubmatrix<MT,aligned,true>::preservesInvariant( const DenseMatrix<MT2,SO2>& lhs, const SparseMatrix<MT3,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT3 );
