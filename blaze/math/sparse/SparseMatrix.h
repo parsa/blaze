@@ -47,11 +47,14 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -284,9 +287,6 @@ template< typename MT, bool SO >
 bool isnan( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
-bool isDiagonal( const SparseMatrix<MT,SO>& sm );
-
-template< typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -294,6 +294,12 @@ bool isLower( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isUpper( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isDiagonal( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isIdentity( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 const typename MT::ElementType min( const SparseMatrix<MT,SO>& sm );
@@ -347,76 +353,6 @@ bool isnan( const SparseMatrix<MT,SO>& sm )
    }
 
    return false;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the give sparse matrix is diagonal.
-// \ingroup sparse_matrix
-//
-// \param sm The sparse matrix to be checked.
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & xx \\
-                        \end{array}\right)\f]
-
-// The following example demonstrates the use of the function:
-
-   \code
-   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
-   // ... Initialization
-   if( IsDiagonal( A ) ) { ... }
-   \endcode
-
-// It is also possible to check if a matrix expression results in a diagonal matrix:
-
-   \code
-   if( IsDiagonal( A * B ) ) { ... }
-   \endcode
-
-// However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-bool isDiagonal( const SparseMatrix<MT,SO>& sm )
-{
-   typedef typename MT::ConstIterator  ConstIterator;
-
-   // Early exit in case the matrix is not square
-   if( !isSquare( ~sm ) )
-      return false;
-
-   // Evaluation of the sparse matrix operand
-   typename MT::CompositeType A( ~sm );
-
-   // Run time evaluation whether the matrix is diagonal
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
-            if( element->index() != i && !isDefault( element->value() ) )
-               return false;
-      }
-   }
-   else {
-      for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
-            if( element->index() != j && !isDefault( element->value() ) )
-               return false;
-      }
-   }
-
-   return true;
 }
 //*************************************************************************************************
 
@@ -559,7 +495,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( (~sm).rows() < 2UL )
       return true;
 
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -643,7 +579,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    if( (~sm).rows() < 2UL )
       return true;
 
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
@@ -663,6 +599,192 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
          {
             if( !isDefault( element->value() ) )
                return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give sparse matrix is diagonal.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is diagonal, \a false if not.
+//
+// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
+// default elements. In case of integral or floating point data types, a diagonal matrix has
+// the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        aa     & 0      & 0      & \cdots & 0  \\
+                        0      & bb     & 0      & \cdots & 0  \\
+                        0      & 0      & cc     & \cdots & 0  \\
+                        \vdots & \vdots & \vdots & \ddots & 0  \\
+                        0      & 0      & 0      & 0      & xx \\
+                        \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isDiagonal( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a diagonal matrix:
+
+   \code
+   if( isDiagonal( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isDiagonal( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+
+   if( IsDiagonal<MT>::value )
+      return true;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   if( (~sm).rows() < 2UL )
+      return true;
+
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+            if( element->index() != i && !isDefault( element->value() ) )
+               return false;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+            if( element->index() != j && !isDefault( element->value() ) )
+               return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give sparse matrix is an identity matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is an identity matrix, \a false if not.
+//
+// This function tests whether the matrix is an identity matrix, i.e. if the diagonal elements
+// are 1 and the non-diagonal elements are 0. In case of integral or floating point data types,
+// an identity matrix has the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1      & 0      & 0      & \cdots & 0 \\
+                        0      & 1      & 0      & \cdots & 0 \\
+                        0      & 0      & 1      & \cdots & 0 \\
+                        \vdots & \vdots & \vdots & \ddots & 0 \\
+                        0      & 0      & 0      & 0      & 1 \\
+                        \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isIdentity( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an identity matrix:
+
+   \code
+   if( isIdentity( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isIdentity( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsIdentity<MT>::value )
+      return true;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i )
+      {
+         bool hasDiagonalElement( false );
+
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         {
+            if( element->index() == i ) {
+               if( element->value() != ET(1) )
+                  return false;
+               hasDiagonalElement = true;
+            }
+            else if( !isDefault( element->value() ) ) {
+               return false;
+            }
+         }
+
+         if( !hasDiagonalElement ) {
+            return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j )
+      {
+         bool hasDiagonalElement( false );
+
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         {
+            if( element->index() == j ) {
+               if( element->value() != ET(1) )
+                  return false;
+               hasDiagonalElement = true;
+            }
+            else if( !isDefault( element->value() ) ) {
+               return false;
+            }
+         }
+
+         if( !hasDiagonalElement ) {
+            return false;
          }
       }
    }
