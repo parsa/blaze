@@ -48,11 +48,14 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -564,9 +567,6 @@ template< typename MT, bool SO >
 bool isnan( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
-bool isDiagonal( const DenseMatrix<MT,SO>& dm );
-
-template< typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -574,6 +574,12 @@ bool isLower( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+bool isDiagonal( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+bool isIdentity( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
 const typename MT::ElementType min( const DenseMatrix<MT,SO>& dm );
@@ -626,76 +632,6 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
    }
 
    return false;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the give dense matrix is diagonal.
-// \ingroup dense_matrix
-//
-// \param dm The dense matrix to be checked.
-// \return \a true if the matrix is diagonal, \a false if not.
-//
-// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
-// default elements. In case of integral or floating point data types, a diagonal matrix has
-// the form
-
-                        \f[\left(\begin{array}{*{5}{c}}
-                        aa     & 0      & 0      & \cdots & 0  \\
-                        0      & bb     & 0      & \cdots & 0  \\
-                        0      & 0      & cc     & \cdots & 0  \\
-                        \vdots & \vdots & \vdots & \ddots & 0  \\
-                        0      & 0      & 0      & 0      & xx \\
-                        \end{array}\right)\f]
-
-// The following example demonstrates the use of the function:
-
-   \code
-   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
-   // ... Initialization
-   if( IsDiagonal( A ) ) { ... }
-   \endcode
-
-// It is also possible to check if a matrix expression results in a diagonal matrix:
-
-   \code
-   if( IsDiagonal( A * B ) ) { ... }
-   \endcode
-
-// However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-bool isDiagonal( const DenseMatrix<MT,SO>& dm )
-{
-   // Early exit in case the matrix is not square
-   if( !isSquare( ~dm ) )
-      return false;
-
-   // Evaluation of the dense matrix operand
-   typename MT::CompositeType A( ~dm );
-
-   // Run time evaluation whether the matrix is diagonal
-   if( SO == rowMajor ) {
-      for( size_t i=1UL; i<A.rows(); ++i ) {
-         for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
-               return false;
-         }
-      }
-   }
-   else {
-      for( size_t j=1UL; j<A.columns(); ++j ) {
-         for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
-               return false;
-         }
-      }
-   }
-
-   return true;
 }
 //*************************************************************************************************
 
@@ -909,6 +845,176 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    }
    else {
       for( size_t j=0UL; j<A.columns()-1UL; ++j ) {
+         for( size_t i=j+1UL; i<A.rows(); ++i ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give dense matrix is diagonal.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is diagonal, \a false if not.
+//
+// This function tests whether the matrix is diagonal, i.e. if the non-diagonal elements are
+// default elements. In case of integral or floating point data types, a diagonal matrix has
+// the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        aa     & 0      & 0      & \cdots & 0  \\
+                        0      & bb     & 0      & \cdots & 0  \\
+                        0      & 0      & cc     & \cdots & 0  \\
+                        \vdots & \vdots & \vdots & \ddots & 0  \\
+                        0      & 0      & 0      & 0      & xx \\
+                        \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isDiagonal( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a diagonal matrix:
+
+   \code
+   if( isDiagonal( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isDiagonal( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+
+   if( IsDiagonal<MT>::value )
+      return true;
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   if( (~dm).rows() < 2UL )
+      return true;
+
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=1UL; i<A.rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the give dense matrix is an identity matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is an identity matrix, \a false if not.
+//
+// This function tests whether the matrix is an identity matrix, i.e. if the diagonal elements
+// are 1 and the non-diagonal elements are 0. In case of integral or floating point data types,
+// an identity matrix has the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1      & 0      & 0      & \cdots & 0 \\
+                        0      & 1      & 0      & \cdots & 0 \\
+                        0      & 0      & 1      & \cdots & 0 \\
+                        \vdots & \vdots & \vdots & \ddots & 0 \\
+                        0      & 0      & 0      & 0      & 1 \\
+                        \end{array}\right)\f]
+
+// The following example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isIdentity( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an identity matrix:
+
+   \code
+   if( isIdentity( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isIdentity( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsIdentity<MT>::value )
+      return true;
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+         if( A(i,i) != ET(1) )
+            return false;
+         for( size_t j=i+1UL; j<A.columns(); ++j ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+         if( A(j,j) != ET(1) )
+            return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
             if( !isDefault( A(i,j) ) )
                return false;
