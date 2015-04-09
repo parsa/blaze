@@ -84,10 +84,10 @@ class OperationTest
    //@{
    void testIsNan();
    void testIsSquare();
-   void testIsDiagonal();
    void testIsSymmetric();
    void testIsLower();
    void testIsUpper();
+   void testIsDiagonal();
    void testMinimum();
    void testMaximum();
 
