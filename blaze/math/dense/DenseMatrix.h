@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -573,6 +574,9 @@ template< typename MT, bool SO >
 bool isLower( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
+bool isUniLower( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -780,6 +784,89 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Checks if the given dense matrix is a lower unitriangular matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is a lower unitriangular matrix, \a false if not.
+//
+// This function checks if the given dense matrix is a lower unitriangular matrix. The matrix is
+// considered to be lower unitriangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 1       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 1       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniLower( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a lower unitriangular matrix:
+
+   \code
+   if( isUniLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isUniLower( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsUniLower<MT>::value )
+      return true;
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         if( A(i,i) != ET(1) )
+            return false;
+         for( size_t j=i+1UL; j<A.columns(); ++j ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+         if( A(j,j) != ET(1) )
+            return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Checks if the given dense matrix is an upper triangular matrix.
 // \ingroup dense_matrix
 //
@@ -876,7 +963,8 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
                         0      & 0      & 0      & 0      & xx \\
                         \end{array}\right)\f]
 
-// The following example demonstrates the use of the function:
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially diagonal. The
+// following example demonstrates the use of the function:
 
    \code
    blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
