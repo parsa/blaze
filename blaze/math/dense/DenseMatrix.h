@@ -1089,17 +1089,25 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor ) {
-      for( size_t i=1UL; i<A.rows(); ++i ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
          for( size_t j=0UL; j<i; ++j ) {
-            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+         for( size_t j=i+1UL; j<A.columns(); ++j ) {
+            if( !isDefault( A(i,j) ) )
                return false;
          }
       }
    }
    else {
-      for( size_t j=1UL; j<A.columns(); ++j ) {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
          for( size_t i=0UL; i<j; ++i ) {
-            if( !isDefault( A(i,j) ) || !isDefault( A(j,i) ) )
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+         for( size_t i=j+1UL; i<A.rows(); ++i ) {
+            if( !isDefault( A(i,j) ) )
                return false;
          }
       }
