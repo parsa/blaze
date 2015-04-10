@@ -88,6 +88,7 @@ class OperationTest
    void testIsLower();
    void testIsUpper();
    void testIsDiagonal();
+   void testIsIdentity();
    void testMinimum();
    void testMaximum();
 
