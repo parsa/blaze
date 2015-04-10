@@ -40,7 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 
 
@@ -85,13 +89,13 @@ namespace blaze {
    \endcode
 */
 template< typename T >
-struct IsIdentity : public FalseType
+struct IsIdentity : public If< And< IsUniLower<T>, IsUniUpper<T> >, TrueType, FalseType >::Type
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = 0 };
-   typedef FalseType  Type;
+   enum { value = IsUniLower<T>::value && IsUniUpper<T>::value };
+   typedef typename If< And< IsUniLower<T>, IsUniUpper<T> >, TrueType, FalseType >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
 };
