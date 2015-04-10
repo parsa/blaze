@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 
