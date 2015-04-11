@@ -57,9 +57,10 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
@@ -867,6 +868,23 @@ struct IsLower< SMatTransExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
 
 //=================================================================================================
 //
+//  ISUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatTransExpr<MT,SO> > : public IsTrue< IsUniUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISUPPER SPECIALIZATIONS
 //
 //=================================================================================================
@@ -884,14 +902,14 @@ struct IsUpper< SMatTransExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 
 //=================================================================================================
 //
-//  ISIDENTITY SPECIALIZATIONS
+//  ISUNIUPPER SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsIdentity< SMatTransExpr<MT,SO> > : public IsTrue< IsIdentity<MT>::value >
+struct IsUniUpper< SMatTransExpr<MT,SO> > : public IsTrue< IsUniLower<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
