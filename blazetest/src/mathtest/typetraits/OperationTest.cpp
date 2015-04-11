@@ -42,8 +42,11 @@
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/Diagonal.h>
+#include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/UniLower.h>
+#include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
@@ -51,16 +54,21 @@
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 #include <blazetest/mathtest/typetraits/OperationTest.h>
 
 
@@ -175,20 +183,35 @@ void OperationTest::testIsSymmetric()
 {
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
 
-   typedef DynamicMatrix<int>                              Type1;
-   typedef const DynamicMatrix<int>                        Type2;
-   typedef volatile DynamicMatrix<int>                     Type3;
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type4;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type5;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type6;
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type3 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type4 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type5 );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type6 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type1  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type12 );
 }
 //*************************************************************************************************
 
@@ -205,21 +228,82 @@ void OperationTest::testIsSymmetric()
 void OperationTest::testIsLower()
 {
    using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
    using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
 
-   typedef DynamicMatrix<int>                          Type1;
-   typedef const DynamicMatrix<int>                    Type2;
-   typedef volatile DynamicMatrix<int>                 Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >           Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >     Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >  Type6;
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5 );
-   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type6 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type4  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type5  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE    ( Type12 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsUniLower' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsUniLower' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsUniLower()
+{
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type10 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type11 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type12 );
 }
 //*************************************************************************************************
 
@@ -236,21 +320,82 @@ void OperationTest::testIsLower()
 void OperationTest::testIsUpper()
 {
    using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
    using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
 
-   typedef DynamicMatrix<int>                          Type1;
-   typedef const DynamicMatrix<int>                    Type2;
-   typedef volatile DynamicMatrix<int>                 Type3;
-   typedef UpperMatrix< DynamicMatrix<int> >           Type4;
-   typedef const UpperMatrix< DynamicMatrix<int> >     Type5;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >  Type6;
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type4 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type5 );
-   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type6 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type7  );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type8  );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE    ( Type12 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsUniUpper' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsUniUpper' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsUniUpper()
+{
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type10 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type11 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type12 );
 }
 //*************************************************************************************************
 
@@ -267,21 +412,82 @@ void OperationTest::testIsUpper()
 void OperationTest::testIsDiagonal()
 {
    using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef DynamicMatrix<int>                             Type1;
-   typedef const DynamicMatrix<int>                       Type2;
-   typedef volatile DynamicMatrix<int>                    Type3;
-   typedef DiagonalMatrix< DynamicMatrix<int> >           Type4;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >     Type5;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >  Type6;
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3 );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type4 );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type5 );
-   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type6 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type12 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsIdentity' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsIdentity' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsIdentity()
+{
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::DiagonalMatrix;
+
+   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
+   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
+   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
+   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
+   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
+   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
+   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
+   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
+   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
+   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
+   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
+   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type10 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type11 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type12 );
 }
 //*************************************************************************************************
 
