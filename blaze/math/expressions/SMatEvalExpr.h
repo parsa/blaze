@@ -56,11 +56,12 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
@@ -793,6 +794,23 @@ struct IsLower< SMatEvalExpr<MT,SO> > : public IsTrue< IsLower<MT>::value >
 
 //=================================================================================================
 //
+//  ISUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsUniLower< SMatEvalExpr<MT,SO> > : public IsTrue< IsUniLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISUPPER SPECIALIZATIONS
 //
 //=================================================================================================
@@ -810,14 +828,14 @@ struct IsUpper< SMatEvalExpr<MT,SO> > : public IsTrue< IsUpper<MT>::value >
 
 //=================================================================================================
 //
-//  ISIDENTITY SPECIALIZATIONS
+//  ISUNIUPPER SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct IsIdentity< SMatEvalExpr<MT,SO> > : public IsTrue< IsIdentity<MT>::value >
+struct IsUniUpper< SMatEvalExpr<MT,SO> > : public IsTrue< IsUniUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
