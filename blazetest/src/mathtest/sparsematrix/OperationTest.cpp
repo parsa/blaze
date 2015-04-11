@@ -396,18 +396,20 @@ void OperationTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isSymmetric( mat ) != true ) {
             std::ostringstream oss;
@@ -851,18 +853,20 @@ void OperationTest::testIsSymmetric()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isSymmetric( mat ) != true ) {
             std::ostringstream oss;
@@ -1318,18 +1322,20 @@ void OperationTest::testIsLower()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isLower( mat ) != true ) {
             std::ostringstream oss;
@@ -1341,7 +1347,7 @@ void OperationTest::testIsLower()
          }
       }
 
-      // Non-lower triangle matrix
+      // Non-lower triangular matrix
       {
          blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
          mat(0,0) = 1;
@@ -1748,18 +1754,20 @@ void OperationTest::testIsLower()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isLower( mat ) != true ) {
             std::ostringstream oss;
@@ -2216,18 +2224,20 @@ void OperationTest::testIsUniLower()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUniLower( mat ) != false ) {
             std::ostringstream oss;
@@ -2853,18 +2863,20 @@ void OperationTest::testIsUniLower()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUniLower( mat ) != false ) {
             std::ostringstream oss;
@@ -3477,18 +3489,20 @@ void OperationTest::testIsUpper()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUpper( mat ) != true ) {
             std::ostringstream oss;
@@ -3907,18 +3921,20 @@ void OperationTest::testIsUpper()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUpper( mat ) != true ) {
             std::ostringstream oss;
@@ -4375,18 +4391,20 @@ void OperationTest::testIsUniUpper()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUniUpper( mat ) != false ) {
             std::ostringstream oss;
@@ -5012,18 +5030,20 @@ void OperationTest::testIsUniUpper()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isUniUpper( mat ) != false ) {
             std::ostringstream oss;
@@ -5636,18 +5656,20 @@ void OperationTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isDiagonal( mat ) != true ) {
             std::ostringstream oss;
@@ -6064,18 +6086,20 @@ void OperationTest::testIsDiagonal()
 
       // Diagonal matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 2;
          mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isDiagonal( mat ) != true ) {
             std::ostringstream oss;
@@ -6504,18 +6528,20 @@ void OperationTest::testIsIdentity()
 
       // Identity matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 1;
          mat(2,2) = 1;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
-         checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isIdentity( mat ) != true ) {
             std::ostringstream oss;
@@ -7081,18 +7107,20 @@ void OperationTest::testIsIdentity()
 
       // Identity matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
          mat(0,0) = 1;
          mat(1,1) = 1;
          mat(2,2) = 1;
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 3UL );
-         checkNonZeros( mat, 3UL );
-         checkNonZeros( mat, 0UL, 1UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
          checkNonZeros( mat, 1UL, 1UL );
-         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
 
          if( isIdentity( mat ) != true ) {
             std::ostringstream oss;
