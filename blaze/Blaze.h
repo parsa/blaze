@@ -2098,18 +2098,6 @@ namespace blaze {}
    if( isSquare( A ) ) { ... }
    \endcode
 
-// \n \subsection matrix_operations_isdiagonal isDiagonal
-//
-// The \c isDiagonal() function checks if the given dense or sparse matrix is a diagonal matrix,
-// i.e. if it has only elements on its diagonal and if the non-diagonal elements are default
-// elements:
-
-   \code
-   blaze::CompressedMatrix<float> A;
-   // ... Resizing and initialization
-   if( isDiagonal( A ) ) { ... }
-   \endcode
-
 // \n \subsection matrix_operations_issymmetric isSymmetric
 //
 // Via the \c isSymmetric() function it is possible to check whether a dense or sparse matrix
@@ -2138,6 +2126,22 @@ namespace blaze {}
 // Note that non-square matrices are never considered to be lower triangular!
 //
 //
+// \n \subsection matrix_operations_isunilower isUniLower
+//
+// Via the \c isUniLower() function it is possible to check whether a dense or sparse matrix is
+// lower unitriangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isUniLower( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be lower unitriangular! Also note that
+// this function only works for matrices with built-in element type. The attempt to call the
+// function with a matrix of non-built-in element type results in a compile time error.
+//
+//
 // \n \subsection matrix_operations_isUpper isUpper
 //
 // Via the \c isUpper() function it is possible to check whether a dense or sparse matrix is
@@ -2150,6 +2154,53 @@ namespace blaze {}
    \endcode
 
 // Note that non-square matrices are never considered to be upper triangular!
+//
+//
+// \n \subsection matrix_operations_isuniupper isUniUpper
+//
+// Via the \c isUniUpper() function it is possible to check whether a dense or sparse matrix is
+// upper unitriangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isUniUpper( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be upper unitriangular! Also note that
+// this function only works for matrices with built-in element type. The attempt to call the
+// function with a matrix of non-built-in element type results in a compile time error.
+//
+//
+// \n \subsection matrix_operations_isdiagonal isDiagonal
+//
+// The \c isDiagonal() function checks if the given dense or sparse matrix is a diagonal matrix,
+// i.e. if it has only elements on its diagonal and if the non-diagonal elements are default
+// elements:
+
+   \code
+   blaze::CompressedMatrix<float> A;
+   // ... Resizing and initialization
+   if( isDiagonal( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be diagonal!
+//
+//
+// \n \subsection matrix_operations_isidentity isIdentity
+//
+// The \c isIdentity() function checks if the given dense or sparse matrix is an identity matrix,
+// i.e. if all diagonal elements are 1 and all non-diagonal elements are 0:
+
+   \code
+   blaze::CompressedMatrix<float> A;
+   // ... Resizing and initialization
+   if( isIdentity( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be identity matrices! Also note that this
+// function only works for matrices with built-in element type. The attempt to call the function
+// with a matrix of non-built-in element type results in a compile time error.
 //
 //
 // \n \subsection matrix_operators_abs Absolute Values
