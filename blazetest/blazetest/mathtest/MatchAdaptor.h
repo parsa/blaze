@@ -42,7 +42,6 @@
 
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/constraints/Matrix.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -82,16 +81,16 @@ struct MatchAdaptor
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::If< blaze::IsSymmetric<T1>
-                             , blaze::SymmetricMatrix<Tmp>
-                             , typename blaze::If< blaze::IsDiagonal<T1>
+   typedef typename blaze::If< blaze::IsLower<T1>
+                             , typename blaze::If< blaze::IsUpper<T1>
                                                  , blaze::DiagonalMatrix<Tmp>
-                                                 , typename blaze::If< blaze::IsLower<T1>
-                                                                     , blaze::LowerMatrix<Tmp>
-                                                                     , typename blaze::If< blaze::IsUpper<T1>
-                                                                                         , blaze::UpperMatrix<Tmp>
-                                                                                         , T2
-                                                                                         >::Type
+                                                 , blaze::LowerMatrix<Tmp>
+                                                 >::Type
+                             , typename blaze::If< blaze::IsUpper<T1>
+                                                 , blaze::UpperMatrix<Tmp>
+                                                 , typename blaze::If< blaze::IsSymmetric<T1>
+                                                                     , blaze::SymmetricMatrix<Tmp>
+                                                                     , T2
                                                                      >::Type
                                                  >::Type
                              >::Type  Type;
