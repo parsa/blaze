@@ -56,11 +56,30 @@ namespace blaze {
 /*!\brief Compile time check for upper unitriangular matrices.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a upper unitriangular
+// This type trait tests whether or not the given template parameter is an upper unitriangular
 // matrix type (i.e. a matrix type that is guaranteed to be upper unitriangular at compile time).
-// In case the type is a upper unitriangular matrix type, the \a value member enumeration is set
+// In case the type is an upper unitriangular matrix type, the \a value member enumeration is set
 // to 1, the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
+   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
+   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+
+   typedef blaze::UniUpperMatrix<StaticMatrixType>      UniUpperStaticType;
+   typedef blaze::UniUpperMatrix<DynamicMatrixType>     UniUpperDynamicType;
+   typedef blaze::UniUpperMatrix<CompressedMatrixType>  UniUpperCompressedType;
+
+   blaze::IsUniUpper< UniUpperStaticType >::value        // Evaluates to 1
+   blaze::IsUniUpper< const UniUpperDynamicType >::Type  // Results in TrueType
+   blaze::IsUniUpper< volatile UniUpperCompressedType >  // Is derived from TrueType
+   blaze::IsUniUpper< StaticMatrixType >::value          // Evaluates to 0
+   blaze::IsUniUpper< const DynamicMatrixType >::Type    // Results in FalseType
+   blaze::IsUniUpper< volatile CompressedMatrixType >    // Is derived from FalseType
+   \endcode
 */
 template< typename T >
 struct IsUniUpper : public FalseType

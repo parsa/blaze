@@ -61,6 +61,25 @@ namespace blaze {
 // In case the type is a lower unitriangular matrix type, the \a value member enumeration is set
 // to 1, the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
 // Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
+   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
+   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+
+   typedef blaze::UniLowerMatrix<StaticMatrixType>      UniLowerStaticType;
+   typedef blaze::UniLowerMatrix<DynamicMatrixType>     UniLowerDynamicType;
+   typedef blaze::UniLowerMatrix<CompressedMatrixType>  UniLowerCompressedType;
+
+   blaze::IsUniLower< UniLowerStaticType >::value        // Evaluates to 1
+   blaze::IsUniLower< const UniLowerDynamicType >::Type  // Results in TrueType
+   blaze::IsUniLower< volatile UniLowerCompressedType >  // Is derived from TrueType
+   blaze::IsUniLower< StaticMatrixType >::value          // Evaluates to 0
+   blaze::IsUniLower< const DynamicMatrixType >::Type    // Results in FalseType
+   blaze::IsUniLower< volatile CompressedMatrixType >    // Is derived from FalseType
+   \endcode
 */
 template< typename T >
 struct IsUniLower : public FalseType
