@@ -744,11 +744,11 @@ inline bool operator>=( const T& lhs, const LowerProxy<MT>& rhs )
 
 
 //*************************************************************************************************
-/*!\brief Global output operator for numeric proxies.
+/*!\brief Global output operator for proxies on lower triangular matrices.
 // \ingroup lower_matrix
 //
 // \param os Reference to the output stream.
-// \param proxy Reference to a constant numeric proxy object.
+// \param proxy Reference to a constant proxy object.
 // \return Reference to the output stream.
 */
 template< typename MT >
@@ -789,7 +789,7 @@ inline bool isDefault( const LowerProxy<MT>& proxy );
 // \param proxy The given access proxy.
 // \return void
 //
-// This function resets the element represented by the numeric proxy to its default initial
+// This function resets the element represented by the access proxy to its default initial
 // value.
 */
 template< typename MT >
@@ -809,7 +809,7 @@ inline void reset( const LowerProxy<MT>& proxy )
 // \param proxy The given access proxy.
 // \return void
 //
-// This function clears the element represented by the numeric proxy to its default initial
+// This function clears the element represented by the access proxy to its default initial
 // state.
 */
 template< typename MT >
