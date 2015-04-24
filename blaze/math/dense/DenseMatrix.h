@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -588,6 +589,9 @@ template< typename MT, bool SO >
 bool isUniUpper( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
+bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
 bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -1104,6 +1108,86 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
          if( A(j,j) != ET(1) )
             return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is a strictly upper triangular matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is a strictly upper triangular matrix, \a false if not.
+//
+// This function checks if the given dense matrix is a strictly upper triangular matrix. The
+// matrix is considered to be strictly upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0      & 0       & u_{1,2} & \cdots & u_{1,N} \\
+                        0      & 0       & 0       & \cdots & u_{2,N} \\
+                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0      & 0       & 0       & \cdots & 0       \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyUpper( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly upper triangular
+// matrix:
+
+   \code
+   if( isStrictlyUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsStrictlyUpper<MT>::value )
+      return true;
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( size_t j=0UL; j<=i; ++j ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=j; i<A.rows(); ++i ) {
             if( !isDefault( A(i,j) ) )
                return false;
          }
