@@ -52,6 +52,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -306,6 +307,9 @@ bool isUpper( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isUniUpper( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isDiagonal( const SparseMatrix<MT,SO>& sm );
@@ -708,7 +712,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
       }
    }
    else {
-      for( size_t j=1UL; j<A.columns(); ++j ) {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() > j )
@@ -901,6 +905,92 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
          ++element;
 
          for( ; element!=A.end(j); ++element ) {
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is a strictly upper triangular matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a strictly upper triangular matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is a strictly upper triangular matrix. The
+// matrix is considered to be strictly upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0      & 0       & u_{1,2} & \cdots & u_{1,N} \\
+                        0      & 0       & 0       & \cdots & u_{2,N} \\
+                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0      & 0       & 0       & \cdots & 0       \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyUpper( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly upper triangular
+// matrix:
+
+   \code
+   if( isStrictlyUpper( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsUniUpper<MT>::value )
+      return true;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         {
+            if( element->index() > i )
+               break;
+
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.lowerBound(j,j); element!=A.end(j); ++element )
+         {
             if( !isDefault( element->value() ) )
                return false;
          }
