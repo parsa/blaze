@@ -72,6 +72,7 @@ OperationTest::OperationTest()
    testIsSymmetric();
    testIsLower();
    testIsUniLower();
+   testIsStrictlyLower();
    testIsUpper();
    testIsDiagonal();
    testIsIdentity();
@@ -3442,6 +3443,1029 @@ void OperationTest::testIsUniLower()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isStrictlyLower() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isStrictlyLower() function for dense matrices. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testIsStrictlyLower()
+{
+   //=====================================================================================
+   // Row-major general matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (general matrix)";
+
+      // Non-square matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(1,0) = 2;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,0) = 2;
+         mat(1,1) = 3;
+         mat(2,2) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-strictly lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+         mat(0,2) = 2;
+         mat(1,0) = 3;
+         mat(2,0) = 4;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major symmetric matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (symmetric matrix)";
+
+      // Default symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (lower matrix)";
+
+      // Default lower matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal lower matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly lower triangular matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower triangular matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,0) = 4;
+         mat(1,1) = 2;
+         mat(2,0) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (upper matrix)";
+
+      // Default upper matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal upper matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly upper triangular matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Upper triangular matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(1,2) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major diagonal matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (diagonal matrix)";
+
+      // Default diagonal matrix
+      {
+         blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major general matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (general matrix)";
+
+      // Non-square matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default initialized matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(1,0) = 2;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,0) = 1;
+         mat(1,0) = 2;
+         mat(1,1) = 3;
+         mat(2,2) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-strictly lower triangular matrix
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+         mat(0,2) = 2;
+         mat(1,0) = 3;
+         mat(2,0) = 4;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major symmetric matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (symmetric matrix)";
+
+      // Default symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric matrix
+      {
+         blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (lower matrix)";
+
+      // Default lower matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal lower matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly lower triangular matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Lower triangular matrix
+      {
+         blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,0) = 4;
+         mat(1,1) = 2;
+         mat(2,0) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (upper matrix)";
+
+      // Default upper matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal upper matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Strictly upper triangular matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Upper triangular matrix
+      {
+         blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(1,2) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major diagonal matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (diagonal matrix)";
+
+      // Default diagonal matrix
+      {
+         blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal matrix
+      {
+         blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );

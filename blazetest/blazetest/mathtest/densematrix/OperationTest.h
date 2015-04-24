@@ -87,6 +87,7 @@ class OperationTest
    void testIsSymmetric();
    void testIsLower();
    void testIsUniLower();
+   void testIsStrictlyLower();
    void testIsUpper();
    void testIsUniUpper();
    void testIsDiagonal();
