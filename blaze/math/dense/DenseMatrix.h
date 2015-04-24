@@ -52,6 +52,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -578,6 +579,9 @@ template< typename MT, bool SO >
 bool isUniLower( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
+bool isStrictlyLower( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
 bool isUpper( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -862,6 +866,86 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
          }
          if( A(j,j) != ET(1) )
             return false;
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is a strictly lower triangular matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is a strictly lower triangular matrix, \a false if not.
+//
+// This function checks if the given dense matrix is a strictly lower triangular matrix. The
+// matrix is considered to be strictly lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 0       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 0       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyLower( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly lower triangular
+// matrix:
+
+   \code
+   if( isStrictlyLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsStrictlyLower<MT>::value )
+      return true;
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( size_t j=i; j<A.columns(); ++j ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<=j; ++i ) {
+            if( !isDefault( A(i,j) ) )
+               return false;
+         }
       }
    }
 
