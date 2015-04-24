@@ -80,6 +80,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Square.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/SubExpr.h>
 #include <blaze/math/constraints/Submatrix.h>
 #include <blaze/math/constraints/Subvector.h>
