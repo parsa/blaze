@@ -51,6 +51,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -296,6 +297,9 @@ bool isLower( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isUniLower( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
+bool isStrictlyLower( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
 bool isUpper( const SparseMatrix<MT,SO>& sm );
@@ -626,6 +630,92 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
 
          if( !hasDiagonalElement ) {
             return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is a strictly lower triangular matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a strictly lower triangular matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is a strictly lower triangular matrix. The
+// matrix is considered to be strictly lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 0       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 0       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isStrictlyLower( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a strictly lower triangular
+// matrix:
+
+   \code
+   if( isStrictlyLower( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix. Also note that this function only works for matrices
+// with built-in element type. The attempt to call the function with a matrix of non-built-in
+// element type results in a compile time error.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
+
+   if( IsStrictlyLower<MT>::value )
+      return true;
+
+   if( !isSquare( ~sm ) )
+      return false;
+
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.lowerBound(i,i); element!=A.end(i); ++element )
+         {
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=1UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         {
+            if( element->index() > j )
+               break;
+
+            if( !isDefault( element->value() ) )
+               return false;
          }
       }
    }
