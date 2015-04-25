@@ -1474,11 +1474,11 @@ inline void UpperMatrix<MT,SO,false>::swap( UpperMatrix& m ) /* throw() */
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the maximum number of non-zero values for a upper triangular matrix.
+/*!\brief Returns the maximum number of non-zero values for an upper triangular matrix.
 //
 // \return The maximum number of non-zero values.
 //
-// This function returns the maximum possible number of non-zero values for a upper triangular
+// This function returns the maximum possible number of non-zero values for an upper triangular
 // matrix with fixed-size adapted matrix of type \a MT. Note that this function can only be
 // called in case the adapted dense matrix is a fixed-size matrix. The attempt to call this
 // function in case the adapted matrix is resizable matrix will result in a compile time error.
@@ -1497,12 +1497,12 @@ inline size_t UpperMatrix<MT,SO,false>::maxNonZeros()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the maximum number of non-zero values for a upper triangular matrix.
+/*!\brief Returns the maximum number of non-zero values for an upper triangular matrix.
 //
 // \param n The number of rows and columns of the matrix.
 // \return The maximum number of non-zero values.
 //
-// This function returns the maximum possible number of non-zero values for a upper triangular
+// This function returns the maximum possible number of non-zero values for an upper triangular
 // matrix of the given number of rows and columns.
 */
 template< typename MT  // Type of the adapted dense matrix
