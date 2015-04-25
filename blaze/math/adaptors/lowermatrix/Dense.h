@@ -2052,7 +2052,7 @@ inline const MT LowerMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T 
 {
    const MT tmp( ~m );
 
-   if( !IsLower<MT2>::value && !isLower( matrix_ ) )
+   if( !IsLower<MT2>::value && !isLower( tmp ) )
       throw std::invalid_argument( "Invalid setup of lower matrix" );
 
    return tmp;
