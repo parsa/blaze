@@ -2018,12 +2018,12 @@ inline const MT UpperMatrix<MT,SO,true>::construct( const ElementType& init, Fal
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
          for( size_t i=0UL; i<=j; ++i )
-            matrix_(i,j) = init;
+            tmp(i,j) = init;
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
          for( size_t j=i; j<columns(); ++j )
-            matrix_(i,j) = init;
+            tmp(i,j) = init;
    }
 
    return tmp;
@@ -2052,7 +2052,7 @@ inline const MT UpperMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T 
 {
    const MT tmp( ~m );
 
-   if( !IsUpper<MT2>::value && !isUpper( matrix_ ) )
+   if( !IsUpper<MT2>::value && !isUpper( tmp ) )
       throw std::invalid_argument( "Invalid setup of upper matrix" );
 
    return tmp;
