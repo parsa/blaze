@@ -79,11 +79,11 @@ namespace blaze {
    // Creating a 3x3 upper dense matrix
    blaze::UpperMatrix< blaze::DynamicMatrix<int> > A( 3UL );
 
-   A(0,0) = -2;  //        ( -2 0 0 )
-   A(1,0) =  3;  // => A = (  3 0 0 )
-   A(2,1) =  5;  //        (  0 5 0 )
+   A(0,0) = -2;  //        ( -2 3 0 )
+   A(0,1) =  3;  // => A = (  0 0 5 )
+   A(1,2) =  5;  //        (  0 0 0 )
 
-   A(0,2) =  7;  // Invalid assignment to lower matrix element; results in an exception!
+   A(2,0) =  7;  // Invalid assignment to lower matrix element; results in an exception!
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
