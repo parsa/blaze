@@ -7096,7 +7096,7 @@ void DenseTest::testExtend()
              << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( x x x 0 )\n( x x x x )\n";
+             << "   Expected result:\n( 1 0 0 0 )\n( 2 3 0 0 )\n( x x x 0 )\n( x x x x )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -7151,7 +7151,7 @@ void DenseTest::testExtend()
              << " Error: Extending the matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 1 0 0 )\n( 1 2 0 0 )\n( x x x 0 )\n( x x x x )\n";
+             << "   Expected result:\n( 1 0 0 0 )\n( 2 3 0 0 )\n( x x x 0 )\n( x x x x )\n";
          throw std::runtime_error( oss.str() );
       }
    }
