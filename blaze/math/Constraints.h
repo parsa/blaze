@@ -91,6 +91,7 @@
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/constraints/UniLower.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/VecAbsExpr.h>
