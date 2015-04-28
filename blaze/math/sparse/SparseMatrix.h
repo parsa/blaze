@@ -45,6 +45,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -58,7 +59,6 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -573,9 +573,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -587,8 +585,6 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsUniLower<MT>::value )
       return true;
@@ -603,7 +599,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
       {
          ConstIterator element( A.lowerBound(i,i) );
 
-         if( element == A.end(i) || element->index() != i || element->value() != ET(1) )
+         if( element == A.end(i) || element->index() != i || !isOne( element->value() ) )
             return false;
 
          ++element;
@@ -622,7 +618,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() >= j ) {
-               if( element->index() != j || element->value() != ET(1) )
+               if( element->index() != j || !isOne( element->value() ) )
                   return false;
                hasDiagonalElement = true;
                break;
@@ -677,9 +673,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -691,8 +685,6 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -846,9 +838,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -860,8 +850,6 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -879,7 +867,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() >= i ) {
-               if( element->index() != i || element->value() != ET(1) )
+               if( element->index() != i || !isOne( element->value() ) )
                   return false;
                hasDiagonalElement = true;
                break;
@@ -899,7 +887,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
       {
          ConstIterator element( A.lowerBound(j,j) );
 
-         if( element == A.end(j) || element->index() != j || element->value() != ET(1) )
+         if( element == A.end(j) || element->index() != j || !isOne( element->value() ) )
             return false;
 
          ++element;
@@ -950,9 +938,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -964,8 +950,6 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1113,9 +1097,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1127,8 +1109,6 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsIdentity<MT>::value )
       return true;
@@ -1146,7 +1126,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() == i ) {
-               if( element->value() != ET(1) )
+               if( !isOne( element->value() ) )
                   return false;
                hasDiagonalElement = true;
             }
@@ -1168,7 +1148,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
          for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() == j ) {
-               if( element->value() != ET(1) )
+               if( !isOne( element->value() ) )
                   return false;
                hasDiagonalElement = true;
             }
