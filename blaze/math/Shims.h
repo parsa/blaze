@@ -46,6 +46,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
