@@ -46,6 +46,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -59,7 +60,6 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -828,9 +828,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -842,8 +840,6 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
 
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
-
    if( IsUniLower<MT>::value )
       return true;
 
@@ -854,7 +850,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( A(i,i) != ET(1) )
+         if( !isOne( A(i,i) ) )
             return false;
          for( size_t j=i+1UL; j<A.columns(); ++j ) {
             if( !isDefault( A(i,j) ) )
@@ -868,7 +864,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
             if( !isDefault( A(i,j) ) )
                return false;
          }
-         if( A(j,j) != ET(1) )
+         if( !isOne( A(j,j) ) )
             return false;
       }
    }
@@ -912,9 +908,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -925,8 +919,6 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1069,9 +1061,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -1082,8 +1072,6 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1099,13 +1087,13 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
             if( !isDefault( A(i,j) ) )
                return false;
          }
-         if( A(i,i) != ET(1) )
+         if( !isOne( A(i,i) ) )
             return false;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( A(j,j) != ET(1) )
+         if( !isOne( A(j,j) ) )
             return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
             if( !isDefault( A(i,j) ) )
@@ -1153,9 +1141,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -1166,8 +1152,6 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1320,9 +1304,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    \endcode
 
 // However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary matrix. Also note that this function only works for matrices
-// with built-in element type. The attempt to call the function with a matrix of non-built-in
-// element type results in a compile time error.
+// the generation of a temporary matrix.
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -1333,8 +1315,6 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    typedef typename MT::ReturnType     RN;
    typedef typename MT::CompositeType  CT;
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
-
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
    if( IsIdentity<MT>::value )
       return true;
@@ -1350,7 +1330,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
             if( !isDefault( A(i,j) ) )
                return false;
          }
-         if( A(i,i) != ET(1) )
+         if( !isOne( A(i,i) ) )
             return false;
          for( size_t j=i+1UL; j<A.columns(); ++j ) {
             if( !isDefault( A(i,j) ) )
@@ -1364,7 +1344,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
             if( !isDefault( A(i,j) ) )
                return false;
          }
-         if( A(j,j) != ET(1) )
+         if( !isOne( A(j,j) ) )
             return false;
          for( size_t i=j+1UL; i<A.rows(); ++i ) {
             if( !isDefault( A(i,j) ) )
