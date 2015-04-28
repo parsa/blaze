@@ -2137,9 +2137,21 @@ namespace blaze {}
    if( isUniLower( A ) ) { ... }
    \endcode
 
-// Note that non-square matrices are never considered to be lower unitriangular! Also note that
-// this function only works for matrices with built-in element type. The attempt to call the
-// function with a matrix of non-built-in element type results in a compile time error.
+// Note that non-square matrices are never considered to be lower unitriangular!
+//
+//
+// \n \subsection matrix_operations_isstrictlylower isStrictlyLower
+//
+// Via the \c isStrictlyLower() function it is possible to check whether a dense or sparse matrix
+// is strictly lower triangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isStrictlyLower( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be strictly lower triangular!
 //
 //
 // \n \subsection matrix_operations_isUpper isUpper
@@ -2167,9 +2179,21 @@ namespace blaze {}
    if( isUniUpper( A ) ) { ... }
    \endcode
 
-// Note that non-square matrices are never considered to be upper unitriangular! Also note that
-// this function only works for matrices with built-in element type. The attempt to call the
-// function with a matrix of non-built-in element type results in a compile time error.
+// Note that non-square matrices are never considered to be upper unitriangular!
+//
+//
+// \n \subsection matrix_operations_isstrictlyupper isStrictlyUpper
+//
+// Via the \c isStrictlyUpper() function it is possible to check whether a dense or sparse matrix
+// is strictly upper triangular:
+
+   \code
+   blaze::DynamicMatrix<float> A;
+   // ... Resizing and initialization
+   if( isStrictlyUpper( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be strictly upper triangular!
 //
 //
 // \n \subsection matrix_operations_isdiagonal isDiagonal
@@ -2198,9 +2222,7 @@ namespace blaze {}
    if( isIdentity( A ) ) { ... }
    \endcode
 
-// Note that non-square matrices are never considered to be identity matrices! Also note that this
-// function only works for matrices with built-in element type. The attempt to call the function
-// with a matrix of non-built-in element type results in a compile time error.
+// Note that non-square matrices are never considered to be identity matrices!
 //
 //
 // \n \subsection matrix_operators_abs Absolute Values
