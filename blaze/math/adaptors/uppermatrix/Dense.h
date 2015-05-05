@@ -1658,18 +1658,18 @@ inline void UpperMatrix<MT,SO,true>::clear()
 
                               \f[
                               \left(\begin{array}{*{3}{c}}
-                              1 & 0 & 0 \\
-                              2 & 3 & 0 \\
-                              4 & 5 & 6 \\
+                              1 & 2 & 3 \\
+                              0 & 4 & 5 \\
+                              0 & 0 & 6 \\
                               \end{array}\right)
 
                               \Longrightarrow
 
                               \left(\begin{array}{*{4}{c}}
-                              1 & 0 & 0 & 0 \\
-                              2 & 3 & 0 & 0 \\
-                              4 & 5 & 6 & 0 \\
-                              x & x & x & x \\
+                              1 & 2 & 3 & x \\
+                              0 & 4 & 5 & x \\
+                              0 & 0 & 6 & x \\
+                              0 & 0 & 0 & x \\
                               \end{array}\right)
                               \f]
 */
