@@ -693,9 +693,11 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( size_t n, size_t non
 /*!\brief Constructor for a matrix of size \f$ n \times n \f$.
 //
 // \param n The number of rows and columns of the matrix.
-// \param nonzeros The expected number of non-zero elements in each row.
+// \param nonzeros The expected number of non-zero elements in each row/column.
 //
-// The matrix is initialized to the zero matrix.
+// The matrix is initialized to the zero matrix and will have the specified capacity in each
+// row/column. Note that in case of a row-major matrix the given vector must have at least
+// \a m elements, in case of a column-major matrix at least \a n elements.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
