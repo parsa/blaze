@@ -528,9 +528,11 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t n
 //
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
-// \param nonzeros The expected number of non-zero elements in each row.
+// \param nonzeros The expected number of non-zero elements in each row/column.
 //
-// The matrix is initialized to the zero matrix.
+// The matrix is initialized to the zero matrix and will have the specified capacity in each
+// row/column. Note that in case of a row-major matrix the given vector must have at least
+// \a m elements, in case of a column-major matrix at least \a n elements.
 */
 template< typename Type  // Data type of the sparse matrix
         , bool SO >      // Storage order
@@ -2769,7 +2771,8 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t
 // \param n The number of columns of the matrix.
 // \param nonzeros The expected number of non-zero elements in each column.
 //
-// The matrix is initialized to the zero matrix.
+// The matrix is initialized to the zero matrix and will have the specified capacity in each
+// column. Note that the given vector must have at least \a n elements.
 */
 template< typename Type >  // Data type of the sparse matrix
 CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
