@@ -611,7 +611,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
       }
    }
    else {
-      for( size_t j=1UL; j<A.columns(); ++j )
+      for( size_t j=0UL; j<A.columns(); ++j )
       {
          bool hasDiagonalElement( false );
 
@@ -860,7 +860,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
-      for( size_t i=1UL; i<A.rows(); ++i )
+      for( size_t i=0UL; i<A.rows(); ++i )
       {
          bool hasDiagonalElement( false );
 
@@ -883,7 +883,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
       }
    }
    else {
-      for( size_t j=0UL; j<A.columns()-1UL; ++j )
+      for( size_t j=0UL; j<A.columns(); ++j )
       {
          ConstIterator element( A.lowerBound(j,j) );
 
