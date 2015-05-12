@@ -1337,7 +1337,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( !IsUniUpper<MT>::value ) {
+         if( !IsUpper<MT>::value ) {
             for( size_t j=0UL; j<i; ++j ) {
                if( !isDefault( A(i,j) ) )
                   return false;
@@ -1346,7 +1346,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
          if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne( A(i,i) ) ) {
             return false;
          }
-         if( !IsUniLower<MT>::value ) {
+         if( !IsLower<MT>::value ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
                if( !isDefault( A(i,j) ) )
                   return false;
@@ -1356,7 +1356,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( !IsUniLower<MT>::value ) {
+         if( !IsLower<MT>::value ) {
             for( size_t i=0UL; i<j; ++i ) {
                if( !isDefault( A(i,j) ) )
                   return false;
@@ -1365,7 +1365,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
          if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne( A(j,j) ) ) {
             return false;
          }
-         if( !IsUniUpper<MT>::value ) {
+         if( !IsUpper<MT>::value ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
                if( !isDefault( A(i,j) ) )
                   return false;
