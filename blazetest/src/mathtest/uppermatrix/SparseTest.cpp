@@ -7758,7 +7758,7 @@ void SparseTest::testErase()
              upper(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n"
                 << "   Expected result:\n( 0 0 0 3 )\n( 0 0 0 5 )\n( 0 0 6 0 )\n( 0 0 0 8 )\n";
@@ -8276,7 +8276,7 @@ void SparseTest::testErase()
              upper(3,3) != 8 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Erasing a zero element failed\n"
+                << " Error: Erasing an empty range failed\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n"
                 << "   Expected result:\n( 1 0 3 0 )\n( 0 5 0 0 )\n( 0 0 0 0 )\n( 0 0 0 8 )\n";
@@ -9138,7 +9138,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,1)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9165,7 +9165,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,2)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9192,7 +9192,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,3)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9219,7 +9219,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9246,7 +9246,7 @@ void SparseTest::testLowerBound()
          if( pos != upper.end( 1UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,5)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9288,7 +9288,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 4UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (0,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9315,7 +9315,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 4UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (1,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9342,7 +9342,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 4UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (2,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9369,7 +9369,7 @@ void SparseTest::testLowerBound()
          if( pos == upper.end( 4UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (3,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
@@ -9396,7 +9396,7 @@ void SparseTest::testLowerBound()
          if( pos != upper.end( 4UL ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Upper bound could not be determined\n"
+                << " Error: Lower bound could not be determined\n"
                 << " Details:\n"
                 << "   Required position = (4,4)\n"
                 << "   Current matrix:\n" << upper << "\n";
