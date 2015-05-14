@@ -51,11 +51,13 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -66,7 +68,11 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/CacheSize.h>
@@ -863,8 +869,16 @@ template< typename MT  // Type of the dense matrix
         , bool SF >    // Symmetry flag
 inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const ElementType& rhs )
 {
-   const size_t jbegin( ( IsUpper<MT>::value )?( row_ ):( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )?( row_+1UL ):( size() ) );
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
 
    for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
@@ -1104,11 +1118,14 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const Vector<VT,true>
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
+/*!\brief Multiplication assignment operator for the multiplication between a dense row and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
@@ -1117,17 +1134,22 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,SO,SF> >::Type&
    DenseRow<MT,SO,SF>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return operator=( (*this) * rhs );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Division assignment operator for the division of a vector by a scalar value
+/*!\brief Division assignment operator for the division of a dense row by a scalar value
 //        (\f$ \vec{a}/=s \f$).
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 //
 // \b Note: A division by zero is only checked by an user assert.
 */
@@ -1138,6 +1160,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,SO,SF> >::Type&
    DenseRow<MT,SO,SF>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    return operator=( (*this) / rhs );
@@ -1221,6 +1245,10 @@ inline void DenseRow<MT,SO,SF>::reset()
 //
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
@@ -1228,9 +1256,23 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::scale( const Other& scalar )
 {
-   for( size_t j=0UL; j<size(); ++j ) {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsStrictlyUpper<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsStrictlyLower<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
+
+   for( size_t j=jbegin; j<jend; ++j ) {
       matrix_(row_,j) *= scalar;
    }
+
    return *this;
 }
 //*************************************************************************************************
@@ -1287,7 +1329,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=row_+1UL; i<size(); ++i ) {
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -1323,7 +1370,17 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( row_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
+
+   if( IsUniLower<MT2>::value ) {
+      if( element == last || element->index() != row_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -1357,10 +1414,15 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<row_; ++i ) {
+   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
 
    return true;
 }
@@ -1393,7 +1455,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( row_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
+
+   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -2882,8 +2949,16 @@ inline typename DenseRow<MT,false,false>::ConstIterator DenseRow<MT,false,false>
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const ElementType& rhs )
 {
-   const size_t jbegin( ( IsUpper<MT>::value )?( row_ ):( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )?( row_+1UL ):( size() ) );
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
 
    for( size_t j=jbegin; j<jend; ++j )
       matrix_(row_,j) = rhs;
@@ -3125,17 +3200,22 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Vec
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
+/*!\brief Multiplication assignment operator for the multiplication between a dense row and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
    DenseRow<MT,false,false>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return operator=( (*this) * rhs );
 }
 /*! \endcond */
@@ -3144,11 +3224,14 @@ inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a vector by a scalar value
+/*!\brief Division assignment operator for the division of a dense row by a scalar value
 //        (\f$ \vec{a}/=s \f$).
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 //
 // \b Note: A division by zero is only checked by an user assert.
 */
@@ -3157,6 +3240,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,false> >::Type&
    DenseRow<MT,false,false>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    return operator=( (*this) / rhs );
@@ -3238,8 +3323,19 @@ template< typename MT >  // Type of the dense matrix
 inline void DenseRow<MT,false,false>::reset()
 {
    using blaze::clear;
-   const size_t columns( size() );
-   for( size_t j=0UL; j<columns; ++j )
+
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
+
+   for( size_t j=jbegin; j<jend; ++j )
       clear( matrix_(row_,j) );
 }
 /*! \endcond */
@@ -3252,14 +3348,32 @@ inline void DenseRow<MT,false,false>::reset()
 //
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::scale( const Other& scalar )
 {
-   for( size_t j=0UL; j<size(); ++j ) {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsStrictlyUpper<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsStrictlyLower<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
+
+   for( size_t j=jbegin; j<jend; ++j ) {
       matrix_(row_,j) *= scalar;
    }
+
    return *this;
 }
 /*! \endcond */
@@ -3316,7 +3430,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=row_+1UL; i<size(); ++i ) {
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -3352,7 +3471,17 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( row_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
+
+   if( IsUniLower<MT2>::value ) {
+      if( element == last || element->index() != row_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -3386,10 +3515,15 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<row_; ++i ) {
+   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
 
    return true;
 }
@@ -3422,7 +3556,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( row_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
+
+   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -4426,8 +4565,16 @@ inline typename DenseRow<MT,false,true>::ConstIterator DenseRow<MT,false,true>::
 template< typename MT >  // Type of the dense matrix
 inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const ElementType& rhs )
 {
-   const size_t ibegin( ( IsLower<MT>::value )?( row_ ):( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )?( row_+1UL ):( size() ) );
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
 
    for( size_t i=ibegin; i<iend; ++i )
       matrix_(i,row_) = rhs;
@@ -4669,17 +4816,22 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Vecto
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
+/*!\brief Multiplication assignment operator for the multiplication between a dense row and
 //        a scalar value (\f$ \vec{a}*=s \f$).
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
    DenseRow<MT,false,true>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    return operator=( (*this) * rhs );
 }
 /*! \endcond */
@@ -4688,11 +4840,14 @@ inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a vector by a scalar value
+/*!\brief Division assignment operator for the division of a dense row by a scalar value
 //        (\f$ \vec{a}/=s \f$).
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the vector.
+//
+// This operator cannot be used for rows on lower or upper unitriangular matrices. The attempt
+// to scale such a row results in a compilation error!
 //
 // \b Note: A division by zero is only checked by an user assert.
 */
@@ -4701,6 +4856,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseRow<MT,false,true> >::Type&
    DenseRow<MT,false,true>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    return operator=( (*this) / rhs );
@@ -4786,14 +4943,32 @@ inline void DenseRow<MT,false,true>::reset()
 //
 // \param scalar The scalar value for the row scaling.
 // \return Reference to the dense row.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::scale( const Other& scalar )
 {
-   for( size_t i=0UL; i<size(); ++i ) {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsStrictlyLower<MT>::value )
+                           ?( row_+1UL )
+                           :( row_ ) )
+                        :( 0UL ) );
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsStrictlyUpper<MT>::value )
+                           ?( row_ )
+                           :( row_+1UL ) )
+                        :( size() ) );
+
+   for( size_t i=ibegin; i<iend; ++i ) {
       matrix_(i,row_) *= scalar;
    }
+
    return *this;
 }
 /*! \endcond */
@@ -4850,7 +5025,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=row_+1UL; i<size(); ++i ) {
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -4886,7 +5066,17 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( row_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
+
+   if( IsUniLower<MT2>::value ) {
+      if( element == last || element->index() != row_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -4920,10 +5110,15 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<row_; ++i ) {
+   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
+      return false;
 
    return true;
 }
@@ -4956,7 +5151,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( row_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
+
+   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
