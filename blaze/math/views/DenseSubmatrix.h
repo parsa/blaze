@@ -51,12 +51,14 @@
 #include <blaze/math/constraints/Submatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Submatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -74,7 +76,11 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/AlignmentFlag.h>
@@ -1501,8 +1507,16 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Elem
 
    for( size_t i=row_; i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )?( max( i, column_ ) ):( column_ ) );
-      const size_t jend  ( ( IsLower<MT>::value )?( min( i+1UL, column_+n_ ) ):( column_+n_ ) );
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
 
       for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
@@ -1889,6 +1903,9 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
@@ -1897,6 +1914,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
@@ -1911,6 +1930,11 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
@@ -1919,6 +1943,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
    DenseSubmatrix<MT,AF,SO>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -2093,12 +2119,22 @@ inline void DenseSubmatrix<MT,AF,SO>::reset()
 {
    using blaze::clear;
 
-   const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
+   for( size_t i=row_; i<row_+m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
 
-   for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+      for( size_t j=jbegin; j<jend; ++j )
          clear( matrix_(i,j) );
+   }
 }
 //*************************************************************************************************
 
@@ -2123,8 +2159,18 @@ inline void DenseSubmatrix<MT,AF,SO>::reset( size_t i )
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jend( column_ + n_ );
-   for( size_t j=column_; j<jend; ++j )
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( max( i+1UL, column_ ) )
+                           :( max( i, column_ ) ) )
+                        :( column_ ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( min( i, column_+n_ ) )
+                           :( min( i+1UL, column_+n_ ) ) )
+                        :( column_+n_ ) );
+
+   for( size_t j=jbegin; j<jend; ++j )
       clear( matrix_(row_+i,j) );
 }
 //*************************************************************************************************
@@ -2173,6 +2219,10 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
 //
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
@@ -2180,12 +2230,26 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::scale( const Other& scalar )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
+
+      for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) *= scalar;
+   }
 
    return *this;
 }
@@ -2313,9 +2377,24 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      const size_t jbegin( ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) );
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
+
+      const size_t jbegin( ( containsDiagonal )
+                           ?( ( IsStrictlyLower<MT2>::value )
+                              ?( row_ + i - column_ )
+                              :( row_ + i - column_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t j=jbegin; j<n_; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -2355,13 +2434,27 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const size_t iend( min( column_ + j - row_, m_ ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t ipos( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                         ?( column_ + j - row_ + 1UL )
+                         :( column_ + j - row_ ) );
+      const size_t iend( min( ipos, m_ ) );
+
       for( size_t i=0UL; i<iend; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
    }
 
    return true;
@@ -2399,10 +2492,31 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      RhsIterator element( (~rhs).lowerBound( i, ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) ) );
-      for( ; element!=(~rhs).end(i); ++element ) {
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                             ?( row_ + i - column_ )
+                             :( row_ + i - column_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(i) );
+      RhsIterator element( (~rhs).lowerBound( i, index ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != row_+i-column_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -2443,9 +2557,25 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const RhsIterator last( (~rhs).lowerBound( min( column_ + j - row_, m_ ), j ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t index( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                          ?( column_ + j - row_ + 1UL )
+                          :( column_ + j - row_ ) );
+      const RhsIterator last( (~rhs).lowerBound( min( index, m_ ), j ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(j) || ( last->index() != column_+j-row_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -2485,13 +2615,27 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                         ?( row_ + i - column_ + 1UL )
+                         :( row_ + i - column_ ) );
       const size_t jend( min( row_ + i - column_, n_ ) );
+
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
    }
 
    return true;
@@ -2527,9 +2671,24 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      const size_t ibegin( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ) );
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
+
+      const size_t ibegin( ( containsDiagonal )
+                           ?( ( IsStrictlyUpper<MT2>::value )
+                              ?( column_ + j - row_ )
+                              :( column_ + j - row_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t i=ibegin; i<m_; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -2571,9 +2730,25 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
-      const RhsIterator last( (~rhs).lowerBound( i, min( row_ + i - column_, n_ ) ) );
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t index( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                          ?( row_ + i - column_ + 1UL )
+                          :( row_ + i - column_ ) );
+      const RhsIterator last( (~rhs).lowerBound( i, min( index, n_ ) ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(i) || ( last->index() != row_+i-column_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -2615,10 +2790,31 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
-      for( ; element!=(~rhs).end(j); ++element ) {
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                             ?( column_ + j - row_ )
+                             :( column_ + j - row_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(j) );
+      RhsIterator element( (~rhs).lowerBound( index, j ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != column_+j-row_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -4666,8 +4862,16 @@ inline DenseSubmatrix<MT,unaligned,true>&
 
    for( size_t j=column_; j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )?( max( j, row_ ) ):( row_ ) );
-      const size_t iend  ( ( IsUpper<MT>::value )?( min( j+1UL, row_+m_ ) ):( row_+m_ ) );
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
 
       for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
@@ -5059,12 +5263,17 @@ inline DenseSubmatrix<MT,unaligned,true>&
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >::Type&
    DenseSubmatrix<MT,unaligned,true>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
@@ -5081,12 +5290,19 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >::Type&
    DenseSubmatrix<MT,unaligned,true>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -5249,12 +5465,22 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset()
 {
    using blaze::clear;
 
-   const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
+   for( size_t j=column_; j<column_+n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
 
-   for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+      for( size_t i=ibegin; i<iend; ++i )
          clear( matrix_(i,j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5274,8 +5500,18 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t iend( row_ + m_ );
-   for( size_t i=row_; i<iend; ++i )
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( max( j+1UL, row_ ) )
+                           :( max( j, row_ ) ) )
+                        :( row_ ) );
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( min( j, row_+m_ ) )
+                           :( min( j+1UL, row_+m_ ) ) )
+                        :( row_+m_ ) );
+
+   for( size_t i=ibegin; i<iend; ++i )
       clear( matrix_(i,column_+j) );
 }
 /*! \endcond */
@@ -5326,17 +5562,35 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
 //
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::scale( const Other& scalar )
 {
-   const size_t iend( row_ + m_ );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
+
+      for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) *= scalar;
+   }
 
    return *this;
 }
@@ -5464,9 +5718,24 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      const size_t jbegin( ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) );
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
+
+      const size_t jbegin( ( containsDiagonal )
+                           ?( ( IsStrictlyLower<MT2>::value )
+                              ?( row_ + i - column_ )
+                              :( row_ + i - column_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t j=jbegin; j<n_; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -5506,13 +5775,27 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const size_t iend( min( column_ + j - row_, m_ ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t ipos( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                         ?( column_ + j - row_ + 1UL )
+                         :( column_ + j - row_ ) );
+      const size_t iend( min( ipos, m_ ) );
+
       for( size_t i=0UL; i<iend; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
    }
 
    return true;
@@ -5550,10 +5833,31 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      RhsIterator element( (~rhs).lowerBound( i, ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) ) );
-      for( ; element!=(~rhs).end(i); ++element ) {
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                             ?( row_ + i - column_ )
+                             :( row_ + i - column_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(i) );
+      RhsIterator element( (~rhs).lowerBound( i, index ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != row_+i-column_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -5594,9 +5898,25 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const RhsIterator last( (~rhs).lowerBound( min( column_ + j - row_, m_ ), j ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t index( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                          ?( column_ + j - row_ + 1UL )
+                          :( column_ + j - row_ ) );
+      const RhsIterator last( (~rhs).lowerBound( min( index, m_ ), j ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(j) || ( last->index() != column_+j-row_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -5636,13 +5956,27 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                         ?( row_ + i - column_ + 1UL )
+                         :( row_ + i - column_ ) );
       const size_t jend( min( row_ + i - column_, n_ ) );
+
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
    }
 
    return true;
@@ -5678,9 +6012,24 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      const size_t ibegin( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ) );
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
+
+      const size_t ibegin( ( containsDiagonal )
+                           ?( ( IsStrictlyUpper<MT2>::value )
+                              ?( column_ + j - row_ )
+                              :( column_ + j - row_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t i=ibegin; i<m_; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -5722,9 +6071,25 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
-      const RhsIterator last( (~rhs).lowerBound( i, min( row_ + i - column_, n_ ) ) );
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t index( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                          ?( row_ + i - column_ + 1UL )
+                          :( row_ + i - column_ ) );
+      const RhsIterator last( (~rhs).lowerBound( i, min( index, n_ ) ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(i) || ( last->index() != row_+i-column_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -5766,10 +6131,31 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
-      for( ; element!=(~rhs).end(j); ++element ) {
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                             ?( column_ + j - row_ )
+                             :( column_ + j - row_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(j) );
+      RhsIterator element( (~rhs).lowerBound( index, j ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != column_+j-row_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -7468,8 +7854,16 @@ inline DenseSubmatrix<MT,aligned,false>&
 
    for( size_t i=row_; i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )?( max( i, column_ ) ):( column_ ) );
-      const size_t jend  ( ( IsLower<MT>::value )?( min( i+1UL, column_+n_ ) ):( column_+n_ ) );
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
 
       for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) = rhs;
@@ -7861,12 +8255,17 @@ inline DenseSubmatrix<MT,aligned,false>&
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::Type&
    DenseSubmatrix<MT,aligned,false>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
@@ -7883,12 +8282,19 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::Type&
    DenseSubmatrix<MT,aligned,false>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -8063,12 +8469,22 @@ inline void DenseSubmatrix<MT,aligned,false>::reset()
 {
    using blaze::clear;
 
-   const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
+   for( size_t i=row_; i<row_+m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
 
-   for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+      for( size_t j=jbegin; j<jend; ++j )
          clear( matrix_(i,j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8093,8 +8509,18 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jend( column_ + n_ );
-   for( size_t j=column_; j<jend; ++j )
+   const size_t jbegin( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( max( i+1UL, column_ ) )
+                           :( max( i, column_ ) ) )
+                        :( column_ ) );
+   const size_t jend  ( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( min( i, column_+n_ ) )
+                           :( min( i+1UL, column_+n_ ) ) )
+                        :( column_+n_ ) );
+
+   for( size_t j=jbegin; j<jend; ++j )
       clear( matrix_(row_+i,j) );
 }
 /*! \endcond */
@@ -8145,17 +8571,35 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
 //
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale( const Other& scalar )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
 
    for( size_t i=row_; i<iend; ++i )
-      for( size_t j=column_; j<jend; ++j )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value )
+                              ?( max( i+1UL, column_ ) )
+                              :( max( i, column_ ) ) )
+                           :( column_ ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value )
+                              ?( min( i, column_+n_ ) )
+                              :( min( i+1UL, column_+n_ ) ) )
+                           :( column_+n_ ) );
+
+      for( size_t j=jbegin; j<jend; ++j )
          matrix_(i,j) *= scalar;
+   }
 
    return *this;
 }
@@ -8283,9 +8727,24 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      const size_t jbegin( ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) );
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
+
+      const size_t jbegin( ( containsDiagonal )
+                           ?( ( IsStrictlyLower<MT2>::value )
+                              ?( row_ + i - column_ )
+                              :( row_ + i - column_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t j=jbegin; j<n_; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -8325,13 +8784,27 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const size_t iend( min( column_ + j - row_, m_ ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t ipos( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                         ?( column_ + j - row_ + 1UL )
+                         :( column_ + j - row_ ) );
+      const size_t iend( min( ipos, m_ ) );
+
       for( size_t i=0UL; i<iend; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
    }
 
    return true;
@@ -8369,10 +8842,31 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      RhsIterator element( (~rhs).lowerBound( i, ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) ) );
-      for( ; element!=(~rhs).end(i); ++element ) {
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                             ?( row_ + i - column_ )
+                             :( row_ + i - column_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(i) );
+      RhsIterator element( (~rhs).lowerBound( i, index ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != row_+i-column_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -8413,9 +8907,25 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const RhsIterator last( (~rhs).lowerBound( min( column_ + j - row_, m_ ), j ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t index( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                          ?( column_ + j - row_ + 1UL )
+                          :( column_ + j - row_ ) );
+      const RhsIterator last( (~rhs).lowerBound( min( index, m_ ), j ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(j) || ( last->index() != column_+j-row_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -8455,13 +8965,27 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                         ?( row_ + i - column_ + 1UL )
+                         :( row_ + i - column_ ) );
       const size_t jend( min( row_ + i - column_, n_ ) );
+
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
    }
 
    return true;
@@ -8497,9 +9021,24 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      const size_t ibegin( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ) );
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
+
+      const size_t ibegin( ( containsDiagonal )
+                           ?( ( IsStrictlyUpper<MT2>::value )
+                              ?( column_ + j - row_ )
+                              :( column_ + j - row_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t i=ibegin; i<m_; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -8541,9 +9080,25 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
-      const RhsIterator last( (~rhs).lowerBound( i, min( row_ + i - column_, n_ ) ) );
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t index( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                          ?( row_ + i - column_ + 1UL )
+                          :( row_ + i - column_ ) );
+      const RhsIterator last( (~rhs).lowerBound( i, min( index, n_ ) ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(i) || ( last->index() != row_+i-column_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -8585,10 +9140,31 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
-      for( ; element!=(~rhs).end(j); ++element ) {
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                             ?( column_ + j - row_ )
+                             :( column_ + j - row_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(j) );
+      RhsIterator element( (~rhs).lowerBound( index, j ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != column_+j-row_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -10250,8 +10826,16 @@ inline DenseSubmatrix<MT,aligned,true>&
 
    for( size_t j=column_; j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )?( max( j, row_ ) ):( row_ ) );
-      const size_t iend  ( ( IsUpper<MT>::value )?( min( j+1UL, row_+m_ ) ):( row_+m_ ) );
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
 
       for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) = rhs;
@@ -10642,12 +11226,17 @@ inline DenseSubmatrix<MT,aligned,true>&
 //
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::Type&
    DenseSubmatrix<MT,aligned,true>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
 
@@ -10664,12 +11253,19 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 //
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the dense submatrix.
+//
+// This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
+// attempt to scale such a submatrix results in a compilation error!
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::Type&
    DenseSubmatrix<MT,aligned,true>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -10832,12 +11428,22 @@ inline void DenseSubmatrix<MT,aligned,true>::reset()
 {
    using blaze::clear;
 
-   const size_t iend( row_ + m_ );
-   const size_t jend( column_ + n_ );
+   for( size_t j=column_; j<column_+n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
 
-   for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+      for( size_t i=ibegin; i<iend; ++i )
          clear( matrix_(i,j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10857,8 +11463,18 @@ inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t iend( row_ + m_ );
-   for( size_t i=row_; i<iend; ++i )
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( max( j+1UL, row_ ) )
+                           :( max( j, row_ ) ) )
+                        :( row_ ) );
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( min( j, row_+m_ ) )
+                           :( min( j+1UL, row_+m_ ) ) )
+                        :( row_+m_ ) );
+
+   for( size_t i=ibegin; i<iend; ++i )
       clear( matrix_(i,column_+j) );
 }
 /*! \endcond */
@@ -10909,17 +11525,35 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
 //
 // \param scalar The scalar value for the submatrix scaling.
 // \return Reference to the dense submatrix.
+//
+// This function scales all elements of the submatrix by the given scalar value \a scalar. Note
+// that the function cannot be used to scale a submatrix on a lower or upper unitriangular matrix.
+// The attempt to scale such a submatrix results in a compile time error!
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the scalar value
 inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( const Other& scalar )
 {
-   const size_t iend( row_ + m_ );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    const size_t jend( column_ + n_ );
 
    for( size_t j=column_; j<jend; ++j )
-      for( size_t i=row_; i<iend; ++i )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value )
+                              ?( max( j+1UL, row_ ) )
+                              :( max( j, row_ ) ) )
+                           :( row_ ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value )
+                              ?( min( j, row_+m_ ) )
+                              :( min( j+1UL, row_+m_ ) ) )
+                           :( row_+m_ ) );
+
+      for( size_t i=ibegin; i<iend; ++i )
          matrix_(i,j) *= scalar;
+   }
 
    return *this;
 }
@@ -11047,9 +11681,24 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      const size_t jbegin( ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) );
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
+
+      const size_t jbegin( ( containsDiagonal )
+                           ?( ( IsStrictlyLower<MT2>::value )
+                              ?( row_ + i - column_ )
+                              :( row_ + i - column_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t j=jbegin; j<n_; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -11089,13 +11738,27 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const size_t iend( min( column_ + j - row_, m_ ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t ipos( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                         ?( column_ + j - row_ + 1UL )
+                         :( column_ + j - row_ ) );
+      const size_t iend( min( ipos, m_ ) );
+
       for( size_t i=0UL; i<iend; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniLower<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
    }
 
    return true;
@@ -11133,10 +11796,31 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t iend( min( column_ + n_ - row_ - 1UL, m_ ) );
-   for( size_t i=0UL; i<iend; ++i ) {
-      RhsIterator element( (~rhs).lowerBound( i, ( row_+i < column_ )?( 0UL ):( row_+i-column_+1UL ) ) );
-      for( ; element!=(~rhs).end(i); ++element ) {
+   const size_t ipos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( column_ + n_ - row_ )
+                      :( column_ + n_ - row_ - 1UL ) );
+   const size_t iend( min( ipos, m_ ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row_+i >= column_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                             ?( row_ + i - column_ )
+                             :( row_ + i - column_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(i) );
+      RhsIterator element( (~rhs).lowerBound( i, index ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != row_+i-column_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -11177,9 +11861,25 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( row_ + 1UL >= column_ + n_ )
       return true;
 
-   const size_t jbegin( ( row_ < column_ )?( 0UL ):( row_ - column_ + 1UL ) );
-   for( size_t j=jbegin; j<n_; ++j ) {
-      const RhsIterator last( (~rhs).lowerBound( min( column_ + j - row_, m_ ), j ) );
+   const size_t jpos( ( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value )
+                      ?( row_ - column_ )
+                      :( row_ - column_ + 1UL ) );
+   const size_t jbegin( ( row_ < column_ )?( 0UL ):( jpos ) );
+
+   for( size_t j=jbegin; j<n_; ++j )
+   {
+      const bool containsDiagonal( column_+j < row_+m_ );
+
+      const size_t index( ( IsStrictlyLower<MT2>::value && containsDiagonal )
+                          ?( column_ + j - row_ + 1UL )
+                          :( column_ + j - row_ ) );
+      const RhsIterator last( (~rhs).lowerBound( min( index, m_ ), j ) );
+
+      if( IsUniLower<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(j) || ( last->index() != column_+j-row_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -11219,13 +11919,27 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                         ?( row_ + i - column_ + 1UL )
+                         :( row_ + i - column_ ) );
       const size_t jend( min( row_ + i - column_, n_ ) );
+
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
       }
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(i,row_+i-column_) ) )
+         return false;
    }
 
    return true;
@@ -11261,9 +11975,24 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      const size_t ibegin( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ) );
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal && !isOne( (~rhs)(column_+j-row_,j) ) )
+         return false;
+
+      const size_t ibegin( ( containsDiagonal )
+                           ?( ( IsStrictlyUpper<MT2>::value )
+                              ?( column_ + j - row_ )
+                              :( column_ + j - row_ + 1UL ) )
+                           :( 0UL ) );
+
       for( size_t i=ibegin; i<m_; ++i ) {
          if( !isDefault( (~rhs)(i,j) ) )
             return false;
@@ -11305,9 +12034,25 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t ibegin( ( column_ < row_ )?( 0UL ):( column_ - row_ + 1UL ) );
-   for( size_t i=ibegin; i<m_; ++i ) {
-      const RhsIterator last( (~rhs).lowerBound( i, min( row_ + i - column_, n_ ) ) );
+   const size_t ipos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( column_ - row_ )
+                      :( column_ - row_ + 1UL ) );
+   const size_t ibegin( ( column_ < row_ )?( 0UL ):( ipos ) );
+
+   for( size_t i=ibegin; i<m_; ++i )
+   {
+      const bool containsDiagonal( row_+i < column_+n_ );
+
+      const size_t index( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
+                          ?( row_ + i - column_ + 1UL )
+                          :( row_ + i - column_ ) );
+      const RhsIterator last( (~rhs).lowerBound( i, min( index, n_ ) ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal &&
+          ( last == (~rhs).end(i) || ( last->index() != row_+i-column_ ) || !isOne( last->value() ) ) ) {
+         return false;
+      }
+
       for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
@@ -11349,10 +12094,31 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
    if( column_ + 1UL >= row_ + m_ )
       return true;
 
-   const size_t jend( min( row_ + m_ - column_ - 1UL, n_ ) );
-   for( size_t j=0UL; j<jend; ++j ) {
-      RhsIterator element( (~rhs).lowerBound( ( column_+j < row_ )?( 0UL ):( column_+j-row_+1UL ), j ) );
-      for( ; element!=(~rhs).end(j); ++element ) {
+   const size_t jpos( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                      ?( row_ + m_ - column_ )
+                      :( row_ + m_ - column_ - 1UL ) );
+   const size_t jend( min( jpos, n_ ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column_+j >= row_ );
+
+      const size_t index( ( containsDiagonal )
+                          ?( ( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value )
+                             ?( column_ + j - row_ )
+                             :( column_ + j - row_ + 1UL ) )
+                          :( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(j) );
+      RhsIterator element( (~rhs).lowerBound( index, j ) );
+
+      if( IsUniUpper<MT2>::value && containsDiagonal ) {
+         if( element == last || ( element->index() != column_+j-row_ ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
