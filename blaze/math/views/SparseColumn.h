@@ -52,10 +52,12 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -73,7 +75,11 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
@@ -801,13 +807,13 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseCo
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, tmp.nonZeros() );
+      left.reset();
+      left.reserve( tmp.nonZeros() );
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, rhs.nonZeros() );
+      left.reset();
+      left.reserve( rhs.nonZeros() );
       assign( left, rhs );
    }
 
@@ -857,11 +863,11 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const DenseVec
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( right );
-      matrix_.reset( col_ );
+      left.reset();
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
+      left.reset();
       assign( left, right );
    }
 
@@ -911,13 +917,13 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseVe
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( right );
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, tmp.nonZeros() );
+      left.reset();
+      left.reserve( tmp.nonZeros() );
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, right.nonZeros() );
+      left.reset();
+      left.reserve( right.nonZeros() );
       assign( left, right );
    }
 
@@ -973,7 +979,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const DenseVe
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1028,8 +1034,8 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const SparseV
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
-   matrix_.reserve( col_, tmp.nonZeros() );
+   left.reset();
+   left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1085,7 +1091,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const DenseVe
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1141,8 +1147,8 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const SparseV
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
-   matrix_.reserve( col_, tmp.nonZeros() );
+   left.reset();
+   left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1189,7 +1195,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator*=( const Vector<
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    const MultType tmp( *this * (~rhs) );
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -1207,8 +1213,11 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator*=( const Vector<
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of
-// the sparse column must support the multiplication assignment operator for the given scalar
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must support the multiplication assignment operator for the given scalar
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
@@ -1218,6 +1227,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,SO,SF> >::Type&
    SparseColumn<MT,SO,SF>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= rhs;
    return *this;
@@ -1232,10 +1243,15 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,SO,SF> >::Type&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of the
-// sparse column must either support the multiplication assignment operator for the given
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must either support the multiplication assignment operator for the given
 // floating point data type or the division assignment operator for the given integral data
 // type.
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
@@ -1244,6 +1260,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,SO,SF> >::Type&
    SparseColumn<MT,SO,SF>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
@@ -1462,6 +1480,10 @@ void SparseColumn<MT,SO,SF>::reserve( size_t n )
 //
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
@@ -1469,6 +1491,8 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
 inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::scale( const Other& scalar )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
    return *this;
@@ -1554,10 +1578,15 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<col_; ++i ) {
+   const size_t iend( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
 
    return true;
 }
@@ -1590,7 +1619,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( col_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) ) );
+
+   if( IsUniLower<MT2>::value && ( last == (~rhs).end() || last->index() != col_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -1624,7 +1658,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=col_+1UL; i<size(); ++i ) {
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyUpper<MT2>::value )?( col_ ):( col_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -1660,7 +1699,17 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( col_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( col_ ):( col_+1UL ) ) );
+
+   if( IsUniUpper<MT2>::value ) {
+      if( element == last || element->index() != col_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -3186,8 +3235,11 @@ inline SparseColumn<MT,false,false>&
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of
-// the sparse column must support the multiplication assignment operator for the given scalar
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must support the multiplication assignment operator for the given scalar
 // built-in data type.
 */
 template< typename MT >     // Type of the sparse matrix
@@ -3195,6 +3247,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,false> >::Type&
    SparseColumn<MT,false,false>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= rhs;
    return *this;
@@ -3211,16 +3265,23 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,false> >::Type
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of the
-// sparse column must either support the multiplication assignment operator for the given
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must either support the multiplication assignment operator for the given
 // floating point data type or the division assignment operator for the given integral data
 // type.
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,false> >::Type&
    SparseColumn<MT,false,false>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
@@ -3313,7 +3374,18 @@ inline size_t SparseColumn<MT,false,false>::nonZeros() const
 template< typename MT >  // Type of the sparse matrix
 inline void SparseColumn<MT,false,false>::reset()
 {
-   for( size_t i=0UL; i<size(); ++i ) {
+   const size_t ibegin( ( IsLower<MT>::value )
+                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+                           ?( col_+1UL )
+                           :( col_ ) )
+                        :( 0UL ) );
+   const size_t iend  ( ( IsUpper<MT>::value )
+                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+                           ?( col_ )
+                           :( col_+1UL ) )
+                        :( size() ) );
+
+   for( size_t i=ibegin; i<iend; ++i ) {
       matrix_.erase( i, col_ );
    }
 }
@@ -3459,11 +3531,17 @@ void SparseColumn<MT,false,false>::reserve( size_t n )
 //
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
 inline SparseColumn<MT,false,false>& SparseColumn<MT,false,false>::scale( const Other& scalar )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
    return *this;
@@ -3522,10 +3600,15 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<col_; ++i ) {
+   const size_t iend( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
 
    return true;
 }
@@ -3558,7 +3641,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( col_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) ) );
+
+   if( IsUniLower<MT2>::value && ( last == (~rhs).end() || last->index() != col_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -3592,7 +3680,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=col_+1UL; i<size(); ++i ) {
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyUpper<MT2>::value )?( col_ ):( col_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -3628,7 +3721,17 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( col_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( col_ ):( col_+1UL ) ) );
+
+   if( IsUniUpper<MT2>::value ) {
+      if( element == last || element->index() != col_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -4578,13 +4681,13 @@ inline SparseColumn<MT,false,true>& SparseColumn<MT,false,true>::operator=( cons
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, tmp.nonZeros() );
+      left.reset();
+      left.reserve( tmp.nonZeros() );
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, rhs.nonZeros() );
+      left.reset();
+      left.reserve( rhs.nonZeros() );
       assign( left, rhs );
    }
 
@@ -4634,12 +4737,12 @@ inline SparseColumn<MT,false,true>&
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const typename VT::ResultType tmp( right);
-      matrix_.reset( col_ );
+      const typename VT::ResultType tmp( right );
+      left.reset();
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
+      left.reset();
       assign( left, right );
    }
 
@@ -4690,13 +4793,13 @@ inline SparseColumn<MT,false,true>&
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const typename VT::ResultType tmp( right);
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, tmp.nonZeros() );
+      left.reset();
+      left.reserve( tmp.nonZeros() );
       assign( left, tmp );
    }
    else {
-      matrix_.reset( col_ );
-      matrix_.reserve( col_, right.nonZeros() );
+      left.reset();
+      left.reserve( right.nonZeros() );
       assign( left, right );
    }
 
@@ -4753,7 +4856,7 @@ inline SparseColumn<MT,false,true>&
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4809,8 +4912,8 @@ inline SparseColumn<MT,false,true>&
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
-   matrix_.reserve( col_, tmp.nonZeros() );
+   left.reset();
+   left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4867,7 +4970,7 @@ inline SparseColumn<MT,false,true>&
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4924,8 +5027,8 @@ inline SparseColumn<MT,false,true>&
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   matrix_.reset( col_ );
-   matrix_.reserve( col_, tmp.nonZeros() );
+   left.reset();
+   left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4973,7 +5076,7 @@ inline SparseColumn<MT,false,true>&
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    const MultType tmp( *this * (~rhs) );
-   matrix_.reset( col_ );
+   left.reset();
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -4993,8 +5096,11 @@ inline SparseColumn<MT,false,true>&
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of
-// the sparse column must support the multiplication assignment operator for the given scalar
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must support the multiplication assignment operator for the given scalar
 // built-in data type.
 */
 template< typename MT >     // Type of the sparse matrix
@@ -5002,6 +5108,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,true> >::Type&
    SparseColumn<MT,false,true>::operator*=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= rhs;
    return *this;
@@ -5018,16 +5126,23 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,true> >::Type&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the sparse column.
 //
-// This operator can only be used for built-in data types. Additionally, the elements of the
-// sparse column must either support the multiplication assignment operator for the given
+// Via this operator it is possible to scale the sparse column. Note however that the function
+// is subject to three restrictions. First, this operator cannot be used for columns on lower
+// or upper unitriangular matrices. The attempt to scale such a column results in a compilation
+// error! Second, this operator can only be used for numeric data types. And third, the elements
+// of the sparse column must either support the multiplication assignment operator for the given
 // floating point data type or the division assignment operator for the given integral data
 // type.
+//
+// \b Note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,true> >::Type&
    SparseColumn<MT,false,true>::operator/=( Other rhs )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    typedef typename DivTrait<ElementType,Other>::Type  DT;
@@ -5249,11 +5364,17 @@ void SparseColumn<MT,false,true>::reserve( size_t n )
 //
 // \param scalar The scalar value for the column scaling.
 // \return Reference to the sparse column.
+//
+// This function scales all elements of the row by the given scalar value \a scalar. Note that
+// the function cannot be used to scale a row on a lower or upper unitriangular matrix. The
+// attempt to scale such a row results in a compile time error!
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the scalar value
 inline SparseColumn<MT,false,true>& SparseColumn<MT,false,true>::scale( const Other& scalar )
 {
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
    for( Iterator element=begin(); element!=end(); ++element )
       element->value() *= scalar;
    return *this;
@@ -5339,10 +5460,15 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=0UL; i<col_; ++i ) {
+   const size_t iend( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
+
+   if( IsUniLower<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
 
    return true;
 }
@@ -5375,7 +5501,12 @@ inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).lowerBound( col_ ); ++element ) {
+   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyLower<MT2>::value )?( col_+1UL ):( col_ ) ) );
+
+   if( IsUniLower<MT2>::value && ( last == (~rhs).end() || last->index() != col_ || !isOne( last->value() ) ) )
+      return false;
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -5409,7 +5540,12 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    UNUSED_PARAMETER( lhs );
 
-   for( size_t i=col_+1UL; i<size(); ++i ) {
+   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[col_] ) )
+      return false;
+
+   const size_t ibegin( ( IsStrictlyUpper<MT2>::value )?( col_ ):( col_+1UL ) );
+
+   for( size_t i=ibegin; i<size(); ++i ) {
       if( !isDefault( (~rhs)[i] ) )
          return false;
    }
@@ -5445,7 +5581,17 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
 
    typedef typename VT::ConstIterator  RhsIterator;
 
-   for( RhsIterator element=(~rhs).lowerBound( col_+1UL ); element!=(~rhs).end(); ++element ) {
+   const bool checkDiagonal( IsUniUpper<MT2>::value || IsStrictlyUpper<MT2>::value );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( col_ ):( col_+1UL ) ) );
+
+   if( IsUniUpper<MT2>::value ) {
+      if( element == last || element->index() != col_ || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
