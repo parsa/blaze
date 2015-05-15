@@ -689,7 +689,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    if( IsStrictlyLower<MT>::value )
       return true;
 
-   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
+   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -951,7 +951,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
    typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
 
-   if( IsUniUpper<MT>::value )
+   if( IsStrictlyUpper<MT>::value )
       return true;
 
    if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
