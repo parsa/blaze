@@ -689,7 +689,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    if( IsStrictlyLower<MT>::value )
       return true;
 
-   if( !isSquare( ~sm ) )
+   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
