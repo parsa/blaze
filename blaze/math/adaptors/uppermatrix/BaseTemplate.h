@@ -179,7 +179,7 @@ namespace blaze {
    A(2,1) = 9.0;  // Throws an exception; invalid modification of lower element
 
    // Inserting two more elements via the insert() function
-   A.insert( 0, 1, 3.0 );  // Inserting the lower element (0,1)
+   A.insert( 0, 1, 3.0 );  // Inserting the upper element (0,1)
    A.insert( 1, 1, 4.0 );  // Inserting the diagonal element (1,1)
    A.insert( 2, 0, 9.0 );  // Throws an exception; invalid insertion of lower element
 
@@ -410,8 +410,8 @@ namespace blaze {
 // \n \section uppermatrix_performance Performance Considerations
 //
 // The \b Blaze library tries to exploit the properties of upper matrices whenever and wherever
-// possible. Thus using a upper triangular matrix instead of a general matrix can result in a
-// considerable performance improvement. However, there are also situations when using a upper
+// possible. Thus using an upper triangular matrix instead of a general matrix can result in a
+// considerable performance improvement. However, there are also situations when using an upper
 // triangular matrix introduces some overhead. The following examples demonstrate several common
 // situations where upper matrices can positively or negatively impact performance.
 //
@@ -444,7 +444,7 @@ namespace blaze {
 //
 // \n \subsection uppermatrix_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
 //
-// A similar performance improvement can be gained when using a upper matrix in a matrix/vector
+// A similar performance improvement can be gained when using an upper matrix in a matrix/vector
 // multiplication:
 
    \code
@@ -468,8 +468,8 @@ namespace blaze {
 //
 // \n \subsection uppermatrix_assignment Negative Impact: Assignment of a General Matrix
 //
-// In contrast to using a upper triangular matrix on the right-hand side of an assignment (i.e.
-// for read access), which introduces absolutely no performance penalty, using a upper matrix on
+// In contrast to using an upper triangular matrix on the right-hand side of an assignment (i.e.
+// for read access), which introduces absolutely no performance penalty, using an upper matrix on
 // the left-hand side of an assignment (i.e. for write access) may introduce additional overhead
 // when it is assigned a general matrix, which is not upper triangular at compile time:
 
@@ -481,11 +481,11 @@ namespace blaze {
    DynamicMatrix<double> B;
 
    B = A;  // Only read-access to the upper matrix; no performance penalty
-   C = A;  // Assignment of a upper matrix to another upper matrix; no runtime overhead
-   C = B;  // Assignment of a general matrix to a upper matrix; some runtime overhead
+   C = A;  // Assignment of an upper matrix to another upper matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to an upper matrix; some runtime overhead
    \endcode
 
-// When assigning a general, potentially not upper matrix to a upper matrix it is necessary to
+// When assigning a general, potentially not upper matrix to an upper matrix it is necessary to
 // check whether the matrix is upper at runtime in order to guarantee the upper triangular property
 // of the upper matrix. In case it turns out to be upper triangular, it is assigned as efficiently
 // as possible, if it is not, an exception is thrown. In order to prevent this runtime overhead it
@@ -496,9 +496,9 @@ namespace blaze {
    \code
    UpperMatrix< DynamicMatrix<double> > A, B, C;
 
-   C = A + B;  // Results in a upper matrix; no runtime overhead
-   C = A - B;  // Results in a upper matrix; no runtime overhead
-   C = A * B;  // Results in a upper matrix; no runtime overhead
+   C = A + B;  // Results in an upper matrix; no runtime overhead
+   C = A - B;  // Results in an upper matrix; no runtime overhead
+   C = A * B;  // Results in an upper matrix; no runtime overhead
    \endcode
 */
 template< typename MT                               // Type of the adapted matrix
