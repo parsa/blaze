@@ -1745,7 +1745,7 @@ inline typename LowerMatrix<MT,SO,false>::ConstIterator
    using blaze::LowerMatrix;
    using blaze::rowMajor;
 
-   LowerMatrix< CompressedMatrix<double,rowMajor> > A( 4, 3 );
+   LowerMatrix< CompressedMatrix<double,rowMajor> > A( 4 );
 
    A.reserve( 3 );         // Reserving enough space for 3 non-zero elements
    A.append( 0, 0, 1.0 );  // Appending the value 1 in row 0 with column index 0
