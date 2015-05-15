@@ -1156,7 +1156,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    if( IsStrictlyUpper<MT>::value )
       return true;
 
-   if( !isSquare( ~dm ) )
+   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~dm ) )
       return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
