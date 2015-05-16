@@ -1584,7 +1584,18 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void LowerMatrix<MT,SO,true>::reset()
 {
-   matrix_.reset();
+   using blaze::clear;
+
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=j; i<rows(); ++i )
+            clear( matrix_(i,j) );
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            clear( matrix_(i,j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1607,7 +1618,16 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void LowerMatrix<MT,SO,true>::reset( size_t i )
 {
-   matrix_.reset( i );
+   using blaze::clear;
+
+   if( SO ) {
+      for( size_t j=i; j<rows(); ++j )
+         clear( matrix_(j,i) );
+   }
+   else {
+      for( size_t j=0UL; j<=i; ++j )
+         clear( matrix_(i,j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1631,7 +1651,12 @@ inline void LowerMatrix<MT,SO,true>::clear()
 {
    using blaze::clear;
 
-   clear( matrix_ );
+   if( IsResizable<MT>::value ) {
+      clear( matrix_ );
+   }
+   else {
+      reset();
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
