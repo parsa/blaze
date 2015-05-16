@@ -1498,7 +1498,7 @@ template< typename Type  // Data type of the vector
 inline void CompressedVector<Type,TF>::append( size_t index, const Type& value, bool check )
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid compressed vector access index" );
-   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved space" );
+   BLAZE_USER_ASSERT( nonZeros() < capacity(), "Not enough reserved capacity" );
    BLAZE_USER_ASSERT( begin_ == end_ || (end_-1UL)->index_ < index, "Index is not strictly increasing" );
 
    end_->value_ = value;

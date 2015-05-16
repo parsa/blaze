@@ -2354,7 +2354,7 @@ inline typename SymmetricMatrix<MT,SO,false,true>::ConstIterator
 
    SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
 
-   A.reserve( 5 );         // Reserving enough space for 5 non-zero elements
+   A.reserve( 5 );         // Reserving enough capacity for 5 non-zero elements
    A.reserve( 0, 2 );      // Reserving two non-zero elements in the first row
    A.reserve( 1, 2 );      // Reserving two non-zero elements in the second row
    A.reserve( 2, 1 );      // Reserving a single non-zero element in the third row

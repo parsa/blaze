@@ -1747,7 +1747,7 @@ inline typename UpperMatrix<MT,SO,false>::ConstIterator
 
    UpperMatrix< CompressedMatrix<double,rowMajor> > A( 4 );
 
-   A.reserve( 3 );         // Reserving enough space for 3 non-zero elements
+   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
    A.append( 0, 0, 1.0 );  // Appending the value 1 in row 0 with column index 0
    A.finalize( 0 );        // Finalizing row 0
    A.append( 1, 2, 2.0 );  // Appending the value 2 in row 1 with column index 2

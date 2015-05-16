@@ -3070,7 +3070,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
 
-   B.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   B.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
    B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
    B.finalize( 0 );      // Finalizing row 0
    B.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
@@ -6076,7 +6076,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
 
-   B.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   B.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
    B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
    B.finalize( 0 );      // Finalizing row 0
    B.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1

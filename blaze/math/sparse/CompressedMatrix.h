@@ -2060,7 +2060,7 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 
    blaze::CompressedMatrix<double,rowMajor> A( 4, 3 );
 
-   A.reserve( 3 );         // Reserving enough space for 3 non-zero elements
+   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
    A.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
    A.finalize( 0 );        // Finalizing row 0
    A.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
@@ -2078,7 +2078,7 @@ inline void CompressedMatrix<Type,SO>::append( size_t i, size_t j, const Type& v
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
-   BLAZE_USER_ASSERT( end_[i] < end_[m_], "Not enough reserved space left" );
+   BLAZE_USER_ASSERT( end_[i] < end_[m_], "Not enough reserved capacity left" );
    BLAZE_USER_ASSERT( begin_[i] == end_[i] || j > ( end_[i]-1UL )->index_, "Index is not strictly increasing" );
 
    end_[i]->value_ = value;
@@ -4288,7 +4288,7 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 
    \code
    blaze::CompressedMatrix<double,columnMajor> A( 3, 4 );
-   A.reserve( 3 );       // Reserving enough space for 3 non-zero elements
+   A.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
    A.append( 1, 0, 1 );  // Appending the value 1 in column 0 with row index 1
    A.finalize( 0 );      // Finalizing column 0
    A.append( 1, 1, 2 );  // Appending the value 2 in column 1 with row index 1
@@ -4305,7 +4305,7 @@ inline void CompressedMatrix<Type,true>::append( size_t i, size_t j, const Type&
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
-   BLAZE_USER_ASSERT( end_[j] < end_[n_], "Not enough reserved space left" );
+   BLAZE_USER_ASSERT( end_[j] < end_[n_], "Not enough reserved capacity left" );
    BLAZE_USER_ASSERT( begin_[j] == end_[j] || i > ( end_[j]-1UL )->index_, "Index is not strictly increasing" );
 
    end_[j]->value_ = value;

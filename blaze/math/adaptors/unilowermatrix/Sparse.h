@@ -2218,7 +2218,7 @@ inline typename UniLowerMatrix<MT,SO,false>::ConstIterator
 
    UniLowerMatrix< CompressedMatrix<double,columnMajor> > A( 4 );
 
-   A.reserve( 3 );         // Reserving enough space for 3 non-zero elements
+   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
    A.append( 1, 0, 1.0 );  // Appending the value 1 in column 0 with row index 1
    A.finalize( 0 );        // Finalizing column 0
    A.append( 2, 1, 2.0 );  // Appending the value 2 in column 1 with row index 2
