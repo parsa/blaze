@@ -61,10 +61,11 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is an upper triangular matrix
-// type (i.e. a matrix type that is guaranteed to be upper triangular at compile time). In case
-// the type is an upper triangular matrix type, the \a value member enumeration is set to 1, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// type (i.e. a matrix type that is guaranteed to be upper triangular at compile time). This also
+// includes upper unitriangular and strictly upper triangular matrices. In case the type is an upper
+// triangular matrix type, the \a value member enumeration is set to 1, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -73,16 +74,16 @@ namespace blaze {
    typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
    typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
 
-   typedef blaze::UpperMatrix<StaticMatrixType>      UpperStaticType;
-   typedef blaze::UpperMatrix<DynamicMatrixType>     UpperDynamicType;
-   typedef blaze::UpperMatrix<CompressedMatrixType>  UpperCompressedType;
+   typedef blaze::UpperMatrix<StaticMatrixType>         UpperStaticType;
+   typedef blaze::UpperMatrix<DynamicMatrixType>        UpperDynamicType;
+   typedef blaze::UniUpperMatrix<CompressedMatrixType>  UniUpperCompressedType;
 
-   blaze::IsUpper< UpperStaticType >::value         // Evaluates to 1
-   blaze::IsUpper< const UpperDynamicType >::Type   // Results in TrueType
-   blaze::IsUpper< volatile UpperCompressedType >   // Is derived from TrueType
-   blaze::IsUpper< StaticMatrixType >::value        // Evaluates to 0
-   blaze::IsUpper< const DynamicMatrixType >::Type  // Results in FalseType
-   blaze::IsUpper< volatile CompressedMatrixType >  // Is derived from FalseType
+   blaze::IsUpper< UpperStaticType >::value           // Evaluates to 1
+   blaze::IsUpper< const UpperDynamicType >::Type     // Results in TrueType
+   blaze::IsUpper< volatile UniUpperCompressedType >  // Is derived from TrueType
+   blaze::IsUpper< StaticMatrixType >::value          // Evaluates to 0
+   blaze::IsUpper< const DynamicMatrixType >::Type    // Results in FalseType
+   blaze::IsUpper< volatile CompressedMatrixType >    // Is derived from FalseType
    \endcode
 */
 template< typename T >
