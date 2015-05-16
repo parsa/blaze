@@ -69,6 +69,7 @@
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/TypeTraits.h>
 #include <blaze/math/UniLowerMatrix.h>
+#include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/Views.h>
 
