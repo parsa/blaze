@@ -44,6 +44,8 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/UniLowerMatrix.h>
+#include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/densematrix/OperationTest.h>
 
@@ -671,6 +673,61 @@ void OperationTest::testIsSymmetric()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSymmetric() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -732,6 +789,61 @@ void OperationTest::testIsSymmetric()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSymmetric() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1132,6 +1244,61 @@ void OperationTest::testIsSymmetric()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -1193,6 +1360,61 @@ void OperationTest::testIsSymmetric()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1581,6 +1803,61 @@ void OperationTest::testIsLower()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -1642,6 +1919,61 @@ void OperationTest::testIsLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2017,6 +2349,61 @@ void OperationTest::testIsLower()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -2078,6 +2465,61 @@ void OperationTest::testIsLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2595,6 +3037,61 @@ void OperationTest::testIsUniLower()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 2;
+         mat(2,0) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -2708,6 +3205,61 @@ void OperationTest::testIsUniLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 2;
+         mat(1,2) = 3;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3238,6 +3790,61 @@ void OperationTest::testIsUniLower()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 2;
+         mat(2,0) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -3351,6 +3958,61 @@ void OperationTest::testIsUniLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 2;
+         mat(1,2) = 3;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3809,6 +4471,61 @@ void OperationTest::testIsStrictlyLower()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower triangular matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -3894,6 +4611,61 @@ void OperationTest::testIsStrictlyLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper triangular matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -4314,6 +5086,61 @@ void OperationTest::testIsStrictlyLower()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower triangular matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -4399,6 +5226,61 @@ void OperationTest::testIsStrictlyLower()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper triangular matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -4787,6 +5669,61 @@ void OperationTest::testIsUpper()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -4848,6 +5785,61 @@ void OperationTest::testIsUpper()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -5223,6 +6215,61 @@ void OperationTest::testIsUpper()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -5284,6 +6331,61 @@ void OperationTest::testIsUpper()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -5801,6 +6903,61 @@ void OperationTest::testIsUniUpper()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 2;
+         mat(2,0) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -5924,6 +7081,61 @@ void OperationTest::testIsUniUpper()
          checkNonZeros( mat, 2UL, 1UL );
 
          if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 2;
+         mat(1,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isUniUpper evaluation\n"
@@ -6444,6 +7656,61 @@ void OperationTest::testIsUniUpper()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -6567,6 +7834,61 @@ void OperationTest::testIsUniUpper()
          checkNonZeros( mat, 2UL, 3UL );
 
          if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniUpper( mat ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isUniUpper evaluation\n"
@@ -7015,6 +8337,61 @@ void OperationTest::testIsStrictlyUpper()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // UniLower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -7100,6 +8477,61 @@ void OperationTest::testIsStrictlyUpper()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7520,6 +8952,61 @@ void OperationTest::testIsStrictlyUpper()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyUpper() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // UniLower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -7605,6 +9092,61 @@ void OperationTest::testIsStrictlyUpper()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyUpper() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7990,6 +9532,61 @@ void OperationTest::testIsDiagonal()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isDiagonal() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -8051,6 +9648,61 @@ void OperationTest::testIsDiagonal()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isDiagonal() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -8424,6 +10076,61 @@ void OperationTest::testIsDiagonal()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isDiagonal() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -8485,6 +10192,61 @@ void OperationTest::testIsDiagonal()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isDiagonal() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -8970,6 +10732,61 @@ void OperationTest::testIsIdentity()
 
 
    //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isIdentity() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major upper matrix tests
    //=====================================================================================
 
@@ -9056,6 +10873,61 @@ void OperationTest::testIsIdentity()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 2UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isIdentity() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -9554,6 +11426,61 @@ void OperationTest::testIsIdentity()
 
 
    //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isIdentity() (unilower matrix)";
+
+      // Default unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(1,0) = 4;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major upper matrix tests
    //=====================================================================================
 
@@ -9640,6 +11567,61 @@ void OperationTest::testIsIdentity()
          mat(1,1) = 2;
          mat(1,2) = 5;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isIdentity() (uniupper matrix)";
+
+      // Default uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+         mat(1,2) = 5;
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
