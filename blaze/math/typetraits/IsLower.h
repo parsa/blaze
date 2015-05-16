@@ -61,10 +61,11 @@ namespace blaze {
 // \ingroup math_type_traits
 //
 // This type trait tests whether or not the given template parameter is a lower triangular matrix
-// type (i.e. a matrix type that is guaranteed to be lower triangular at compile time). In case
-// the type is a lower triangular matrix type, the \a value member enumeration is set to 1, the
-// nested type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
-// \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+// type (i.e. a matrix type that is guaranteed to be lower triangular at compile time). This also
+// includes lower unitriangular and strictly lower triangular matrices. In case the type is a lower
+// triangular matrix type, the \a value member enumeration is set to 1, the nested type definition
+// \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to 0,
+// \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
    using blaze::rowMajor;
@@ -73,16 +74,16 @@ namespace blaze {
    typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
    typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
 
-   typedef blaze::LowerMatrix<StaticMatrixType>      LowerStaticType;
-   typedef blaze::LowerMatrix<DynamicMatrixType>     LowerDynamicType;
-   typedef blaze::LowerMatrix<CompressedMatrixType>  LowerCompressedType;
+   typedef blaze::LowerMatrix<StaticMatrixType>         LowerStaticType;
+   typedef blaze::LowerMatrix<DynamicMatrixType>        LowerDynamicType;
+   typedef blaze::UniLowerMatrix<CompressedMatrixType>  UniLowerCompressedType;
 
-   blaze::IsLower< LowerStaticType >::value         // Evaluates to 1
-   blaze::IsLower< const LowerDynamicType >::Type   // Results in TrueType
-   blaze::IsLower< volatile LowerCompressedType >   // Is derived from TrueType
-   blaze::IsLower< StaticMatrixType >::value        // Evaluates to 0
-   blaze::IsLower< const DynamicMatrixType >::Type  // Results in FalseType
-   blaze::IsLower< volatile CompressedMatrixType >  // Is derived from FalseType
+   blaze::IsLower< LowerStaticType >::value           // Evaluates to 1
+   blaze::IsLower< const LowerDynamicType >::Type     // Results in TrueType
+   blaze::IsLower< volatile UniLowerCompressedType >  // Is derived from TrueType
+   blaze::IsLower< StaticMatrixType >::value          // Evaluates to 0
+   blaze::IsLower< const DynamicMatrixType >::Type    // Results in FalseType
+   blaze::IsLower< volatile CompressedMatrixType >    // Is derived from FalseType
    \endcode
 */
 template< typename T >
