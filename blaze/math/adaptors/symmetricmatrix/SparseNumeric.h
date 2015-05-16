@@ -157,6 +157,8 @@ class SymmetricMatrix<MT,SO,false,true>
       typedef typename If< IsComplex<ElementType>
                          , ComplexType<ElementType>
                          , BuiltinType<ElementType> >::Type::Type  ValueType;
+
+      typedef ValueType  value_type;  //!< Value type of the represented complex element.
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
