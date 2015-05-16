@@ -37,4 +37,5 @@ PATH_UPPERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running UpperMatrix tests..."
 
-EXE=$PATH_UPPERMATRIX/DenseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UPPERMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UPPERMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
