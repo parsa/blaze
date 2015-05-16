@@ -39,7 +39,10 @@ all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-     symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
+     symmetricmatrix \
+     lowermatrix unilowermatrix \
+     uppermatrix \
+     diagonalmatrix \
      densesubvector sparsesubvector \
      densesubmatrix sparsesubmatrix \
      denserow densecolumn sparserow sparsecolumn \
@@ -64,7 +67,10 @@ noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-      symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
+      symmetricmatrix \
+      lowermatrix unilowermatrix \
+      uppermatrix \
+      diagonalmatrix \
       densesubvector sparsesubvector \
       densesubmatrix sparsesubmatrix \
       denserow densecolumn sparserow sparsecolumn \
@@ -156,6 +162,11 @@ lowermatrix:
 	@echo
 	@echo "Building the LowerMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./lowermatrix $(MAKECMDGOALS)
+
+unilowermatrix:
+	@echo
+	@echo "Building the UniLowerMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./unilowermatrix $(MAKECMDGOALS)
 
 uppermatrix:
 	@echo
@@ -457,6 +468,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
 	@$(MAKE) --no-print-directory -C ./lowermatrix clean
+	@$(MAKE) --no-print-directory -C ./unilowermatrix clean
 	@$(MAKE) --no-print-directory -C ./uppermatrix clean
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./densesubvector clean
@@ -522,7 +534,10 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-        symmetricmatrix lowermatrix uppermatrix diagonalmatrix \
+        symmetricmatrix \
+        lowermatrix unilowermatrix \
+        uppermatrix \
+        diagonalmatrix \
         densesubvector sparsesubvector \
         densesubmatrix sparsesubmatrix \
         denserow densecolumn sparserow sparsecolumn \
