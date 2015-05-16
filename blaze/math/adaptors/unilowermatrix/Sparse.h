@@ -1644,7 +1644,12 @@ inline void UniLowerMatrix<MT,SO,false>::clear()
 {
    using blaze::clear;
 
-   clear( matrix_ );
+   if( IsResizable<MT>::value ) {
+      clear( matrix_ );
+   }
+   else {
+      reset();
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
