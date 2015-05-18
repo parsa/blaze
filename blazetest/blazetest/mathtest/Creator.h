@@ -52,6 +52,7 @@
 #include <blazetest/mathtest/creator/DynamicLower.h>
 #include <blazetest/mathtest/creator/DynamicMatrix.h>
 #include <blazetest/mathtest/creator/DynamicSymmetric.h>
+#include <blazetest/mathtest/creator/DynamicUniLower.h>
 #include <blazetest/mathtest/creator/DynamicUpper.h>
 #include <blazetest/mathtest/creator/DynamicVector.h>
 #include <blazetest/mathtest/creator/HybridDiagonal.h>
