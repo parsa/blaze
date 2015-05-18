@@ -45,6 +45,7 @@
 #include <blazetest/mathtest/creator/CompressedLower.h>
 #include <blazetest/mathtest/creator/CompressedMatrix.h>
 #include <blazetest/mathtest/creator/CompressedSymmetric.h>
+#include <blazetest/mathtest/creator/CompressedUniLower.h>
 #include <blazetest/mathtest/creator/CompressedUpper.h>
 #include <blazetest/mathtest/creator/CompressedVector.h>
 #include <blazetest/mathtest/creator/Default.h>
