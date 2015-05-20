@@ -61,9 +61,13 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -2213,7 +2217,14 @@ inline void CompressedMatrix<Type,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
    {
       begin_[i] = end_[i] = begin_[0UL]+nonzeros;
 
-      for( size_t j=0UL; j<n_; ++j )
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+                           :( n_ ) );
+
+      for( size_t j=jbegin; j<jend; ++j )
       {
          if( nonzeros == capacity() ) {
             reserveElements( extendCapacity() );
@@ -4445,7 +4456,14 @@ inline void CompressedMatrix<Type,true>::assign( const DenseMatrix<MT,SO>& rhs )
    {
       begin_[j] = end_[j] = begin_[0UL]+nonzeros;
 
-      for( size_t i=0UL; i<m_; ++i )
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( m_ ) );
+
+      for( size_t i=ibegin; i<iend; ++i )
       {
          if( nonzeros == capacity() ) {
             reserveElements( extendCapacity() );
