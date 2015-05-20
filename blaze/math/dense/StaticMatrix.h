@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -60,10 +61,15 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/StorageOrder.h>
@@ -367,7 +373,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
       enum { value = vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
-                     IsRowMajorMatrix<MT>::value };
+                     IsRowMajorMatrix<MT>::value &&
+                     !IsDiagonal<MT>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -380,7 +387,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
       enum { value = vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
-                     IsRowMajorMatrix<MT>::value };
+                     IsRowMajorMatrix<MT>::value &&
+                     !IsDiagonal<MT>::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -2694,9 +2702,9 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
 {
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; j+=IT::size ) {
@@ -2789,9 +2797,25 @@ inline typename DisableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Ve
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         v_[i*NN+j] += (~rhs)(i,j);
+   for( size_t i=0UL; i<M; ++i )
+   {
+      if( IsDiagonal<MT>::value )
+      {
+         v_[i*NN+i] += (~rhs)(i,i);
+      }
+      else
+      {
+         const size_t jbegin( ( IsUpper<MT>::value )
+                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend  ( ( IsLower<MT>::value )
+                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+                              :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=jbegin; j<jend; ++j ) {
+            v_[i*NN+j] += (~rhs)(i,j);
+         }
       }
    }
 }
@@ -2821,12 +2845,22 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   for( size_t i=0UL; i<M; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+                           :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; j+=IT::size ) {
+      for( size_t j=jbegin; j<jend; j+=IT::size ) {
          store( &v_[i*NN+j], load( &v_[i*NN+j] ) + (~rhs).load(i,j) );
       }
    }
@@ -2916,9 +2950,25 @@ inline typename DisableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Ve
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; ++j ) {
-         v_[i*NN+j] -= (~rhs)(i,j);
+   for( size_t i=0UL; i<M; ++i )
+   {
+      if( IsDiagonal<MT>::value )
+      {
+         v_[i*NN+i] -= (~rhs)(i,i);
+      }
+      else
+      {
+         const size_t jbegin( ( IsUpper<MT>::value )
+                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend  ( ( IsLower<MT>::value )
+                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+                              :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=jbegin; j<jend; ++j ) {
+            v_[i*NN+j] -= (~rhs)(i,j);
+         }
       }
    }
 }
@@ -2948,12 +2998,22 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   for( size_t i=0UL; i<M; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT>::value )
+                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+                           :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-   for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=0UL; j<N; j+=IT::size ) {
+      for( size_t j=jbegin; j<jend; j+=IT::size ) {
          store( &v_[i*NN+j], load( &v_[i*NN+j] ) - (~rhs).load(i,j) );
       }
    }
@@ -3225,7 +3285,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
       enum { value = vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
-                     IsColumnMajorMatrix<MT>::value };
+                     IsColumnMajorMatrix<MT>::value &&
+                     !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
 
@@ -3236,7 +3297,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
       enum { value = vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
-                     IsColumnMajorMatrix<MT>::value };
+                     IsColumnMajorMatrix<MT>::value &&
+                     !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
 
@@ -5565,9 +5627,9 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
 {
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; i+=IT::size ) {
@@ -5663,9 +5725,25 @@ inline typename DisableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE 
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         v_[i+j*MM] += (~rhs)(i,j);
+   for( size_t j=0UL; j<N; ++j )
+   {
+      if( IsDiagonal<MT>::value )
+      {
+         v_[j+j*MM] += (~rhs)(j,j);
+      }
+      else
+      {
+         const size_t ibegin( ( IsLower<MT>::value )
+                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )
+                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                              :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            v_[i+j*MM] += (~rhs)(i,j);
+         }
       }
    }
 }
@@ -5696,12 +5774,22 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   for( size_t j=0UL; j<N; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; i+=IT::size ) {
+      for( size_t i=ibegin; i<iend; i+=IT::size ) {
          store( &v_[i+j*MM], load( &v_[i+j*MM] ) + (~rhs).load(i,j) );
       }
    }
@@ -5794,9 +5882,25 @@ inline typename DisableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE 
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; ++i ) {
-         v_[i+j*MM] -= (~rhs)(i,j);
+   for( size_t j=0UL; j<N; ++j )
+   {
+      if( IsDiagonal<MT>::value )
+      {
+         v_[j+j*MM] -= (~rhs)(j,j);
+      }
+      else
+      {
+         const size_t ibegin( ( IsLower<MT>::value )
+                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend  ( ( IsUpper<MT>::value )
+                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                              :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            v_[i+j*MM] -= (~rhs)(i,j);
+         }
       }
    }
 }
@@ -5827,12 +5931,22 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   for( size_t j=0UL; j<N; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-   for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=0UL; i<M; i+=IT::size ) {
+      for( size_t i=ibegin; i<iend; i+=IT::size ) {
          store( &v_[i+j*MM], load( &v_[i+j*MM] ) - (~rhs).load(i,j) );
       }
    }
