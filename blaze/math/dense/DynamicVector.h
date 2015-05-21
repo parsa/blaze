@@ -57,6 +57,8 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -2069,6 +2071,46 @@ inline void move( DynamicVector<Type,TF>& dst, DynamicVector<Type,TF>& src ) /* 
 {
    dst.swap( src );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF >
+struct HasConstDataAccess< DynamicVector<T,TF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF >
+struct HasMutableDataAccess< DynamicVector<T,TF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
