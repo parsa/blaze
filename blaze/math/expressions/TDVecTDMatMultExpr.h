@@ -60,6 +60,8 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -150,7 +152,11 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value };
@@ -166,7 +172,11 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value };
@@ -183,7 +193,11 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
@@ -200,7 +214,11 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
@@ -2620,7 +2638,11 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseSinglePrecisionKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
                      IsFloat<typename T3::ElementType>::value &&
@@ -2635,7 +2657,11 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseDoublePrecisionKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
                      IsDouble<typename T3::ElementType>::value &&
@@ -2651,7 +2677,11 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    template< typename T1, typename T2, typename T3 >
    struct UseSinglePrecisionComplexKernel {
       typedef complex<float>  Type;
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
@@ -2666,7 +2696,11 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    template< typename T1, typename T2, typename T3 >
    struct UseDoublePrecisionComplexKernel {
       typedef complex<double>  Type;
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = BLAZE_BLAS_MODE &&
+                     HasMutableDataAccess<T1>::value &&
+                     HasConstDataAccess<T2>::value &&
+                     HasConstDataAccess<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
                      IsSame<typename T3::ElementType,Type>::value };
