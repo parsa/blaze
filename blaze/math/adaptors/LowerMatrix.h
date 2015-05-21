@@ -53,6 +53,7 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -328,6 +329,26 @@ struct IsAdaptor< LowerMatrix<MT,SO,DF> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsRestricted< LowerMatrix<MT,SO,DF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct HasConstDataAccess< LowerMatrix<MT,SO,true> > : public TrueType
 {
    enum { value = 1 };
    typedef TrueType  Type;
