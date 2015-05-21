@@ -69,6 +69,8 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -13582,6 +13584,48 @@ template< typename MT, bool AF, bool SO >
 struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 {
    typedef DenseSubmatrix< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type, AF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO >
+struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
+   : public If< HasConstDataAccess<MT>, TrueType, FalseType >::Type
+{
+   enum { value = HasConstDataAccess<MT>::value };
+   typedef typename If< HasConstDataAccess<MT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO >
+struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
+   : public If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type
+{
+   enum { value = HasMutableDataAccess<MT>::value };
+   typedef typename If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
