@@ -60,6 +60,8 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowVector.h>
@@ -4733,6 +4735,48 @@ template< typename VT, bool AF, bool TF >
 struct DerestrictTrait< DenseSubvector<VT,AF,TF> >
 {
    typedef DenseSubvector< typename RemoveReference< typename DerestrictTrait<VT>::Type >::Type, AF, TF >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct HasConstDataAccess< DenseSubvector<VT,AF,TF> >
+   : public If< HasConstDataAccess<VT>, TrueType, FalseType >::Type
+{
+   enum { value = HasConstDataAccess<VT>::value };
+   typedef typename If< HasConstDataAccess<VT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF >
+struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
+   : public If< HasMutableDataAccess<VT>, TrueType, FalseType >::Type
+{
+   enum { value = HasMutableDataAccess<VT>::value };
+   typedef typename If< HasMutableDataAccess<VT>, TrueType, FalseType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
