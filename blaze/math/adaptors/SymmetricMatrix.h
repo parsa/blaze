@@ -54,6 +54,7 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -268,6 +269,26 @@ struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
+{
+   enum { value = 1 };
+   typedef TrueType  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool NF >
+struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> > : public TrueType
 {
    enum { value = 1 };
    typedef TrueType  Type;
