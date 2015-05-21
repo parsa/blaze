@@ -62,6 +62,8 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -6093,6 +6095,48 @@ template< typename MT, bool SO, bool SF >
 struct DerestrictTrait< DenseRow<MT,SO,SF> >
 {
    typedef DenseRow< typename RemoveReference< typename DerestrictTrait<MT>::Type >::Type >  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct HasConstDataAccess< DenseRow<MT,SO,SF> >
+   : public If< HasConstDataAccess<MT>, TrueType, FalseType >::Type
+{
+   enum { value = HasConstDataAccess<MT>::value };
+   typedef typename If< HasConstDataAccess<MT>, TrueType, FalseType >::Type  Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct HasMutableDataAccess< DenseRow<MT,SO,SF> >
+   : public If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type
+{
+   enum { value = HasMutableDataAccess<MT>::value };
+   typedef typename If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
