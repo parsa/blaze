@@ -2513,7 +2513,7 @@ inline typename DisableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Ve
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[i*NN+i] += (~rhs)(i,i);
+         v_[i*NN+i] -= (~rhs)(i,i);
       }
       else
       {
