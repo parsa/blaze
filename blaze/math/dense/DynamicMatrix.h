@@ -4595,7 +4595,7 @@ inline typename DisableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vec
    {
       if( IsDiagonal<MT>::value )
       {
-         v_[j+j*mm_] += (~rhs)(j,j);
+         v_[j+j*mm_] -= (~rhs)(j,j);
       }
       else
       {
