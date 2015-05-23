@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -692,6 +693,9 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 
    if( (~dm).rows() < 2UL )
       return true;
+
+   if( IsTriangular<MT>::value )
+      return isDiagonal( ~dm );
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
 
