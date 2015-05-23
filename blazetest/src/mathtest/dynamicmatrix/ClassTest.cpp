@@ -40,7 +40,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/DiagonalMatrix.h>
+#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/UniqueArray.h>
@@ -901,6 +904,138 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major sparse matrix assignment
@@ -1023,6 +1158,138 @@ void ClassTest::testAssignment()
                 << "   Expected result:\n" << mat2 << "\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 
@@ -1290,6 +1557,138 @@ void ClassTest::testAssignment()
       }
    }
 
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major sparse matrix assignment
@@ -1416,6 +1815,138 @@ void ClassTest::testAssignment()
          }
       }
    }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL );
+      randomize( mat2 );
+
+      mat2 = mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -1505,6 +2036,132 @@ void ClassTest::testAddAssign()
       }
    }
 
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major sparse matrix addition assignment
@@ -1576,6 +2233,132 @@ void ClassTest::testAddAssign()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1657,6 +2440,132 @@ void ClassTest::testAddAssign()
       }
    }
 
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major sparse matrix addition assignment
@@ -1730,6 +2639,132 @@ void ClassTest::testAddAssign()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix addition assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 += mat1;
+
+      if( mat1 != mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1822,6 +2857,132 @@ void ClassTest::testSubAssign()
       }
    }
 
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix dense matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix dense matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Row-major sparse matrix subtraction assignment
@@ -1831,17 +2992,17 @@ void ClassTest::testSubAssign()
       test_ = "Row-major/row-major DynamicMatrix sparse matrix subtraction assignment";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) =  1;
-      mat1(0,1) =  2;
-      mat1(1,0) = -3;
-      mat1(1,2) =  4;
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
       mat2(0,1) = -2;
       mat2(0,2) =  6;
       mat2(1,0) =  5;
 
-      mat2 += mat1;
+      mat2 -= mat1;
 
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
@@ -1866,17 +3027,17 @@ void ClassTest::testSubAssign()
       test_ = "Row-major/column-major DynamicMatrix sparse matrix subtraction assignment";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) =  1;
-      mat1(0,1) =  2;
-      mat1(1,0) = -3;
-      mat1(1,2) =  4;
+      mat1(0,0) = -1;
+      mat1(0,1) = -2;
+      mat1(1,0) =  3;
+      mat1(1,2) = -4;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 0 );
       mat2(0,1) = -2;
       mat2(0,2) =  6;
       mat2(1,0) =  5;
 
-      mat2 += mat1;
+      mat2 -= mat1;
 
       checkRows    ( mat2, 2UL );
       checkColumns ( mat2, 3UL );
@@ -1893,6 +3054,132 @@ void ClassTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major DynamicMatrix sparse matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/column-major DynamicMatrix sparse matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1974,6 +3261,132 @@ void ClassTest::testSubAssign()
       }
    }
 
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix dense matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix dense matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
 
    //=====================================================================================
    // Column-major sparse matrix subtraction assignment
@@ -2047,6 +3460,132 @@ void ClassTest::testSubAssign()
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix subtraction assignment (lower)";
+
+      blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix subtraction assignment (upper)";
+
+      blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix subtraction assignment (diagonal)";
+
+      blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
+      randomize( mat1 );
+
+      blaze::DynamicMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 0 );
+
+      mat2 -= mat1;
+
+      if( mat1 != -mat2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat1 << "\n"
+             << "   Expected result:\n" << mat2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
