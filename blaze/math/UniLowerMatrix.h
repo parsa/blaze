@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/DenseMatrix.h>
-#include <blaze/math/LowerMatrix.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>

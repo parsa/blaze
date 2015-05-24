@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/unilowermatrix/Dense.h>
 #include <blaze/math/adaptors/unilowermatrix/Sparse.h>
