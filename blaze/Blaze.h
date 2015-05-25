@@ -2112,6 +2112,19 @@ namespace blaze {}
 // Note that non-square matrices are never considered to be symmetric!
 //
 //
+// \n \subsection matrix_operations_isUniform isUniform
+//
+// In order to check if all matrix elements are identical, the \c isUniform function can be used:
+
+   \code
+   blaze::DynamicMatrix<int> A;
+   // ... Resizing and initialization
+   if( isUniform( A ) ) { ... }
+   \endcode
+
+// Note that in case of a sparse matrix also the zero elements are also taken into account!
+//
+//
 // \n \subsection matrix_operations_islower isLower
 //
 // Via the \c isLower() function it is possible to check whether a dense or sparse matrix is
