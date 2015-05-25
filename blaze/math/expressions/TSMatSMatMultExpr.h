@@ -217,9 +217,15 @@ class TSMatSMatMultExpr : public SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true 
 
       ElementType tmp = ElementType();
 
-      if( lhs_.columns() != 0UL ) {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+      if( lhs_.columns() != 0UL )
+      {
+         const size_t kbegin( max( ( IsUpper<MT1>::value )?( i ):( 0UL ),
+                                   ( IsLower<MT2>::value )?( j ):( 0UL ) ) );
+         const size_t kend  ( min( ( IsLower<MT1>::value )?( i+1UL ):( lhs_.columns() ),
+                                   ( IsUpper<MT2>::value )?( j+1UL ):( lhs_.columns() ) ) );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
