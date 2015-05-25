@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -740,6 +741,7 @@ template< typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
@@ -782,6 +784,7 @@ template< typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
 {
    BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
@@ -824,6 +827,7 @@ template< typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
@@ -855,6 +859,7 @@ template< typename MT >  // Type of the dense matrix
 bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
@@ -913,7 +918,7 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
 
    typename MT::CompositeType A( ~dm );  // Evaluation of the dense matrix operand
 
-   isUniform_backend( A, typename IsTriangular<MT>::Type() );
+   return isUniform_backend( A, typename IsTriangular<MT>::Type() );
 }
 //*************************************************************************************************
 
