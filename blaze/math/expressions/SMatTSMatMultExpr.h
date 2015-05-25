@@ -261,8 +261,8 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
          // Evaluation of the left-hand side sparse matrix operand
          CT1 A( lhs_ );
 
-         const LeftIterator end( A.end(i) );
-         LeftIterator element( A.begin(i) );
+         const LeftIterator end( ( IsUpper<MT2>::value )?( A.upperBound(i,j) ):( A.end(i) ) );
+         LeftIterator element( ( IsLower<MT2>::value )?( A.lowerBound(i,j) ):( A.begin(i) ) );
 
          // Early exit in case row i is empty
          if( element == end )
@@ -271,8 +271,9 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
          // Calculating element (i,j)
          tmp = element->value() * rhs_(element->index(),j);
          ++element;
-         for( ; element!=end; ++element )
+         for( ; element!=end; ++element ) {
             tmp += element->value() * rhs_(element->index(),j);
+         }
       }
 
       // Optimized computation in case the right-hand side sparse matrix directly provides iterators
@@ -281,8 +282,8 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
          // Evaluation of the right-hand side sparse matrix operand
          CT2 B( rhs_ );
 
-         const RightIterator end( B.end(j) );
-         RightIterator element( B.begin(j) );
+         const RightIterator end( ( IsLower<MT1>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
+         RightIterator element( ( IsUpper<MT1>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
 
          // Early exit in case row i is empty
          if( element == end )
@@ -291,14 +292,20 @@ class SMatTSMatMultExpr : public SparseMatrix< SMatTSMatMultExpr<MT1,MT2>, false
          // Calculating element (i,j)
          tmp = lhs_(i,element->index()) * element->value();
          ++element;
-         for( ; element!=end; ++element )
+         for( ; element!=end; ++element ) {
             tmp += lhs_(i,element->index()) * element->value();
+         }
       }
 
       // Default computation in case both sparse matrices don't provide iterators
       else {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+         const size_t kbegin( max( ( IsUpper<MT1>::value )?( i ):( 0UL ),
+                                   ( IsLower<MT2>::value )?( j ):( 0UL ) ) );
+         const size_t kend  ( min( ( IsLower<MT1>::value )?( i+1UL ):( lhs_.columns() ),
+                                   ( IsUpper<MT2>::value )?( j+1UL ):( lhs_.columns() ) ) );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
