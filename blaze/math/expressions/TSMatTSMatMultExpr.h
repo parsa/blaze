@@ -228,8 +228,8 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
          // Evaluation of the right-hand side sparse matrix operand
          CT2 B( rhs_ );
 
-         const ConstIterator end( B.end(j) );
-         ConstIterator element( B.begin(j) );
+         const ConstIterator end( ( IsLower<MT1>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
+         ConstIterator element( ( IsUpper<MT1>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
 
          // Early exit in case row i is empty
          if( element == end )
@@ -238,14 +238,20 @@ class TSMatTSMatMultExpr : public SparseMatrix< TSMatTSMatMultExpr<MT1,MT2>, tru
          // Calculating element (i,j)
          tmp = lhs_(i,element->index()) * element->value();
          ++element;
-         for( ; element!=end; ++element )
+         for( ; element!=end; ++element ) {
             tmp += lhs_(i,element->index()) * element->value();
+         }
       }
 
       // Default computation in case the right-hand side sparse matrix doesn't provide iterators
       else {
-         tmp = lhs_(i,0UL) * rhs_(0UL,j);
-         for( size_t k=1UL; k<lhs_.columns(); ++k ) {
+         const size_t kbegin( max( ( IsUpper<MT1>::value )?( i ):( 0UL ),
+                                   ( IsLower<MT2>::value )?( j ):( 0UL ) ) );
+         const size_t kend  ( min( ( IsLower<MT1>::value )?( i+1UL ):( lhs_.columns() ),
+                                   ( IsUpper<MT2>::value )?( j+1UL ):( lhs_.columns() ) ) );
+
+         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+         for( size_t k=kbegin+1UL; k<kend; ++k ) {
             tmp += lhs_(i,k) * rhs_(k,j);
          }
       }
