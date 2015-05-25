@@ -1165,6 +1165,19 @@ namespace blaze {}
 // not 0.
 //
 //
+// \n \subsection vector_operations_isUniform isUniform
+//
+// In order to check if all vector elements are identical, the \c isUniform function can be used:
+
+   \code
+   blaze::DynamicVector<int> a;
+   // ... Resizing and initialization
+   if( isUniform( a ) ) { ... }
+   \endcode
+
+// Note that in case of a sparse vector also the zero elements are also taken into account!
+//
+//
 // \n \subsection vector_operators_abs Absolute Values
 //
 // The \c abs() function can be used to compute the absolute values of each element of a vector.
