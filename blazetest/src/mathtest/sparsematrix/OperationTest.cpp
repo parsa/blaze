@@ -72,6 +72,7 @@ OperationTest::OperationTest()
    testIsNan();
    testIsSquare();
    testIsSymmetric();
+   testIsUniform();
    testIsLower();
    testIsUniLower();
    testIsStrictlyLower();
@@ -1475,6 +1476,1269 @@ void OperationTest::testIsSymmetric()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isUniform() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isUniform() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testIsUniform()
+{
+   //=====================================================================================
+   // Row-major general matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (general matrix)";
+
+      // Uniform matrix (0x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x0)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (1x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 1UL, 3UL, 3UL );
+         mat(0,0) = 5;
+         mat(0,1) = 5;
+         mat(0,2) = 5;
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 3UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x1)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 1UL, 3UL );
+         mat(0,0) = 5;
+         mat(1,0) = 5;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x5)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 3UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (5x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 5UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+         mat.insert( 3UL, 1UL, 0 );
+         mat.insert( 4UL, 2UL, 0 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform matrix (3x3, 3 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform matrix (3x3, 9 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 9UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<3UL; ++j )
+               mat.insert( i, j, 0UL );
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major symmetric matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (symmetric matrix)";
+
+      // Uniform symmetric matrix (0 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform symmetric matrix (5 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform symmetric matrix (9 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<=i; ++j )
+               mat(i,j) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform symmetric matrix (2 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 4;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform symmetric matrix (9 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<=i; ++j )
+               mat(i,j) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (lower matrix)";
+
+      // Uniform lower matrix (0 non-zeros)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform lower matrix (3 non-zeros)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform lower matrix (1 non-zero)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (unilower matrix)";
+
+      // Non-uniform unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (upper matrix)";
+
+      // Uniform upper matrix (0 non-zeros)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform upper matrix (3 non-zeros)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat.insert( 0UL, 2UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 2UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform upper matrix (1 non-zero)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (uniupper matrix)";
+
+      // Non-uniform uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major diagonal matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (diagonal matrix)";
+
+      // Uniform diagonal matrix (0 non-zeros)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform diagonal matrix (3 non-zeros)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 1UL, 0 );
+         mat.insert( 2UL, 2UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform diagonal matrix (1 non-zero)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(2,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major general matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (general matrix)";
+
+      // Uniform matrix (0x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x0)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (1x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 1UL, 3UL, 3UL );
+         mat(0,0) = 5;
+         mat(0,1) = 5;
+         mat(0,2) = 5;
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x1)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 1UL, 3UL );
+         mat(0,0) = 5;
+         mat(1,0) = 5;
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 3UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (3x5)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 5UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 2UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 3UL, 0 );
+         mat.insert( 0UL, 4UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform matrix (5x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 3UL );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 1UL, 0 );
+         mat.insert( 0UL, 2UL, 0 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform matrix (3x3, 3 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform matrix (3x3, 9 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 9UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<3UL; ++j )
+               mat.insert( i, j, 0UL );
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major symmetric matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (symmetric matrix)";
+
+      // Uniform symmetric matrix (0 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform symmetric matrix (5 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform symmetric matrix (9 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<=i; ++j )
+               mat(i,j) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform symmetric matrix (2 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 4;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform symmetric matrix (9 non-zeros)
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<=i; ++j )
+               mat(i,j) = 5;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major lower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (lower matrix)";
+
+      // Uniform lower matrix (0 non-zeros)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform lower matrix (3 non-zeros)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat.insert( 2UL, 0UL, 0 );
+         mat.insert( 2UL, 1UL, 0 );
+         mat.insert( 2UL, 2UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform lower matrix (1 non-zero)
+      {
+         blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(2,0) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major unilower matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (unilower matrix)";
+
+      // Non-uniform unilower matrix
+      {
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major upper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (upper matrix)";
+
+      // Uniform upper matrix (0 non-zeros)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform upper matrix (3 non-zeros)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 0UL, 2UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform upper matrix (1 non-zero)
+      {
+         blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major uniupper matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (uniupper matrix)";
+
+      // Non-uniform uniupper matrix
+      {
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major diagonal matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (diagonal matrix)";
+
+      // Uniform diagonal matrix (0 non-zeros)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform diagonal matrix (3 non-zeros)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 1UL, 0 );
+         mat.insert( 2UL, 2UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform diagonal matrix (1 non-zero)
+      {
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(2,2) = 5;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 1UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );
