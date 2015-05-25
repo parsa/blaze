@@ -83,6 +83,7 @@ class OperationTest
    /*!\name Test functions */
    //@{
    void testIsNan();
+   void testIsUniform();
    void testLength();
    void testNormalize();
    void testMinimum();
