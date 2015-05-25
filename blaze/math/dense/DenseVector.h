@@ -375,6 +375,9 @@ template< typename VT, bool TF >
 bool isnan( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
+bool isUniform( const DenseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 typename CMathTrait<typename VT::ElementType>::Type length( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
@@ -421,6 +424,56 @@ bool isnan( const DenseVector<VT,TF>& dv )
       if( isnan( a[i] ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense vector is a uniform vector.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked.
+// \return \a true if the vector is a uniform vector, \a false if not.
+//
+// This function checks if the given dense vector is a uniform vector. The vector is considered
+// to be uniform if all its elements are identical. The following code example demonstrates the
+// use of the function:
+
+   \code
+   blaze::DynamicVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isUniform( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results in a uniform vector:
+
+   \code
+   if( isUniform( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isUniform( const DenseVector<VT,TF>& dv )
+{
+   typedef typename VT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstReference  ConstReference;
+
+   if( (~dv).size() < 2UL )
+      return true;
+
+   CT a( ~dv );  // Evaluation of the dense vector operand
+
+   ConstReference cmp( (~dv)[0UL] );
+
+   for( size_t i=1UL; i<(~dv).size(); ++i ) {
+      if( (~dv)[i] != cmp )
+         return false;
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
