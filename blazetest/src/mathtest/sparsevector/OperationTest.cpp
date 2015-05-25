@@ -64,6 +64,7 @@ namespace sparsevector {
 OperationTest::OperationTest()
 {
    testIsNan();
+   testIsUniform();
    testLength();
    testNormalize();
    testMinimum();
@@ -133,6 +134,121 @@ void OperationTest::testIsNan()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isnan evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isUniform() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isUniform() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testIsUniform()
+{
+   test_ = "isUniform() function";
+
+   // Uniform 0-dimensional vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      if( blaze::isUniform( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform 1-dimensional vector
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 1UL, 1UL );
+      vec.insert( 0UL, 5 );
+
+      if( blaze::isUniform( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform 5-dimensional vector (2 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 2UL );
+      vec.insert( 1UL, 0 );
+      vec.insert( 4UL, 0 );
+
+      if( blaze::isUniform( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform 5-dimensional vector (5 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
+      vec.insert( 0UL, 5 );
+      vec.insert( 1UL, 5 );
+      vec.insert( 2UL, 5 );
+      vec.insert( 3UL, 5 );
+      vec.insert( 4UL, 5 );
+
+      if( blaze::isUniform( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Non-uniform 5-dimensional vector (2 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 2UL );
+      vec.insert( 1UL, 0 );
+      vec.insert( 4UL, 3 );
+
+      if( blaze::isUniform( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform 5-dimensional vector (5 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
+      vec.insert( 0UL, 5 );
+      vec.insert( 1UL, 5 );
+      vec.insert( 2UL, 5 );
+      vec.insert( 3UL, 5 );
+      vec.insert( 4UL, 3 );
+
+      if( blaze::isUniform( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isUniform evaluation\n"
              << " Details:\n"
              << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );
