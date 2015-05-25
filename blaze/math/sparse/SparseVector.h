@@ -174,6 +174,9 @@ template< typename VT, bool TF >
 bool isnan( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
+bool isUniform( const SparseVector<VT,TF>& dv );
+
+template< typename VT, bool TF >
 typename CMathTrait<typename VT::ElementType>::Type length( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
@@ -222,6 +225,70 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
       if( isnan( element->value() ) ) return true;
    }
    return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse vector is a uniform vector.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be checked.
+// \return \a true if the vector is a uniform vector, \a false if not.
+//
+// This function checks if the given sparse vector is a uniform vector. The vector is considered
+// to be uniform if all its elements are identical. The following code example demonstrates the
+// use of the function:
+
+   \code
+   blaze::CompressedVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isUniform( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results in a uniform vector:
+
+   \code
+   if( isUniform( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+bool isUniform( const SparseVector<VT,TF>& sv )
+{
+   typedef typename VT::CompositeType  CT;
+   typedef typename RemoveReference<CT>::Type::ConstReference  ConstReference;
+   typedef typename RemoveReference<CT>::Type::ConstIterator   ConstIterator;
+
+   if( (~sv).size() < 2UL )
+      return true;
+
+   CT a( ~sv );  // Evaluation of the sparse vector operand
+
+   if( (~sv).nonZeros() != (~sv).size() )
+   {
+      for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+   else
+   {
+      ConstReference cmp( (~sv)[0] );
+      ConstIterator element( (~sv).begin() );
+
+      ++element;
+
+      for( ; element!=(~sv).end(); ++element ) {
+         if( element->value() != cmp )
+            return false;
+      }
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
