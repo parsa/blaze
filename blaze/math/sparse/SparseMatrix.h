@@ -40,6 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/Equal.h>
@@ -55,11 +57,15 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -294,6 +300,9 @@ template< typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
+bool isUniform( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
 bool isLower( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -452,6 +461,220 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checks if the given row-major triangular sparse matrix is a uniform matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+*/
+template< typename MT >  // Type of the sparse matrix
+bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
+{
+   BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t ibegin( ( IsStrictlyLower<MT>::value )?( 1UL ):( 0UL ) );
+   const size_t iend  ( ( IsStrictlyUpper<MT>::value )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
+
+   for( size_t i=ibegin; i<iend; ++i ) {
+      for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checks if the given column-major triangular sparse matrix is a uniform matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+*/
+template< typename MT >  // Type of the sparse matrix
+bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
+{
+   BLAZE_CONSTRAINT_MUST_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t jbegin( ( IsStrictlyUpper<MT>::value )?( 1UL ):( 0UL ) );
+   const size_t jend  ( ( IsStrictlyLower<MT>::value )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
+
+   for( size_t j=jbegin; j<jend; ++j ) {
+      for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checks if the given row-major general sparse matrix is a uniform matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+*/
+template< typename MT >  // Type of the sparse matrix
+bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t maxElements( (~sm).rows() * (~sm).columns() );
+
+   if( (~sm).nonZeros() != maxElements )
+   {
+      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
+         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else
+   {
+      BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
+
+      typename MT::ConstReference cmp( (~sm)(0UL,0UL) );
+
+      for( size_t i=0UL; i<(~sm).rows(); ++i ) {
+         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+            if( element->value() != cmp )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checks if the given column-major general sparse matrix is a uniform matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+*/
+template< typename MT >  // Type of the sparse matrix
+bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
+
+   typedef typename MT::ConstIterator  ConstIterator;
+
+   const size_t maxElements( (~sm).rows() * (~sm).columns() );
+
+   if( (~sm).nonZeros() != maxElements )
+   {
+      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
+         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+            if( !isDefault( element->value() ) )
+               return false;
+         }
+      }
+   }
+   else
+   {
+      BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
+
+      typename MT::ConstReference cmp( (~sm)(0UL,0UL) );
+
+      for( size_t j=0UL; j<(~sm).columns(); ++j ) {
+         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+            if( element->value() != cmp )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is a uniform matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a uniform matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is a uniform matrix. The matrix is considered
+// to be uniform if all its elements are identical. The following code example demonstrates the
+// use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniform( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a uniform matrix:
+
+   \code
+   if( isUniform( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isUniform( const SparseMatrix<MT,SO>& sm )
+{
+   if( IsUniTriangular<MT>::value )
+      return false;
+
+   if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
+       ( (~sm).rows() == 1UL && (~sm).columns() == 1UL ) )
+      return true;
+
+   typename MT::CompositeType A( ~sm );  // Evaluation of the sparse matrix operand
+
+   return isUniform_backend( A, typename IsTriangular<MT>::Type() );
 }
 //*************************************************************************************************
 
