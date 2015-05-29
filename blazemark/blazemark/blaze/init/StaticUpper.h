@@ -115,12 +115,12 @@ void init( ::blaze::UpperMatrix< ::blaze::StaticMatrix<Type,N,N,::blaze::columnM
 
 
 //*************************************************************************************************
-/*!\brief Random initialization of the given vector of static matrices.
+/*!\brief Random initialization of the given vector of upper static matrices.
 //
-// \param v The vector of static matrices to be initialized.
+// \param v The vector of upper static matrices to be initialized.
 // \return void
 //
-// This function initializes all static matrices in the given vector with random values.
+// This function initializes all upper static matrices in the given vector with random values.
 */
 template< typename Type  // Data type of the matrix
         , size_t N       // Number of rows and columns

@@ -115,12 +115,12 @@ void init( ::blaze::LowerMatrix< ::blaze::StaticMatrix<Type,N,N,::blaze::columnM
 
 
 //*************************************************************************************************
-/*!\brief Random initialization of the given vector of static matrices.
+/*!\brief Random initialization of the given vector of lower static matrices.
 //
-// \param v The vector of static matrices to be initialized.
+// \param v The vector of lower static matrices to be initialized.
 // \return void
 //
-// This function initializes all static matrices in the given vector with random values.
+// This function initializes all lower static matrices in the given vector with random values.
 */
 template< typename Type  // Data type of the matrix
         , size_t N       // Number of rows and columns
