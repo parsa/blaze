@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
@@ -158,6 +159,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
@@ -178,6 +180,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
@@ -199,6 +202,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -220,6 +224,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -251,7 +256,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::addition &&
@@ -285,7 +291,8 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT::vectorizable && MT::vectorizable &&
+   enum { vectorizable = !IsDiagonal<MT>::value &&
+                         VT::vectorizable && MT::vectorizable &&
                          IsSame<VET,MET>::value &&
                          IntrinsicTrait<VET>::addition &&
                          IntrinsicTrait<VET>::multiplication };
@@ -318,24 +325,26 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      ElementType res = ElementType();
+      if( mat_.rows() == 0UL )
+         return ElementType();
 
-      if( mat_.rows() != 0UL )
-      {
-         const size_t ibegin( ( IsLower<MT>::value )?( index ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )?( index+1UL ):( mat_.rows() ) );
-         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+      if( IsDiagonal<MT>::value )
+         return vec_[index] * mat_(index,index);
 
-         const size_t inum( iend - ibegin );
-         const size_t ipos( ibegin + ( ( inum - 1UL ) & size_t(-2) ) + 1UL );
+      const size_t ibegin( ( IsLower<MT>::value )?( index ):( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )?( index+1UL ):( mat_.rows() ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         res = vec_[ibegin] * mat_(ibegin,index);
-         for( size_t i=ibegin+1UL; i<ipos; i+=2UL ) {
-            res += vec_[i] * mat_(i,index) + vec_[i+1UL] * mat_(i+1UL,index);
-         }
-         if( ipos < iend ) {
-            res += vec_[ipos] * mat_(ipos,index);
-         }
+      const size_t inum( iend - ibegin );
+      const size_t ipos( ibegin + ( ( inum - 1UL ) & size_t(-2) ) + 1UL );
+
+      ElementType res( vec_[ibegin] * mat_(ibegin,index) );
+
+      for( size_t i=ibegin+1UL; i<ipos; i+=2UL ) {
+         res += vec_[i] * mat_(i,index) + vec_[i+1UL] * mat_(i+1UL,index);
+      }
+      if( ipos < iend ) {
+         res += vec_[ipos] * mat_(ipos,index);
       }
 
       return res;
@@ -482,11 +491,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         TDVecDMatMultExpr::selectSmallAssignKernel( y, x, A );
+         selectSmallAssignKernel( y, x, A );
       else
-         TDVecDMatMultExpr::selectBlasAssignKernel( y, x, A );
+         selectBlasAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -528,20 +538,27 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       }
       for( size_t i=( IsLower<MT1>::value )?( 0UL ):( 1UL ); i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
-         const size_t jnum  ( jend - jbegin );
-         const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
-
-         for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            y[j    ] += x[i] * A(i,j    );
-            y[j+1UL] += x[i] * A(i,j+1UL);
-         }
-         if( jpos < jend ) {
-            y[jpos] += x[i] * A(i,jpos);
-         }
-         if( IsLower<MT1>::value ) {
+         if( IsDiagonal<MT1>::value )
+         {
             y[i] = x[i] * A(i,i);
+         }
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
+            const size_t jnum  ( jend - jbegin );
+            const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
+
+            for( size_t j=jbegin; j<jpos; j+=2UL ) {
+               y[j    ] += x[i] * A(i,j    );
+               y[j+1UL] += x[i] * A(i,j+1UL);
+            }
+            if( jpos < jend ) {
+               y[jpos] += x[i] * A(i,jpos);
+            }
+            if( IsLower<MT1>::value ) {
+               y[i] = x[i] * A(i,i);
+            }
          }
       }
    }
@@ -1104,11 +1121,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         TDVecDMatMultExpr::selectSmallAddAssignKernel( y, x, A );
+         selectSmallAddAssignKernel( y, x, A );
       else
-         TDVecDMatMultExpr::selectBlasAddAssignKernel( y, x, A );
+         selectBlasAddAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1137,19 +1155,26 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
-         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
-
-         const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
-
-         for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            y[j    ] += x[i] * A(i,j    );
-            y[j+1UL] += x[i] * A(i,j+1UL);
+         if( IsDiagonal<MT1>::value )
+         {
+            y[i] += x[i] * A(i,i);
          }
-         if( jpos < jend ) {
-            y[jpos] += x[i] * A(i,jpos);
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+            const size_t jnum( jend - jbegin );
+            const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+            for( size_t j=jbegin; j<jpos; j+=2UL ) {
+               y[j    ] += x[i] * A(i,j    );
+               y[j+1UL] += x[i] * A(i,j+1UL);
+            }
+            if( jpos < jend ) {
+               y[jpos] += x[i] * A(i,jpos);
+            }
          }
       }
    }
@@ -1701,11 +1726,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         TDVecDMatMultExpr::selectSmallSubAssignKernel( y, x, A );
+         selectSmallSubAssignKernel( y, x, A );
       else
-         TDVecDMatMultExpr::selectBlasSubAssignKernel( y, x, A );
+         selectBlasSubAssignKernel( y, x, A );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1734,19 +1760,26 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
-         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
-
-         const size_t jnum( jend - jbegin );
-         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
-
-         for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            y[j    ] -= x[i] * A(i,j    );
-            y[j+1UL] -= x[i] * A(i,j+1UL);
+         if( IsDiagonal<MT1>::value )
+         {
+            y[i] -= x[i] * A(i,i);
          }
-         if( jpos < jend ) {
-            y[jpos] -= x[i] * A(i,jpos);
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+            const size_t jnum( jend - jbegin );
+            const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+            for( size_t j=jbegin; j<jpos; j+=2UL ) {
+               y[j    ] -= x[i] * A(i,j    );
+               y[j+1UL] -= x[i] * A(i,j+1UL);
+            }
+            if( jpos < jend ) {
+               y[jpos] -= x[i] * A(i,jpos);
+            }
          }
       }
    }
@@ -2565,6 +2598,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
@@ -2584,6 +2618,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
@@ -2604,6 +2639,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -2623,6 +2659,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -2650,7 +2687,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
        \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IsSame<typename T1::ElementType,T4>::value &&
@@ -2684,7 +2722,8 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = VT::vectorizable && MT::vectorizable &&
+   enum { vectorizable = !IsDiagonal<MT>::value &&
+                         VT::vectorizable && MT::vectorizable &&
                          IsSame<VET,MET>::value &&
                          IsSame<VET,ST>::value &&
                          IntrinsicTrait<VET>::addition &&
@@ -2862,11 +2901,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectSmallAssignKernel( y, x, A, scalar );
+         selectSmallAssignKernel( y, x, A, scalar );
       else
-         DVecScalarMultExpr::selectBlasAssignKernel( y, x, A, scalar );
+         selectBlasAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
@@ -2908,24 +2948,33 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
       }
       for( size_t i=( IsLower<MT1>::value )?( 0UL ):( 1UL ); i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
-         const size_t jnum  ( jend - jbegin );
-         const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
+         if( IsDiagonal<MT1>::value )
+         {
+            y[i] = x[i] * A(i,i) * scalar;
+         }
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( i ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( i ):( N ) );
+            const size_t jnum  ( jend - jbegin );
+            const size_t jpos  ( jbegin + ( jnum & size_t(-2) ) );
 
-         for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            y[j    ] += x[i] * A(i,j    );
-            y[j+1UL] += x[i] * A(i,j+1UL);
-         }
-         if( jpos < jend ) {
-            y[jpos] += x[i] * A(i,jpos);
-         }
-         if( IsLower<MT1>::value ) {
-            y[i] = x[i] * A(i,i);
+            for( size_t j=jbegin; j<jpos; j+=2UL ) {
+               y[j    ] += x[i] * A(i,j    );
+               y[j+1UL] += x[i] * A(i,j+1UL);
+            }
+            if( jpos < jend ) {
+               y[jpos] += x[i] * A(i,jpos);
+            }
+            if( IsLower<MT1>::value ) {
+               y[i] = x[i] * A(i,i);
+            }
          }
       }
-      for( size_t j=0UL; j<N; ++j ) {
-         y[j] *= scalar;
+      if( !IsDiagonal<MT1>::value ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            y[j] *= scalar;
+         }
       }
    }
    //**********************************************************************************************
@@ -3489,11 +3538,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectSmallAddAssignKernel( y, x, A, scalar );
+         selectSmallAddAssignKernel( y, x, A, scalar );
       else
-         DVecScalarMultExpr::selectBlasAddAssignKernel( y, x, A, scalar );
+         selectBlasAddAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
@@ -4061,11 +4111,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      if( ( IsComputation<MT>::value && !evaluateMatrix ) ||
+      if( ( IsDiagonal<MT1>::value ) ||
+          ( IsComputation<MT>::value && !evaluateMatrix ) ||
           ( A.rows() * A.columns() < TDVECDMATMULT_THRESHOLD ) )
-         DVecScalarMultExpr::selectSmallSubAssignKernel( y, x, A, scalar );
+         selectSmallSubAssignKernel( y, x, A, scalar );
       else
-         DVecScalarMultExpr::selectBlasSubAssignKernel( y, x, A, scalar );
+         selectBlasSubAssignKernel( y, x, A, scalar );
    }
    //**********************************************************************************************
 
