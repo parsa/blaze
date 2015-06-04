@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -73,6 +74,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -96,6 +98,8 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -188,6 +192,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
@@ -207,6 +212,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
@@ -228,6 +234,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -249,6 +256,7 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -279,7 +287,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::addition &&
@@ -315,7 +324,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
+   enum { vectorizable = !IsDiagonal<MT2>::value &&
+                         MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IntrinsicTrait<ET1>::addition &&
                          IntrinsicTrait<ET1>::multiplication };
@@ -350,26 +360,34 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      const size_t kbegin( max( ( IsUpper<MT1>::value )?( i ):( 0UL ),
-                                ( IsLower<MT2>::value )?( j ):( 0UL ) ) );
-      const size_t kend  ( min( ( IsLower<MT1>::value )?( i+1UL ):( lhs_.columns() ),
-                                ( IsUpper<MT2>::value )?( j+1UL ):( lhs_.columns() ) ) );
+      const size_t kbegin( ( IsUpper<MT1>::value )
+                           ?( IsLower<MT2>::value ? max( i, j ) : i )
+                           :( IsLower<MT2>::value ? j : 0UL ) );
+      const size_t kend( ( IsLower<MT1>::value )
+                         ?( IsUpper<MT2>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
+                         :( IsUpper<MT2>::value ? ( j+1UL ) : lhs_.columns() ) );
 
-      ElementType tmp = ElementType();
+      if( lhs_.columns() == 0UL ||
+          ( ( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) && kbegin >= kend ) )
+         return ElementType();
 
-      if( lhs_.columns() != 0UL && kbegin < kend )
-      {
-         const size_t knum( kend - kbegin );
-         const size_t kpos( kbegin + ( ( knum - 1UL ) & size_t(-2) ) + 1UL );
+      if( IsDiagonal<MT1>::value )
+         return lhs_(i,i) * rhs_(i,j);
 
-         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
-         for( size_t k=kbegin+1UL; k<kpos; k+=2UL ) {
-            tmp += lhs_(i,k    ) * rhs_(k    ,j);
-            tmp += lhs_(i,k+1UL) * rhs_(k+1UL,j);
-         }
-         if( kpos < kend ) {
-            tmp += lhs_(i,kpos) * rhs_(kpos,j);
-         }
+      if( IsDiagonal<MT2>::value )
+         return lhs_(i,j) * rhs_(j,j);
+
+      const size_t knum( kend - kbegin );
+      const size_t kpos( kbegin + ( ( knum - 1UL ) & size_t(-2) ) + 1UL );
+
+      ElementType tmp( lhs_(i,kbegin) * rhs_(kbegin,j) );
+
+      for( size_t k=kbegin+1UL; k<kpos; k+=2UL ) {
+         tmp += lhs_(i,k    ) * rhs_(k    ,j);
+         tmp += lhs_(i,k+1UL) * rhs_(k+1UL,j);
+      }
+      if( kpos < kend ) {
+         tmp += lhs_(i,kpos) * rhs_(kpos,j);
       }
 
       return tmp;
@@ -530,17 +548,19 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatDMatMultExpr::selectSmallAssignKernel( C, A, B );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallAssignKernel( C, A, B );
       else
-         DMatDMatMultExpr::selectBlasAssignKernel( C, A, B );
+         selectBlasAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default assignment to dense matrices********************************************************
+   //**Default assignment to dense matrices (general/general)**************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a dense matrix-dense matrix multiplication (\f$ C=A*B \f$).
+   /*!\brief Default assignment of a general dense matrix-general dense matrix multiplication
+   //        (\f$ C=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -548,13 +568,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function implements the default assignment of a dense matrix-dense matrix
-   // multiplication expression to a dense matrix.
+   // This function implements the default assignment of a general dense matrix-general dense
+   // matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -571,26 +592,162 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
             const size_t jend  ( ( IsLower<MT5>::value )?( kbegin+1UL ):( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-            for( size_t j=0UL; j<jbegin; ++j ) {
-               reset( C(i,j) );
+            if( IsUpper<MT4>::value && IsUpper<MT5>::value ) {
+               for( size_t j=0UL; j<jbegin; ++j ) {
+                  reset( C(i,j) );
+               }
             }
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
             }
-            for( size_t j=jend; j<N; ++j ) {
-               reset( C(i,j) );
+            if( IsLower<MT4>::value && IsLower<MT5>::value ) {
+               for( size_t j=jend; j<N; ++j ) {
+                  reset( C(i,j) );
+               }
             }
          }
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
             const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k+1UL ):( N ) );
+            const size_t jend  ( ( IsLower<MT5>::value )?( k ):( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) += A(i,k) * B(k,j);
             }
+            if( IsLower<MT5>::value ) {
+               C(i,k) = A(i,k) * B(k,k);
+            }
          }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (general/diagonal)*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a general dense matrix-diagonal dense matrix multiplication
+   //        (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default assignment of a general dense matrix-diagonal dense
+   // matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         if( IsUpper<MT4>::value ) {
+            for( size_t j=0UL; j<jbegin; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+         for( size_t j=jbegin; j<jend; ++j ) {
+            C(i,j) = A(i,j) * B(j,j);
+         }
+         if( IsLower<MT4>::value ) {
+            for( size_t j=jend; j<N; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (diagonal/general)*************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a diagonal dense matrix-general dense matrix multiplication
+   //        (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default assignment of a diagonal dense matrix-general dense
+   // matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         if( IsUpper<MT5>::value ) {
+            for( size_t j=0UL; j<jbegin; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+         for( size_t j=jbegin; j<jend; ++j ) {
+            C(i,j) = A(i,i) * B(i,j);
+         }
+         if( IsLower<MT5>::value ) {
+            for( size_t j=jend; j<N; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (diagonal/diagonal)************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default assignment of a diagonal dense matrix-diagonal dense matrix multiplication
+   //        (\f$ C=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default assignment of a diagonal dense matrix-diagonal dense
+   // matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      reset( C );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) = A(i,i) * B(i,i);
       }
    }
    /*! \endcond */
@@ -652,10 +809,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -688,10 +847,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -724,8 +885,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -751,10 +913,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -777,8 +941,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -800,8 +965,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -818,8 +984,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
 
@@ -855,6 +1022,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
@@ -1266,18 +1435,19 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatDMatMultExpr::selectSmallAddAssignKernel( C, A, B );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallAddAssignKernel( C, A, B );
       else
-         DMatDMatMultExpr::selectBlasAddAssignKernel( C, A, B );
+         selectBlasAddAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default addition assignment to dense matrices***********************************************
+   //**Default addition assignment to dense matrices (general/general)*****************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default addition assignment of a dense matrix-dense matrix multiplication
-   //        (\f$ C+=A*B \f$).
+   /*!\brief Default addition assignment of a general dense matrix-general dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -1285,13 +1455,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function implements the default addition assignment of a dense matrix-dense matrix
-   // multiplication expression to a dense matrix.
+   // This function implements the default addition assignment of a general dense matrix-general
+   // dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -1320,6 +1491,127 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                C(i,jpos) += A(i,k) * B(k,jpos);
             }
          }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (general/diagonal)****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a general dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default addition assignment of a general dense matrix-diagonal
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) += A(i,j    ) * B(j    ,j    );
+            C(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL);
+         }
+         if( jpos < jend ) {
+            C(i,jpos) += A(i,jpos) * B(jpos,jpos);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (diagonal/general)****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a diagonal dense matrix-general dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default addition assignment of a diagonal dense matrix-general
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) += A(i,i) * B(i,j    );
+            C(i,j+1UL) += A(i,i) * B(i,j+1UL);
+         }
+         if( jpos < jend ) {
+            C(i,jpos) += A(i,i) * B(i,jpos);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (diagonal/diagonal)***************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default addition assignment of a diagonal dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C+=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default addition assignment of a diagonal dense matrix-diagonal
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) += A(i,i) * B(i,i);
       }
    }
    /*! \endcond */
@@ -1382,10 +1674,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
             IntrinsicType xmm2( (~C).load(i,j+IT::size    ) );
@@ -1425,10 +1719,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j             ) );
             IntrinsicType xmm2( (~C).load(i    ,j+IT::size    ) );
@@ -1468,8 +1764,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
@@ -1498,10 +1795,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j         ) );
             IntrinsicType xmm2( (~C).load(i    ,j+IT::size) );
@@ -1527,8 +1826,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i,j         ) );
@@ -1551,9 +1851,10 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j) );
             IntrinsicType xmm2( (~C).load(i+1UL,j) );
@@ -1570,8 +1871,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1( (~C).load(i,j) );
 
@@ -1607,6 +1909,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
@@ -1994,18 +2298,19 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatDMatMultExpr::selectSmallSubAssignKernel( C, A, B );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallSubAssignKernel( C, A, B );
       else
-         DMatDMatMultExpr::selectBlasSubAssignKernel( C, A, B );
+         selectBlasSubAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to dense matrices********************************************
+   //**Default subtraction assignment to dense matrices (general/general)**************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a dense matrix-dense matrix multiplication
-   //        (\f$ C-=A*B \f$).
+   /*!\brief Default subtraction assignment of a general dense matrix-general dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -2013,13 +2318,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side multiplication operand.
    // \return void
    //
-   // This function implements the default subtraction assignment of a dense matrix-dense matrix
-   // multiplication expression to a dense matrix.
+   // This function implements the default subtraction assignment of a general dense matrix-
+   // general dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -2048,6 +2354,127 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                C(i,jpos) -= A(i,k) * B(k,jpos);
             }
          }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (general/diagonal)*************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a general dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a general dense matrix-
+   // diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) -= A(i,j    ) * B(j    ,j    );
+            C(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL);
+         }
+         if( jpos < jend ) {
+            C(i,jpos) -= A(i,jpos) * B(jpos,jpos);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (diagonal/general)*************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a diagonal dense matrix-general dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a diagonal dense matrix-
+   // general dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) -= A(i,i) * B(i,j    );
+            C(i,j+1UL) -= A(i,i) * B(i,j+1UL);
+         }
+         if( jpos < jend ) {
+            C(i,jpos) -= A(i,i) * B(i,jpos);
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (diagonal/diagonal)************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Default subtraction assignment of a diagonal dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C-=A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a diagonal dense matrix-
+   // diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) -= A(i,i) * B(i,i);
       }
    }
    /*! \endcond */
@@ -2110,10 +2537,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
             IntrinsicType xmm2( (~C).load(i,j+IT::size    ) );
@@ -2153,10 +2582,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j             ) );
             IntrinsicType xmm2( (~C).load(i    ,j+IT::size    ) );
@@ -2196,8 +2627,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
@@ -2226,10 +2658,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j         ) );
             IntrinsicType xmm2( (~C).load(i    ,j+IT::size) );
@@ -2255,8 +2689,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i,j         ) );
@@ -2279,8 +2714,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j) );
@@ -2298,8 +2734,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1( (~C).load(i,j) );
 
@@ -2335,6 +2772,8 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
@@ -3070,6 +3509,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsFloat<typename T1::ElementType>::value &&
                      IsFloat<typename T2::ElementType>::value &&
@@ -3089,6 +3529,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsDouble<typename T1::ElementType>::value &&
                      IsDouble<typename T2::ElementType>::value &&
@@ -3109,6 +3550,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -3128,6 +3570,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                      HasMutableDataAccess<T1>::value &&
                      HasConstDataAccess<T2>::value &&
                      HasConstDataAccess<T3>::value &&
+                     !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,Type>::value &&
                      IsSame<typename T2::ElementType,Type>::value &&
@@ -3154,7 +3597,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
-      enum { value = T1::vectorizable && T2::vectorizable && T3::vectorizable &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IsSame<typename T1::ElementType,T4>::value &&
@@ -3190,7 +3634,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT1::vectorizable && MT2::vectorizable &&
+   enum { vectorizable = !IsDiagonal<MT2>::value &&
+                         MT1::vectorizable && MT2::vectorizable &&
                          IsSame<ET1,ET2>::value &&
                          IsSame<ET1,ST>::value &&
                          IntrinsicTrait<ET1>::addition &&
@@ -3384,16 +3829,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectSmallAssignKernel( C, A, B, scalar );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasAssignKernel( C, A, B, scalar );
+         selectBlasAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**Default assignment to dense matrices********************************************************
-   /*!\brief Default assignment of a scaled dense matrix-dense matrix multiplication
-   //        (\f$ C=s*A*B \f$).
+   //**Default assignment to dense matrices (general/general)**************************************
+   /*!\brief Default assignment of a scaled general dense matrix-general dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -3402,14 +3848,15 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function implements the default assignment of a scaled dense matrix-dense matrix
-   // multiplication expression to a dense matrix.
+   // This function implements the default assignment of a scaled general dense matrix-general
+   // dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3426,24 +3873,31 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
             const size_t jend  ( ( IsLower<MT5>::value )?( kbegin+1UL ):( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-            for( size_t j=0UL; j<jbegin; ++j ) {
-               reset( C(i,j) );
+            if( IsUpper<MT4>::value && IsUpper<MT5>::value ) {
+               for( size_t j=0UL; j<jbegin; ++j ) {
+                  reset( C(i,j) );
+               }
             }
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
             }
-            for( size_t j=jend; j<N; ++j ) {
-               reset( C(i,j) );
+            if( IsLower<MT4>::value && IsLower<MT5>::value ) {
+               for( size_t j=jend; j<N; ++j ) {
+                  reset( C(i,j) );
+               }
             }
          }
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
             const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k+1UL ):( N ) );
+            const size_t jend  ( ( IsLower<MT5>::value )?( k ):( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) += A(i,k) * B(k,j);
+            }
+            if( IsLower<MT5>::value ) {
+               C(i,k) = A(i,k) * B(k,k);
             }
          }
          {
@@ -3454,6 +3908,135 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                C(i,j) *= scalar;
             }
          }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (general/diagonal)*************************************
+   /*!\brief Default assignment of a scaled general dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default assignment of a scaled general dense matrix-diagonal
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         if( IsUpper<MT4>::value ) {
+            for( size_t j=0UL; j<jbegin; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+         for( size_t j=jbegin; j<jend; ++j ) {
+            C(i,j) = A(i,j) * B(j,j) * scalar;
+         }
+         if( IsLower<MT4>::value ) {
+            for( size_t j=jend; j<N; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (diagonal/general)*************************************
+   /*!\brief Default assignment of a scaled diagonal dense matrix-general dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default assignment of a scaled diagonal dense matrix-general
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         if( IsUpper<MT5>::value ) {
+            for( size_t j=0UL; j<jbegin; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+         for( size_t j=jbegin; j<jend; ++j ) {
+            C(i,j) = A(i,i) * B(i,j) * scalar;
+         }
+         if( IsLower<MT5>::value ) {
+            for( size_t j=jend; j<N; ++j ) {
+               reset( C(i,j) );
+            }
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default assignment to dense matrices (diagonal/diagonal)************************************
+   /*!\brief Default assignment of a scaled diagonal dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default assignment of a scaled diagonal dense matrix-diagional
+   // dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      reset( C );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) = A(i,i) * B(i,i) * scalar;
       }
    }
    //**********************************************************************************************
@@ -3518,10 +4101,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -3554,10 +4139,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -3590,8 +4177,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -3617,10 +4205,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -3643,8 +4233,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -3666,8 +4257,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -3684,8 +4276,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
 
@@ -3721,6 +4314,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
@@ -4134,16 +4729,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectSmallAddAssignKernel( C, A, B, scalar );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallAddAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasAddAssignKernel( C, A, B, scalar );
+         selectBlasAddAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**Default addition assignment to dense matrices***********************************************
-   /*!\brief Default addition assignment of a scaled dense matrix-dense matrix multiplication
-   //        (\f$ C+=s*A*B \f$).
+   //**Default addition assignment to dense matrices (general/general)*****************************
+   /*!\brief Default addition assignment of a scaled general dense matrix-general dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -4159,10 +4755,132 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
       addAssign( C, tmp );
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (general/diagonal)****************************
+   /*!\brief Default addition assignment of a scaled general dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default addition assignment of a scaled general dense matrix-
+   // diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) += A(i,j    ) * B(j    ,j    ) * scalar;
+            C(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
+         }
+         if( jpos < jend ) {
+            C(i,jpos) += A(i,jpos) * B(jpos,jpos) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (diagonal/general)****************************
+   /*!\brief Default addition assignment of a scaled diagonal dense matrix-general dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default addition assignment of a scaled diagonal dense matrix-
+   // general dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) += A(i,i) * B(i,j    ) * scalar;
+            C(i,j+1UL) += A(i,i) * B(i,j+1UL) * scalar;
+         }
+         if( jpos < jend ) {
+            C(i,jpos) += A(i,i) * B(i,jpos) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense matrices (diagonal/diagonal)***************************
+   /*!\brief Default addition assignment of a scaled diagonal dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C+=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default addition assignment of a scaled diagonal dense matrix-
+   // diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) += A(i,i) * B(i,i) * scalar;
+      }
    }
    //**********************************************************************************************
 
@@ -4226,10 +4944,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4262,10 +4982,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4298,8 +5020,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -4325,10 +5048,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -4350,8 +5075,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -4373,8 +5099,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -4391,8 +5118,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
 
@@ -4428,6 +5156,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
@@ -4817,16 +5547,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
            , typename ST2 >  // Type of the scalar value
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD )
-         DMatScalarMultExpr::selectSmallSubAssignKernel( C, A, B, scalar );
+      if( ( IsDiagonal<MT5>::value ) ||
+          ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
+         selectSmallSubAssignKernel( C, A, B, scalar );
       else
-         DMatScalarMultExpr::selectBlasSubAssignKernel( C, A, B, scalar );
+         selectBlasSubAssignKernel( C, A, B, scalar );
    }
    //**********************************************************************************************
 
-   //**Default subtraction assignment to dense matrices********************************************
-   /*!\brief Default subtraction assignment of a scaled dense matrix-dense matrix multiplication
-   //        (\f$ C-=s*A*B \f$).
+   //**Default subtraction assignment to dense matrices (general/general)**************************
+   /*!\brief Default subtraction assignment of a scaled general dense matrix-general dense matrix
+   //        multiplication (\f$ C-=s*A*B \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -4835,17 +5566,139 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    // \param scalar The scaling factor.
    // \return void
    //
-   // This function implements the default subtraction assignment of a scaled dense matrix-dense
-   // matrix multiplication expression to a dense matrix.
+   // This function implements the default subtraction assignment of a scaled general dense
+   // matrix-general dense matrix multiplication expression to a dense matrix.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
       subAssign( C, tmp );
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (general/diagonal)*************************
+   /*!\brief Default subtraction assignment of a scaled general dense matrix-diagonal dense matrix
+   //        multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a scaled general dense
+   // matrix-diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) -= A(i,j    ) * B(j    ,j    ) * scalar;
+            C(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
+         }
+         if( jpos < jend ) {
+            C(i,jpos) -= A(i,jpos) * B(jpos,jpos) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (diagonal/general)*************************
+   /*!\brief Default subtraction assignment of a scaled diagonal dense matrix-general dense matrix
+   //        multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a scaled diagonal dense
+   // matrix-general dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         const size_t jnum( jend - jbegin );
+         const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
+
+         for( size_t j=jbegin; j<jpos; j+=2UL ) {
+            C(i,j    ) -= A(i,i) * B(i,j    ) * scalar;
+            C(i,j+1UL) -= A(i,i) * B(i,j+1UL) * scalar;
+         }
+         if( jpos < jend ) {
+            C(i,jpos) -= A(i,i) * B(i,jpos) * scalar;
+         }
+      }
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense matrices (diagonal/diagonal)************************
+   /*!\brief Default subtraction assignment of a scaled diagonal dense matrix-diagonal dense
+   //        matrix multiplication (\f$ C-=s*A*B \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side multiplication operand.
+   // \param B The right-hand side multiplication operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default subtraction assignment of a scaled diagonal dense
+   // matrix-diagonal dense matrix multiplication expression to a dense matrix.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5    // Type of the right-hand side matrix operand
+           , typename ST2 >  // Type of the scalar value
+   static inline typename EnableIf< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >::Type
+      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
+
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         C(i,i) -= A(i,i) * B(i,i) * scalar;
+      }
    }
    //**********************************************************************************************
 
@@ -4909,10 +5762,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
       for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*8UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4945,10 +5800,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4981,8 +5838,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -5008,10 +5866,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
-            const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( K ),
-                                      ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -5034,8 +5894,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -5057,8 +5918,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          for( ; (i+2UL) <= M; i+=2UL )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
 
             IntrinsicType xmm1, xmm2;
@@ -5075,8 +5937,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
          if( i < M )
          {
-            const size_t kbegin( max( ( IsUpper<MT4>::value )?( i ):( 0UL ),
-                                      ( IsLower<MT5>::value )?( j ):( 0UL ) ) );
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
 
@@ -5111,6 +5974,8 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
+      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT4::OppositeType );
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( typename MT5::OppositeType );
 
