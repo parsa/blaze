@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the lowermatrix module of the Blaze test suite
+#  Run script for the unilowermatrix module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,9 +33,9 @@
 #==================================================================================================
 
 
-PATH_LOWERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
+PATH_UNILOWERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running LowerMatrix tests..."
+echo " Running UniLowerMatrix tests..."
 
-EXE=$PATH_LOWERMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_LOWERMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNILOWERMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNILOWERMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
