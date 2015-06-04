@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the lowermatrix module of the Blaze test suite
+#  Makefile for the unilowermatrix module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
