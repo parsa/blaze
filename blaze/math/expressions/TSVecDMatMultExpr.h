@@ -61,9 +61,12 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
@@ -141,7 +144,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = T1::vectorizable && T3::vectorizable &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     T1::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::addition &&
@@ -159,6 +163,7 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+                     !IsDiagonal<T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<VET>::value };
    };
@@ -203,7 +208,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum { vectorizable = MT::vectorizable &&
+   enum { vectorizable = !IsDiagonal<MT>::value &&
+                         MT::vectorizable &&
                          IsSame<VET,MET>::value &&
                          IntrinsicTrait<VET>::addition &&
                          IntrinsicTrait<VET>::multiplication };
@@ -242,16 +248,15 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const ConstIterator end( IsUpper<MT>::value ? x.upperBound( index ) : x.end() );
       ConstIterator element( IsLower<MT>::value ? x.lowerBound( index ) : x.begin() );
+
       ElementType res = ElementType();
 
-      if( element != end && !( IsUpper<MT>::value && element->index() > index ) ) {
+      if( element != end ) {
          res = element->value() * mat_( element->index(), index );
          ++element;
          for( ; element!=end; ++element ) {
-            if( IsUpper<MT>::value && element->index() > index )
-               break;
             res += element->value() * mat_( element->index(), index );
          }
       }
@@ -411,21 +416,45 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         y[j] = element->value() * A(element->index(),j);
-      }
+      size_t last( 0UL );
 
-      ++element;
+      if( IsUpper<MT1>::value ) {
+         for( size_t j=0UL; j<element->index(); ++j )
+            reset( y[j] );
+      }
 
       for( ; element!=end; ++element )
       {
-         const size_t jbegin( ( IsUpper<MT>::value )?( element->index() ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( element->index()+1UL ):( N ) );
-         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if( IsDiagonal<MT1>::value )
+         {
+            const size_t index( element->index() );
 
-         for( size_t j=jbegin; j<jend; ++j ) {
-            y[j] += element->value() * A(element->index(),j);
+            for( size_t j=last; j<index; ++j )
+               reset( y[j] );
+
+            y[index] = element->value() * A(index,index);
+            last = index + 1UL;
          }
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( element->index() ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( element->index()+1UL ):( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+            for( size_t j=jbegin; j<last; ++j ) {
+               y[j] += element->value() * A(element->index(),j);
+            }
+            for( size_t j=last; j<jend; ++j ) {
+               y[j] = element->value() * A(element->index(),j);
+            }
+
+            last = jend;
+         }
+      }
+
+      if( IsLower<MT1>::value ) {
+         for( size_t j=last; j<N; ++j )
+            reset( y[j] );
       }
    }
    /*! \endcond */
@@ -512,8 +541,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -525,8 +554,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t i1( element->index() );
          const VET    v1( element->value() );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -619,8 +648,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
@@ -632,8 +661,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t        i1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
@@ -742,12 +771,20 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       for( ; element!=end; ++element )
       {
-         const size_t jbegin( ( IsUpper<MT>::value )?( element->index() ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( element->index()+1UL ):( N ) );
-         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if( IsDiagonal<MT1>::value )
+         {
+            const size_t index( element->index() );
+            y[index] += A(index,index) * element->value();
+         }
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( element->index() ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( element->index()+1UL ):( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         for( size_t j=jbegin; j<jend; ++j ) {
-            y[j] += element->value() * A(element->index(),j);
+            for( size_t j=jbegin; j<jend; ++j ) {
+               y[j] += element->value() * A(element->index(),j);
+            }
          }
       }
    }
@@ -803,8 +840,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -816,8 +853,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t i1( element->index() );
          const VET    v1( element->value() );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -878,8 +915,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
@@ -891,8 +928,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t        i1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
@@ -977,12 +1014,20 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
       for( ; element!=end; ++element )
       {
-         const size_t jbegin( ( IsUpper<MT>::value )?( element->index() ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( element->index()+1UL ):( N ) );
-         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if( IsDiagonal<MT1>::value )
+         {
+            const size_t index( element->index() );
+            y[index] -= A(index,index) * element->value();
+         }
+         else
+         {
+            const size_t jbegin( ( IsUpper<MT1>::value )?( element->index() ):( 0UL ) );
+            const size_t jend  ( ( IsLower<MT1>::value )?( element->index()+1UL ):( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         for( size_t j=jbegin; j<jend; ++j ) {
-            y[j] -= element->value() * A(element->index(),j);
+            for( size_t j=jbegin; j<jend; ++j ) {
+               y[j] -= element->value() * A(element->index(),j);
+            }
          }
       }
    }
@@ -1038,8 +1083,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -1051,8 +1096,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t i1( element->index() );
          const VET    v1( element->value() );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; ++j ) {
@@ -1113,8 +1158,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
 
          BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse vector index detected" );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i4+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i4+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
@@ -1126,8 +1171,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
          const size_t        i1( element->index() );
          const IntrinsicType v1( set( element->value() ) );
 
-         const size_t jbegin( ( IsUpper<MT>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )?( i1+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )?( i1 & size_t(-IT::size) ):( 0UL ) );
+         const size_t jend  ( ( IsLower<MT1>::value )?( i1+1UL ):( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=jbegin; j<jend; j+=IT::size ) {
