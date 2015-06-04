@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -171,7 +172,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !IsResizable<typename T1::ElementType>::value &&
+      enum { value = !IsDiagonal<T3>::value &&
+                     !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<ET1>::value };
    };
    /*! \endcond */
@@ -417,29 +419,44 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
 
       reset( C );
 
-      const size_t block( 64UL );
-
-      for( size_t jj=0UL; jj<B.columns(); jj+=block )
+      if( IsDiagonal<MT5>::value )
       {
-         const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
-
          for( size_t i=0UL; i<A.columns(); ++i )
          {
             const ConstIterator end( A.end(i) );
             ConstIterator element( A.begin(i) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
-
-            if( jbegin >= jend )
-               continue;
-
             for( ; element!=end; ++element ) {
-               for( size_t j=jbegin; j<jend; ++j ) {
-                  if( isDefault( C(element->index(),j) ) )
-                     C(element->index(),j) = element->value() * B(i,j);
-                  else
-                     C(element->index(),j) += element->value() * B(i,j);
+               C(element->index(),i) = element->value() * B(i,i);
+            }
+         }
+      }
+      else
+      {
+         const size_t block( 64UL );
+
+         for( size_t jj=0UL; jj<B.columns(); jj+=block )
+         {
+            const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
+
+            for( size_t i=0UL; i<A.columns(); ++i )
+            {
+               const ConstIterator end( A.end(i) );
+               ConstIterator element( A.begin(i) );
+
+               const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
+               const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
+
+               if( jbegin >= jend )
+                  continue;
+
+               for( ; element!=end; ++element ) {
+                  for( size_t j=jbegin; j<jend; ++j ) {
+                     if( isDefault( C(element->index(),j) ) )
+                        C(element->index(),j) = element->value() * B(i,j);
+                     else
+                        C(element->index(),j) += element->value() * B(i,j);
+                  }
                }
             }
          }
@@ -700,26 +717,41 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      const size_t block( 64UL );
-
-      for( size_t jj=0UL; jj<B.columns(); jj+=block )
+      if( IsDiagonal<MT5>::value )
       {
-         const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
-
          for( size_t i=0UL; i<A.columns(); ++i )
          {
             const ConstIterator end( A.end(i) );
             ConstIterator element( A.begin(i) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
-
-            if( jbegin >= jend )
-               continue;
-
             for( ; element!=end; ++element ) {
-               for( size_t j=jbegin; j<jend; ++j ) {
-                  C(element->index(),j) += element->value() * B(i,j);
+               C(element->index(),i) += element->value() * B(i,i);
+            }
+         }
+      }
+      else
+      {
+         const size_t block( 64UL );
+
+         for( size_t jj=0UL; jj<B.columns(); jj+=block )
+         {
+            const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
+
+            for( size_t i=0UL; i<A.columns(); ++i )
+            {
+               const ConstIterator end( A.end(i) );
+               ConstIterator element( A.begin(i) );
+
+               const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
+               const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
+
+               if( jbegin >= jend )
+                  continue;
+
+               for( ; element!=end; ++element ) {
+                  for( size_t j=jbegin; j<jend; ++j ) {
+                     C(element->index(),j) += element->value() * B(i,j);
+                  }
                }
             }
          }
@@ -939,26 +971,41 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      const size_t block( 64UL );
-
-      for( size_t jj=0UL; jj<B.columns(); jj+=block )
+      if( IsDiagonal<MT5>::value )
       {
-         const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
-
          for( size_t i=0UL; i<A.columns(); ++i )
          {
             const ConstIterator end( A.end(i) );
             ConstIterator element( A.begin(i) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
-
-            if( jbegin >= jend )
-               continue;
-
             for( ; element!=end; ++element ) {
-               for( size_t j=jbegin; j<jend; ++j ) {
-                  C(element->index(),j) -= element->value() * B(i,j);
+               C(element->index(),i) -= element->value() * B(i,i);
+            }
+         }
+      }
+      else
+      {
+         const size_t block( 64UL );
+
+         for( size_t jj=0UL; jj<B.columns(); jj+=block )
+         {
+            const size_t jpos( ( jj+block > B.columns() )?( B.columns() ):( jj+block ) );
+
+            for( size_t i=0UL; i<A.columns(); ++i )
+            {
+               const ConstIterator end( A.end(i) );
+               ConstIterator element( A.begin(i) );
+
+               const size_t jbegin( ( IsUpper<MT5>::value )?( max( i, jj ) ):( jj ) );
+               const size_t jend  ( ( IsLower<MT5>::value )?( min( i+1UL, jpos ) ):( jpos ) );
+
+               if( jbegin >= jend )
+                  continue;
+
+               for( ; element!=end; ++element ) {
+                  for( size_t j=jbegin; j<jend; ++j ) {
+                     C(element->index(),j) -= element->value() * B(i,j);
+                  }
                }
             }
          }
