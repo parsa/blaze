@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the uppermatrix module of the Blaze test suite
+#  Run script for the uniuppermatrix module of the Blaze test suite
 #
 #  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 #
@@ -33,9 +33,9 @@
 #==================================================================================================
 
 
-PATH_UPPERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
+PATH_UNIUPPERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running UpperMatrix tests..."
+echo " Running UniUpperMatrix tests..."
 
-EXE=$PATH_UPPERMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_UPPERMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNIUPPERMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
