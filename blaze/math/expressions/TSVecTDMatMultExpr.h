@@ -61,8 +61,10 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Thresholds.h>
@@ -212,16 +214,15 @@ class TSVecTDMatMultExpr : public DenseVector< TSVecTDMatMultExpr<VT,MT>, true >
 
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const ConstIterator end( IsUpper<MT>::value ? x.upperBound( index ) : x.end() );
       ConstIterator element( IsLower<MT>::value ? x.lowerBound( index ) : x.begin() );
+
       ElementType res = ElementType();
 
-      if( element != end && !( IsUpper<MT>::value && element->index() > index ) ) {
+      if( element != end ) {
          res = element->value() * mat_( element->index(), index );
          ++element;
          for( ; element!=end; ++element ) {
-            if( IsUpper<MT>::value && element->index() > index )
-               break;
             res += element->value() * mat_( element->index(), index );
          }
       }
