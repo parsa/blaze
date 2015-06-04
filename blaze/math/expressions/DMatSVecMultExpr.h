@@ -215,15 +215,15 @@ class DMatSVecMultExpr : public DenseVector< DMatSVecMultExpr<MT,VT>, false >
 
       BLAZE_INTERNAL_ASSERT( x.size() == vec_.size(), "Invalid vector size" );
 
+      const ConstIterator end( IsLower<MT>::value ? x.upperBound( index ) : x.end() );
       ConstIterator element( IsUpper<MT>::value ? x.lowerBound( index ) : x.begin() );
+
       ElementType res = ElementType();
 
-      if( element != x.end() && !( IsLower<MT>::value && element->index() > index ) ) {
+      if( element != end ) {
          res = mat_( index, element->index() ) * element->value();
          ++element;
-         for( ; element!=x.end(); ++element ) {
-            if( IsLower<MT>::value && element->index() > index )
-               break;
+         for( ; element!=end; ++element ) {
             res += mat_( index, element->index() ) * element->value();
          }
       }
