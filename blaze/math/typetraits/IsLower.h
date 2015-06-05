@@ -92,7 +92,7 @@ struct IsLower : public If< Or< IsUniLower<T>, IsStrictlyLower<T> >, TrueType, F
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsUniLower<T>::value };
+   enum { value = IsUniLower<T>::value || IsStrictlyLower<T>::value };
    typedef typename If< Or< IsUniLower<T>, IsStrictlyLower<T> >, TrueType, FalseType >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
