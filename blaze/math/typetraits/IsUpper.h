@@ -92,7 +92,7 @@ struct IsUpper : public If< Or< IsUniUpper<T>, IsStrictlyUpper<T> >, TrueType, F
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   enum { value = IsUniUpper<T>::value };
+   enum { value = IsUniUpper<T>::value || IsStrictlyUpper<T>::value };
    typedef typename If< Or< IsUniUpper<T>, IsStrictlyUpper<T> >, TrueType, FalseType >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
