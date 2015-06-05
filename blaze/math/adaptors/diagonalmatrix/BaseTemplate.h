@@ -117,6 +117,7 @@ namespace blaze {
 //  -# <b>\ref diagonalmatrix_square</b>
 //  -# <b>\ref diagonalmatrix_diagonal</b>
 //  -# <b>\ref diagonalmatrix_initialization</b>
+//  -# <b>\ref diagonalmatrix_storage</b>
 //
 // \n \subsection diagonalmatrix_square Diagonal Matrices Must Always be Square!
 //
@@ -335,6 +336,26 @@ namespace blaze {
    DiagonalMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
+// \n \subsection diagonalmatrix_storage Dense Diagonal Matrices Also Store the Non-diagonal Elements!
+//
+// It is very important to note that dense diagonal matrices store all elements, including the
+// non-diagonal elements, and therefore don't provide any kind of memory reduction! There are
+// two main reasons for this: First, storing also the non-diagonal elements guarantees maximum
+// performance for many algorithms that perform vectorized operations on the diagonal matrix,
+// which is especially true for small dense matrices. Second, conceptually the DiagonalMatrix
+// adaptor merely restricts the interface to the matrix type \a MT and does not change the data
+// layout or the underlying matrix type. Thus, in order to achieve the perfect combination of
+// performance and memory consumption it is recommended to use dense matrices for small diagonal
+// matrices and sparse matrices for large diagonal matrices:
+
+   \code
+   // Recommendation 1: use dense matrices for small diagonal matrices
+   typedef blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >  SmallDiagonalMatrix;
+
+   // Recommendation 2: use sparse matrices for large diagonal matrices
+   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >  LargeDiagonalMatrix;
+   \endcode
+
 // \n \section diagonalmatrix_arithmetic_operations Arithmetic Operations
 //
 // A DiagonalMatrix matrix can participate in numerical operations in any way any other dense or
@@ -401,10 +422,12 @@ namespace blaze {
 // \n \section diagonalmatrix_performance Performance Considerations
 //
 // The \b Blaze library tries to exploit the properties of diagonal matrices whenever and wherever
-// possible. Thus using a diagonal triangular matrix instead of a general matrix can result in a
-// considerable performance improvement. However, there are also situations when using a diagonal
-// triangular matrix introduces some overhead. The following examples demonstrate several common
-// situations where diagonal matrices can positively or negatively impact performance.
+// possible. In fact, diagonal matrices come with several special kernels and additionally profit
+// from all optimizations for symmetric and triangular matrices. Thus using a diagonal matrix
+// instead of a general matrix can result in a considerable performance improvement. However,
+// there are also situations when using a diagonal triangular matrix introduces some overhead. The
+// following examples demonstrate several common situations where diagonal matrices can positively
+// or negatively impact performance.
 //
 // \n \subsection diagonalmatrix_matrix_matrix_multiplication Positive Impact: Matrix/Matrix Multiplication
 //
@@ -420,8 +443,7 @@ namespace blaze {
    using blaze::columnMajor;
 
    DiagonalMatrix< DynamicMatrix<double,rowMajor> > A;
-   DiagonalMatrix< DynamicMatrix<double,columnMajor> > B;
-   DynamicMatrix<double,columnMajor> C;
+   DynamicMatrix<double,columnMajor> B, C;
 
    // ... Resizing and initialization
 
@@ -429,9 +451,11 @@ namespace blaze {
    \endcode
 
 // In comparison to a general matrix multiplication, the performance advantage is significant,
-// especially for large matrices. Therefore is it highly recommended to use the DiagonalMatrix
-// adaptor when a matrix is known to be diagonal. Note however that the performance advantage
-// is most pronounced for dense matrices and much less so for sparse matrices.
+// especially for large matrices. In this particular case, the multiplication performs similarly
+// to a matrix addition since the complexity is reduced from \f$ O(N^3) \f$ to \f$ O(N^2) \f$.
+// Therefore is it highly recommended to use the DiagonalMatrix adaptor when a matrix is known
+// to be diagonal. Note however that the performance advantage is most pronounced for dense
+// matrices and much less so for sparse matrices.
 //
 // \n \subsection diagonalmatrix_matrix_vector_multiplication Positive Impact: Matrix/Vector Multiplication
 //
@@ -453,9 +477,9 @@ namespace blaze {
    y = A * x;
    \endcode
 
-// In this example, \b Blaze also exploits the structure of the matrix and approx. halves the
-// runtime of the multiplication. Also in case of matrix/vector multiplications the performance
-// improvement is most pronounced for dense matrices and much less so for sparse matrices.
+// In this example, \b Blaze also exploits the structure of the matrix and performs similarly to
+// a vector addition. Also in case of matrix/vector multiplications the performance improvement
+// is most pronounced for dense matrices and much less so for sparse matrices.
 //
 // \n \subsection diagonalmatrix_assignment Negative Impact: Assignment of a General Matrix
 //
