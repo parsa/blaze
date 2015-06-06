@@ -6991,7 +6991,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
-      checkCapacity( mat, 6UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 6UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 3UL );
@@ -7014,7 +7014,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
-      checkCapacity( mat, 5UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 5UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7037,7 +7037,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
-      checkCapacity( mat, 4UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 4UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7060,7 +7060,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
-      checkCapacity( mat, 4UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 4UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7126,7 +7126,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 6UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 6UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 3UL );
@@ -7163,7 +7163,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 5UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7200,7 +7200,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7234,7 +7234,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7310,7 +7310,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 6UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 6UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 3UL );
@@ -7347,7 +7347,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 5UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7384,7 +7384,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7418,7 +7418,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 5UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7490,7 +7490,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
-      checkCapacity( mat, 6UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 6UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 3UL );
@@ -7513,7 +7513,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
-      checkCapacity( mat, 5UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 5UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7536,7 +7536,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 4UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7559,7 +7559,7 @@ void ClassTest::testErase()
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
-      checkCapacity( mat, 4UL );
+      checkCapacity( mat, 7UL );
       checkNonZeros( mat, 4UL );
       checkNonZeros( mat, 0UL, 1UL );
       checkNonZeros( mat, 1UL, 2UL );
@@ -7625,7 +7625,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 6UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 3UL );
@@ -7662,7 +7662,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 5UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7699,7 +7699,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7733,7 +7733,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7809,7 +7809,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 6UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 6UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 3UL );
@@ -7846,7 +7846,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 5UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 5UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7883,7 +7883,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
@@ -7917,7 +7917,7 @@ void ClassTest::testErase()
 
          checkRows    ( mat, 5UL );
          checkColumns ( mat, 3UL );
-         checkCapacity( mat, 4UL );
+         checkCapacity( mat, 7UL );
          checkNonZeros( mat, 4UL );
          checkNonZeros( mat, 0UL, 1UL );
          checkNonZeros( mat, 1UL, 2UL );
