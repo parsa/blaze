@@ -5815,7 +5815,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -5838,7 +5838,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -5861,7 +5861,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 4UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 4UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 0UL );
@@ -5884,6 +5884,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 0UL );
       checkNonZeros( lower, 0UL, 0UL );
       checkNonZeros( lower, 1UL, 0UL );
@@ -5944,7 +5945,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 2UL );
@@ -5967,7 +5968,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 2UL );
@@ -5990,7 +5991,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 3UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 3UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 0UL );
@@ -6013,6 +6014,7 @@ void SparseTest::testReset()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 0UL );
       checkNonZeros( lower, 0UL, 0UL );
       checkNonZeros( lower, 1UL, 0UL );
@@ -6086,7 +6088,7 @@ void SparseTest::testClear()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -6109,7 +6111,7 @@ void SparseTest::testClear()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -6177,7 +6179,7 @@ void SparseTest::testClear()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 2UL );
@@ -6200,7 +6202,7 @@ void SparseTest::testClear()
 
       checkRows    ( lower, 3UL );
       checkColumns ( lower, 3UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 6UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 2UL );
@@ -7292,7 +7294,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 7UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 7UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7317,7 +7319,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 6UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7342,7 +7344,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7367,7 +7369,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 1UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7437,7 +7439,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 7UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 7UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7476,7 +7478,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 6UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 6UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7512,7 +7514,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 5UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 5UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7551,7 +7553,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 5UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 5UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7631,7 +7633,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 7UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 7UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7670,7 +7672,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 6UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 6UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7706,7 +7708,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 4UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 4UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7745,7 +7747,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 4UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 4UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -7824,7 +7826,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 7UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 7UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7848,7 +7850,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 6UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 6UL );
       checkNonZeros( lower, 0UL, 3UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7872,7 +7874,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7896,7 +7898,7 @@ void SparseTest::testErase()
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
-      checkCapacity( lower, 5UL );
+      checkCapacity( lower, 8UL );
       checkNonZeros( lower, 5UL );
       checkNonZeros( lower, 0UL, 2UL );
       checkNonZeros( lower, 1UL, 1UL );
@@ -7964,7 +7966,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 7UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 7UL );
          checkNonZeros( lower, 0UL, 3UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8002,7 +8004,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 6UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 6UL );
          checkNonZeros( lower, 0UL, 3UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8037,7 +8039,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 5UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 5UL );
          checkNonZeros( lower, 0UL, 2UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8075,7 +8077,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 5UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 5UL );
          checkNonZeros( lower, 0UL, 2UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8153,7 +8155,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 7UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 7UL );
          checkNonZeros( lower, 0UL, 3UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8191,7 +8193,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 6UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 6UL );
          checkNonZeros( lower, 0UL, 3UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8226,7 +8228,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 4UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 4UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
@@ -8263,7 +8265,7 @@ void SparseTest::testErase()
 
          checkRows    ( lower, 4UL );
          checkColumns ( lower, 4UL );
-         checkCapacity( lower, 4UL );
+         checkCapacity( lower, 8UL );
          checkNonZeros( lower, 4UL );
          checkNonZeros( lower, 0UL, 1UL );
          checkNonZeros( lower, 1UL, 1UL );
