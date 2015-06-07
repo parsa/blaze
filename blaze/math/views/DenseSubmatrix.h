@@ -2629,7 +2629,7 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
       const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
                          ?( row_ + i - column_ + 1UL )
                          :( row_ + i - column_ ) );
-      const size_t jend( min( row_ + i - column_, n_ ) );
+      const size_t jend( min( jpos, n_ ) );
 
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
@@ -5970,7 +5970,7 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
       const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
                          ?( row_ + i - column_ + 1UL )
                          :( row_ + i - column_ ) );
-      const size_t jend( min( row_ + i - column_, n_ ) );
+      const size_t jend( min( jpos, n_ ) );
 
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
@@ -8979,7 +8979,7 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
       const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
                          ?( row_ + i - column_ + 1UL )
                          :( row_ + i - column_ ) );
-      const size_t jend( min( row_ + i - column_, n_ ) );
+      const size_t jend( min( jpos, n_ ) );
 
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
@@ -11933,7 +11933,7 @@ inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::T
       const size_t jpos( ( IsStrictlyUpper<MT2>::value && containsDiagonal )
                          ?( row_ + i - column_ + 1UL )
                          :( row_ + i - column_ ) );
-      const size_t jend( min( row_ + i - column_, n_ ) );
+      const size_t jend( min( jpos, n_ ) );
 
       for( size_t j=0UL; j<jend; ++j ) {
          if( !isDefault( (~rhs)(i,j) ) )
