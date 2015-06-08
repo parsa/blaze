@@ -1837,9 +1837,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major dense matrix addition assignment (not strictly upper)
+   // Row-major/row-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1853,7 +1853,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1861,9 +1861,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major dense matrix addition assignment (not strictly upper)
+   // Row-major/column-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1877,7 +1877,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1964,9 +1964,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major sparse matrix addition assignment (not strictly upper)
+   // Row-major/row-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -1980,7 +1980,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1988,9 +1988,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major sparse matrix addition assignment (not strictly upper)
+   // Row-major/column-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2004,7 +2004,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2089,9 +2089,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major dense matrix addition assignment (not strictly upper)
+   // Column-major/row-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2105,7 +2105,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2113,9 +2113,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major dense matrix addition assignment (not strictly upper)
+   // Column-major/column-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2129,7 +2129,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2216,9 +2216,9 @@ void DenseTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major sparse matrix addition assignment (not strictly upper)
+   // Column-major/row-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2232,7 +2232,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2240,9 +2240,9 @@ void DenseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major sparse matrix addition assignment (not strictly upper)
+   // Column-major/column-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2256,7 +2256,7 @@ void DenseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2354,9 +2354,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major dense matrix subtraction assignment (not strictly upper)
+   // Row-major/row-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2370,7 +2370,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2378,9 +2378,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major dense matrix subtraction assignment (not strictly upper)
+   // Row-major/column-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2394,7 +2394,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2481,9 +2481,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major sparse matrix subtraction assignment (not strictly upper)
+   // Row-major/row-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2497,7 +2497,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2505,9 +2505,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major sparse matrix subtraction assignment (not strictly upper)
+   // Row-major/column-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2521,7 +2521,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2606,9 +2606,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major dense matrix subtraction assignment (not strictly upper)
+   // Column-major/row-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2622,7 +2622,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2630,9 +2630,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major dense matrix subtraction assignment (not strictly upper)
+   // Column-major/column-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2646,7 +2646,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2733,9 +2733,9 @@ void DenseTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major sparse matrix subtraction assignment (not strictly upper)
+   // Column-major/row-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2749,7 +2749,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2757,9 +2757,9 @@ void DenseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major sparse matrix subtraction assignment (not strictly upper)
+   // Column-major/column-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2773,7 +2773,7 @@ void DenseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -3088,7 +3088,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Row-major/row-major UniUpperMatrix sparse matrix multiplication assignment (non-uniupper)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
       mat(0,0) =  1;
       mat(0,2) = -2;
       mat(1,1) =  4;
@@ -3116,7 +3116,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Row-major/column-major UniUpperMatrix sparse matrix multiplication assignment (non-uniupper)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
       mat(0,0) =  1;
       mat(0,2) = -2;
       mat(1,1) =  4;
@@ -3504,7 +3504,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Column-major/row-major UniUpperMatrix sparse matrix multiplication assignment (non-uniupper)";
 
-      blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
       mat(0,0) =  1;
       mat(0,2) = -2;
       mat(1,1) =  4;
@@ -3532,7 +3532,7 @@ void DenseTest::testMultAssign()
    {
       test_ = "Column-major/column-major UniUpperMatrix sparse matrix multiplication assignment (non-uniupper)";
 
-      blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
       mat(0,0) =  1;
       mat(0,2) = -2;
       mat(1,1) =  4;
@@ -5324,7 +5324,7 @@ void DenseTest::testReset()
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 1 0 )\n( 0 0 1 )\n";
+             << "   Expected result:\n( 1 0 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5418,7 +5418,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5441,7 +5441,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5464,7 +5464,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5529,7 +5529,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5552,7 +5552,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5575,7 +5575,7 @@ void DenseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -6580,9 +6580,9 @@ void DenseTest::testSubmatrix()
    }
 
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
-   // ( 0  2  0  0 )  =>  ( 0 12 12 12 )
-   // ( 0  0  3  1 )      ( 0  0 12 12 )
-   // ( 0  0  0  5 )      ( 0  0  0  5 )
+   // ( 0  1  0  0 )  =>  ( 0  1 12 12 )
+   // ( 0  0  1  1 )      ( 0  0  1 12 )
+   // ( 0  0  0  1 )      ( 0  0  0  5 )
    {
       test_ = "Row-major submatrix() function (scalar assignment test 2)";
 
@@ -7871,7 +7871,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0  0  0  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (row-major dense matrix assignment test 3)";
 
@@ -7907,7 +7907,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0 13  1  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (row-major dense matrix assignment test 4)";
 
@@ -8067,7 +8067,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0  0  0  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (column-major dense matrix assignment test 3)";
 
@@ -8103,7 +8103,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0 13  1  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (column-major dense matrix assignment test 4)";
 
@@ -8270,7 +8270,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0  0  0  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (row-major sparse matrix assignment test 3)";
 
@@ -8304,7 +8304,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0 13  1  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (row-major sparse matrix assignment test 4)";
 
@@ -8466,7 +8466,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0  0  0  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (column-major sparse matrix assignment test 3)";
 
@@ -8500,7 +8500,7 @@ void DenseTest::testSubmatrix()
    // ( 1 -4  7 -2 )      ( 1 -4  7 -2 )
    // ( 0  1  0  0 )  =>  ( 0  1 12  0 )
    // ( 0  0  1  1 )      ( 0 13  1  1 )
-   // ( 0  0  0  1 )      ( 0  0  0  5 )
+   // ( 0  0  0  1 )      ( 0  0  0  1 )
    {
       test_ = "Column-major submatrix() function (column-major sparse matrix assignment test 4)";
 
@@ -9718,7 +9718,7 @@ void DenseTest::testColumn()
              << " Error: Column access failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1  -5  7 )\n( 0  1  0 )\n( 0  0  3 )\n";
+             << "   Expected result:\n( 1  -5  7 )\n( 0  1  0 )\n( 0  0  1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
