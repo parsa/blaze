@@ -247,7 +247,7 @@ void SparseTest::testConstructors()
 
    // Conversion constructor (non-uniupper)
    {
-      test_ = "Row-major UniUpperMatrix conversion constructor (non-upper)";
+      test_ = "Row-major UniUpperMatrix conversion constructor (non-uniupper)";
 
       blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> mat;
       mat(0,0) =  1;
@@ -1499,9 +1499,9 @@ void SparseTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major dense matrix addition assignment (not strictly upper)
+   // Row-major/row-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1515,7 +1515,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1523,9 +1523,9 @@ void SparseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major dense matrix addition assignment (not strictly upper)
+   // Row-major/column-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1539,7 +1539,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1626,9 +1626,9 @@ void SparseTest::testAddAssign()
       }
    }
 
-   // Row-major/row-major sparse matrix addition assignment (not strictly upper)
+   // Row-major/row-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -1642,7 +1642,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1650,9 +1650,9 @@ void SparseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major sparse matrix addition assignment (not strictly upper)
+   // Row-major/column-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -1666,7 +1666,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1751,9 +1751,9 @@ void SparseTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major dense matrix addition assignment (not strictly upper)
+   // Column-major/row-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1767,7 +1767,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1775,9 +1775,9 @@ void SparseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major dense matrix addition assignment (not strictly upper)
+   // Column-major/column-major dense matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix dense matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix dense matrix addition assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -1791,7 +1791,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1878,9 +1878,9 @@ void SparseTest::testAddAssign()
       }
    }
 
-   // Column-major/row-major sparse matrix addition assignment (not strictly upper)
+   // Column-major/row-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -1894,7 +1894,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -1902,9 +1902,9 @@ void SparseTest::testAddAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major sparse matrix addition assignment (not strictly upper)
+   // Column-major/column-major sparse matrix addition assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix sparse matrix addition assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix sparse matrix addition assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -1918,7 +1918,7 @@ void SparseTest::testAddAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Addition assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Addition assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2016,9 +2016,9 @@ void SparseTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major dense matrix subtraction assignment (not strictly upper)
+   // Row-major/row-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2032,7 +2032,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2040,9 +2040,9 @@ void SparseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major dense matrix subtraction assignment (not strictly upper)
+   // Row-major/column-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2056,7 +2056,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2143,9 +2143,9 @@ void SparseTest::testSubAssign()
       }
    }
 
-   // Row-major/row-major sparse matrix subtraction assignment (not strictly upper)
+   // Row-major/row-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/row-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/row-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2159,7 +2159,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2167,9 +2167,9 @@ void SparseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Row-major/column-major sparse matrix subtraction assignment (not strictly upper)
+   // Row-major/column-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Row-major/column-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Row-major/column-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2183,7 +2183,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2268,9 +2268,9 @@ void SparseTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major dense matrix subtraction assignment (not strictly upper)
+   // Column-major/row-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2284,7 +2284,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2292,9 +2292,9 @@ void SparseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major dense matrix subtraction assignment (not strictly upper)
+   // Column-major/column-major dense matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix dense matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix dense matrix subtraction assignment (non-upper)";
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
       mat(2,0) = 6;
@@ -2308,7 +2308,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2395,9 +2395,9 @@ void SparseTest::testSubAssign()
       }
    }
 
-   // Column-major/row-major sparse matrix subtraction assignment (not strictly upper)
+   // Column-major/row-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/row-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/row-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2411,7 +2411,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper row-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper row-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -2419,9 +2419,9 @@ void SparseTest::testSubAssign()
       catch( std::invalid_argument& ) {}
    }
 
-   // Column-major/column-major sparse matrix subtraction assignment (not strictly upper)
+   // Column-major/column-major sparse matrix subtraction assignment (non-upper)
    {
-      test_ = "Column-major/column-major UniUpperMatrix sparse matrix subtraction assignment (not strictly upper)";
+      test_ = "Column-major/column-major UniUpperMatrix sparse matrix subtraction assignment (non-upper)";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
       mat(2,0) = 6;
@@ -2435,7 +2435,7 @@ void SparseTest::testSubAssign()
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Subtraction assignment of not strictly upper column-major matrix succeeded\n"
+             << " Error: Subtraction assignment of non-upper column-major matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n";
          throw std::runtime_error( oss.str() );
@@ -4574,7 +4574,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4597,7 +4597,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4620,7 +4620,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4643,7 +4643,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 4UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 4UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -4666,7 +4666,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 3UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 3UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -4724,7 +4724,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4747,7 +4747,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4770,7 +4770,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4793,7 +4793,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 4UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 4UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -4807,7 +4807,7 @@ void SparseTest::testReset()
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 0 )\n( 0 1 0 )\n( 0 0 1 )\n";
+             << "   Expected result:\n( 1 0 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4816,7 +4816,7 @@ void SparseTest::testReset()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 3UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 3UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -4887,7 +4887,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4901,7 +4901,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4910,7 +4910,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4924,7 +4924,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4933,7 +4933,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -4947,7 +4947,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -4998,7 +4998,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -5012,7 +5012,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5021,7 +5021,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -5035,7 +5035,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5044,7 +5044,7 @@ void SparseTest::testClear()
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
-      checkCapacity( upper, 5UL );
+      checkCapacity( upper, 6UL );
       checkNonZeros( upper, 5UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -5058,7 +5058,7 @@ void SparseTest::testClear()
              << " Error: Clear operation failed\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 2 0 )\n( 0 4 5 )\n( 0 0 6 )\n";
+             << "   Expected result:\n( 1 2 0 )\n( 0 1 5 )\n( 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -5129,7 +5129,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,3) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,3) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5165,7 +5168,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,2) != 3 || upper(1,3) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,2) != 3 || upper(1,3) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5201,7 +5207,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,2) != 3 || upper(1,3) != 4 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,2) != 3 || upper(1,3) != 4 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5259,7 +5268,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,2) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,2) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5295,7 +5307,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(0,2) != 3 || upper(1,2) != 2 ) {
+         if( upper(0,0) != 1 || upper(0,2) != 3 ||
+             upper(1,1) != 1 || upper(1,2) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5331,7 +5346,10 @@ void SparseTest::testSet()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(0,2) != 3 || upper(1,2) != 4 ) {
+         if( upper(0,0) != 1 || upper(0,2) != 3 ||
+             upper(1,1) != 1 || upper(1,2) != 4 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setting an element failed\n"
@@ -5402,7 +5420,10 @@ void SparseTest::testInsert()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,3) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,3) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Inserting an element failed\n"
@@ -5438,13 +5459,16 @@ void SparseTest::testInsert()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,2) != 3 || upper(1,3) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,2) != 3 || upper(1,3) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Inserting an element failed\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n"
-                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 2 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 3 2 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5458,7 +5482,7 @@ void SparseTest::testInsert()
              << " Error: Inserting an existing element succeeded\n"
              << " Details:\n"
              << "   Result:\n" << upper << "\n"
-             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 2 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+             << "   Expected result:\n( 1 0 0 0 )\n( 0 1 3 2 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -5510,7 +5534,10 @@ void SparseTest::testInsert()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(1,2) != 2 ) {
+         if( upper(0,0) != 1 ||
+             upper(1,1) != 1 || upper(1,2) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Inserting an element failed\n"
@@ -5546,7 +5573,10 @@ void SparseTest::testInsert()
             throw std::runtime_error( oss.str() );
          }
 
-         if( upper(0,2) != 3 || upper(1,2) != 2 ) {
+         if( upper(0,0) != 1 || upper(0,2) != 3 ||
+             upper(1,1) != 1 || upper(1,2) != 2 ||
+             upper(2,2) != 1 ||
+             upper(3,3) != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Inserting an element failed\n"
@@ -5598,8 +5628,8 @@ void SparseTest::testAppend()
          // Initialization check
          UT upper( 4UL, 9UL );
          upper.reserve( 0UL, 3UL );
-         upper.reserve( 1UL, 2UL );
-         upper.reserve( 2UL, 3UL );
+         upper.reserve( 1UL, 3UL );
+         upper.reserve( 2UL, 2UL );
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
@@ -5749,7 +5779,7 @@ void SparseTest::testAppend()
             throw std::runtime_error( oss.str() );
          }
 
-         // Appending two more non-zero elements
+         // Appending one more non-zero element
          upper.append( 2UL, 3UL, 5 );
          upper.finalize( 2UL );
 
@@ -5869,7 +5899,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 8UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 8UL );
       checkNonZeros( upper, 0UL, 3UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -5894,7 +5924,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 7UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 7UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -5919,7 +5949,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 7UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 7UL );
       checkNonZeros( upper, 0UL, 2UL );
       checkNonZeros( upper, 1UL, 2UL );
@@ -6000,7 +6030,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 8UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 8UL );
          checkNonZeros( upper, 0UL, 3UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6039,7 +6069,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 7UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 7UL );
          checkNonZeros( upper, 0UL, 2UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6075,7 +6105,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 7UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 7UL );
          checkNonZeros( upper, 0UL, 2UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6166,7 +6196,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 8UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 8UL );
          checkNonZeros( upper, 0UL, 3UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6205,7 +6235,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 6UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 6UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6241,7 +6271,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 6UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 6UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 2UL );
@@ -6295,7 +6325,7 @@ void SparseTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major UpperMatrix::erase( size_t, size_t )";
+      test_ = "Column-major UniUpperMatrix::erase( size_t, size_t )";
 
       // Initialization check
       OUT upper( 4UL, 9UL );
@@ -6332,7 +6362,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 8UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 8UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -6357,7 +6387,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 7UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 7UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -6382,7 +6412,7 @@ void SparseTest::testErase()
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
-      checkCapacity( upper, 7UL );
+      checkCapacity( upper, 9UL );
       checkNonZeros( upper, 7UL );
       checkNonZeros( upper, 0UL, 1UL );
       checkNonZeros( upper, 1UL, 1UL );
@@ -6423,7 +6453,7 @@ void SparseTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major UpperMatrix::erase( size_t, Iterator )";
+      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator )";
 
       typedef OUT::Iterator  Iterator;
 
@@ -6463,7 +6493,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 8UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 8UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -6502,7 +6532,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 7UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 7UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -6541,7 +6571,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 7UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 7UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -6592,7 +6622,7 @@ void SparseTest::testErase()
    //=====================================================================================
 
    {
-      test_ = "Column-major UpperMatrix::erase( size_t, Iterator, Iterator )";
+      test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
 
       typedef OUT::Iterator  Iterator;
 
@@ -6632,7 +6662,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 8UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 8UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -6671,7 +6701,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 5UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 5UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -6710,7 +6740,7 @@ void SparseTest::testErase()
 
          checkRows    ( upper, 4UL );
          checkColumns ( upper, 4UL );
-         checkCapacity( upper, 5UL );
+         checkCapacity( upper, 9UL );
          checkNonZeros( upper, 5UL );
          checkNonZeros( upper, 0UL, 1UL );
          checkNonZeros( upper, 1UL, 1UL );
@@ -7097,7 +7127,7 @@ void SparseTest::testTrim()
       test_ = "Row-major UniUpperMatrix::trim( size_t )";
 
       // Initialization check
-      UT upper( 3UL, 3UL );
+      UT upper( 3UL );
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
@@ -7220,7 +7250,7 @@ void SparseTest::testTrim()
       test_ = "Column-major UniUpperMatrix::trim( size_t )";
 
       // Initialization check
-      OUT upper( 3UL, 3UL );
+      OUT upper( 3UL );
 
       checkRows    ( upper, 3UL );
       checkColumns ( upper, 3UL );
