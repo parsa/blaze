@@ -65,6 +65,7 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/StrictlyLowerMatrix.h>
+#include <blaze/math/StrictlyUpperMatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/Traits.h>
 #include <blaze/math/TransposeFlag.h>
