@@ -219,7 +219,7 @@ namespace blaze {
    CompressedUniLower::Iterator it = A.begin(1);
    *it = 9.0;  // Throws an exception; invalid modification of the diagonal element (1,1)
    ++it;
-   *it = 6.0;  // Modifies the diagonal element (2,1)
+   *it = 6.0;  // Modifies the lower element (2,1)
 
    // Erasing elements via the erase() function
    A.erase( 0, 0 );  // Throws an exception; invalid erasure of the diagonal element (0,0)
@@ -371,7 +371,7 @@ namespace blaze {
    // 5x5 row-major unilower dynamic matrix with default initialized upper matrix
    UniLowerMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
-//
+
 // \n \subsection unilowermatrix_selfscaling Lower Unitriangular Matrices Don't Provide Self-Scaling!
 //
 // Since the diagonal elements have a fixed value of 1 it is not possible to self-scale an unilower
