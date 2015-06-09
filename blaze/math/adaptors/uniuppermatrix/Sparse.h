@@ -1867,7 +1867,7 @@ inline void UniUpperMatrix<MT,SO,false>::reserve( size_t nonzeros )
 //
 // This function increases the capacity of row/column \a i of the uniupper matrix to at least
 // \a nonzeros elements. The current values of the uniupper matrix and all other individual
-// row/column capacities are preserved. In case the uniupper matrix adapts a \rowMajor sparse
+// row/column capacities are preserved. In case the uniupper matrix adapts a \a rowMajor sparse
 // matrix the function reserves capacity for row \a i. In case it adapts a \a columnMajor the
 // function reserves capacity for column \a i. The index has to be in the range \f$[0..N-1]\f$.
 */
