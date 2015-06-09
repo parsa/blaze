@@ -1669,7 +1669,7 @@ void UniUpperMatrix<MT,SO,true>::resize( size_t n, bool preserve )
    if( n > oldsize )
    {
       const size_t increment( n - oldsize );
-      submatrix( matrix_, oldsize, 0UL, increment, n-1 ).reset();
+      submatrix( matrix_, oldsize, 0UL, increment, n-1UL ).reset();
 
       for( size_t i=oldsize; i<n; ++i )
          matrix_(i,i) = ElementType(1);
