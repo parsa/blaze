@@ -40,7 +40,7 @@ all: functions intrinsics typetraits \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
      symmetricmatrix \
-     lowermatrix unilowermatrix \
+     lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix \
      diagonalmatrix \
      densesubvector sparsesubvector \
@@ -68,7 +68,7 @@ noop: functions intrinsics typetraits \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
       symmetricmatrix \
-      lowermatrix unilowermatrix \
+      lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix \
       diagonalmatrix \
       densesubvector sparsesubvector \
@@ -167,6 +167,11 @@ unilowermatrix:
 	@echo
 	@echo "Building the UniLowerMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./unilowermatrix $(MAKECMDGOALS)
+
+strictlylowermatrix:
+	@echo
+	@echo "Building the StrictlyLowerMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./strictlylowermatrix $(MAKECMDGOALS)
 
 uppermatrix:
 	@echo
@@ -474,6 +479,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
 	@$(MAKE) --no-print-directory -C ./lowermatrix clean
 	@$(MAKE) --no-print-directory -C ./unilowermatrix clean
+	@$(MAKE) --no-print-directory -C ./strictlylowermatrix clean
 	@$(MAKE) --no-print-directory -C ./uppermatrix clean
 	@$(MAKE) --no-print-directory -C ./uniuppermatrix clean
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
@@ -541,7 +547,7 @@ clean:
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
         symmetricmatrix \
-        lowermatrix unilowermatrix \
+        lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix \
         diagonalmatrix \
         densesubvector sparsesubvector \
