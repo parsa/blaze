@@ -93,12 +93,12 @@ struct IsUniTriangularHelper
    typedef blaze::UniUpperMatrix<DynamicMatrixType>     UniUpperDynamicType;
    typedef blaze::UniLowerMatrix<CompressedMatrixType>  UniLowerCompressedType;
 
-   blaze::IsLower< UniLowerStaticType >::value         // Evaluates to 1
-   blaze::IsLower< const UniUpperDynamicType >::Type   // Results in TrueType
-   blaze::IsLower< volatile UniLowerCompressedType >   // Is derived from TrueType
-   blaze::IsLower< StaticMatrixType >::value           // Evaluates to 0
-   blaze::IsLower< const DynamicMatrixType >::Type     // Results in FalseType
-   blaze::IsLower< volatile CompressedMatrixType >     // Is derived from FalseType
+   blaze::IsUniTriangular< UniLowerStaticType >::value        // Evaluates to 1
+   blaze::IsUniTriangular< const UniUpperDynamicType >::Type  // Results in TrueType
+   blaze::IsUniTriangular< volatile UniLowerCompressedType >  // Is derived from TrueType
+   blaze::IsUniTriangular< StaticMatrixType >::value          // Evaluates to 0
+   blaze::IsUniTriangular< const DynamicMatrixType >::Type    // Results in FalseType
+   blaze::IsUniTriangular< volatile CompressedMatrixType >    // Is derived from FalseType
    \endcode
 */
 template< typename T >
