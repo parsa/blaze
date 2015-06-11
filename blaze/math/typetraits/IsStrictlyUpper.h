@@ -62,6 +62,25 @@ namespace blaze {
 // type, the \a value member enumeration is set to 1, the nested type definition \a Type
 // is \a TrueType, and the class derives from \a TrueType. Otherwise \a value is set to
 // 0, \a Type is \a FalseType, and the class derives from \a FalseType.
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
+   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
+   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+
+   typedef blaze::StrictlyUpperMatrix<StaticMatrixType>      StrictlyUpperStaticType;
+   typedef blaze::StrictlyUpperMatrix<DynamicMatrixType>     StrictlyUpperDynamicType;
+   typedef blaze::StrictlyUpperMatrix<CompressedMatrixType>  StrictlyUpperCompressedType;
+
+   blaze::IsStrictlyUpper< StrictlyUpperStaticType >::value        // Evaluates to 1
+   blaze::IsStrictlyUpper< const StrictlyUpperDynamicType >::Type  // Results in TrueType
+   blaze::IsStrictlyUpper< volatile StrictlyUpperCompressedType >  // Is derived from TrueType
+   blaze::IsStrictlyUpper< StaticMatrixType >::value               // Evaluates to 0
+   blaze::IsStrictlyUpper< const DynamicMatrixType >::Type         // Results in FalseType
+   blaze::IsStrictlyUpper< volatile CompressedMatrixType >         // Is derived from FalseType
+   \endcode
 */
 template< typename T >
 struct IsStrictlyUpper : public FalseType
