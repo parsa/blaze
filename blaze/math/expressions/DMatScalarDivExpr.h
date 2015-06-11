@@ -65,6 +65,8 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -1131,6 +1133,23 @@ struct IsLower< DMatScalarDivExpr<MT,ST,SO> > : public IsTrue< IsLower<MT>::valu
 
 //=================================================================================================
 //
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct IsStrictlyLower< DMatScalarDivExpr<MT,ST,SO> > : public IsTrue< IsStrictlyLower<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISUPPER SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1139,6 +1158,23 @@ struct IsLower< DMatScalarDivExpr<MT,ST,SO> > : public IsTrue< IsLower<MT>::valu
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct IsUpper< DMatScalarDivExpr<MT,ST,SO> > : public IsTrue< IsUpper<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct IsStrictlyUpper< DMatScalarDivExpr<MT,ST,SO> > : public IsTrue< IsStrictlyUpper<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
