@@ -42,17 +42,29 @@
 
 #include <blazemark/blaze/init/CompressedLower.h>
 #include <blazemark/blaze/init/CompressedMatrix.h>
+#include <blazemark/blaze/init/CompressedStrictlyLower.h>
+#include <blazemark/blaze/init/CompressedStrictlyUpper.h>
 #include <blazemark/blaze/init/CompressedSymmetric.h>
+#include <blazemark/blaze/init/CompressedUniLower.h>
+#include <blazemark/blaze/init/CompressedUniUpper.h>
 #include <blazemark/blaze/init/CompressedUpper.h>
 #include <blazemark/blaze/init/CompressedVector.h>
 #include <blazemark/blaze/init/DynamicLower.h>
 #include <blazemark/blaze/init/DynamicMatrix.h>
+#include <blazemark/blaze/init/DynamicStrictlyLower.h>
+#include <blazemark/blaze/init/DynamicStrictlyUpper.h>
 #include <blazemark/blaze/init/DynamicSymmetric.h>
+#include <blazemark/blaze/init/DynamicUniLower.h>
+#include <blazemark/blaze/init/DynamicUniUpper.h>
 #include <blazemark/blaze/init/DynamicUpper.h>
 #include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/blaze/init/StaticLower.h>
 #include <blazemark/blaze/init/StaticMatrix.h>
+#include <blazemark/blaze/init/StaticStrictlyLower.h>
+#include <blazemark/blaze/init/StaticStrictlyUpper.h>
 #include <blazemark/blaze/init/StaticSymmetric.h>
+#include <blazemark/blaze/init/StaticUniLower.h>
+#include <blazemark/blaze/init/StaticUniUpper.h>
 #include <blazemark/blaze/init/StaticUpper.h>
 #include <blazemark/blaze/init/StaticVector.h>
 
