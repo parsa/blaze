@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/mathtest/creator/DynamicUniUpper.h
-//  \brief Specialization of the Creator class template for UniUniUpperMatrix<DynamicMatrix>
+//  \brief Specialization of the Creator class template for UniUpperMatrix<DynamicMatrix>
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
