@@ -61,6 +61,7 @@
 #include <blazetest/mathtest/creator/HybridDiagonal.h>
 #include <blazetest/mathtest/creator/HybridLower.h>
 #include <blazetest/mathtest/creator/HybridMatrix.h>
+#include <blazetest/mathtest/creator/HybridStrictlyLower.h>
 #include <blazetest/mathtest/creator/HybridSymmetric.h>
 #include <blazetest/mathtest/creator/HybridUniLower.h>
 #include <blazetest/mathtest/creator/HybridUniUpper.h>
