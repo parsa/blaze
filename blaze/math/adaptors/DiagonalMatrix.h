@@ -43,6 +43,10 @@
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/diagonalmatrix/Dense.h>
 #include <blaze/math/adaptors/diagonalmatrix/Sparse.h>
+#include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
+#include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -531,37 +535,73 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< LowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< UniLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2> >
+{
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< UpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename AddTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< UniUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -646,37 +686,61 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< LowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< UniLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< UpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename SubTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< UniUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename SubTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -823,37 +887,73 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< LowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< UniLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef LowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2> >
+{
+   typedef StrictlyLowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef StrictlyLowerMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< UpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   typedef typename MultTrait<MT1,MT2>::Type  Type;
+   typedef UpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< UniUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef UpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
+{
+   typedef StrictlyUpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef StrictlyUpperMatrix< typename MultTrait<MT1,MT2>::Type >  Type;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
