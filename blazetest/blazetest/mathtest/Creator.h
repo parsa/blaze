@@ -69,6 +69,7 @@
 #include <blazetest/mathtest/creator/StaticDiagonal.h>
 #include <blazetest/mathtest/creator/StaticLower.h>
 #include <blazetest/mathtest/creator/StaticMatrix.h>
+#include <blazetest/mathtest/creator/StaticStrictlyLower.h>
 #include <blazetest/mathtest/creator/StaticSymmetric.h>
 #include <blazetest/mathtest/creator/StaticUniLower.h>
 #include <blazetest/mathtest/creator/StaticUniUpper.h>
