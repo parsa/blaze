@@ -81,6 +81,25 @@ struct IsStrictlyTriangularHelper
 // member enumeration is set to 1, the nested type definition \a Type is \a TrueType, and the
 // class derives from \a TrueType. Otherwise \a yes is set to 0, \a Type is \a FalseType, and
 // the class derives from \a FalseType.
+
+   \code
+   using blaze::rowMajor;
+
+   typedef blaze::StaticMatrix<double,3UL,3UL,rowMajor>  StaticMatrixType;
+   typedef blaze::DynamicMatrix<float,rowMajor>          DynamicMatrixType;
+   typedef blaze::CompressedMatrix<int,rowMajor>         CompressedMatrixType;
+
+   typedef blaze::StrictlyLowerMatrix<StaticMatrixType>      StrictlyLowerStaticType;
+   typedef blaze::StrictlyUpperMatrix<DynamicMatrixType>     StrictlyUpperDynamicType;
+   typedef blaze::StrictlyLowerMatrix<CompressedMatrixType>  StrictlyLowerCompressedType;
+
+   blaze::IsStrictlyTriangular< StrictlyLowerStaticType >::value        // Evaluates to 1
+   blaze::IsStrictlyTriangular< const StrictlyUpperDynamicType >::Type  // Results in TrueType
+   blaze::IsStrictlyTriangular< volatile StrictlyLowerCompressedType >  // Is derived from TrueType
+   blaze::IsStrictlyTriangular< StaticMatrixType >::value               // Evaluates to 0
+   blaze::IsStrictlyTriangular< const DynamicMatrixType >::Type         // Results in FalseType
+   blaze::IsStrictlyTriangular< volatile CompressedMatrixType >         // Is derived from FalseType
+   \endcode
 */
 template< typename T >
 struct IsStrictlyTriangular : public IsStrictlyTriangularHelper<T>::Type
