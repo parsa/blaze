@@ -61,8 +61,12 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
@@ -70,6 +74,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -858,7 +863,43 @@ struct IsSymmetric< SMatSMatSubExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< SMatSMatSubExpr<MT1,MT2> >
-   : public IsTrue< IsLower<MT1>::value && IsLower<MT2>::value >
+   : public IsTrue< And< IsLower<MT1>, IsLower<MT2> >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsUniLower< SMatSMatSubExpr<MT1,MT2> >
+   : public IsTrue< And< IsUniLower<MT1>, IsStrictlyLower<MT2> >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsStrictlyLower< SMatSMatSubExpr<MT1,MT2> >
+   : public IsTrue< And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -876,7 +917,43 @@ struct IsLower< SMatSMatSubExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< SMatSMatSubExpr<MT1,MT2> >
-   : public IsTrue< IsUpper<MT1>::value && IsUpper<MT2>::value >
+   : public IsTrue< And< IsUpper<MT1>, IsUpper<MT2> >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsUniUpper< SMatSMatSubExpr<MT1,MT2> >
+   : public IsTrue< And< IsUniUpper<MT1>, IsStrictlyUpper<MT2> >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsStrictlyUpper< SMatSMatSubExpr<MT1,MT2> >
+   : public IsTrue< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
