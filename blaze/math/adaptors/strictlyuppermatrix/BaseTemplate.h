@@ -72,12 +72,11 @@ namespace blaze {
    class StrictlyUpperMatrix;
    \endcode
 
-//  - MT: specifies the type of the matrix to be adapted. StricltyUpperMatrix can be used with
-//        any non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix
-//        type. Also, the given matrix type must have numeric element types (i.e. all integral
-//        types except \a bool, floating point and complex types). Note that the given matrix
-//        type must be either resizable (as for instance HybridMatrix or DynamicMatrix) or
-//        must be square at compile time (as for instance StaticMatrix).
+//  - MT: specifies the type of the matrix to be adapted. StricltyUpperMatrix can be used
+//        with any non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse
+//        matrix type. Note that the given matrix type must be either resizable (as for instance
+//        HybridMatrix or DynamicMatrix) or must be square at compile time (as for instance
+//        StaticMatrix).
 //  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix. This
 //        template parameter doesn't have to be explicitly defined, but is automatically derived
 //        from the first template parameter.
