@@ -2833,14 +2833,28 @@ namespace blaze {}
 // \tableofcontents
 //
 //
-// Triangular matrices come in two flavors: lower triangular matrices provide the compile time
+// Triangular matrices come in three flavors: Lower triangular matrices provide the compile time
 // guarantee to be square matrices and that the upper part of the matrix contains only default
 // elements that cannot be modified. Upper triangular matrices on the other hand provide the
-// compile time guarantee to be square and that the lower part of the matrix contains only
-// default elements that cannot be modified. These properties can be exploited to gain higher
-// performance and/or to save memory. Within the \b Blaze library, lower and upper triangular
-// matrices are realized by the \ref adaptors_triangular_matrices_lowermatrix and
-// \ref adaptors_triangular_matrices_uppermatrix class templates.
+// compile time guarantee to be square and that the lower part of the matrix contains only fixed
+// default elements. Finally, diagonal matrices provide the compile time guarantee to be square
+// and that both the lower and upper part of the matrix contain only immutable default elements.
+// These properties can be exploited to gain higher performance and/or to save memory. Within the
+// \b Blaze library, several kinds of lower and upper triangular and diagonal matrices are realized
+// by the following class templates:
+//
+// Lower triangular matrices:
+//  - <b>\ref adaptors_triangular_matrices_lowermatrix</b>
+//  - <b>\ref adaptors_triangular_matrices_unilowermatrix</b>
+//  - <b>\ref adaptors_triangular_matrices_strictlylowermatrix</b>
+
+// Upper triangular matrices:
+//  - <b>\ref adaptors_triangular_matrices_uppermatrix</b>
+//  - <b>\ref adaptors_triangular_matrices_uniuppermatrix</b>
+//  - <b>\ref adaptors_triangular_matrices_strictlyuppermatrix</b>
+//
+// Diagonal matrices
+//  - <b>\ref adaptors_triangular_matrices_diagonalmatrix</b>
 //
 //
 // \n \section adaptors_triangular_matrices_lowermatrix LowerMatrix
@@ -2854,7 +2868,7 @@ namespace blaze {}
                         \f[\left(\begin{array}{*{5}{c}}
                         l_{0,0} & 0       & 0       & \cdots & 0       \\
                         l_{1,0} & l_{1,1} & 0       & \cdots & 0       \\
-                        l_{2,0} & l_{2,1} & l_{3,3} & \cdots & 0       \\
+                        l_{2,0} & l_{2,1} & l_{2,2} & \cdots & 0       \\
                         \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
                         \end{array}\right).\f]
@@ -2898,6 +2912,123 @@ namespace blaze {}
 // as blaze::rowMajor), the lower matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the lower matrix
 // will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_unilowermatrix UniLowerMatrix
+// <hr>
+//
+// The blaze::UniLowerMatrix class template is an adapter for existing dense and sparse matrix
+// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// it by enforcing the additional invariant that all diagonal matrix elements are 1 and all matrix
+// elements above the diagonal are 0 (lower unitriangular matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 1       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 1       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/UniLowerMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class UniLowerMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::UniLowerMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Also,
+// the given matrix type must have numeric element types (i.e. all integral types except \a bool,
+// floating point and complex types). Note that the given matrix type must be either resizable (as
+// for instance blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as
+// for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible lower unitriangular matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense unilower matrix with static memory
+   blaze::UniLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense unilower matrix based on HybridMatrix
+   blaze::UniLowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense unilower matrix based on DynamicMatrix
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision unilower matrix
+   blaze::UniLowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a lower unitriangular matrix is depending on the storage order of the
+// adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// is specified as blaze::rowMajor), the unilower matrix will also be a row-major matrix.
+// Otherwise if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
+// the unilower matrix will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_strictlylowermatrix StrictlyLowerMatrix
+// <hr>
+//
+// The blaze::StrictlyLowerMatrix class template is an adapter for existing dense and sparse matrix
+// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// it by enforcing the additional invariant that all diagonal matrix elements and all matrix
+// elements above the diagonal are 0 (strictly lower triangular matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 0       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 0       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 0      \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/StrictlyLowerMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class StrictlyLowerMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::StrictlyLowerMatrix can be used
+// with any non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix
+// type. Note that the given matrix type must be either resizable (as for instance
+// blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as for instance
+// blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible strictly lower triangular matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense strictly lower matrix with static memory
+   blaze::StrictlyLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense strictly lower matrix based on HybridMatrix
+   blaze::StrictlyLowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense strictly lower matrix based on DynamicMatrix
+   blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision strictly lower matrix
+   blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a strictly lower triangular matrix is depending on the storage order of
+// the adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// is specified as blaze::rowMajor), the strictly lower matrix will also be a row-major matrix.
+// Otherwise if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
+// the strictly lower matrix will also be a column-major matrix.
 //
 //
 // \n \section adaptors_triangular_matrices_uppermatrix UpperMatrix
@@ -2957,6 +3088,180 @@ namespace blaze {}
 // will also be a column-major matrix.
 //
 //
+// \n \section adaptors_triangular_matrices_uniuppermatrix UniUpperMatrix
+// <hr>
+//
+// The blaze::UniUpperMatrix class template is an adapter for existing dense and sparse matrix
+// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// it by enforcing the additional invariant that all diagonal matrix elements are 1 and all matrix
+// elements below the diagonal are 0 (upper unitriangular matrix).
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1       & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0       & 1       & u_{1,2} & \cdots & u_{1,N} \\
+                        0       & 0       & 1       & \cdots & u_{2,N} \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & 1       \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/UniUpperMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class UniUpperMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::UniUpperMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Also,
+// the given matrix type must have numeric element types (i.e. all integral types except \a bool,
+// floating point and complex types). Note that the given matrix type must be either resizable (as
+// for instance blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as
+// for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible upper unitriangular matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense uniupper matrix with static memory
+   blaze::UniUpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense uniupper matrix based on HybridMatrix
+   blaze::UniUpperMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense uniupper matrix based on DynamicMatrix
+   blaze::UniUpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision uniupper matrix
+   blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of an upper unitriangular matrix is depending on the storage order of the
+// adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// is specified as blaze::rowMajor), the uniupper matrix will also be a row-major matrix.
+// Otherwise, if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
+// the uniupper matrix will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_strictlyuppermatrix StrictlyUpperMatrix
+// <hr>
+//
+// The blaze::StrictlyUpperMatrix class template is an adapter for existing dense and sparse matrix
+// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// it by enforcing the additional invariant that all diagonal matrix elements and all matrix
+// elements below the diagonal are 0 (strictly upper triangular matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        0       & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0       & 0       & u_{1,2} & \cdots & u_{1,N} \\
+                        0       & 0       & 0       & \cdots & u_{2,N} \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & 0       \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/StrictlyUpperMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class StrictlyUpperMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::StrictlyUpperMatrix can be used
+// with any non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix
+// type. Note that the given matrix type must be either resizable (as for instance
+// blaze::HybridMatrix or blaze::DynamicMatrix) or must be square at compile time (as for instance
+// blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible strictly upper triangular matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense strictly upper matrix with static memory
+   blaze::StrictlyUpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense strictly upper matrix based on HybridMatrix
+   blaze::StrictlyUpperMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense strictly upper matrix based on DynamicMatrix
+   blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision strictly upper matrix
+   blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a strictly upper triangular matrix is depending on the storage order of
+// the adapted matrix type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e.
+// is specified as blaze::rowMajor), the strictly upper matrix will also be a row-major matrix.
+// Otherwise, if the adapted matrix is column-major (i.e. is specified as blaze::columnMajor),
+// the strictly upper matrix will also be a column-major matrix.
+//
+//
+// \n \section adaptors_triangular_matrices_diagonalmatrix DiagonalMatrix
+// <hr>
+//
+// The blaze::DiagonalMatrix class template is an adapter for existing dense and sparse matrix
+// types. It inherits the properties and the interface of the given matrix type \a MT and extends
+// it by enforcing the additional invariant that all matrix elements above and below the diagonal
+// are 0 (diagonal matrix):
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        l_{0,0} & 0       & 0       & \cdots & 0       \\
+                        0       & l_{1,1} & 0       & \cdots & 0       \\
+                        0       & 0       & l_{2,2} & \cdots & 0       \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0       & 0       & 0       & \cdots & l_{N,N} \\
+                        \end{array}\right).\f]
+
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/DiagonalMatrix.h>
+   \endcode
+
+// The type of the adapted matrix can be specified via the first template parameter:
+
+   \code
+   template< typename MT >
+   class DiagonalMatrix;
+   \endcode
+
+// \c MT specifies the type of the matrix to be adapted. blaze::DiagonalMatrix can be used with any
+// non-cv-qualified, non-reference, non-pointer, non-expression dense or sparse matrix type. Note
+// that the given matrix type must be either resizable (as for instance blaze::HybridMatrix or
+// blaze::DynamicMatrix) or must be square at compile time (as for instance blaze::StaticMatrix).
+//
+// The following examples give an impression of several possible diagonal matrices:
+
+   \code
+   // Definition of a 3x3 row-major dense diagonal matrix with static memory
+   blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+
+   // Definition of a resizable column-major dense diagonal matrix based on HybridMatrix
+   blaze::DiagonalMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+
+   // Definition of a resizable row-major dense diagonal matrix based on DynamicMatrix
+   blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+
+   // Definition of a compressed row-major single precision diagonal matrix
+   blaze::DiagonalMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   \endcode
+
+// The storage order of a diagonal matrix is depending on the storage order of the adapted matrix
+// type \a MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified
+// as blaze::rowMajor), the diagonal matrix will also be a row-major matrix. Otherwise, if the
+// adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the diagonal matrix
+// will also be a column-major matrix.
+//
+//
 // \n \section adaptors_triangular_matrices_special_properties Special Properties of Triangular Matrices
 // <hr>
 //
@@ -2965,8 +3270,10 @@ namespace blaze {}
 // some important exceptions resulting from the triangular matrix constraint:
 //
 //  -# <b>\ref adaptors_triangular_matrices_square</b>
-//  -# <b>\ref adaptors_triangular_matrices_symmetry</b>
+//  -# <b>\ref adaptors_triangular_matrices_triangular</b>
 //  -# <b>\ref adaptors_triangular_matrices_initialization</b>
+//  -# <b>\ref adaptors_triangular_matrices_storage</b>
+//  -# <b>\ref adaptors_triangular_matrices_selfscaling</b>
 //
 // \n \subsection adaptors_triangular_matrices_square Triangular Matrices Must Always be Square!
 //
@@ -3005,14 +3312,15 @@ namespace blaze {}
    LowerMatrix< StaticMatrix<int,3UL,4UL,columnMajor> > B;
    \endcode
 
-// \n \subsection adaptors_triangular_matrices_symmetry The Triangular Property is Always Enforced!
+// \n \subsection adaptors_triangular_matrices_triangular The Triangular Property is Always Enforced!
 //
 // This means that it is only allowed to modify elements in the lower part or the diagonal of
 // a lower triangular matrix and in the upper part or the diagonal of an upper triangular matrix.
-// Also, it is only possible to assign lower matrices to lower triangular matrices and upper
-// matrices to upper triangular matrices. The following example demonstrates this restriction
-// by means of the blaze::LowerMatrix adaptor. For an example with upper triangular matrices see
-// the blaze::UpperMatrix class documentation.
+// Unitriangular and strictly triangular matrices are even more restrictive and don't allow the
+// modification of diagonal elements. Also, triangular matrices can only be assigned matrices that
+// don't violate their triangular property. The following example demonstrates this restriction
+// by means of the blaze::LowerMatrix adaptor. For examples with other triangular matrix types
+// see the according class documentations.
 
    \code
    using blaze::CompressedMatrix;
@@ -3069,8 +3377,8 @@ namespace blaze {}
 // The lower/upper matrix property is also enforced for views (rows, columns, submatrices, ...)
 // on the triangular matrix. The following example demonstrates that modifying the elements of
 // an entire row and submatrix of a lower matrix only affects the lower and diagonal matrix
-// elements. Again, this example uses blaze::LowerMatrix, for an example with upper triangular
-// matrices, see the blaze::UpperMatrix class documentation.
+// elements. Again, this example uses blaze::LowerMatrix, for examples with other triangular
+// matrix types see the according class documentations.
 
    \code
    using blaze::DynamicMatrix;
@@ -3110,9 +3418,9 @@ namespace blaze {}
    \endcode
 
 // The next example demonstrates the (compound) assignment to rows/columns and submatrices of
-// triangular matrices. Since only lower/upper and diagonal elements may be modified the matrix
-// to be assigned must be structured such that the triangular matrix invariant of the matrix is
-// preserved. Otherwise a \a std::invalid_argument exception is thrown:
+// triangular matrices. Since only lower/upper and potentially diagonal elements may be modified
+// the matrix to be assigned must be structured such that the triangular matrix invariant of the
+// matrix is preserved. Otherwise a \a std::invalid_argument exception is thrown:
 
    \code
    using blaze::DynamicMatrix;
@@ -3200,7 +3508,51 @@ namespace blaze {}
    LowerMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
 
    // 7x7 column-major upper dynamic matrix with default initialized lower matrix
-   UpperMatrix< DynamicMatrix<int,columnMajor> > B( 7 );
+   UpperMatrix< DynamicMatrix<int,columnMajor> > C( 7 );
+
+   // 3x3 row-major diagonal dynamic matrix with default initialized lower and upper matrix
+   DiagonalMatrix< DynamicMatrix<int,rowMajor> > D( 3 );
+   \endcode
+
+// \n \subsection adaptors_triangular_matrices_storage Dense Triangular Matrices Store All Elements!
+//
+// All dense triangular matrices store all \f$ N \times N \f$ elements, including the immutable
+// elements in the lower or upper part, respectively. Therefore dense triangular matrices don't
+// provide any kind of memory reduction! There are two main reasons for this: First, storing also
+// the zero elements guarantees maximum performance for many algorithms that perform vectorized
+// operations on the triangular matrices, which is especially true for small dense matrices.
+// Second, conceptually all triangular adaptors merely restrict the interface to the matrix type
+// \a MT and do not change the data layout or the underlying matrix type.
+//
+// This property matters most for diagonal matrices. In order to achieve the perfect combination
+// of performance and memory consumption for a diagonal matrix it is recommended to use dense
+// matrices for small diagonal matrices and sparse matrices for large diagonal matrices:
+
+   \code
+   // Recommendation 1: use dense matrices for small diagonal matrices
+   typedef blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >  SmallDiagonalMatrix;
+
+   // Recommendation 2: use sparse matrices for large diagonal matrices
+   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >  LargeDiagonalMatrix;
+   \endcode
+
+// \n \subsection adaptors_triangular_matrices_selfscaling Unitriangular Matrices Don't Provide Self-Scaling!
+//
+// Since the diagonal elements of a unitriangular matrix have a fixed value of 1 it is not possible
+// to self-scale such a matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UniLowerMatrix;
+
+   UniLowerMatrix< DynamicMatrix<int> > A( 4 );
+
+   A *= 2;        // Compilation error; Scale operation is not available on an unilower matrix
+   A /= 2;        // Compilation error; Scale operation is not available on an unilower matrix
+   A.scale( 2 );  // Compilation error; Scale function is not available on an unilower matrix
+
+   A = A * 2;  // Throws an exception; Invalid assignment of non-unilower matrix
+   A = A / 2;  // Throws an exception; Invalid assignment of non-unilower matrix
    \endcode
 
 // \n \section adaptors_triangular_matrices_arithmetic_operations Arithmetic Operations
@@ -3242,6 +3594,10 @@ namespace blaze {}
    F *= A * D;    // Multiplication assignment
    \endcode
 
+// Note that diagonal, unitriangular and strictly triangular matrix types can be used in the same
+// way, but may pose some additional restrictions (see the according class documentations).
+//
+//
 // \n \section adaptors_triangular_matrices_block_structured Block-Structured Triangular Matrices
 // <hr>
 //
@@ -3249,6 +3605,7 @@ namespace blaze {}
 
    \code
    using blaze::CompressedMatrix;
+   using blaze::DynamicMatrix;
    using blaze::StaticMatrix;
    using blaze::LowerMatrix;
    using blaze::UpperMatrix;
@@ -3271,6 +3628,23 @@ namespace blaze {}
 
    A(2,4)(1,1) = -5;     // Invalid manipulation of upper matrix element; Results in an exception
    B.insert( 4, 2, C );  // Invalid insertion of the elements (4,2); Results in an exception
+   \endcode
+
+// Note that unitriangular matrices are restricted to numeric element types and therefore cannot
+// be used for block-structured matrices:
+
+   \code
+   using blaze::CompressedMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::StaticMatrix;
+   using blaze::UniLowerMatrix;
+   using blaze::UniUpperMatrix;
+
+   // Compilation error: lower unitriangular matrices are restricted to numeric element types
+   UniLowerMatrix< DynamicMatrix< StaticMatrix<int,3UL,3UL> > > A( 5 );
+
+   // Compilation error: upper unitriangular matrices are restricted to numeric element types
+   UniUpperMatrix< CompressedMatrix< StaticMatrix<int,3UL,3UL> > > B( 7 );
    \endcode
 
 // \n \section adaptors_triangular_matrices_performance Performance Considerations
