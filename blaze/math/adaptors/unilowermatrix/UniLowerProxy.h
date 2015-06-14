@@ -870,9 +870,7 @@ inline bool isDefault( const UniLowerProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
-   if( proxy.rowIndex() == proxy.columnIndex() )
-      return true;
-   else return isDefault( proxy.get() );
+   return isDefault( proxy.get() );
 }
 //*************************************************************************************************
 
