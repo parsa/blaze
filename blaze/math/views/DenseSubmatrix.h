@@ -13334,7 +13334,7 @@ inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm )
                         \f[\left(\begin{array}{*{5}{c}}
                         l_{0,0} & 0       & 0       & \cdots & 0       \\
                         l_{1,0} & l_{1,1} & 0       & \cdots & 0       \\
-                        l_{2,0} & l_{2,1} & l_{3,3} & \cdots & 0       \\
+                        l_{2,0} & l_{2,1} & l_{2,2} & \cdots & 0       \\
                         \vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
                         \end{array}\right).\f]
