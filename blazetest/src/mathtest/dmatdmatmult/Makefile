@@ -85,6 +85,14 @@ DDaSDa: DDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DDaSDb: DDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDaSLDa: DDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDaSLDb: DDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDaSUDa: DDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDaSUDb: DDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DDaUDa: DDaUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DDaUDb: DDaUDb.o
@@ -104,6 +112,14 @@ DDbMDb: DDbMDb.o
 DDbSDa: DDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DDbSDb: DDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbSLDa: DDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbSLDb: DDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbSUDa: DDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DDbSUDb: DDbSUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DDbUDa: DDbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -144,6 +160,14 @@ LDaSDa: LDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDaSDb: LDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDaSLDa: LDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDaSLDb: LDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDaSUDa: LDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDaSUDb: LDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDaUDa: LDaUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDaUDb: LDaUDb.o
@@ -163,6 +187,14 @@ LDbMDb: LDbMDb.o
 LDbSDa: LDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDbSDb: LDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbSLDa: LDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbSLDb: LDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbSUDa: LDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LDbSUDb: LDbSUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LDbUDa: LDbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -369,6 +401,14 @@ MDaSDa: MDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaSDb: MDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSLDa: MDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSLDb: MDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSUDa: MDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaSUDb: MDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaUDa: MDaUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaUDb: MDaUDb.o
@@ -420,6 +460,14 @@ MDbMHb: MDbMHb.o
 MDbSDa: MDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbSDb: MDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSLDa: MDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSLDb: MDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSUDa: MDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbSUDb: MDbSUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbUDa: MDbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -476,6 +524,14 @@ SDaSDa: SDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDaSDb: SDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSLDa: SDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSLDb: SDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSUDa: SDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDaSUDb: SDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDaUDa: SDaUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDaUDb: SDaUDb.o
@@ -496,6 +552,14 @@ SDbSDa: SDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDbSDb: SDbSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSLDa: SDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSLDb: SDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSUDa: SDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SDbSUDb: SDbSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDbUDa: SDbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SDbUDb: SDbUDb.o
@@ -508,6 +572,156 @@ SHaSHb: SHaSHb.o
 SHbSHa: SHbSHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SHbSHb: SHbSHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SL3x3aSL3x3a: SL3x3aSL3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SL3x3aSL3x3b: SL3x3aSL3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SL3x3bSL3x3a: SL3x3bSL3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SL3x3bSL3x3b: SL3x3bSL3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SLDaDDa: SLDaDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaDDb: SLDaDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaLDa: SLDaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaLDb: SLDaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaMDa: SLDaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaMDb: SLDaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSDa: SLDaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSDb: SLDaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSLDa: SLDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSLDb: SLDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSUDa: SLDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaSUDb: SLDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaUDa: SLDaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaUDb: SLDaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbDDa: SLDbDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbDDb: SLDbDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbLDa: SLDbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbLDb: SLDbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbMDa: SLDbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbMDb: SLDbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSDa: SLDbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSDb: SLDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSLDa: SLDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSLDb: SLDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSUDa: SLDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbSUDb: SLDbSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbUDa: SLDbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbUDb: SLDbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SLHaSLHa: SLHaSLHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLHaSLHb: SLHaSLHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLHbSLHa: SLHbSLHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLHbSLHb: SLHbSLHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SU3x3aSU3x3a: SU3x3aSU3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SU3x3aSU3x3b: SU3x3aSU3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SU3x3bSU3x3a: SU3x3bSU3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SU3x3bSU3x3b: SU3x3bSU3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SUDaDDa: SUDaDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaDDb: SUDaDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaLDa: SUDaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaLDb: SUDaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaMDa: SUDaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaMDb: SUDaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSDa: SUDaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSDb: SUDaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSLDa: SUDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSLDb: SUDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSUDa: SUDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaSUDb: SUDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaUDa: SUDaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaUDb: SUDaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbDDa: SUDbDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbDDb: SUDbDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbLDa: SUDbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbLDb: SUDbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbMDa: SUDbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbMDb: SUDbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSDa: SUDbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSDb: SUDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSLDa: SUDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSLDb: SUDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSUDa: SUDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbSUDb: SUDbSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbUDa: SUDbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbUDb: SUDbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SUHaSUHa: SUHaSUHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUHaSUHb: SUHaSUHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUHbSUHa: SUHbSUHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUHbSUHb: SUHbSUHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 U3x3aU3x3a: U3x3aU3x3a.o
@@ -535,6 +749,14 @@ UDaSDa: UDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDaSDb: UDaSDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDaSLDa: UDaSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDaSLDb: UDaSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDaSUDa: UDaSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDaSUDb: UDaSUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDaUDa: UDaUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDaUDb: UDaUDb.o
@@ -554,6 +776,14 @@ UDbMDb: UDbMDb.o
 UDbSDa: UDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDbSDb: UDbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbSLDa: UDbSLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbSLDb: UDbSLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbSUDa: UDbSUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UDbSUDb: UDbSUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDbUDa: UDbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
