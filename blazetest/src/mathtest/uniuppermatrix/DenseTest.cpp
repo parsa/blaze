@@ -6123,7 +6123,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6156,7 +6156,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6206,7 +6206,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6239,7 +6239,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6280,7 +6280,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6313,7 +6313,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6363,7 +6363,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
@@ -6396,7 +6396,7 @@ void DenseTest::testIsDefault()
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( upper(1,1) ) != true ) {
+         if( isDefault( upper(1,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
