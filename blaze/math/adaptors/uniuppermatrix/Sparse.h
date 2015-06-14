@@ -60,9 +60,12 @@
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
@@ -1208,7 +1211,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsUniUpper<MT2>::value && !isUniUpper( ~rhs ) )
+   if( IsStrictlyTriangular<MT2>::value || ( !IsUniUpper<MT2>::value && !isUniUpper( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    matrix_ = ~rhs;
@@ -1242,7 +1245,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
+   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    if( IsUniUpper<MT2>::value ) {
@@ -1286,7 +1289,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) )
+   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    matrix_ += ~rhs;
@@ -1320,7 +1324,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsSquare<MT2>::value && !isSquare( ~rhs ) )
+   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
+       ( IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    if( IsStrictlyUpper<MT2>::value ) {
@@ -1364,7 +1369,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) )
+   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    matrix_ -= ~rhs;
@@ -1398,7 +1404,8 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
+   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
+       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
       throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
 
    if( IsStrictlyUpper<MT2>::value ) {
