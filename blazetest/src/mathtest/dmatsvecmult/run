@@ -97,6 +97,16 @@ EXE=$PATH_DMATSVECMULT/SDaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then e
 EXE=$PATH_DMATSVECMULT/SDbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSVECMULT/SDbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_DMATSVECMULT/SLDaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SLDaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SLDbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SLDbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_DMATSVECMULT/SUDaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SUDaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SUDbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSVECMULT/SUDbVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_DMATSVECMULT/UDaVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSVECMULT/UDaVCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSVECMULT/UDbVCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -168,6 +168,24 @@ SDbVCa: SDbVCa.o
 SDbVCb: SDbVCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+SLDaVCa: SLDaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaVCb: SLDaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbVCa: SLDbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbVCb: SLDbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SUDaVCa: SUDaVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaVCb: SUDaVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbVCa: SUDbVCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbVCb: SUDbVCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 UDaVCa: UDaVCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDaVCb: UDaVCb.o
