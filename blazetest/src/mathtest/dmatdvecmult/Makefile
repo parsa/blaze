@@ -344,6 +344,24 @@ SDbVDa: SDbVDa.o
 SDbVDb: SDbVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+SLDaVDa: SLDaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDaVDb: SLDaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbVDa: SLDbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SLDbVDb: SLDbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+SUDaVDa: SUDaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDaVDb: SUDaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbVDa: SUDbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SUDbVDb: SUDbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 UDaVDa: UDaVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UDaVDb: UDaVDb.o
