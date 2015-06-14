@@ -125,9 +125,7 @@ class StrictlyLowerProxy : public Proxy< StrictlyLowerProxy<MT>, typename MT::El
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t       rowIndex()    const;
-   inline size_t       columnIndex() const;
-   inline RawReference get()         const;
+   inline RawReference get() const;
    //@}
    //**********************************************************************************************
 
@@ -355,32 +353,6 @@ inline StrictlyLowerProxy<MT>& StrictlyLowerProxy<MT>::operator/=( const T& valu
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Returns the row index of the represented matrix element.
-//
-// \return The row index of the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline size_t StrictlyLowerProxy<MT>::rowIndex() const
-{
-   return row_;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the column index of the represented matrix element.
-//
-// \return The column index of the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline size_t StrictlyLowerProxy<MT>::columnIndex() const
-{
-   return column_;
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Returning the value of the accessed matrix element.
@@ -831,8 +803,7 @@ inline void reset( const StrictlyLowerProxy<MT>& proxy )
 {
    using blaze::reset;
 
-   if( proxy.rowIndex() != proxy.columnIndex() )
-      reset( proxy.get() );
+   reset( proxy.get() );
 }
 //*************************************************************************************************
 
@@ -852,8 +823,7 @@ inline void clear( const StrictlyLowerProxy<MT>& proxy )
 {
    using blaze::clear;
 
-   if( proxy.rowIndex() != proxy.columnIndex() )
-      clear( proxy.get() );
+   clear( proxy.get() );
 }
 //*************************************************************************************************
 
@@ -873,9 +843,7 @@ inline bool isDefault( const StrictlyLowerProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
-   if( proxy.rowIndex() == proxy.columnIndex() )
-      return true;
-   else return isDefault( proxy.get() );
+   return isDefault( proxy.get() );
 }
 //*************************************************************************************************
 
