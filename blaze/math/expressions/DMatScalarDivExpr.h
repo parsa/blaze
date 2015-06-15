@@ -396,7 +396,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -408,7 +408,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -420,7 +420,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.iterator_ - dec );
+         return ConstIterator( it.iterator_ - dec, it.scalar_ );
       }
       //*******************************************************************************************
 
