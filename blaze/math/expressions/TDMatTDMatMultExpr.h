@@ -4696,7 +4696,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      addAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -5517,7 +5518,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
+      subAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
