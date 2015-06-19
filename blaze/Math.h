@@ -60,7 +60,6 @@
 #include <blaze/math/Serialization.h>
 #include <blaze/math/Shims.h>
 #include <blaze/math/SMP.h>
-#include <blaze/math/Solvers.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/StorageOrder.h>

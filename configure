@@ -114,7 +114,6 @@ STATIC_LIB="libblaze.a"
 SHARED_LIB="libblaze.so"
 
 UTILDIR="\$(INSTALL_PATH)/src/util"
-MATHDIR="\$(INSTALL_PATH)/src/math"
 DOCDIR="\$(INSTALL_PATH)/doc"
 
 
@@ -177,7 +176,7 @@ fi
 
 LIBRARIES=${LIBRARIES%" "}
 
-MODULES="util math"
+MODULES="util"
 
 cat > Makefile <<EOF
 #==================================================================================================
@@ -267,18 +266,11 @@ util:
 	@\$(MAKE) --no-print-directory -C $UTILDIR
 	@echo "...Setup of the utility module complete!"
 
-math:
-	@echo
-	@echo "Setup of the math module..."
-	@\$(MAKE) --no-print-directory -C $MATHDIR
-	@echo "...Setup of the math module complete!"
-
 
 # Clean up rules
 clean:
 	@echo "Cleaning up..."
 	@\$(MAKE) --no-print-directory -C $UTILDIR clean
-	@\$(MAKE) --no-print-directory -C $MATHDIR clean
 	@\$(RM) $LIBDIR/$STATIC_LIB $LIBDIR/$SHARED_LIB \$(OBJECT_PATH)/*.o
 
 
