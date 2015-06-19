@@ -259,9 +259,9 @@ namespace blaze {}
 // \subsection step_3_configuration_unix Linux/MacOSX User
 //
 // Next to the math library, \b Blaze also contains a small number of additional (sub-)libraries.
-// If these libraries, such as blaze::ThreadPool or the blaze::logging functionality, are required
-// it is necessary to create the \b Blaze library files. For that purpose, the \c configure script
-// has created a \c Makefile that can be used for the compilation process:
+// If these libraries, such as the blaze::logging functionality, are required it is necessary to
+// create the \b Blaze library files. For that purpose, the \c configure script has created a
+// \c Makefile that can be used for the compilation process:
 
    \code
    make
