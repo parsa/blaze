@@ -1171,7 +1171,7 @@ void OperationTest<MT1,MT2>::testBasicOperation()
 
 
       //=====================================================================================
-      // Multiplication with subtraction assignment with the given matrices
+      // Multiplication with subtraction assignment
       //=====================================================================================
 
       // Multiplication with subtraction assignment with the given matrices
