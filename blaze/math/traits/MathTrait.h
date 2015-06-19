@@ -101,13 +101,21 @@ namespace blaze {
 // <ul>
 //    <li>std::complex</li>
 //    <li>blaze::StaticVector</li>
+//    <li>blaze::HybridVector</li>
 //    <li>blaze::DynamicVector</li>
 //    <li>blaze::CompressedVector</li>
 //    <li>blaze::StaticMatrix</li>
+//    <li>blaze::HybridMatrix</li>
 //    <li>blaze::DynamicMatrix</li>
 //    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::RotationMatrix</li>
-//    <li>blaze::Quaternion</li>
+//    <li>blaze::SymmetricMatrix</li>
+//    <li>blaze::LowerMatrix</li>
+//    <li>blaze::UniLowerMatrix</li>
+//    <li>blaze::StrictlyLowerMatrix</li>
+//    <li>blaze::UpperMatrix</li>
+//    <li>blaze::UniUpperMatrix</li>
+//    <li>blaze::StrictlyUpperMatrix</li>
+//    <li>blaze::DiagonalMatrix</li>
 // </ul>
 //
 //

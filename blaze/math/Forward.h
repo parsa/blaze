@@ -45,18 +45,4 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/views/Forward.h>
 
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
-//
-//=================================================================================================
-
-template< typename > class Quaternion;
-template< typename > class RotationMatrix;
-
-} // namespace blaze
-
 #endif
