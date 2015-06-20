@@ -118,7 +118,8 @@ namespace blaze {
 //  -# <b>\ref uniuppermatrix_square</b>
 //  -# <b>\ref uniuppermatrix_uniupper</b>
 //  -# <b>\ref uniuppermatrix_initialization</b>
-//  -# <b>\ref uniuppermatrix_selfscaling</b>
+//  -# <b>\ref uniuppermatrix_storage</b>
+//  -# <b>\ref uniuppermatrix_scaling</b>
 //
 // \n \subsection uniuppermatrix_square Upper Unitriangular Matrices Must Always be Square!
 //
@@ -372,7 +373,18 @@ namespace blaze {
    UniUpperMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
-// \n \subsection uniuppermatrix_selfscaling Upper Unitriangular Matrices Don't Provide Self-Scaling!
+// \n \subsection uniuppermatrix_storage Dense Upper Unitriangular Matrices Also Store the Lower Elements!
+//
+// It is important to note that dense upper unitriangular matrices store all elements, including
+// the elements in the lower part of the matrix, and therefore don't provide any kind of memory
+// reduction! There are two main reasons for this: First, storing also the lower elements
+// guarantees maximum performance for many algorithms that perform vectorized operations on the
+// uniupper matrix, which is especially true for small dense matrices. Second, conceptually the
+// UniUpperMatrix adaptor merely restricts the interface to the matrix type \a MT and does not
+// change the data layout or the underlying matrix type.
+//
+//
+// \n \subsection uniuppermatrix_scaling Upper Unitriangular Matrices Cannot Be Scaled!
 //
 // Since the diagonal elements have a fixed value of 1 it is not possible to self-scale an uniupper
 // matrix:
