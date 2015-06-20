@@ -117,6 +117,7 @@ namespace blaze {
 //  -# <b>\ref uppermatrix_square</b>
 //  -# <b>\ref uppermatrix_upper</b>
 //  -# <b>\ref uppermatrix_initialization</b>
+//  -# <b>\ref uppermatrix_storage</b>
 //
 // \n \subsection uppermatrix_square Upper Matrices Must Always be Square!
 //
@@ -344,6 +345,17 @@ namespace blaze {
    UpperMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
+// \n \subsection uppermatrix_storage Dense Upper Matrices Also Store the Lower Elements!
+//
+// It is important to note that dense upper matrices store all elements, including the elements
+// in the lower part of the matrix, and therefore don't provide any kind of memory reduction!
+// There are two main reasons for this: First, storing also the lower elements guarantees maximum
+// performance for many algorithms that perform vectorized operations on the upper matrix, which
+// is especially true for small dense matrices. Second, conceptually the UpperMatrix adaptor
+// merely restricts the interface to the matrix type \a MT and does not change the data layout
+// or the underlying matrix type.
+//
+//
 // \n \section uppermatrix_arithmetic_operations Arithmetic Operations
 //
 // An UpperMatrix matrix can participate in numerical operations in any way any other dense or
