@@ -117,6 +117,7 @@ namespace blaze {
 //  -# <b>\ref lowermatrix_square</b>
 //  -# <b>\ref lowermatrix_lower</b>
 //  -# <b>\ref lowermatrix_initialization</b>
+//  -# <b>\ref lowermatrix_storage</b>
 //
 // \n \subsection lowermatrix_square Lower Matrices Must Always be Square!
 //
@@ -344,6 +345,17 @@ namespace blaze {
    LowerMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
+// \n \subsection lowermatrix_storage Dense Lower Matrices Also Store the Upper Elements!
+//
+// It is important to note that dense lower matrices store all elements, including the elements
+// in the upper part of the matrix, and therefore don't provide any kind of memory reduction!
+// There are two main reasons for this: First, storing also the upper elements guarantees maximum
+// performance for many algorithms that perform vectorized operations on the lower matrix, which
+// is especially true for small dense matrices. Second, conceptually the LowerMatrix adaptor
+// merely restricts the interface to the matrix type \a MT and does not change the data layout
+// or the underlying matrix type.
+//
+//
 // \n \section lowermatrix_arithmetic_operations Arithmetic Operations
 //
 // A LowerMatrix matrix can participate in numerical operations in any way any other dense or
