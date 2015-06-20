@@ -118,6 +118,7 @@ namespace blaze {
 //  -# <b>\ref strictlylowermatrix_square</b>
 //  -# <b>\ref strictlylowermatrix_strictlylower</b>
 //  -# <b>\ref strictlylowermatrix_initialization</b>
+//  -# <b>\ref strictlylowermatrix_storage</b>
 //
 // \n \subsection strictlylowermatrix_square Strictly Lower Triangular Matrices Must Always be Square!
 //
@@ -344,6 +345,17 @@ namespace blaze {
    StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
+// \n \subsection strictlylowermatrix_storage Dense Strictly Lower Matrices Also Store the Diagonal and Upper Elements!
+//
+// It is important to note that dense strictly lower matrices store all elements, including the
+// elements on the diagonal and in the upper part of the matrix, and therefore don't provide any
+// kind of memory reduction! There are two main reasons for this: First, storing also the diagonal
+// and upper elements guarantees maximum performance for many algorithms that perform vectorized
+// operations on the lower matrix, which is especially true for small dense matrices. Second,
+// conceptually the StrictlyLowerMatrix adaptor merely restricts the interface to the matrix type
+// \a MT and does not change the data layout or the underlying matrix type.
+//
+//
 // \n \section strictlylowermatrix_arithmetic_operations Arithmetic Operations
 //
 // A StrictlyLowerMatrix matrix can participate in numerical operations in any way any other dense
