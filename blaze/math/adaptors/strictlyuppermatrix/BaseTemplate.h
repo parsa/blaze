@@ -118,6 +118,7 @@ namespace blaze {
 //  -# <b>\ref strictlyuppermatrix_square</b>
 //  -# <b>\ref strictlyuppermatrix_strictlyupper</b>
 //  -# <b>\ref strictlyuppermatrix_initialization</b>
+//  -# <b>\ref strictlyuppermatrix_storage</b>
 //
 // \n \subsection strictlyuppermatrix_square Strictly Upper Triangular Matrices Must Always be Square!
 //
@@ -344,6 +345,17 @@ namespace blaze {
    StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> > B( 5 );
    \endcode
 
+// \n \subsection strictlyuppermatrix_storage Dense Strictly Upper Matrices Also Store the Diagonal and Lower Elements!
+//
+// It is important to note that dense strictly upper matrices store all elements, including the
+// elements on the diagonal and in the lower part of the matrix, and therefore don't provide any
+// kind of memory reduction! There are two main reasons for this: First, storing also the diagonal
+// and lower elements guarantees maximum performance for many algorithms that perform vectorized
+// operations on the upper matrix, which is especially true for small dense matrices. Second,
+// conceptually the StrictlyUpperMatrix adaptor merely restricts the interface to the matrix type
+// \a MT and does not change the data layout or the underlying matrix type.
+//
+//
 // \n \section strictlyuppermatrix_arithmetic_operations Arithmetic Operations
 //
 // An StrictlyUpperMatrix matrix can participate in numerical operations in any way any other dense
