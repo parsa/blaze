@@ -2847,7 +2847,7 @@ namespace blaze {}
 //  - <b>\ref adaptors_triangular_matrices_lowermatrix</b>
 //  - <b>\ref adaptors_triangular_matrices_unilowermatrix</b>
 //  - <b>\ref adaptors_triangular_matrices_strictlylowermatrix</b>
-
+//
 // Upper triangular matrices:
 //  - <b>\ref adaptors_triangular_matrices_uppermatrix</b>
 //  - <b>\ref adaptors_triangular_matrices_uniuppermatrix</b>
@@ -3094,7 +3094,7 @@ namespace blaze {}
 // The blaze::UniUpperMatrix class template is an adapter for existing dense and sparse matrix
 // types. It inherits the properties and the interface of the given matrix type \a MT and extends
 // it by enforcing the additional invariant that all diagonal matrix elements are 1 and all matrix
-// elements below the diagonal are 0 (upper unitriangular matrix).
+// elements below the diagonal are 0 (upper unitriangular matrix):
 
                         \f[\left(\begin{array}{*{5}{c}}
                         1       & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
@@ -3273,7 +3273,7 @@ namespace blaze {}
 //  -# <b>\ref adaptors_triangular_matrices_triangular</b>
 //  -# <b>\ref adaptors_triangular_matrices_initialization</b>
 //  -# <b>\ref adaptors_triangular_matrices_storage</b>
-//  -# <b>\ref adaptors_triangular_matrices_selfscaling</b>
+//  -# <b>\ref adaptors_triangular_matrices_scaling</b>
 //
 // \n \subsection adaptors_triangular_matrices_square Triangular Matrices Must Always be Square!
 //
@@ -3536,7 +3536,7 @@ namespace blaze {}
    typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >  LargeDiagonalMatrix;
    \endcode
 
-// \n \subsection adaptors_triangular_matrices_selfscaling Unitriangular Matrices Don't Provide Self-Scaling!
+// \n \subsection adaptors_triangular_matrices_scaling Unitriangular Matrices Cannot Be Scaled!
 //
 // Since the diagonal elements of a unitriangular matrix have a fixed value of 1 it is not possible
 // to self-scale such a matrix:
