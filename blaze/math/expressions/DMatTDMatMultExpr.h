@@ -345,11 +345,21 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
       const size_t kbegin( ( IsUpper<MT1>::value )
-                           ?( IsLower<MT2>::value ? max( i, j ) : i )
-                           :( IsLower<MT2>::value ? j : 0UL ) );
+                           ?( ( IsLower<MT2>::value )
+                              ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                    , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                              :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                           :( ( IsLower<MT2>::value )
+                              ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+                              :( 0UL ) ) );
       const size_t kend( ( IsLower<MT1>::value )
-                         ?( IsUpper<MT2>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                         :( IsUpper<MT2>::value ? ( j+1UL ) : lhs_.columns() ) );
+                         ?( ( IsUpper<MT2>::value )
+                            ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                  , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                            :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                         :( ( IsUpper<MT2>::value )
+                            ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+                            :( lhs_.columns() ) ) );
 
       if( lhs_.columns() == 0UL ||
           ( ( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) && kbegin >= kend ) )
@@ -564,25 +574,68 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j )
+      const size_t ibegin( ( IsStrictlyLower<MT4>::value )
+                           ?( ( IsStrictlyLower<MT5>::value && M > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t iend( ( IsStrictlyUpper<MT4>::value )
+                         ?( ( IsStrictlyUpper<MT5>::value && M > 1UL ) ? M-2UL : M-1UL )
+                         :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      for( size_t i=0UL; i<ibegin; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t i=ibegin; i<iend; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                              ?( ( IsStrictlyUpper<MT4>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? i+2UL : i+1UL )
+                                 :( IsStrictlyUpper<MT5>::value ? i+1UL : i ) )
+                              :( IsStrictlyUpper<MT5>::value ? 1UL : 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                            ?( ( IsStrictlyLower<MT4>::value )
+                               ?( IsStrictlyLower<MT5>::value ? i-1UL : i )
+                               :( IsStrictlyLower<MT5>::value ? i : i+1UL ) )
+                            :( IsStrictlyLower<MT5>::value ? N-1UL : N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=0UL; j<jbegin; ++j ) {
+            reset( (~C)(i,j) );
+         }
+         for( size_t j=jbegin; j<jend; ++j )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            if( kbegin < kend ) {
-               (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
-               for( size_t k=kbegin+1UL; k<kend; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
-               }
+            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            for( size_t k=kbegin+1UL; k<kend; ++k ) {
+               (~C)(i,j) += A(i,k) * B(k,j);
             }
-            else {
-               reset( (~C)(i,j) );
-            }
+         }
+         for( size_t j=jend; j<N; ++j ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t i=iend; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            reset( (~C)(i,j) );
          }
       }
    }
@@ -613,25 +666,68 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         for( size_t i=0UL; i<M; ++i )
+      const size_t jbegin( ( IsStrictlyUpper<MT5>::value )
+                           ?( ( IsStrictlyUpper<MT4>::value && N > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t jend( ( IsStrictlyLower<MT5>::value )
+                         ?( ( IsStrictlyLower<MT4>::value && N > 1UL ) ? N-2UL : N-1UL )
+                         :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      for( size_t j=0UL; j<jbegin; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t j=jbegin; j<jend; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                              ?( ( IsStrictlyLower<MT4>::value )
+                                 ?( IsStrictlyLower<MT5>::value ? j+2UL : j+1UL )
+                                 :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                              :( IsStrictlyLower<MT4>::value ? 1UL : 0UL ) );
+         const size_t iend( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                            ?( ( IsStrictlyUpper<MT4>::value )
+                               ?( ( IsStrictlyUpper<MT5>::value )?( j-1UL ):( j ) )
+                               :( ( IsStrictlyUpper<MT5>::value )?( j ):( j+1UL ) ) )
+                            :( IsStrictlyUpper<MT4>::value ? M-1UL : M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=0UL; i<ibegin; ++i ) {
+            reset( (~C)(i,j) );
+         }
+         for( size_t i=ibegin; i<iend; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            if( kbegin < kend ) {
-               (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
-               for( size_t k=kbegin+1UL; k<kend; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
-               }
+            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            for( size_t k=kbegin+1UL; k<kend; ++k ) {
+               (~C)(i,j) += A(i,k) * B(k,j);
             }
-            else {
-               reset( (~C)(i,j) );
-            }
+         }
+         for( size_t i=iend; i<M; ++i ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t j=jend; j<N; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            reset( (~C)(i,j) );
          }
       }
    }
@@ -663,8 +759,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT4>::value ) {
@@ -826,8 +926,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          if( IsLower<MT5>::value ) {
@@ -1662,15 +1766,47 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j )
+      const size_t ibegin( ( IsStrictlyLower<MT4>::value )
+                           ?( ( IsStrictlyLower<MT5>::value && M > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t iend( ( IsStrictlyUpper<MT4>::value )
+                         ?( ( IsStrictlyUpper<MT5>::value && M > 1UL ) ? M-2UL : M-1UL )
+                         :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      for( size_t i=ibegin; i<iend; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                              ?( ( IsStrictlyUpper<MT4>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? i+2UL : i+1UL )
+                                 :( IsStrictlyUpper<MT5>::value ? i+1UL : i ) )
+                              :( IsStrictlyUpper<MT5>::value ? 1UL : 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                            ?( ( IsStrictlyLower<MT4>::value )
+                               ?( IsStrictlyLower<MT5>::value ? i-1UL : i )
+                               :( IsStrictlyLower<MT5>::value ? i : i+1UL ) )
+                            :( IsStrictlyLower<MT5>::value ? N-1UL : N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=jbegin; j<jend; ++j )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
@@ -1712,15 +1848,47 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         for( size_t i=0UL; i<M; ++i )
+      const size_t jbegin( ( IsStrictlyUpper<MT5>::value )
+                           ?( ( IsStrictlyUpper<MT4>::value && N > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t jend( ( IsStrictlyLower<MT5>::value )
+                         ?( ( IsStrictlyLower<MT4>::value && N > 1UL ) ? N-2UL : N-1UL )
+                         :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      for( size_t j=jbegin; j<jend; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                              ?( ( IsStrictlyLower<MT4>::value )
+                                 ?( IsStrictlyLower<MT5>::value ? j+2UL : j+1UL )
+                                 :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                              :( IsStrictlyLower<MT4>::value ? 1UL : 0UL ) );
+         const size_t iend( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                            ?( ( IsStrictlyUpper<MT4>::value )
+                               ?( ( IsStrictlyUpper<MT5>::value )?( j-1UL ):( j ) )
+                               :( ( IsStrictlyUpper<MT5>::value )?( j ):( j+1UL ) ) )
+                            :( IsStrictlyUpper<MT4>::value ? M-1UL : M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=ibegin; i<iend; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
@@ -1763,8 +1931,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -1903,8 +2075,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
@@ -2708,15 +2884,47 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j )
+      const size_t ibegin( ( IsStrictlyLower<MT4>::value )
+                           ?( ( IsStrictlyLower<MT5>::value && M > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t iend( ( IsStrictlyUpper<MT4>::value )
+                         ?( ( IsStrictlyUpper<MT5>::value && M > 1UL ) ? M-2UL : M-1UL )
+                         :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      for( size_t i=ibegin; i<iend; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                              ?( ( IsStrictlyUpper<MT4>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? i+2UL : i+1UL )
+                                 :( IsStrictlyUpper<MT5>::value ? i+1UL : i ) )
+                              :( IsStrictlyUpper<MT5>::value ? 1UL : 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                            ?( ( IsStrictlyLower<MT4>::value )
+                               ?( IsStrictlyLower<MT5>::value ? i-1UL : i )
+                               :( IsStrictlyLower<MT5>::value ? i : i+1UL ) )
+                            :( IsStrictlyLower<MT5>::value ? N-1UL : N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=jbegin; j<jend; ++j )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
@@ -2758,15 +2966,47 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         for( size_t i=0UL; i<M; ++i )
+      const size_t jbegin( ( IsStrictlyUpper<MT5>::value )
+                           ?( ( IsStrictlyUpper<MT4>::value && N > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t jend( ( IsStrictlyLower<MT5>::value )
+                         ?( ( IsStrictlyLower<MT4>::value && N > 1UL ) ? N-2UL : N-1UL )
+                         :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      for( size_t j=jbegin; j<jend; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                              ?( ( IsStrictlyLower<MT4>::value )
+                                 ?( IsStrictlyLower<MT5>::value ? j+2UL : j+1UL )
+                                 :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                              :( IsStrictlyLower<MT4>::value ? 1UL : 0UL ) );
+         const size_t iend( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                            ?( ( IsStrictlyUpper<MT4>::value )
+                               ?( ( IsStrictlyUpper<MT5>::value )?( j-1UL ):( j ) )
+                               :( ( IsStrictlyUpper<MT5>::value )?( j ):( j+1UL ) ) )
+                            :( IsStrictlyUpper<MT4>::value ? M-1UL : M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=ibegin; i<iend; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
             const size_t knum( kend - kbegin );
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
@@ -2809,8 +3049,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -2949,8 +3193,12 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
@@ -4298,26 +4546,69 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j )
+      const size_t ibegin( ( IsStrictlyLower<MT4>::value )
+                           ?( ( IsStrictlyLower<MT5>::value && M > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t iend( ( IsStrictlyUpper<MT4>::value )
+                         ?( ( IsStrictlyUpper<MT5>::value && M > 1UL ) ? M-2UL : M-1UL )
+                         :( M ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      for( size_t i=0UL; i<ibegin; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t i=ibegin; i<iend; ++i )
+      {
+         const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                              ?( ( IsStrictlyUpper<MT4>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? i+2UL : i+1UL )
+                                 :( IsStrictlyUpper<MT5>::value ? i+1UL : i ) )
+                              :( IsStrictlyUpper<MT5>::value ? 1UL : 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                            ?( ( IsStrictlyLower<MT4>::value )
+                               ?( IsStrictlyLower<MT5>::value ? i-1UL : i )
+                               :( IsStrictlyLower<MT5>::value ? i : i+1UL ) )
+                            :( IsStrictlyLower<MT5>::value ? N-1UL : N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+         for( size_t j=0UL; j<jbegin; ++j ) {
+            reset( (~C)(i,j) );
+         }
+         for( size_t j=jbegin; j<jend; ++j )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            if( kbegin < kend ) {
-               (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
-               for( size_t k=kbegin+1UL; k<kend; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
-               }
-               (~C)(i,j) *= scalar;
+            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            for( size_t k=kbegin+1UL; k<kend; ++k ) {
+               (~C)(i,j) += A(i,k) * B(k,j);
             }
-            else {
-               reset( (~C)(i,j) );
-            }
+            (~C)(i,j) *= scalar;
+         }
+         for( size_t j=jend; j<N; ++j ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t i=iend; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            reset( (~C)(i,j) );
          }
       }
    }
@@ -4348,26 +4639,69 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
-      for( size_t j=0UL; j<N; ++j ) {
-         for( size_t i=0UL; i<M; ++i )
+      const size_t jbegin( ( IsStrictlyUpper<MT5>::value )
+                           ?( ( IsStrictlyUpper<MT4>::value && N > 1UL ) ? 2UL : 1UL )
+                           :( 0UL ) );
+      const size_t jend( ( IsStrictlyLower<MT5>::value )
+                         ?( ( IsStrictlyLower<MT4>::value && N > 1UL ) ? N-2UL : N-1UL )
+                         :( N ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      for( size_t j=0UL; j<jbegin; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t j=jbegin; j<jend; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                              ?( ( IsStrictlyLower<MT4>::value )
+                                 ?( IsStrictlyLower<MT5>::value ? j+2UL : j+1UL )
+                                 :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                              :( IsStrictlyLower<MT4>::value ? 1UL : 0UL ) );
+         const size_t iend( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                            ?( ( IsStrictlyUpper<MT4>::value )
+                               ?( ( IsStrictlyUpper<MT5>::value )?( j-1UL ):( j ) )
+                               :( ( IsStrictlyUpper<MT5>::value )?( j ):( j+1UL ) ) )
+                            :( IsStrictlyUpper<MT4>::value ? M-1UL : M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         for( size_t i=0UL; i<ibegin; ++i ) {
+            reset( (~C)(i,j) );
+         }
+         for( size_t i=ibegin; i<iend; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
-                                 :( IsLower<MT5>::value ? j : 0UL ) );
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                                          , ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( ( IsLower<MT5>::value )
+                                    ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                                    :( 0UL ) ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                               :( IsUpper<MT5>::value ? ( j+1UL ) : K ) );
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                                        , ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
+                               :( ( IsUpper<MT5>::value )
+                                  ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                                  :( K ) ) );
+            BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            if( kbegin < kend ) {
-               (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
-               for( size_t k=kbegin+1UL; k<kend; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
-               }
-               (~C)(i,j) *= scalar;
+            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            for( size_t k=kbegin+1UL; k<kend; ++k ) {
+               (~C)(i,j) += A(i,k) * B(k,j);
             }
-            else {
-               reset( (~C)(i,j) );
-            }
+            (~C)(i,j) *= scalar;
+         }
+         for( size_t i=iend; i<M; ++i ) {
+            reset( (~C)(i,j) );
+         }
+      }
+      for( size_t j=jend; j<N; ++j ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            reset( (~C)(i,j) );
          }
       }
    }
@@ -4399,8 +4733,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT4>::value ) {
@@ -4562,8 +4900,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          if( IsLower<MT5>::value ) {
@@ -5424,8 +5766,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -5564,8 +5910,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
@@ -6398,8 +6748,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -6540,8 +6894,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )?( j ):( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT5>::value )?( j+1UL ):( M ) );
+         const size_t ibegin( ( IsLower<MT5>::value )
+                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT5>::value )
+                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+                            :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          const size_t inum( iend - ibegin );
