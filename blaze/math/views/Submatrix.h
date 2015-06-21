@@ -55,6 +55,8 @@
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
@@ -509,10 +511,18 @@ inline typename EnableIf< IsMatMatMultExpr<MT>, typename SubmatrixExprTrait<MT,A
    typename MT::LeftOperand  left ( (~matrix).leftOperand()  );
    typename MT::RightOperand right( (~matrix).rightOperand() );
 
-   const size_t begin( max( ( IsUpper<MT1>::value )?( row ):( 0UL ),
-                            ( IsLower<MT2>::value )?( column ):( 0UL ) ) );
-   const size_t end( min( ( IsLower<MT1>::value )?( row + m ):( left.columns() ),
-                          ( IsUpper<MT2>::value )?( column + n ):( left.columns() ) ) );
+   const size_t begin( max( ( IsUpper<MT1>::value )
+                            ?( IsStrictlyUpper<MT1>::value ? row + 1UL : row )
+                            :( 0UL )
+                          , ( IsLower<MT2>::value )
+                            ?( IsStrictlyLower<MT2>::value ? column + 1UL : column )
+                            :( 0UL ) ) );
+   const size_t end( min( ( IsLower<MT1>::value )
+                          ?( IsStrictlyLower<MT1>::value && m > 0UL ? row + m - 1UL : row + m )
+                          :( left.columns() )
+                        , ( IsUpper<MT2>::value )
+                          ?( IsStrictlyUpper<MT2>::value && n > 0UL ? column + n - 1UL : column + n )
+                          :( left.columns() ) ) );
 
    const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
 
