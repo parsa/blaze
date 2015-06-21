@@ -1789,6 +1789,7 @@ inline typename StrictlyLowerMatrix<MT,SO,false>::ConstIterator
    A.finalize( 1 );        // Finalizing column 1
    A.append( 3, 2, 3.0 );  // Appending the value 3 in column 2 with row index 3
    A.finalize( 2 );        // Finalizing column 2
+   A.finalize( 3 );        // Finalizing the empty column 3
    \endcode
 
 // Note that although append() does not allocate new memory it still invalidates all iterators
