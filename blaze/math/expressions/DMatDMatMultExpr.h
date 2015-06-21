@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
@@ -364,11 +365,21 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
       const size_t kbegin( ( IsUpper<MT1>::value )
-                           ?( IsLower<MT2>::value ? max( i, j ) : i )
-                           :( IsLower<MT2>::value ? j : 0UL ) );
+                           ?( ( IsLower<MT2>::value )
+                              ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                    , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                              :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                           :( ( IsLower<MT2>::value )
+                              ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+                              :( 0UL ) ) );
       const size_t kend( ( IsLower<MT1>::value )
-                         ?( IsUpper<MT2>::value ? min( i+1UL, j+1UL ) : ( i+1UL ) )
-                         :( IsUpper<MT2>::value ? ( j+1UL ) : lhs_.columns() ) );
+                         ?( ( IsUpper<MT2>::value )
+                            ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                  , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                            :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                         :( ( IsUpper<MT2>::value )
+                            ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+                            :( lhs_.columns() ) ) );
 
       if( lhs_.columns() == 0UL ||
           ( ( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) && kbegin >= kend ) )
@@ -586,19 +597,37 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t kbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t kend  ( ( IsLower<MT4>::value )?( i+1UL ):( K ) );
+         const size_t kbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t kend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
+         if( IsStrictlyTriangular<MT4>::value && kbegin == kend ) {
+            for( size_t j=0UL; j<N; ++j ) {
+               reset( (~C)(i,j) );
+            }
+            continue;
+         }
+
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( kbegin ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( kbegin+1UL ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? kbegin+1UL : kbegin )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? kbegin : kbegin+1UL )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             if( IsUpper<MT4>::value && IsUpper<MT5>::value ) {
                for( size_t j=0UL; j<jbegin; ++j ) {
                   reset( C(i,j) );
                }
+            }
+            else if( IsStrictlyUpper<MT5>::value ) {
+               reset( C(i,0UL) );
             }
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
@@ -608,18 +637,26 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                   reset( C(i,j) );
                }
             }
+            else if( IsStrictlyLower<MT5>::value ) {
+               reset( C(i,N-1UL) );
+            }
          }
+
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? k+1UL : k )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? k-1UL : k )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) += A(i,k) * B(k,j);
             }
             if( IsLower<MT5>::value ) {
-               C(i,k) = A(i,k) * B(k,k);
+               C(i,jend) = A(i,k) * B(k,jend);
             }
          }
       }
@@ -654,8 +691,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT4>::value ) {
@@ -703,8 +744,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT5>::value ) {
@@ -813,10 +858,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -851,10 +900,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -889,7 +942,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -917,10 +972,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -945,7 +1004,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -969,9 +1030,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1, xmm2;
 
@@ -988,7 +1053,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
@@ -1473,14 +1540,22 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t kbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t kend  ( ( IsLower<MT4>::value )?( i+1UL ):( K ) );
+         const size_t kbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t kend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
          for( size_t k=kbegin; k<kend; ++k )
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k+1UL ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? k+1UL : k )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? k : k+1UL )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             const size_t jnum( jend - jbegin );
@@ -1526,8 +1601,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -1572,8 +1651,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -1678,10 +1761,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
@@ -1723,10 +1810,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j             ) );
@@ -1768,7 +1859,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -1799,10 +1892,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j         ) );
@@ -1830,7 +1927,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -1855,9 +1954,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j) );
             IntrinsicType xmm2( (~C).load(i+1UL,j) );
@@ -1875,7 +1978,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1( (~C).load(i,j) );
@@ -2336,14 +2441,22 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t kbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t kend  ( ( IsLower<MT4>::value )?( i+1UL ):( K ) );
+         const size_t kbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t kend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
          for( size_t k=kbegin; k<kend; ++k )
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k+1UL ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? k+1UL : k )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? k : k+1UL )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             const size_t jnum( jend - jbegin );
@@ -2389,8 +2502,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -2435,8 +2552,12 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -2541,10 +2662,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i,j             ) );
@@ -2586,10 +2711,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j             ) );
@@ -2631,7 +2760,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -2662,10 +2793,14 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j         ) );
@@ -2693,7 +2828,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -2718,9 +2855,13 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1( (~C).load(i    ,j) );
             IntrinsicType xmm2( (~C).load(i+1UL,j) );
@@ -2738,7 +2879,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1( (~C).load(i,j) );
@@ -3867,19 +4010,37 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t kbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t kend  ( ( IsLower<MT4>::value )?( i+1UL ):( K ) );
+         const size_t kbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t kend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
+         if( IsStrictlyTriangular<MT4>::value && kbegin == kend ) {
+            for( size_t j=0UL; j<N; ++j ) {
+               reset( (~C)(i,j) );
+            }
+            continue;
+         }
+
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( kbegin ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( kbegin+1UL ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? kbegin+1UL : kbegin )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? kbegin : kbegin+1UL )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             if( IsUpper<MT4>::value && IsUpper<MT5>::value ) {
                for( size_t j=0UL; j<jbegin; ++j ) {
                   reset( C(i,j) );
                }
+            }
+            else if( IsStrictlyUpper<MT5>::value ) {
+               reset( C(i,0UL) );
             }
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
@@ -3889,23 +4050,37 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                   reset( C(i,j) );
                }
             }
+            else if( IsStrictlyLower<MT5>::value ) {
+               reset( C(i,N-1UL) );
+            }
          }
+
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
-            const size_t jbegin( ( IsUpper<MT5>::value )?( k ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT5>::value )?( k ):( N ) );
+            const size_t jbegin( ( IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT5>::value ? k+1UL : k )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT5>::value ? k-1UL : k )
+                               :( N ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) += A(i,k) * B(k,j);
             }
             if( IsLower<MT5>::value ) {
-               C(i,k) = A(i,k) * B(k,k);
+               C(i,jend) = A(i,k) * B(k,jend);
             }
          }
+
          {
-            const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )?( i ):( 0UL ) );
-            const size_t jend  ( ( IsLower<MT4>::value && IsLower<MT5>::value )?( i+1UL ):( N ) );
+            const size_t jbegin( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
+                                 ?( IsStrictlyUpper<MT4>::value || IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                                 :( 0UL ) );
+            const size_t jend( ( IsLower<MT4>::value && IsLower<MT5>::value )
+                               ?( IsStrictlyLower<MT4>::value || IsStrictlyLower<MT5>::value ? i : i+1UL )
+                               :( N ) );
+            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
                C(i,j) *= scalar;
@@ -3943,8 +4118,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT4>::value ) {
@@ -3992,8 +4171,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          if( IsUpper<MT5>::value ) {
@@ -4105,10 +4288,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -4143,10 +4330,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -4181,7 +4372,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -4209,10 +4402,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -4237,7 +4434,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -4261,9 +4460,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1, xmm2;
 
@@ -4280,7 +4483,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
@@ -4794,8 +4999,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -4840,8 +5049,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -4948,10 +5161,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -4986,10 +5203,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -5024,7 +5245,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -5052,10 +5275,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -5070,6 +5297,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                xmm3 = xmm3 + a2 * b1;
                xmm4 = xmm4 + a2 * b2;
             }
+
             (~C).store( i    , j         , (~C).load(i    ,j         ) + xmm1 * factor );
             (~C).store( i    , j+IT::size, (~C).load(i    ,j+IT::size) + xmm2 * factor );
             (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) + xmm3 * factor );
@@ -5079,7 +5307,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -5103,9 +5333,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1, xmm2;
 
@@ -5122,7 +5356,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
@@ -5612,8 +5848,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT4>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT4>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT4>::value )
+                              ?( IsStrictlyUpper<MT4>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT4>::value )
+                            ?( IsStrictlyLower<MT4>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -5658,8 +5898,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       for( size_t i=0UL; i<M; ++i )
       {
-         const size_t jbegin( ( IsUpper<MT5>::value )?( i ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT5>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT5>::value )
+                              ?( IsStrictlyUpper<MT5>::value ? i+1UL : i )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT5>::value )
+                            ?( IsStrictlyLower<MT5>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          const size_t jnum( jend - jbegin );
@@ -5766,10 +6010,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+1UL, min( j+IT::size*8UL, K ) ) : ( i+1UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i : i+1UL ), j+IT::size*8UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i : i+1UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*8UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -5804,10 +6052,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*4UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*4UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*4UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -5842,7 +6094,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, K ) ):( K ) );
 
@@ -5870,10 +6124,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsLower<MT4>::value )
-                               ?( IsUpper<MT5>::value ? min( i+2UL, min( j+IT::size*2UL, K ) ) : ( i+2UL ) )
+                               ?( ( IsUpper<MT5>::value )
+                                  ?( min( ( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ), j+IT::size*2UL, K ) )
+                                  :( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL ) )
                                :( IsUpper<MT5>::value ? min( j+IT::size*2UL, K ) : K ) );
 
             IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -5898,7 +6156,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
             const size_t kend( ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, K ) ):( K ) );
 
@@ -5922,9 +6182,13 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          for( ; (i+2UL) <= M; i+=2UL )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( i+2UL ):( K ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
 
             IntrinsicType xmm1, xmm2;
 
@@ -5941,7 +6205,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
          if( i < M )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
-                                 ?( IsLower<MT5>::value ? max( i, j ) : i )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
             IntrinsicType xmm1;
