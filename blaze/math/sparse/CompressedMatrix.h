@@ -2069,8 +2069,9 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
    A.finalize( 0 );        // Finalizing row 0
    A.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
    A.finalize( 1 );        // Finalizing row 1
-   A.append( 2, 0, 3.0 );  // Appending the value 3 in row 2 with column index 0
-   A.finalize( 2 );        // Finalizing row 2
+   A.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   A.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
+   A.finalize( 3 );        // Finalizing row 3
    \endcode
 
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
@@ -4299,13 +4300,14 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 
    \code
    blaze::CompressedMatrix<double,columnMajor> A( 3, 4 );
-   A.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
-   A.append( 1, 0, 1 );  // Appending the value 1 in column 0 with row index 1
-   A.finalize( 0 );      // Finalizing column 0
-   A.append( 1, 1, 2 );  // Appending the value 2 in column 1 with row index 1
-   A.finalize( 1 );      // Finalizing column 1
-   A.append( 0, 2, 3 );  // Appending the value 3 in column 2 with row index 0
-   A.finalize( 2 );      // Finalizing column 2
+   A.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   A.append( 1, 0, 1.0 );  // Appending the value 1 in column 0 with row index 1
+   A.finalize( 0 );        // Finalizing column 0
+   A.append( 1, 1, 2.0 );  // Appending the value 2 in column 1 with row index 1
+   A.finalize( 1 );        // Finalizing column 1
+   A.finalize( 1 );        // Finalizing the empty column 2 to prepare column 3
+   A.append( 0, 3, 3.0 );  // Appending the value 3 in column 3 with row index 0
+   A.finalize( 3 );        // Finalizing column 3
    \endcode
 
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
