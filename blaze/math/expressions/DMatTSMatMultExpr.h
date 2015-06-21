@@ -438,6 +438,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       const size_t block( 4UL );
 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
+         const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
          for( size_t j=0UL; j<C.columns(); ++j )
          {
             const ConstIterator begin( ( IsUpper<MT4>::value )
@@ -446,8 +447,6 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
             const ConstIterator end( ( IsLower<MT4>::value )
                                      ?( IsStrictlyLower<MT4>::value ? B.lowerBound(ii+block,j) : B.upperBound(ii+block,j) )
                                      :( B.end(j) ) );
-
-            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
 
             for( size_t i=ii; i<iend; ++i )
             {
@@ -626,6 +625,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       const size_t block( 4UL );
 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
+         const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
          for( size_t j=0UL; j<C.columns(); ++j )
          {
             const ConstIterator begin( ( IsUpper<MT4>::value )
@@ -637,8 +637,6 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
 
             if( begin == end )
                continue;
-
-            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
 
             for( size_t i=ii; i<iend; ++i ) {
                for( ConstIterator element=begin; element!=end; ++element )
@@ -772,6 +770,7 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       const size_t block( 4UL );
 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
+         const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
          for( size_t j=0UL; j<C.columns(); ++j )
          {
             const ConstIterator begin( ( IsUpper<MT4>::value )
@@ -783,8 +782,6 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
 
             if( begin == end )
                continue;
-
-            const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
 
             for( size_t i=ii; i<iend; ++i ) {
                for( ConstIterator element=begin; element!=end; ++element )
