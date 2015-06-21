@@ -47,6 +47,8 @@
 #include <blaze/math/typetraits/IsCrossExpr.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -534,11 +536,16 @@ inline typename EnableIf< IsMatVecMultExpr<VT>, typename SubvectorExprTrait<VT,A
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   const size_t column( ( IsUpper<MT>::value )?( index ):( 0UL ) );
-   const size_t n     ( ( IsLower<MT>::value )?( ( IsUpper<MT>::value )?( size )
-                                                                       :( index + size ) )
-                                              :( ( IsUpper<MT>::value )?( left.columns() - column )
-                                                                       :( left.columns() ) ) );
+   const size_t column( ( IsUpper<MT>::value )
+                        ?( IsStrictlyUpper<MT>::value ? index + 1UL : index )
+                        :( 0UL ) );
+   const size_t n( ( IsLower<MT>::value )
+                   ?( ( IsUpper<MT>::value )?( size )
+                                            :( ( IsStrictlyLower<MT>::value && size > 0UL )
+                                               ?( index + size - 1UL )
+                                               :( index + size ) ) )
+                   :( ( IsUpper<MT>::value )?( left.columns() - column )
+                                            :( left.columns() ) ) );
 
    return submatrix<AF>( left, index, column, size, n ) * subvector<AF>( right, column, n );
 }
@@ -572,11 +579,16 @@ inline typename EnableIf< IsTVecMatMultExpr<VT>, typename SubvectorExprTrait<VT,
    typename VT::LeftOperand  left ( (~vector).leftOperand()  );
    typename VT::RightOperand right( (~vector).rightOperand() );
 
-   const size_t row( ( IsLower<MT>::value )?( index ):( 0UL ) );
-   const size_t m  ( ( IsLower<MT>::value )?( ( IsUpper<MT>::value )?( size )
-                                                                    :( right.rows() - row) )
-                                           :( ( IsUpper<MT>::value )?( index + size )
-                                                                    :( right.rows() ) ) );
+   const size_t row( ( IsLower<MT>::value )
+                     ?( IsStrictlyLower<MT>::value ? index + 1UL : index )
+                     :( 0UL ) );
+   const size_t m( ( IsUpper<MT>::value )
+                   ?( ( IsLower<MT>::value )?( size )
+                                            :( ( IsStrictlyUpper<MT>::value && size > 0UL )
+                                               ?( index + size - 1UL )
+                                               :( index + size ) ) )
+                   :( ( IsLower<MT>::value )?( right.rows() - row )
+                                            :( right.rows() ) ) );
 
    return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, index, m, size );
 }
