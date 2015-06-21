@@ -3070,13 +3070,14 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
 
-   B.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
-   B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
-   B.finalize( 0 );      // Finalizing row 0
-   B.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
-   B.finalize( 1 );      // Finalizing row 1
-   B.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
-   B.finalize( 2 );      // Finalizing row 2
+   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   B.finalize( 0 );        // Finalizing row 0
+   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
+   B.finalize( 1 );        // Finalizing row 1
+   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
+   B.finalize( 3 );        // Finalizing row 3
    \endcode
 
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
@@ -6076,13 +6077,14 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
    MatrixType A( 42, 54 );
    SubmatrixType B = submatrix( A, 10, 10, 4, 3 );
 
-   B.reserve( 3 );       // Reserving enough capacity for 3 non-zero elements
-   B.append( 0, 1, 1 );  // Appending the value 1 in row 0 with column index 1
-   B.finalize( 0 );      // Finalizing row 0
-   B.append( 1, 1, 2 );  // Appending the value 2 in row 1 with column index 1
-   B.finalize( 1 );      // Finalizing row 1
-   B.append( 2, 0, 3 );  // Appending the value 3 in row 2 with column index 0
-   B.finalize( 2 );      // Finalizing row 2
+   B.reserve( 3 );         // Reserving enough capacity for 3 non-zero elements
+   B.append( 0, 1, 1.0 );  // Appending the value 1 in row 0 with column index 1
+   B.finalize( 0 );        // Finalizing row 0
+   B.append( 1, 1, 2.0 );  // Appending the value 2 in row 1 with column index 1
+   B.finalize( 1 );        // Finalizing row 1
+   B.finalize( 2 );        // Finalizing the empty row 2 to prepare row 3
+   B.append( 3, 0, 3.0 );  // Appending the value 3 in row 3 with column index 0
+   B.finalize( 3 );        // Finalizing row 3
    \endcode
 
 // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
