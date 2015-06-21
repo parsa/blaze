@@ -68,6 +68,8 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -324,14 +326,20 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      if( mat_.columns() == 0UL )
+      if( ( IsStrictlyLower<MT>::value && index == 0UL ) ||
+          ( IsStrictlyUpper<MT>::value && index == mat_.rows()-1UL ) ||
+          mat_.columns() == 0UL )
          return ElementType();
 
       if( IsDiagonal<MT>::value )
          return mat_(index,index) * vec_[index];
 
-      const size_t jbegin( ( IsUpper<MT>::value )?( index ):( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )?( index+1UL ):( mat_.columns() ) );
+      const size_t jbegin( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? index+1UL : index )
+                           :( 0UL ) );
+      const size_t jend( ( IsLower<MT>::value )
+                         ?( IsStrictlyLower<MT>::value ? index : index+1UL )
+                         :( mat_.columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
       const size_t jnum( jend - jbegin );
@@ -578,8 +586,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -608,8 +620,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -630,8 +646,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -650,8 +670,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -668,8 +692,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -740,8 +768,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -792,8 +825,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -832,8 +870,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -866,8 +909,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -1226,8 +1274,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -1256,8 +1308,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -1278,8 +1334,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -1298,8 +1358,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -1316,8 +1380,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -1386,8 +1454,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -1438,8 +1511,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -1478,8 +1556,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -1512,8 +1595,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -1850,8 +1938,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -1880,8 +1972,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -1902,8 +1998,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -1922,8 +2022,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -1940,8 +2044,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -2010,8 +2118,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -2062,8 +2175,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -2102,8 +2220,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -2136,8 +2259,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3043,8 +3171,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -3073,8 +3205,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -3095,8 +3231,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -3115,8 +3255,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -3133,8 +3277,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -3205,8 +3353,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3266,8 +3419,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3311,8 +3469,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3348,8 +3511,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3709,8 +3877,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -3739,8 +3911,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -3761,8 +3937,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -3781,8 +3961,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -3799,8 +3983,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -3869,8 +4057,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3921,8 +4114,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3961,8 +4159,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -3995,8 +4198,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -4334,8 +4542,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -4364,8 +4576,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3, xmm4;
@@ -4386,8 +4602,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+3UL) <= M; i+=3UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+3UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+2UL : i+3UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2, xmm3;
@@ -4406,8 +4626,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1, xmm2;
@@ -4424,8 +4648,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          IntrinsicType xmm1;
@@ -4494,8 +4722,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+8UL) <= M; i+=8UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+8UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+7UL : i+8UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -4546,8 +4779,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+4UL) <= M; i+=4UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+4UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+3UL : i+4UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -4586,8 +4824,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+2UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i+1UL : i+2UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
@@ -4620,8 +4863,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       if( i < M )
       {
-         const size_t jbegin( ( IsUpper<MT1>::value )?( i & size_t(-IT::size) ):( 0UL ) );
-         const size_t jend  ( ( IsLower<MT1>::value )?( i+1UL ):( N ) );
+         const size_t jbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsStrictlyUpper<MT1>::value ? i+1UL : i ) & size_t(-IT::size) )
+                              :( 0UL ) );
+         const size_t jend( ( IsLower<MT1>::value )
+                            ?( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                            :( N ) );
+         BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          size_t j( jbegin );
 
