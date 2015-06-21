@@ -1788,6 +1788,7 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::ConstIterator
    A.finalize( 1 );        // Finalizing row 1
    A.append( 2, 3, 3.0 );  // Appending the value 3 in row 2 with column index 3
    A.finalize( 2 );        // Finalizing row 2
+   A.finalize( 3 );        // Finalizing the empty row 3
    \endcode
 
 // Note that although append() does not allocate new memory it still invalidates all iterators
