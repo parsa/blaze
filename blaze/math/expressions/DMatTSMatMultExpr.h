@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -240,30 +241,47 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       {
          CT2 B( rhs_ );  // Evaluation of the right-hand side sparse matrix operand
 
-         const ConstIterator end( ( IsLower<MT1>::value )?( B.upperBound(i,j) ):( B.end(j) ) );
-         ConstIterator element( ( IsUpper<MT1>::value )?( B.lowerBound(i,j) ):( B.begin(j) ) );
+         const ConstIterator end( ( IsLower<MT1>::value )
+                                  ?( IsStrictlyLower<MT1>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+                                  :( B.end(j) ) );
+         ConstIterator element( ( IsUpper<MT1>::value )
+                                ?( IsStrictlyUpper<MT1>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+                                :( B.begin(j) ) );
 
-         // Early exit in case column j is empty
-         if( element == end )
-            return tmp;
-
-         // Calculating element (i,j)
-         tmp = lhs_(i,element->index()) * element->value();
-         ++element;
-         for( ; element!=end; ++element )
-            tmp += lhs_(i,element->index()) * element->value();
+         if( element != end ) {
+            tmp = lhs_(i,element->index()) * element->value();
+            ++element;
+            for( ; element!=end; ++element ) {
+               tmp += lhs_(i,element->index()) * element->value();
+            }
+         }
       }
 
       // Default computation in case the right-hand side sparse matrix doesn't provide iterators
       else
       {
-         const size_t kbegin( ( IsUpper<MT1>::value || IsLower<MT2>::value )?( i ):( 0UL ) );
-         const size_t kend  ( ( IsLower<MT1>::value || IsUpper<MT2>::value )?( i+1UL ):( lhs_.columns() ) );
-         BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
+         const size_t kbegin( ( IsUpper<MT1>::value )
+                              ?( ( IsLower<MT2>::value )
+                                 ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
+                                       , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
+                                 :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
+                              :( ( IsLower<MT2>::value )
+                                 ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+                                 :( 0UL ) ) );
+         const size_t kend( ( IsLower<MT1>::value )
+                            ?( ( IsUpper<MT2>::value )
+                               ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
+                                     , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
+                               :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
+                            :( ( IsUpper<MT2>::value )
+                               ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+                               :( lhs_.columns() ) ) );
 
-         tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
-         for( size_t k=kbegin+1UL; k<kend; ++k ) {
-            tmp += lhs_(i,k) * rhs_(k,j);
+         if( ( !IsTriangular<MT1>::value && !IsTriangular<MT2>::value ) || kbegin < kend ) {
+            tmp = lhs_(i,kbegin) * rhs_(kbegin,j);
+            for( size_t k=kbegin+1UL; k<kend; ++k ) {
+               tmp += lhs_(i,k) * rhs_(k,j);
+            }
          }
       }
 
@@ -422,8 +440,12 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
-            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )
+                                       ?( IsStrictlyUpper<MT4>::value ? B.upperBound(ii,j) : B.lowerBound(ii,j) )
+                                       :( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )
+                                     ?( IsStrictlyLower<MT4>::value ? B.lowerBound(ii+block,j) : B.upperBound(ii+block,j) )
+                                     :( B.end(j) ) );
 
             const size_t iend( ( ii+block > C.rows() )?( C.rows() ):( ii+block ) );
 
@@ -606,8 +628,12 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
-            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )
+                                       ?( IsStrictlyUpper<MT4>::value ? B.upperBound(ii,j) : B.lowerBound(ii,j) )
+                                       :( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )
+                                     ?( IsStrictlyLower<MT4>::value ? B.lowerBound(ii+block,j) : B.upperBound(ii+block,j) )
+                                     :( B.end(j) ) );
 
             if( begin == end )
                continue;
@@ -748,8 +774,12 @@ class DMatTSMatMultExpr : public DenseMatrix< DMatTSMatMultExpr<MT1,MT2>, false 
       for( size_t ii=0UL; ii<C.rows(); ii+=block ) {
          for( size_t j=0UL; j<C.columns(); ++j )
          {
-            const ConstIterator begin( ( IsUpper<MT4>::value )?( B.lowerBound(ii,j) ):( B.begin(j) ) );
-            const ConstIterator end  ( ( IsLower<MT4>::value )?( B.upperBound(ii+block,j) ):( B.end(j) ) );
+            const ConstIterator begin( ( IsUpper<MT4>::value )
+                                       ?( IsStrictlyUpper<MT4>::value ? B.upperBound(ii,j) : B.lowerBound(ii,j) )
+                                       :( B.begin(j) ) );
+            const ConstIterator end( ( IsLower<MT4>::value )
+                                     ?( IsStrictlyLower<MT4>::value ? B.lowerBound(ii+block,j) : B.upperBound(ii+block,j) )
+                                     :( B.end(j) ) );
 
             if( begin == end )
                continue;
