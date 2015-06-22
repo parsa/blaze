@@ -1162,8 +1162,235 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  reset( (~C)(i,j) );
+               }
+            }
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i    ,j2) );
+                     IntrinsicType xmm4( (~C).load(i    ,j3) );
+                     IntrinsicType xmm5( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+1UL,j2) );
+                     IntrinsicType xmm8( (~C).load(i+1UL,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a1 * b3;
+                        xmm4 = xmm4 + a1 * b4;
+                        xmm5 = xmm5 + a2 * b1;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a2 * b3;
+                        xmm8 = xmm8 + a2 * b4;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i    , j2, xmm3 );
+                     (~C).store( i    , j3, xmm4 );
+                     (~C).store( i+1UL, j , xmm5 );
+                     (~C).store( i+1UL, j1, xmm6 );
+                     (~C).store( i+1UL, j2, xmm7 );
+                     (~C).store( i+1UL, j3, xmm8 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+                     IntrinsicType xmm3( (~C).load(i,j2) );
+                     IntrinsicType xmm4( (~C).load(i,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                        xmm3 = xmm3 + a1 * B.load(k,j2);
+                        xmm4 = xmm4 + a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                     (~C).store( i, j2, xmm3 );
+                     (~C).store( i, j3, xmm4 );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm5( (~C).load(i+2UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+2UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+3UL,j ) );
+                     IntrinsicType xmm8( (~C).load(i+3UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a3 * b1;
+                        xmm6 = xmm6 + a3 * b2;
+                        xmm7 = xmm7 + a4 * b1;
+                        xmm8 = xmm8 + a4 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                     (~C).store( i+2UL, j , xmm5 );
+                     (~C).store( i+2UL, j1, xmm6 );
+                     (~C).store( i+3UL, j , xmm7 );
+                     (~C).store( i+3UL, j1, xmm8 );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, xmm1 );
+                  }
+               }
+            }
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2088,8 +2315,229 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i    ,j2) );
+                     IntrinsicType xmm4( (~C).load(i    ,j3) );
+                     IntrinsicType xmm5( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+1UL,j2) );
+                     IntrinsicType xmm8( (~C).load(i+1UL,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a1 * b3;
+                        xmm4 = xmm4 + a1 * b4;
+                        xmm5 = xmm5 + a2 * b1;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a2 * b3;
+                        xmm8 = xmm8 + a2 * b4;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i    , j2, xmm3 );
+                     (~C).store( i    , j3, xmm4 );
+                     (~C).store( i+1UL, j , xmm5 );
+                     (~C).store( i+1UL, j1, xmm6 );
+                     (~C).store( i+1UL, j2, xmm7 );
+                     (~C).store( i+1UL, j3, xmm8 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+                     IntrinsicType xmm3( (~C).load(i,j2) );
+                     IntrinsicType xmm4( (~C).load(i,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                        xmm3 = xmm3 + a1 * B.load(k,j2);
+                        xmm4 = xmm4 + a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                     (~C).store( i, j2, xmm3 );
+                     (~C).store( i, j3, xmm4 );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm5( (~C).load(i+2UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+2UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+3UL,j ) );
+                     IntrinsicType xmm8( (~C).load(i+3UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a3 * b1;
+                        xmm6 = xmm6 + a3 * b2;
+                        xmm7 = xmm7 + a4 * b1;
+                        xmm8 = xmm8 + a4 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                     (~C).store( i+2UL, j , xmm5 );
+                     (~C).store( i+2UL, j1, xmm6 );
+                     (~C).store( i+3UL, j , xmm7 );
+                     (~C).store( i+3UL, j1, xmm8 );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, xmm1 );
+                  }
+               }
+            }
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2989,8 +3437,229 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i    ,j2) );
+                     IntrinsicType xmm4( (~C).load(i    ,j3) );
+                     IntrinsicType xmm5( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+1UL,j2) );
+                     IntrinsicType xmm8( (~C).load(i+1UL,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 - a1 * b1;
+                        xmm2 = xmm2 - a1 * b2;
+                        xmm3 = xmm3 - a1 * b3;
+                        xmm4 = xmm4 - a1 * b4;
+                        xmm5 = xmm5 - a2 * b1;
+                        xmm6 = xmm6 - a2 * b2;
+                        xmm7 = xmm7 - a2 * b3;
+                        xmm8 = xmm8 - a2 * b4;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i    , j2, xmm3 );
+                     (~C).store( i    , j3, xmm4 );
+                     (~C).store( i+1UL, j , xmm5 );
+                     (~C).store( i+1UL, j1, xmm6 );
+                     (~C).store( i+1UL, j2, xmm7 );
+                     (~C).store( i+1UL, j3, xmm8 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+                     IntrinsicType xmm3( (~C).load(i,j2) );
+                     IntrinsicType xmm4( (~C).load(i,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 - a1 * B.load(k,j );
+                        xmm2 = xmm2 - a1 * B.load(k,j1);
+                        xmm3 = xmm3 - a1 * B.load(k,j2);
+                        xmm4 = xmm4 - a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                     (~C).store( i, j2, xmm3 );
+                     (~C).store( i, j3, xmm4 );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm5( (~C).load(i+2UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+2UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+3UL,j ) );
+                     IntrinsicType xmm8( (~C).load(i+3UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 - a1 * b1;
+                        xmm2 = xmm2 - a1 * b2;
+                        xmm3 = xmm3 - a2 * b1;
+                        xmm4 = xmm4 - a2 * b2;
+                        xmm5 = xmm5 - a3 * b1;
+                        xmm6 = xmm6 - a3 * b2;
+                        xmm7 = xmm7 - a4 * b1;
+                        xmm8 = xmm8 - a4 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                     (~C).store( i+2UL, j , xmm5 );
+                     (~C).store( i+2UL, j1, xmm6 );
+                     (~C).store( i+3UL, j , xmm7 );
+                     (~C).store( i+3UL, j1, xmm8 );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 - a1 * b1;
+                        xmm2 = xmm2 - a1 * b2;
+                        xmm3 = xmm3 - a2 * b1;
+                        xmm4 = xmm4 - a2 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 );
+                     (~C).store( i    , j1, xmm2 );
+                     (~C).store( i+1UL, j , xmm3 );
+                     (~C).store( i+1UL, j1, xmm4 );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 - a1 * B.load(k,j );
+                        xmm2 = xmm2 - a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , xmm1 );
+                     (~C).store( i, j1, xmm2 );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 - a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, xmm1 );
+                  }
+               }
+            }
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4593,8 +5262,237 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallAssignKernel( ~C, A, B, scalar );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t i=ii; i<iend; ++i ) {
+               for( size_t j=jj; j<jend; ++j ) {
+                  reset( (~C)(i,j) );
+               }
+            }
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i    ,j2) );
+                     IntrinsicType xmm4( (~C).load(i    ,j3) );
+                     IntrinsicType xmm5( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+1UL,j2) );
+                     IntrinsicType xmm8( (~C).load(i+1UL,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a1 * b3;
+                        xmm4 = xmm4 + a1 * b4;
+                        xmm5 = xmm5 + a2 * b1;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a2 * b3;
+                        xmm8 = xmm8 + a2 * b4;
+                     }
+
+                     (~C).store( i    , j , xmm1 * factor );
+                     (~C).store( i    , j1, xmm2 * factor );
+                     (~C).store( i    , j2, xmm3 * factor );
+                     (~C).store( i    , j3, xmm4 * factor );
+                     (~C).store( i+1UL, j , xmm5 * factor );
+                     (~C).store( i+1UL, j1, xmm6 * factor );
+                     (~C).store( i+1UL, j2, xmm7 * factor );
+                     (~C).store( i+1UL, j3, xmm8 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+                     IntrinsicType xmm3( (~C).load(i,j2) );
+                     IntrinsicType xmm4( (~C).load(i,j3) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                        xmm3 = xmm3 + a1 * B.load(k,j2);
+                        xmm4 = xmm4 + a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , xmm1 * factor );
+                     (~C).store( i, j1, xmm2 * factor );
+                     (~C).store( i, j2, xmm3 * factor );
+                     (~C).store( i, j3, xmm4 * factor );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm5( (~C).load(i+2UL,j ) );
+                     IntrinsicType xmm6( (~C).load(i+2UL,j1) );
+                     IntrinsicType xmm7( (~C).load(i+3UL,j ) );
+                     IntrinsicType xmm8( (~C).load(i+3UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a3 * b1;
+                        xmm6 = xmm6 + a3 * b2;
+                        xmm7 = xmm7 + a4 * b1;
+                        xmm8 = xmm8 + a4 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 * factor );
+                     (~C).store( i    , j1, xmm2 * factor );
+                     (~C).store( i+1UL, j , xmm3 * factor );
+                     (~C).store( i+1UL, j1, xmm4 * factor );
+                     (~C).store( i+2UL, j , xmm5 * factor );
+                     (~C).store( i+2UL, j1, xmm6 * factor );
+                     (~C).store( i+3UL, j , xmm7 * factor );
+                     (~C).store( i+3UL, j1, xmm8 * factor );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i    ,j ) );
+                     IntrinsicType xmm2( (~C).load(i    ,j1) );
+                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
+                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                     }
+
+                     (~C).store( i    , j , xmm1 * factor );
+                     (~C).store( i    , j1, xmm2 * factor );
+                     (~C).store( i+1UL, j , xmm3 * factor );
+                     (~C).store( i+1UL, j1, xmm4 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j ) );
+                     IntrinsicType xmm2( (~C).load(i,j1) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , xmm1 * factor );
+                     (~C).store( i, j1, xmm2 * factor );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1( (~C).load(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, xmm1 * factor );
+                  }
+               }
+            }
+         }
+      }
    }
    //**********************************************************************************************
 
@@ -5466,8 +6364,210 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallAddAssignKernel( ~C, A, B, scalar );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a1 * b3;
+                        xmm4 = xmm4 + a1 * b4;
+                        xmm5 = xmm5 + a2 * b1;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a2 * b3;
+                        xmm8 = xmm8 + a2 * b4;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i    , j2, (~C).load(i    ,j2) + xmm3 * factor );
+                     (~C).store( i    , j3, (~C).load(i    ,j3) + xmm4 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm5 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm6 * factor );
+                     (~C).store( i+1UL, j2, (~C).load(i+1UL,j2) + xmm7 * factor );
+                     (~C).store( i+1UL, j3, (~C).load(i+1UL,j3) + xmm8 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                        xmm3 = xmm3 + a1 * B.load(k,j2);
+                        xmm4 = xmm4 + a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , (~C).load(i,j ) + xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) + xmm2 * factor );
+                     (~C).store( i, j2, (~C).load(i,j2) + xmm3 * factor );
+                     (~C).store( i, j3, (~C).load(i,j3) + xmm4 * factor );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a3 * b1;
+                        xmm6 = xmm6 + a3 * b2;
+                        xmm7 = xmm7 + a4 * b1;
+                        xmm8 = xmm8 + a4 * b2;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm4 * factor );
+                     (~C).store( i+2UL, j , (~C).load(i+2UL,j ) + xmm5 * factor );
+                     (~C).store( i+2UL, j1, (~C).load(i+2UL,j1) + xmm6 * factor );
+                     (~C).store( i+3UL, j , (~C).load(i+3UL,j ) + xmm7 * factor );
+                     (~C).store( i+3UL, j1, (~C).load(i+3UL,j1) + xmm8 * factor );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm4 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , (~C).load(i,j ) + xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) + xmm2 * factor );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+                  }
+               }
+            }
+         }
+      }
    }
    //**********************************************************************************************
 
@@ -6314,8 +7414,210 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      // TODO
-      selectSmallSubAssignKernel( ~C, A, B, scalar );
+      typedef IntrinsicTrait<ElementType>  IT;
+
+      const size_t M( A.rows()    );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      const size_t iblock(  64UL );
+      const size_t jblock( 128UL );
+      const size_t kblock( 128UL );
+
+      const IntrinsicType factor( set( scalar ) );
+
+      for( size_t jj=0UL; jj<N; jj+=jblock )
+      {
+         const size_t jend( min( jj+jblock, N ) );
+
+         for( size_t ii=0UL; ii<M; ii+=iblock )
+         {
+            const size_t iend( min( ii+iblock, M ) );
+
+            for( size_t kk=0UL; kk<K; kk+=kblock )
+            {
+               const size_t ktmp( min( kk+kblock, K ) );
+
+               size_t j( jj );
+
+               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               {
+                  const size_t j1( j+IT::size     );
+                  const size_t j2( j+IT::size*2UL );
+                  const size_t j3( j+IT::size*3UL );
+
+                  size_t i( ii );
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        const IntrinsicType b3( B.load(k,j2) );
+                        const IntrinsicType b4( B.load(k,j3) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a1 * b3;
+                        xmm4 = xmm4 + a1 * b4;
+                        xmm5 = xmm5 + a2 * b1;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a2 * b3;
+                        xmm8 = xmm8 + a2 * b4;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) - xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) - xmm2 * factor );
+                     (~C).store( i    , j2, (~C).load(i    ,j2) - xmm3 * factor );
+                     (~C).store( i    , j3, (~C).load(i    ,j3) - xmm4 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) - xmm5 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) - xmm6 * factor );
+                     (~C).store( i+1UL, j2, (~C).load(i+1UL,j2) - xmm7 * factor );
+                     (~C).store( i+1UL, j3, (~C).load(i+1UL,j3) - xmm8 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                        xmm3 = xmm3 + a1 * B.load(k,j2);
+                        xmm4 = xmm4 + a1 * B.load(k,j3);
+                     }
+
+                     (~C).store( i, j , (~C).load(i,j ) - xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) - xmm2 * factor );
+                     (~C).store( i, j2, (~C).load(i,j2) - xmm3 * factor );
+                     (~C).store( i, j3, (~C).load(i,j3) - xmm4 * factor );
+                  }
+               }
+
+               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               {
+                  const size_t j1( j+IT::size );
+
+                  size_t i( ii );
+
+                  for( ; (i+4UL) <= iend; i+=4UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType a3( set( A(i+2UL,k) ) );
+                        const IntrinsicType a4( set( A(i+3UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a3 * b1;
+                        xmm6 = xmm6 + a3 * b2;
+                        xmm7 = xmm7 + a4 * b1;
+                        xmm8 = xmm8 + a4 * b2;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) - xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) - xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) - xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) - xmm4 * factor );
+                     (~C).store( i+2UL, j , (~C).load(i+2UL,j ) - xmm5 * factor );
+                     (~C).store( i+2UL, j1, (~C).load(i+2UL,j1) - xmm6 * factor );
+                     (~C).store( i+3UL, j , (~C).load(i+3UL,j ) - xmm7 * factor );
+                     (~C).store( i+3UL, j1, (~C).load(i+3UL,j1) - xmm8 * factor );
+                  }
+
+                  for( ; (i+2UL) <= iend; i+=2UL )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i    ,k) ) );
+                        const IntrinsicType a2( set( A(i+1UL,k) ) );
+                        const IntrinsicType b1( B.load(k,j ) );
+                        const IntrinsicType b2( B.load(k,j1) );
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a1 * b2;
+                        xmm3 = xmm3 + a2 * b1;
+                        xmm4 = xmm4 + a2 * b2;
+                     }
+
+                     (~C).store( i    , j , (~C).load(i    ,j ) - xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) - xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) - xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) - xmm4 * factor );
+                  }
+
+                  if( i < iend )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1, xmm2;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j );
+                        xmm2 = xmm2 + a1 * B.load(k,j1);
+                     }
+
+                     (~C).store( i, j , (~C).load(i,j ) - xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) - xmm2 * factor );
+                  }
+               }
+
+               if( j < jend )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
+
+                     IntrinsicType xmm1;
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        const IntrinsicType a1( set( A(i,k) ) );
+                        xmm1 = xmm1 + a1 * B.load(k,j);
+                     }
+
+                     (~C).store( i, j, (~C).load(i,j) - xmm1 * factor );
+                  }
+               }
+            }
+         }
+      }
    }
    //**********************************************************************************************
 
