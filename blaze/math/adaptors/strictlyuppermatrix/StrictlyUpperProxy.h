@@ -52,10 +52,11 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/util/constraints/Const.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/typetraits/AddConst.h>
+#include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/Types.h>
 
 
@@ -92,10 +93,19 @@ namespace blaze {
 template< typename MT >  // Type of the adapted matrix
 class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::ElementType >
 {
+ private:
+   //**Type definitions****************************************************************************
+   //! Reference type of the underlying matrix type.
+   typedef typename AddConst< typename MT::Reference >::Type  ReferenceType;
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename MT::Reference    RawReference;     //!< Reference to the represented element.
+   //! Type of the represented matrix element.
+   typedef typename MT::ElementType  RepresentedType;
+
+   //! Reference to the represented element.
+   typedef typename AddReference<ReferenceType>::Type  RawReference;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -113,19 +123,20 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::El
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline StrictlyUpperProxy& operator= ( const StrictlyUpperProxy& uup );
-   template< typename T > inline StrictlyUpperProxy& operator= ( const T& value );
-   template< typename T > inline StrictlyUpperProxy& operator+=( const T& value );
-   template< typename T > inline StrictlyUpperProxy& operator-=( const T& value );
-   template< typename T > inline StrictlyUpperProxy& operator*=( const T& value );
-   template< typename T > inline StrictlyUpperProxy& operator/=( const T& value );
+                          inline const StrictlyUpperProxy& operator= ( const StrictlyUpperProxy& uup ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator= ( const T& value ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator+=( const T& value ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator-=( const T& value ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator*=( const T& value ) const;
+   template< typename T > inline const StrictlyUpperProxy& operator/=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get() const;
+   inline RawReference get()          const;
+   inline bool         isRestricted() const;
    //@}
    //**********************************************************************************************
 
@@ -140,9 +151,11 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::El
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&    matrix_;  //!< Reference to the adapted matrix.
-   size_t row_;     //!< Row index of the accessed matrix element.
-   size_t column_;  //!< Column index of the accessed matrix element.
+   ReferenceType value_;    //!< Reference to the accessed matrix element.
+   const bool restricted_;  //!< Access flag for the accessed matrix element.
+                            /*!< The flag indicates if access to the matrix element is
+                                 restricted. It is \a true in case the proxy represents an
+                                 element on the diagonal or in the lower part of the matrix. */
    //@}
    //**********************************************************************************************
 
@@ -157,7 +170,6 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::El
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -181,9 +193,8 @@ class StrictlyUpperProxy : public Proxy< StrictlyUpperProxy<MT>, typename MT::El
 */
 template< typename MT >  // Type of the adapted matrix
 inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( MT& matrix, size_t row, size_t column )
-   : matrix_( matrix )  // Reference to the adapted matrix
-   , row_   ( row    )  // Row index of the accessed matrix element
-   , column_( column )  // Column index of the accessed matrix element
+   : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
+   , restricted_( column <= row )          // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -195,9 +206,8 @@ inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( MT& matrix, size_t row, size_
 */
 template< typename MT >  // Type of the adapted matrix
 inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( const StrictlyUpperProxy& uup )
-   : matrix_( uup.matrix_ )  // Reference to the adapted matrix
-   , row_   ( uup.row_    )  // Row index of the accessed matrix element
-   , column_( uup.column_ )  // Column index of the accessed matrix element
+   : value_     ( uup.value_      )  // Reference to the accessed matrix element
+   , restricted_( uup.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -217,9 +227,9 @@ inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( const StrictlyUpperProxy& uup
 // \return Reference to the assigned proxy.
 */
 template< typename MT >  // Type of the adapted matrix
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const StrictlyUpperProxy& uup )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const StrictlyUpperProxy& uup ) const
 {
-   matrix_(row_,column_) = uup.matrix_(uup.row_,uup.column_);
+   value_ = uup.value_;
 
    return *this;
 }
@@ -238,12 +248,12 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const Strictly
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const T& value )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const T& value ) const
 {
-   if( column_ <= row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
 
-   matrix_(row_,column_) = value;
+   value_ = value;
 
    return *this;
 }
@@ -262,12 +272,12 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const T& value
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator+=( const T& value )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator+=( const T& value ) const
 {
-   if( column_ <= row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
 
-   matrix_(row_,column_) += value;
+   value_ += value;
 
    return *this;
 }
@@ -286,12 +296,12 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator+=( const T& valu
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator-=( const T& value )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator-=( const T& value ) const
 {
-   if( column_ <= row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
 
-   matrix_(row_,column_) -= value;
+   value_ -= value;
 
    return *this;
 }
@@ -310,12 +320,12 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator-=( const T& valu
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator*=( const T& value )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator*=( const T& value ) const
 {
-   if( column_ <= row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
 
-   matrix_(row_,column_) *= value;
+   value_ *= value;
 
    return *this;
 }
@@ -334,12 +344,12 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator*=( const T& valu
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator/=( const T& value )
+inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator/=( const T& value ) const
 {
-   if( column_ <= row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
 
-   matrix_(row_,column_) /= value;
+   value_ /= value;
 
    return *this;
 }
@@ -362,7 +372,20 @@ inline StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator/=( const T& valu
 template< typename MT >  // Type of the adapted matrix
 inline typename StrictlyUpperProxy<MT>::RawReference StrictlyUpperProxy<MT>::get() const
 {
-   return matrix_(row_,column_);
+   return value_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the proxy represents a restricted matrix element..
+//
+// \return \a true in case access to the matrix element is restricted, \a false if not.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline bool StrictlyUpperProxy<MT>::isRestricted() const
+{
+   return restricted_;
 }
 //*************************************************************************************************
 
