@@ -124,19 +124,20 @@ class MatrixAccessProxy : public Proxy< MatrixAccessProxy<MT>, typename MT::Elem
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline MatrixAccessProxy& operator= ( const MatrixAccessProxy& map );
-   template< typename T > inline MatrixAccessProxy& operator= ( const T& value );
-   template< typename T > inline MatrixAccessProxy& operator+=( const T& value );
-   template< typename T > inline MatrixAccessProxy& operator-=( const T& value );
-   template< typename T > inline MatrixAccessProxy& operator*=( const T& value );
-   template< typename T > inline MatrixAccessProxy& operator/=( const T& value );
+                          inline const MatrixAccessProxy& operator= ( const MatrixAccessProxy& map ) const;
+   template< typename T > inline const MatrixAccessProxy& operator= ( const T& value ) const;
+   template< typename T > inline const MatrixAccessProxy& operator+=( const T& value ) const;
+   template< typename T > inline const MatrixAccessProxy& operator-=( const T& value ) const;
+   template< typename T > inline const MatrixAccessProxy& operator*=( const T& value ) const;
+   template< typename T > inline const MatrixAccessProxy& operator/=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get() const;
+   inline RawReference get()          const;
+   inline bool         isRestricted() const;
    //@}
    //**********************************************************************************************
 
@@ -255,7 +256,7 @@ inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
 // \return Reference to the assigned access proxy.
 */
 template< typename MT >  // Type of the sparse matrix
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const MatrixAccessProxy& map )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const MatrixAccessProxy& map ) const
 {
    get() = map.get();
    return *this;
@@ -271,7 +272,7 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const MatrixAcce
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const T& value )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const T& value ) const
 {
    get() = value;
    return *this;
@@ -287,7 +288,7 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator=( const T& value )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator+=( const T& value )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator+=( const T& value ) const
 {
    get() += value;
    return *this;
@@ -303,7 +304,7 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator+=( const T& value 
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator-=( const T& value )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator-=( const T& value ) const
 {
    get() -= value;
    return *this;
@@ -319,7 +320,7 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator-=( const T& value 
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator*=( const T& value )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator*=( const T& value ) const
 {
    get() *= value;
    return *this;
@@ -335,7 +336,7 @@ inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator*=( const T& value 
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename T >   // Type of the right-hand side value
-inline MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator/=( const T& value )
+inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator/=( const T& value ) const
 {
    get() /= value;
    return *this;
@@ -362,6 +363,19 @@ inline typename MatrixAccessProxy<MT>::RawReference MatrixAccessProxy<MT>::get()
    const typename MT::Iterator element( sm_.find( i_, j_ ) );
    BLAZE_INTERNAL_ASSERT( element != sm_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
    return element->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the proxy represents a restricted sparse matrix element..
+//
+// \return \a true in case access to the sparse matrix element is restricted, \a false if not.
+*/
+template< typename MT >  // Type of the sparse matrix
+inline bool MatrixAccessProxy<MT>::isRestricted() const
+{
+   return false;
 }
 //*************************************************************************************************
 
