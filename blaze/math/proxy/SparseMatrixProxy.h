@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
@@ -159,6 +160,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Reference
    SparseMatrixProxy<PT,MT>::operator()( size_t i, size_t j ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get()(i,j);
 }
 //*************************************************************************************************
@@ -428,6 +432,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::set( size_t i, size_t j, const ElementType& value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().set( i, j, value );
 }
 //*************************************************************************************************
@@ -451,6 +458,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::insert( size_t i, size_t j, const ElementType& value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().insert( i, j, value );
 }
 //*************************************************************************************************
@@ -486,6 +496,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::append( size_t i, size_t j, const ElementType& value, bool check ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().append( i, j, value, check );
 }
 //*************************************************************************************************
@@ -508,6 +521,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::finalize( size_t i ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().finalize( i );
 }
 //*************************************************************************************************
@@ -526,6 +542,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::erase( size_t i, size_t j ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().erase( i, j );
 }
 //*************************************************************************************************
@@ -547,6 +566,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator pos ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().erase( i, pos );
 }
 //*************************************************************************************************
@@ -569,6 +591,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseMatrixProxy<PT,MT>::Iterator
    SparseMatrixProxy<PT,MT>::erase( size_t i, Iterator first, Iterator last ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().erase( i, first, last );
 }
 //*************************************************************************************************
@@ -593,6 +618,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::resize( size_t m, size_t n, bool preserve ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().resize( m, n, preserve );
 }
 //*************************************************************************************************
@@ -612,6 +640,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::reserve( size_t n ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().reserve( n );
 }
 //*************************************************************************************************
@@ -635,6 +666,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::reserve( size_t i, size_t n ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().reserve( i, n );
 }
 //*************************************************************************************************
@@ -654,6 +688,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::trim() const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().trim();
 }
 //*************************************************************************************************
@@ -674,6 +711,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::trim( size_t i ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().trim( i );
 }
 //*************************************************************************************************
@@ -688,6 +728,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 inline void SparseMatrixProxy<PT,MT>::transpose() const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().transpose();
 }
 //*************************************************************************************************
@@ -704,6 +747,9 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void SparseMatrixProxy<PT,MT>::scale( const Other& scalar ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().scale( scalar );
 }
 //*************************************************************************************************
