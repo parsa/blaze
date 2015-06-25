@@ -118,19 +118,20 @@ class VectorAccessProxy : public Proxy< VectorAccessProxy<VT>, typename VT::Elem
    //**Operators***********************************************************************************
    /*!\name Operators */
    //@{
-                          inline VectorAccessProxy& operator= ( const VectorAccessProxy& vap );
-   template< typename T > inline VectorAccessProxy& operator= ( const T& value );
-   template< typename T > inline VectorAccessProxy& operator+=( const T& value );
-   template< typename T > inline VectorAccessProxy& operator-=( const T& value );
-   template< typename T > inline VectorAccessProxy& operator*=( const T& value );
-   template< typename T > inline VectorAccessProxy& operator/=( const T& value );
+                          inline const VectorAccessProxy& operator= ( const VectorAccessProxy& vap ) const;
+   template< typename T > inline const VectorAccessProxy& operator= ( const T& value ) const;
+   template< typename T > inline const VectorAccessProxy& operator+=( const T& value ) const;
+   template< typename T > inline const VectorAccessProxy& operator-=( const T& value ) const;
+   template< typename T > inline const VectorAccessProxy& operator*=( const T& value ) const;
+   template< typename T > inline const VectorAccessProxy& operator/=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get() const;
+   inline RawReference get()          const;
+   inline bool         isRestricted() const;
    //@}
    //**********************************************************************************************
 
@@ -243,7 +244,7 @@ inline VectorAccessProxy<VT>::~VectorAccessProxy()
 // \return Reference to the assigned access proxy.
 */
 template< typename VT >  // Type of the sparse vector
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const VectorAccessProxy& vap )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const VectorAccessProxy& vap ) const
 {
    get() = vap.get();
    return *this;
@@ -259,7 +260,7 @@ inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const VectorAcce
 */
 template< typename VT >  // Type of the sparse vector
 template< typename T >   // Type of the right-hand side value
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const T& value )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const T& value ) const
 {
    get() = value;
    return *this;
@@ -275,7 +276,7 @@ inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator=( const T& value )
 */
 template< typename VT >  // Type of the sparse vector
 template< typename T >   // Type of the right-hand side value
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator+=( const T& value )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator+=( const T& value ) const
 {
    get() += value;
    return *this;
@@ -291,7 +292,7 @@ inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator+=( const T& value 
 */
 template< typename VT >  // Type of the sparse vector
 template< typename T >   // Type of the right-hand side value
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator-=( const T& value )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator-=( const T& value ) const
 {
    get() -= value;
    return *this;
@@ -307,7 +308,7 @@ inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator-=( const T& value 
 */
 template< typename VT >  // Type of the sparse vector
 template< typename T >   // Type of the right-hand side value
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator*=( const T& value )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator*=( const T& value ) const
 {
    get() *= value;
    return *this;
@@ -323,7 +324,7 @@ inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator*=( const T& value 
 */
 template< typename VT >  // Type of the sparse vector
 template< typename T >   // Type of the right-hand side value
-inline VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator/=( const T& value )
+inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator/=( const T& value ) const
 {
    get() /= value;
    return *this;
@@ -350,6 +351,19 @@ inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get()
    const typename VT::Iterator element( sv_.find( i_ ) );
    BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
    return element->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the proxy represents a restricted sparse vector element..
+//
+// \return \a true in case access to the sparse vector element is restricted, \a false if not.
+*/
+template< typename VT >  // Type of the sparse vector
+inline bool VectorAccessProxy<VT>::isRestricted() const
+{
+   return false;
 }
 //*************************************************************************************************
 
