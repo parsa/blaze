@@ -55,6 +55,8 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/typetraits/AddConst.h>
+#include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/Types.h>
 
 
@@ -89,10 +91,19 @@ namespace blaze {
 template< typename MT >  // Type of the adapted matrix
 class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
 {
+ private:
+   //**Type definitions****************************************************************************
+   //! Reference type of the underlying matrix type.
+   typedef typename AddConst< typename MT::Reference >::Type  ReferenceType;
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename MT::Reference    RawReference;     //!< Reference to the represented element.
+   //! Type of the represented matrix element.
+   typedef typename MT::ElementType  RepresentedType;
+
+   //! Reference to the represented element.
+   typedef typename AddReference<ReferenceType>::Type  RawReference;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -110,19 +121,20 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline UpperProxy& operator= ( const UpperProxy& up );
-   template< typename T > inline UpperProxy& operator= ( const T& value );
-   template< typename T > inline UpperProxy& operator+=( const T& value );
-   template< typename T > inline UpperProxy& operator-=( const T& value );
-   template< typename T > inline UpperProxy& operator*=( const T& value );
-   template< typename T > inline UpperProxy& operator/=( const T& value );
+                          inline const UpperProxy& operator= ( const UpperProxy& up ) const;
+   template< typename T > inline const UpperProxy& operator= ( const T& value ) const;
+   template< typename T > inline const UpperProxy& operator+=( const T& value ) const;
+   template< typename T > inline const UpperProxy& operator-=( const T& value ) const;
+   template< typename T > inline const UpperProxy& operator*=( const T& value ) const;
+   template< typename T > inline const UpperProxy& operator/=( const T& value ) const;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline RawReference get() const;
+   inline RawReference get()          const;
+   inline bool         isRestricted() const;
    //@}
    //**********************************************************************************************
 
@@ -137,9 +149,11 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT&    matrix_;  //!< Reference to the adapted matrix.
-   size_t row_;     //!< Row index of the accessed matrix element.
-   size_t column_;  //!< Column index of the accessed matrix element.
+   ReferenceType value_;    //!< Reference to the accessed matrix element.
+   const bool restricted_;  //!< Access flag for the accessed matrix element.
+                            /*!< The flag indicates if access to the matrix element is
+                                 restricted. It is \a true in case the proxy represents
+                                 an element in the lower part of the matrix. */
    //@}
    //**********************************************************************************************
 
@@ -177,9 +191,8 @@ class UpperProxy : public Proxy< UpperProxy<MT>, typename MT::ElementType >
 */
 template< typename MT >  // Type of the adapted matrix
 inline UpperProxy<MT>::UpperProxy( MT& matrix, size_t row, size_t column )
-   : matrix_( matrix )  // Reference to the adapted matrix
-   , row_   ( row    )  // Row index of the accessed matrix element
-   , column_( column )  // Column index of the accessed matrix element
+   : value_     ( matrix( row, column ) )  // Reference to the accessed matrix element
+   , restricted_( column < row )           // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -191,9 +204,8 @@ inline UpperProxy<MT>::UpperProxy( MT& matrix, size_t row, size_t column )
 */
 template< typename MT >  // Type of the adapted matrix
 inline UpperProxy<MT>::UpperProxy( const UpperProxy& up )
-   : matrix_( up.matrix_ )  // Reference to the adapted matrix
-   , row_   ( up.row_    )  // Row index of the accessed matrix element
-   , column_( up.column_ )  // Column index of the accessed matrix element
+   : value_     ( up.value_      )  // Reference to the accessed matrix element
+   , restricted_( up.restricted_ )  // Access flag for the accessed matrix element
 {}
 //*************************************************************************************************
 
@@ -213,9 +225,9 @@ inline UpperProxy<MT>::UpperProxy( const UpperProxy& up )
 // \return Reference to the assigned proxy.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UpperProxy<MT>& UpperProxy<MT>::operator=( const UpperProxy& up )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator=( const UpperProxy& up ) const
 {
-   matrix_(row_,column_) = up.matrix_(up.row_,up.column_);
+   value_ = up.value_;
 
    return *this;
 }
@@ -234,12 +246,12 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator=( const UpperProxy& up )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline UpperProxy<MT>& UpperProxy<MT>::operator=( const T& value )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator=( const T& value ) const
 {
-   if( column_ < row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to lower matrix element" );
 
-   matrix_(row_,column_) = value;
+   value_ = value;
 
    return *this;
 }
@@ -258,12 +270,12 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline UpperProxy<MT>& UpperProxy<MT>::operator+=( const T& value )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator+=( const T& value ) const
 {
-   if( column_ < row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to lower matrix element" );
 
-   matrix_(row_,column_) += value;
+   value_ += value;
 
    return *this;
 }
@@ -282,12 +294,12 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator+=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline UpperProxy<MT>& UpperProxy<MT>::operator-=( const T& value )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator-=( const T& value ) const
 {
-   if( column_ < row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to lower matrix element" );
 
-   matrix_(row_,column_) -= value;
+   value_ -= value;
 
    return *this;
 }
@@ -306,12 +318,12 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator-=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline UpperProxy<MT>& UpperProxy<MT>::operator*=( const T& value )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator*=( const T& value ) const
 {
-   if( column_ < row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to lower matrix element" );
 
-   matrix_(row_,column_) *= value;
+   value_ *= value;
 
    return *this;
 }
@@ -330,12 +342,12 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator*=( const T& value )
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline UpperProxy<MT>& UpperProxy<MT>::operator/=( const T& value )
+inline const UpperProxy<MT>& UpperProxy<MT>::operator/=( const T& value ) const
 {
-   if( column_ < row_ )
+   if( restricted_ )
       throw std::invalid_argument( "Invalid assignment to lower matrix element" );
 
-   matrix_(row_,column_) /= value;
+   value_ /= value;
 
    return *this;
 }
@@ -358,7 +370,20 @@ inline UpperProxy<MT>& UpperProxy<MT>::operator/=( const T& value )
 template< typename MT >  // Type of the adapted matrix
 inline typename UpperProxy<MT>::RawReference UpperProxy<MT>::get() const
 {
-   return matrix_(row_,column_);
+   return value_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the proxy represents a restricted matrix element..
+//
+// \return \a true in case access to the matrix element is restricted, \a false if not.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline bool UpperProxy<MT>::isRestricted() const
+{
+   return restricted_;
 }
 //*************************************************************************************************
 
