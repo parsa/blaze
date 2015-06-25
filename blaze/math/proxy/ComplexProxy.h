@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/system/Inline.h>
@@ -136,6 +137,9 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline void ComplexProxy<PT,CT>::real( ValueType value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().real( value );
 }
 //*************************************************************************************************
@@ -169,6 +173,9 @@ template< typename PT    // Type of the proxy
         , typename CT >  // Type of the complex number
 inline void ComplexProxy<PT,CT>::imag( ValueType value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().imag( value );
 }
 //*************************************************************************************************
