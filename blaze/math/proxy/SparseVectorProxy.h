@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/Clear.h>
@@ -157,6 +158,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Reference
    SparseVectorProxy<PT,VT>::operator[]( size_t index ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get()[index];
 }
 //*************************************************************************************************
@@ -324,6 +328,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::set( size_t index, const ElementType& value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().set( index, value );
 }
 //*************************************************************************************************
@@ -346,6 +353,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::insert( size_t index, const ElementType& value ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().insert( index, value );
 }
 //*************************************************************************************************
@@ -379,6 +389,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::append( size_t index, const ElementType& value, bool check ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().append( index, value, check );
 }
 //*************************************************************************************************
@@ -396,6 +409,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::erase( size_t index ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().erase( index );
 }
 //*************************************************************************************************
@@ -413,6 +429,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline typename SparseVectorProxy<PT,VT>::Iterator SparseVectorProxy<PT,VT>::erase( Iterator pos ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().erase( pos );
 }
 //*************************************************************************************************
@@ -432,6 +451,9 @@ template< typename PT    // Type of the proxy
 inline typename SparseVectorProxy<PT,VT>::Iterator
    SparseVectorProxy<PT,VT>::erase( Iterator first, Iterator last ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().erase( first, last );
 }
 //*************************************************************************************************
@@ -455,6 +477,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().resize( n, preserve );
 }
 //*************************************************************************************************
@@ -473,6 +498,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 inline void SparseVectorProxy<PT,VT>::reserve( size_t n ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().reserve( n );
 }
 //*************************************************************************************************
@@ -489,6 +517,9 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void SparseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().scale( scalar );
 }
 //*************************************************************************************************
