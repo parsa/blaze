@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Clear.h>
@@ -145,6 +146,9 @@ template< typename PT    // Type of the proxy
 inline typename DenseMatrixProxy<PT,MT>::Reference
    DenseMatrixProxy<PT,MT>::operator()( size_t i, size_t j ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get()(i,j);
 }
 //*************************************************************************************************
@@ -165,6 +169,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline typename DenseMatrixProxy<PT,MT>::Pointer DenseMatrixProxy<PT,MT>::data() const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().data();
 }
 //*************************************************************************************************
@@ -181,6 +188,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline typename DenseMatrixProxy<PT,MT>::Pointer DenseMatrixProxy<PT,MT>::data( size_t i ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().data(i);
 }
 //*************************************************************************************************
@@ -202,6 +212,9 @@ template< typename PT    // Type of the proxy
 inline typename DenseMatrixProxy<PT,MT>::Iterator
    DenseMatrixProxy<PT,MT>::begin( size_t i ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().begin(i);
 }
 //*************************************************************************************************
@@ -244,6 +257,9 @@ template< typename PT    // Type of the proxy
 inline typename DenseMatrixProxy<PT,MT>::Iterator
    DenseMatrixProxy<PT,MT>::end( size_t i ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    return (~*this).get().end(i);
 }
 //*************************************************************************************************
@@ -471,6 +487,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline void DenseMatrixProxy<PT,MT>::resize( size_t m, size_t n, bool preserve ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().resize( m, n, preserve );
 }
 //*************************************************************************************************
@@ -495,6 +514,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline void DenseMatrixProxy<PT,MT>::extend( size_t m, size_t n, bool preserve ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().extend( m, n, preserve );
 }
 //*************************************************************************************************
@@ -513,6 +535,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline void DenseMatrixProxy<PT,MT>::reserve( size_t n ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().reserve( n );
 }
 //*************************************************************************************************
@@ -527,6 +552,9 @@ template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 inline void DenseMatrixProxy<PT,MT>::transpose() const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().transpose();
 }
 //*************************************************************************************************
@@ -543,6 +571,9 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void DenseMatrixProxy<PT,MT>::scale( const Other& scalar ) const
 {
+   if( (~*this).isRestricted() )
+      throw std::invalid_argument( "Invalid access to restricted element" );
+
    (~*this).get().scale( scalar );
 }
 //*************************************************************************************************
