@@ -6611,7 +6611,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (3,0)
-      lower.erase( 3UL, 0UL );
+      lower.erase( 3UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
@@ -6659,7 +6659,7 @@ void SparseTest::testErase()
       }
 
       // Trying to erase a diagonal element
-      lower.erase( 0UL, 0UL );
+      lower.erase( 0UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
@@ -7078,7 +7078,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (3,0)
-      lower.erase( 3UL, 0UL );
+      lower.erase( 3UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );

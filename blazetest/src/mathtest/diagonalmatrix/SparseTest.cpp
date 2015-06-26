@@ -7796,7 +7796,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (0,0)
-      diag.erase( 0UL, 0UL );
+      diag.erase( 0UL, size_t(0) );
 
       checkRows    ( diag, 4UL );
       checkColumns ( diag, 4UL );
@@ -8391,7 +8391,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (0,0)
-      diag.erase( 0UL, 0UL );
+      diag.erase( 0UL, size_t(0) );
 
       checkRows    ( diag, 4UL );
       checkColumns ( diag, 4UL );

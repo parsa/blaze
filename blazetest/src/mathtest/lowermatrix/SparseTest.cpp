@@ -7290,7 +7290,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (1,0)
-      lower.erase( 1UL, 0UL );
+      lower.erase( 1UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
@@ -7870,7 +7870,7 @@ void SparseTest::testErase()
       }
 
       // Erasing the element at (2,0)
-      lower.erase( 2UL, 0UL );
+      lower.erase( 2UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );
@@ -7894,7 +7894,7 @@ void SparseTest::testErase()
       }
 
       // Trying to erase a zero element
-      lower.erase( 1UL, 0UL );
+      lower.erase( 1UL, size_t(0) );
 
       checkRows    ( lower, 4UL );
       checkColumns ( lower, 4UL );

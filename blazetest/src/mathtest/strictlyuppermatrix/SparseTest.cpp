@@ -7129,7 +7129,7 @@ void SparseTest::testErase()
       }
 
       // Trying to erase a diagonal element
-      upper.erase( 0UL, 0UL );
+      upper.erase( 0UL, size_t(0) );
 
       checkRows    ( upper, 4UL );
       checkColumns ( upper, 4UL );
