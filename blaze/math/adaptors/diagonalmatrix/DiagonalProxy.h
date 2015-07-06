@@ -221,7 +221,7 @@ inline DiagonalProxy<MT>::DiagonalProxy( const DiagonalProxy& dp )
 //*************************************************************************************************
 /*!\brief Copy assignment operator for DiagonalProxy.
 //
-// \param lp Diagonal proxy to be copied.
+// \param dp Diagonal proxy to be copied.
 // \return Reference to the assigned proxy.
 */
 template< typename MT >  // Type of the adapted matrix
