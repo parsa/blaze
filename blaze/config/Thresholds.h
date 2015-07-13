@@ -48,7 +48,7 @@ namespace blaze {
 // This setting specifies the threshold between the application of the custom Blaze kernels
 // and the BLAS kernels for the row-major dense matrix/dense vector multiplication. In case
 // the number of elements in the dense matrix is equal or higher than this value, the BLAS
-// kernels are prefered over the custom Blaze kernels. In case the number of elements in the
+// kernels are preferred over the custom Blaze kernels. In case the number of elements in the
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 4000000 (which for instance corresponds to a matrix
@@ -65,7 +65,7 @@ const size_t DMATDVECMULT_THRESHOLD = 4000000UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels
 // and the BLAS kernels for the column-major dense matrix/dense vector multiplication. In case
 // the number of elements in the dense matrix is equal or higher than this value, the BLAS
-// kernels are prefered over the custom Blaze kernels. In case the number of elements in the
+// kernels are preferred over the custom Blaze kernels. In case the number of elements in the
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 62500 (which for instance corresponds to a matrix
@@ -82,7 +82,7 @@ const size_t TDMATDVECMULT_THRESHOLD = 62500UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels
 // and the BLAS kernels for the dense vector/row-major dense matrix multiplication. In case
 // the number of elements in the dense matrix is equal or higher than this value, the BLAS
-// kernels are prefered over the custom Blaze kernels. In case the number of elements in the
+// kernels are preferred over the custom Blaze kernels. In case the number of elements in the
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 62500 (which for instance corresponds to a matrix
@@ -99,7 +99,7 @@ const size_t TDVECDMATMULT_THRESHOLD = 62500UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels
 // and the BLAS kernels for the dense vector/column-major dense matrix multiplication. In case
 // the number of elements in the dense matrix is equal or higher than this value, the BLAS
-// kernels are prefered over the custom Blaze kernels. In case the number of elements in the
+// kernels are preferred over the custom Blaze kernels. In case the number of elements in the
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 4000000 (which for instance corresponds to a matrix
@@ -116,7 +116,7 @@ const size_t TDVECTDMATMULT_THRESHOLD = 4000000UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels and
 // the BLAS kernels for the row-major dense matrix/row-major dense matrix multiplication. In
 // case the number of elements of the target matrix is equal or higher than this value, the
-// BLAS kernels are prefered over the custom Blaze kernels. In case the number of elements in
+// BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
@@ -133,7 +133,7 @@ const size_t DMATDMATMULT_THRESHOLD = 10000UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels and
 // the BLAS kernels for the row-major dense matrix/column-major dense matrix multiplication. In
 // case the number of elements of the target matrix is equal or higher than this value, the
-// BLAS kernels are prefered over the custom Blaze kernels. In case the number of elements in
+// BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
@@ -150,7 +150,7 @@ const size_t DMATTDMATMULT_THRESHOLD = 10000UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels and
 // the BLAS kernels for the column-major dense matrix/row-major dense matrix multiplication. In
 // case the number of elements of the target matrix is equal or higher than this value, the
-// BLAS kernels are prefered over the custom Blaze kernels. In case the number of elements in
+// BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
@@ -167,13 +167,30 @@ const size_t TDMATDMATMULT_THRESHOLD = 10000UL;
 // This setting specifies the threshold between the application of the custom Blaze kernels and
 // the BLAS kernels for the column-major dense matrix/column-major dense matrix multiplication.
 // In case the number of elements of the target matrix is equal or higher than this value, the
-// BLAS kernels are prefered over the custom Blaze kernels. In case the number of elements in
+// BLAS kernels are preferred over the custom Blaze kernels. In case the number of elements in
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
 // size of \f$ 100 \times 100 \f$).
 */
 const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Row-major dense matrix/row-major sparse matrix multiplication threshold.
+// \ingroup config
+//
+// This setting specifies the threshold between the application of the Blaze kernels for small
+// and for large row-major dense matrix/row-major sparse matrix multiplications. In case the
+// number of elements of the target matrix is equal or higher than this value, the kernel for
+// large matrices is preferred over the kernel for small matrices. In case the number of elements
+// in the target matrix is smaller, the kernel for small matrices is used.
+//
+// The default setting for this threshold is 2500 (which for instance corresponds to a matrix
+// size of \f$ 50 \times 50 \f$).
+*/
+const size_t DMATSMATMULT_THRESHOLD = 2500UL;
 //*************************************************************************************************
 
 
