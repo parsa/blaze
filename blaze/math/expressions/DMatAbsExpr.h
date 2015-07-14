@@ -51,10 +51,10 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AbsExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
-#include <blaze/math/traits/DVecAbsExprTrait.h>
+#include <blaze/math/traits/DMatAbsExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
-#include <blaze/math/traits/TDVecAbsExprTrait.h>
+#include <blaze/math/traits/TDMatAbsExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
