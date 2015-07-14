@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
+#include <iterator>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>

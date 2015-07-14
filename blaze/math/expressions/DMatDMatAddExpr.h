@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>

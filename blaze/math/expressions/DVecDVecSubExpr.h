@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <iterator>
 #include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
