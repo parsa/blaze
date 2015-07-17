@@ -44,6 +44,7 @@
 #include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
+#include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
@@ -330,6 +331,31 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
    BLAZE_FUNCTION_TRACE;
 
    return abs( column( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix conj operation.
+// \ingroup views
+//
+// \param matrix The constant matrix conj operation.
+// \param index The index of the column.
+// \return View on the specified column of the conj operation.
+//
+// This function returns an expression representing the specified column of the given matrix conj
+// operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatConjExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+   column( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return conj( column( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
