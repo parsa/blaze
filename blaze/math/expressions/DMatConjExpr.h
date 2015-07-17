@@ -282,7 +282,6 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
       // \return The resulting value.
       */
       inline ReturnType operator*() const {
-         using std::conj;
          return conj( *it_ );
       }
       //*******************************************************************************************
@@ -444,7 +443,6 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
    // \return The resulting value.
    */
    inline ReturnType operator()( size_t i, size_t j ) const {
-      using std::conj;
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
       return conj( dm_(i,j) );
