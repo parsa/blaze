@@ -68,6 +68,7 @@ template< typename, typename > class DMatTSMatAddExpr;
 template< typename, typename > class DMatTSMatMultExpr;
 template< typename, typename > class DMatTSMatSubExpr;
 template< typename, bool > class DVecAbsExpr;
+template< typename, bool > class DVecConjExpr;
 template< typename, typename, bool > class DVecDVecAddExpr;
 template< typename, typename > class DVecDVecCrossExpr;
 template< typename, typename, bool > class DVecDVecMultExpr;
