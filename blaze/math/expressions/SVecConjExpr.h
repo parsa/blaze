@@ -224,7 +224,6 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
       // \return The current value of the sparse element.
       */
       inline const Element operator*() const {
-         using std::conj;
          return Element( conj( it_->value() ), it_->index() );
       }
       //*******************************************************************************************
@@ -245,7 +244,6 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
       // \return The current value of the sparse element.
       */
       inline ReturnType value() const {
-         using std::conj;
          return conj( it_->value() );
       }
       //*******************************************************************************************
@@ -317,7 +315,6 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      using std::conj;
       BLAZE_INTERNAL_ASSERT( index < sv_.size(), "Invalid vector access index" );
       return conj( sv_[index] );
    }
@@ -468,8 +465,6 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
    {
       BLAZE_FUNCTION_TRACE;
 
-      using std::conj;
-
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       assign( ~lhs, rhs.sv_ );
@@ -497,8 +492,6 @@ class SVecConjExpr : public SparseVector< SVecConjExpr<VT,TF>, TF >
       assign( SparseVector<VT2,TF>& lhs, const SVecConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-
-      using std::conj;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
