@@ -229,7 +229,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       // \return The current value of the sparse element.
       */
       inline const Element operator*() const {
-         using std::conj;
          return Element( conj( it_->value() ), it_->index() );
       }
       //*******************************************************************************************
@@ -250,7 +249,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       // \return The current value of the sparse element.
       */
       inline ReturnType value() const {
-         using std::conj;
          return conj( it_->value() );
       }
       //*******************************************************************************************
@@ -328,7 +326,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
    // \return The resulting value.
    */
    inline ReturnType operator()( size_t i, size_t j ) const {
-      using std::conj;
       BLAZE_INTERNAL_ASSERT( i < sm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < sm_.columns(), "Invalid column access index" );
       return conj( sm_(i,j) );
@@ -507,8 +504,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
    {
       BLAZE_FUNCTION_TRACE;
 
-      using std::conj;
-
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
@@ -537,8 +532,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       assign( SparseMatrix<MT2,false>& lhs, const SMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-
-      using std::conj;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
@@ -578,8 +571,6 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
       assign( SparseMatrix<MT2,true>& lhs, const SMatConjExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
-
-      using std::conj;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
