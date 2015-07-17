@@ -95,6 +95,7 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/SMatAbsExprTrait.h>
+#include <blaze/math/traits/SMatConjExprTrait.h>
 #include <blaze/math/traits/SMatDMatAddExprTrait.h>
 #include <blaze/math/traits/SMatDMatMultExprTrait.h>
 #include <blaze/math/traits/SMatDMatSubExprTrait.h>
