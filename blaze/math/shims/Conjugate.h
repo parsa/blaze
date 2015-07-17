@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Conjugate.h
+//  \brief Header file for the conjugate shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,25 +32,59 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_CONJUGATE_H_
+#define _BLAZE_MATH_SHIMS_CONJUGATE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
-#include <blaze/math/shims/IsOne.h>
-#include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Move.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Square.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CONJUGATE SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Computing the conjugate of the given value/object.
+// \ingroup math_shims
+//
+// \param a The given value/object.
+// \return The complex conjugate of the given value.
+//
+// The conjugate shim represents an abstract interface for the computation of the complex
+// conjugate of any given data type. In case the given value is of complex type the function
+// computes the complex conjugate by reversing the sign of the imaginary part:
+
+   \code
+   const blaze::complex a( 1.0, 2.0 );
+   const blaze::complex b( conj( a ) );  // Results in ( 1, -2 )
+   \endcode
+
+// Values of other data types, such as all built-in data types, are considered complex numbers
+// with an imaginary part of 0. Thus the returned value corresponds to the given value. For more
+// information on complex conjugates, see
+//
+//       https://en.wikipedia.org/wiki/Complex_conjugate
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
+   conj( T a )
+{
+   return a;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
