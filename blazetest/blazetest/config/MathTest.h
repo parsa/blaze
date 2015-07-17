@@ -169,6 +169,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the conj tests.
+//
+// This compilation switch triggers the conj tests for all test scenarios. In case the conj
+// tests are activated, each operation is tested in combination with an conj operation. The
+// following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   c = conj( a + b );  // Complex conjugate vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The conj tests are not included in the compilation process and not executed
+//   - 1: The conj tests are included in the compilation process, but not executed
+//   - 2: The conj tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the eval tests.
 //
 // This compilation switch triggers the eval tests for all test scenarios. In case the eval
