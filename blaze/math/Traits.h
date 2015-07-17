@@ -71,6 +71,7 @@
 #include <blaze/math/traits/DMatTSMatMultExprTrait.h>
 #include <blaze/math/traits/DMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/DVecAbsExprTrait.h>
+#include <blaze/math/traits/DVecConjExprTrait.h>
 #include <blaze/math/traits/DVecDVecAddExprTrait.h>
 #include <blaze/math/traits/DVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/DVecDVecMultExprTrait.h>
