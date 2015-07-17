@@ -45,6 +45,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CMathTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
