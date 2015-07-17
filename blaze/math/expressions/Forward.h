@@ -88,6 +88,7 @@ template< typename, bool > class DVecTransposer;
 template< typename, typename > class DVecTSVecMultExpr;
 template< typename, bool > struct Matrix;
 template< typename, bool > class SMatAbsExpr;
+template< typename, bool > class SMatConjExpr;
 template< typename, typename > class SMatDMatMultExpr;
 template< typename, typename, bool > class SMatDMatSubExpr;
 template< typename, typename > class SMatDVecMultExpr;
