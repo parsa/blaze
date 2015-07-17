@@ -1196,6 +1196,28 @@ namespace blaze {}
                           3 \\
                           \end{array}\right)\f$
 
+// \n \subsection vector_operators_conj Complex Conjugates
+//
+// The \c conj() function can be applied on a dense or sparse vector to compute the complex
+// conjugate of each element of the vector:
+
+   \code
+   using blaze::StaticVector;
+
+   typedef std::complex<double>  cplx;
+
+   // Creating the vector
+   //    ( (-2,-1) )
+   //    ( ( 1, 1) )
+   StaticVector<cplx,2UL> a( cplx(-2.0,-1.0), cplx(1.0,1.0) );
+
+   // Computing the vector of complex conjugates
+   //    ( (-2, 1) )
+   //    ( ( 1,-1) )
+   StaticVector<cplx,2UL> b;
+   b = conj( a );
+   \endcode
+
 // \n \subsection vector_operations_min_max Minimum/Maximum Values
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
@@ -2267,6 +2289,29 @@ namespace blaze {}
                           1 & 2 & 3 \\
                           4 & 5 & 6 \\
                           \end{array}\right)\f$
+
+// \n \subsection matrix_operators_conj Complex Conjugates
+//
+// The \c conj() function can be applied on a dense or sparse matrix to compute the complex
+// conjugate of each element of the matrix:
+
+   \code
+   using blaze::StaticMatrix;
+
+   typedef std::complex<double>  cplx;
+
+   // Creating the matrix
+   //    ( (1,0)  (-2,-1) )
+   //    ( (1,1)  ( 0, 1) )
+   StaticMatrix<cplx,2UL,2UL> A( cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ),
+                                 cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) );
+
+   // Computing the matrix of conjugate values
+   //    ( (1, 0)  (-2, 1) )
+   //    ( (1,-1)  ( 0,-1) )
+   StaticMatrix<cplx,2UL,2UL> B;
+   B = conj( A );
+   \endcode
 
 // \n \subsection matrix_operations_min_max Minimum/Maximum Values
 //
