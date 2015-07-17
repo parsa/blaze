@@ -58,6 +58,7 @@
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatAbsExpr.h>
+#include <blaze/math/constraints/MatConjExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>

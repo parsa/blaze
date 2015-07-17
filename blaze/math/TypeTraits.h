@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
+#include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
