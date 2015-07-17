@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/Columns.h>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/ConjExpr.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>
