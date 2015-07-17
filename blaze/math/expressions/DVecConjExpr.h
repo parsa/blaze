@@ -270,7 +270,6 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
       // \return The resulting value.
       */
       inline ReturnType operator*() const {
-         using std::conj;
          return conj( *it_ );
       }
       //*******************************************************************************************
@@ -431,7 +430,6 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
    // \return The resulting value.
    */
    inline ReturnType operator[]( size_t index ) const {
-      using std::conj;
       BLAZE_INTERNAL_ASSERT( index < dv_.size(), "Invalid vector access index" );
       return conj( dv_[index] );
    }
