@@ -42,6 +42,7 @@
 
 #include <blaze/math/intrinsics/Abs.h>
 #include <blaze/math/intrinsics/Addition.h>
+#include <blaze/math/intrinsics/Conj.h>
 #include <blaze/math/intrinsics/Division.h>
 #include <blaze/math/intrinsics/Load.h>
 #include <blaze/math/intrinsics/Loadu.h>
@@ -53,63 +54,5 @@
 #include <blaze/math/intrinsics/Storeu.h>
 #include <blaze/math/intrinsics/Stream.h>
 #include <blaze/math/intrinsics/Subtraction.h>
-
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  INTRINSIC DOT PRODUCT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*\brief Dot product of two vectors of single precision floating point values.
-// \ingroup intrinsics
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the dot product.
-*/
-// #if BLAZE_SSE4_MODE
-// inline float dot( sse_float_t a, sse_float_t b )
-// {
-//    return _mm_cvtss_f32( _mm_dp_ps( a.value, b.value, 0xF1 ) );
-// }
-// #elif BLAZE_SSE2_MODE
-// inline float dot( sse_float_t a, sse_float_t b )
-// {
-//    float array[4];
-//    store( array, a * b );
-//    return array[0] + array[1] + array[2] + array[3];
-// }
-// #endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*\brief Dot product of two vectors of double precision floating point values.
-// \ingroup intrinsics
-//
-// \param a The left-hand side operand.
-// \param b The right-hand side operand.
-// \return The result of the dot product.
-*/
-// #if BLAZE_SSE4_MODE
-// inline double dot( sse_double_t a, sse_double_t b )
-// {
-//    return _mm_cvtsd_f64( _mm_dp_pd( a.value, b.value, 0xF1 ) );
-// }
-// #elif BLAZE_SSE2_MODE
-// inline double dot( sse_double_t a, sse_double_t b )
-// {
-//    double array[2];
-//    store( array, a * b );
-//    return array[0] + array[1];
-// }
-// #endif
-//*************************************************************************************************
-
-} // namespace blaze
 
 #endif
