@@ -47,6 +47,7 @@ namespace blaze {
 template< typename, bool > struct DenseMatrix;
 template< typename, bool > struct DenseVector;
 template< typename, bool > class DMatAbsExpr;
+template< typename, bool > class DMatConjExpr;
 template< typename, typename, bool > class DMatDMatAddExpr;
 template< typename, typename > class DMatDMatMultExpr;
 template< typename, typename, bool > class DMatDMatSubExpr;
