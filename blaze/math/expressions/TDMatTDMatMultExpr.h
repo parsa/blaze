@@ -1545,16 +1545,16 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          assign( C, B );
          ctrmm( C, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
          ctrmm( C, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
       }
       else {
-         cgemm( C, A, B, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( 1.0F ), complex<float>( 0.0F ) );
       }
    }
    /*! \endcond */
@@ -1586,16 +1586,16 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          assign( C, B );
          ztrmm( C, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
          ztrmm( C, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
       }
       else {
-         zgemm( C, A, B, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( 1.0 ), complex<double>( 0.0 ) );
       }
    }
    /*! \endcond */
@@ -2698,18 +2698,18 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          typename MT3::ResultType tmp( B );
          ctrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ctrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
          addAssign( C, tmp );
       }
       else {
-         cgemm( C, A, B, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( 1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -2741,18 +2741,18 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          typename MT3::ResultType tmp( B );
          ztrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ztrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
          addAssign( C, tmp );
       }
       else {
-         zgemm( C, A, B, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( 1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -3821,18 +3821,18 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          typename MT3::ResultType tmp( B );
          ctrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ctrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0F, 0.0F ) );
+                complex<float>( 1.0F ) );
          subAssign( C, tmp );
       }
       else {
-         cgemm( C, A, B, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( -1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -3864,18 +3864,18 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
          typename MT3::ResultType tmp( B );
          ztrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ztrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( 1.0, 0.0 ) );
+                complex<double>( 1.0 ) );
          subAssign( C, tmp );
       }
       else {
-         zgemm( C, A, B, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( -1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -5656,16 +5656,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          assign( C, B );
          ctrmm( C, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
          ctrmm( C, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
       }
       else {
-         cgemm( C, A, B, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( scalar ), complex<float>( 0.0F ) );
       }
    }
 #endif
@@ -5697,16 +5697,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          assign( C, B );
          ztrmm( C, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
       }
       else if( IsTriangular<MT5>::value ) {
          assign( C, A );
          ztrmm( C, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
       }
       else {
-         zgemm( C, A, B, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( scalar ), complex<double>( 0.0 ) );
       }
    }
 #endif
@@ -6758,18 +6758,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          typename MT3::ResultType tmp( B );
          ctrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ctrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
          addAssign( C, tmp );
       }
       else {
-         cgemm( C, A, B, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -6801,18 +6801,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          typename MT3::ResultType tmp( B );
          ztrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
          addAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ztrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<double>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
          addAssign( C, tmp );
       }
       else {
-         zgemm( C, A, B, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
@@ -7833,18 +7833,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          typename MT3::ResultType tmp( B );
          ctrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ctrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0F ) );
+                complex<float>( scalar ) );
          subAssign( C, tmp );
       }
       else {
-         cgemm( C, A, B, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemm( C, A, B, complex<float>( -scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -7876,18 +7876,18 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
          typename MT3::ResultType tmp( B );
          ztrmm( tmp, A, CblasLeft,
                 ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
          subAssign( C, tmp );
       }
       else if( IsTriangular<MT5>::value ) {
          typename MT3::ResultType tmp( A );
          ztrmm( tmp, B, CblasRight,
                 ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ),
-                complex<float>( scalar, 0.0 ) );
+                complex<double>( scalar ) );
          subAssign( C, tmp );
       }
       else {
-         zgemm( C, A, B, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemm( C, A, B, complex<double>( -scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
