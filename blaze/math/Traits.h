@@ -161,6 +161,7 @@
 #include <blaze/math/traits/TDMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/TDVecAbsExprTrait.h>
 #include <blaze/math/traits/TDVecConjExprTrait.h>
+#include <blaze/math/traits/TDVecCTransExprTrait.h>
 #include <blaze/math/traits/TDVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TDVecDVecMultExprTrait.h>
 #include <blaze/math/traits/TDVecEvalExprTrait.h>
