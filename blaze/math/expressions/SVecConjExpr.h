@@ -52,6 +52,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ConjExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SVecConjExprTrait.h>
 #include <blaze/math/traits/TSVecConjExprTrait.h>
@@ -801,6 +802,35 @@ inline const SVecConjExpr<VT,TF> conj( const SparseVector<VT,TF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose vector of \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The conjugate transpose of \a sv.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input vector
+// \a sv.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = ctrans( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const typename CTransExprTrait<VT>::Type ctrans( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~sv ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -827,6 +857,29 @@ inline typename SVecConjExpr<VT,TF>::Operand conj( const SVecConjExpr<VT,TF>& sv
    BLAZE_FUNCTION_TRACE;
 
    return sv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose sparse vector expressions.
+// \ingroup sparse_vector
+//
+// \param sv The conjugate transpose sparse vector expression.
+// \return The conjugate transpose of \a sv.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a sparse vector conjugate transpose expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecConjExpr<VT,TF>,!TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecTransExpr<VT,!TF>( sv.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -883,6 +936,38 @@ struct TSVecConjExprTrait< SVecConjExpr<VT,true> >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
                               , VT
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecConjExprTrait< SVecTransExpr< SVecConjExpr<VT,true>, false > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
+                              , SVecTransExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecConjExprTrait< SVecTransExpr< SVecConjExpr<VT,false>, true > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
+                              , SVecTransExpr<VT,true>
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
