@@ -168,8 +168,9 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
-                          void testAbsOperation      ();
                           void testConjOperation     ();
+                          void testCTransOperation   ();
+                          void testAbsOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubmatrixOperation();
@@ -346,8 +347,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
    testTransposeOperation();
-   testAbsOperation();
    testConjOperation();
+   testCTransOperation();
+   testAbsOperation();
    testEvalOperation();
    testSerialOperation();
    testSubmatrixOperation();
@@ -3227,6 +3229,564 @@ void OperationTest<MT1,MT2>::testTransposeOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the conjugate sparse matrix/dense matrix addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the conjugate matrix addition with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the addition or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate addition
+      //=====================================================================================
+
+      // Conjugate addition with the given matrices
+      {
+         test_  = "Conjugate addition with the given matrices";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            dres_   = conj( lhs_ + rhs_ );
+            odres_  = conj( lhs_ + rhs_ );
+            sres_   = conj( lhs_ + rhs_ );
+            osres_  = conj( lhs_ + rhs_ );
+            refres_ = conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = conj( lhs_ + orhs_ );
+            odres_  = conj( lhs_ + orhs_ );
+            sres_   = conj( lhs_ + orhs_ );
+            osres_  = conj( lhs_ + orhs_ );
+            refres_ = conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = conj( olhs_ + rhs_ );
+            odres_  = conj( olhs_ + rhs_ );
+            sres_   = conj( olhs_ + rhs_ );
+            osres_  = conj( olhs_ + rhs_ );
+            refres_ = conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = conj( olhs_ + orhs_ );
+            odres_  = conj( olhs_ + orhs_ );
+            sres_   = conj( olhs_ + orhs_ );
+            osres_  = conj( olhs_ + orhs_ );
+            refres_ = conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Conjugate addition with evaluated matrices
+      {
+         test_  = "Conjugate addition with evaluated matrices";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            dres_   = conj( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  = conj( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   = conj( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  = conj( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = conj( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  = conj( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   = conj( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  = conj( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = conj( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  = conj( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   = conj( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  = conj( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = conj( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  = conj( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   = conj( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  = conj( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate addition with addition assignment
+      //=====================================================================================
+
+      // Conjugate addition with addition assignment with the given matrices
+      {
+         test_  = "Conjugate addition with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( lhs_ + rhs_ );
+            odres_  += conj( lhs_ + rhs_ );
+            sres_   += conj( lhs_ + rhs_ );
+            osres_  += conj( lhs_ + rhs_ );
+            refres_ += conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += conj( lhs_ + orhs_ );
+            odres_  += conj( lhs_ + orhs_ );
+            sres_   += conj( lhs_ + orhs_ );
+            osres_  += conj( lhs_ + orhs_ );
+            refres_ += conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += conj( olhs_ + rhs_ );
+            odres_  += conj( olhs_ + rhs_ );
+            sres_   += conj( olhs_ + rhs_ );
+            osres_  += conj( olhs_ + rhs_ );
+            refres_ += conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += conj( olhs_ + orhs_ );
+            odres_  += conj( olhs_ + orhs_ );
+            sres_   += conj( olhs_ + orhs_ );
+            osres_  += conj( olhs_ + orhs_ );
+            refres_ += conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Conjugate addition with addition assignment with evaluated matrices
+      {
+         test_  = "Conjugate addition with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  += conj( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   += conj( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  += conj( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += conj( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  += conj( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   += conj( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  += conj( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += conj( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  += conj( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   += conj( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  += conj( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += conj( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  += conj( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   += conj( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  += conj( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate addition with subtraction assignment
+      //=====================================================================================
+
+      // Conjugate addition with subtraction assignment with the given matrices
+      {
+         test_  = "Conjugate addition with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( lhs_ + rhs_ );
+            odres_  -= conj( lhs_ + rhs_ );
+            sres_   -= conj( lhs_ + rhs_ );
+            osres_  -= conj( lhs_ + rhs_ );
+            refres_ -= conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( lhs_ + orhs_ );
+            odres_  -= conj( lhs_ + orhs_ );
+            sres_   -= conj( lhs_ + orhs_ );
+            osres_  -= conj( lhs_ + orhs_ );
+            refres_ -= conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( olhs_ + rhs_ );
+            odres_  -= conj( olhs_ + rhs_ );
+            sres_   -= conj( olhs_ + rhs_ );
+            osres_  -= conj( olhs_ + rhs_ );
+            refres_ -= conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( olhs_ + orhs_ );
+            odres_  -= conj( olhs_ + orhs_ );
+            sres_   -= conj( olhs_ + orhs_ );
+            osres_  -= conj( olhs_ + orhs_ );
+            refres_ -= conj( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Conjugate addition with subtraction assignment with evaluated matrices
+      {
+         test_  = "Conjugate addition with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( eval( lhs_ ) + eval( rhs_ ) );
+            odres_  -= conj( eval( lhs_ ) + eval( rhs_ ) );
+            sres_   -= conj( eval( lhs_ ) + eval( rhs_ ) );
+            osres_  -= conj( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( eval( lhs_ ) + eval( orhs_ ) );
+            odres_  -= conj( eval( lhs_ ) + eval( orhs_ ) );
+            sres_   -= conj( eval( lhs_ ) + eval( orhs_ ) );
+            osres_  -= conj( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( eval( olhs_ ) + eval( rhs_ ) );
+            odres_  -= conj( eval( olhs_ ) + eval( rhs_ ) );
+            sres_   -= conj( eval( olhs_ ) + eval( rhs_ ) );
+            osres_  -= conj( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= conj( eval( olhs_ ) + eval( orhs_ ) );
+            odres_  -= conj( eval( olhs_ ) + eval( orhs_ ) );
+            sres_   -= conj( eval( olhs_ ) + eval( orhs_ ) );
+            osres_  -= conj( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate transpose sparse matrix/dense matrix addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the conjugate transpose matrix addition with plain assignment. In
+// case any error resulting from the addition or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testCTransOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate transpose addition
+      //=====================================================================================
+
+      // Conjugate transpose addition with the given matrices
+      {
+         test_  = "Conjugate transpose addition with the given matrices";
+         error_ = "Failed addition operation";
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( lhs_ + rhs_ );
+            todres_ = ctrans( lhs_ + rhs_ );
+            tsres_  = ctrans( lhs_ + rhs_ );
+            tosres_ = ctrans( lhs_ + rhs_ );
+            refres_ = ctrans( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkTransposeResults<MT1,MT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( lhs_ + orhs_ );
+            todres_ = ctrans( lhs_ + orhs_ );
+            tsres_  = ctrans( lhs_ + orhs_ );
+            tosres_ = ctrans( lhs_ + orhs_ );
+            refres_ = ctrans( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkTransposeResults<MT1,OMT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( olhs_ + rhs_ );
+            todres_ = ctrans( olhs_ + rhs_ );
+            tsres_  = ctrans( olhs_ + rhs_ );
+            tosres_ = ctrans( olhs_ + rhs_ );
+            refres_ = ctrans( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkTransposeResults<OMT1,MT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( olhs_ + orhs_ );
+            todres_ = ctrans( olhs_ + orhs_ );
+            tsres_  = ctrans( olhs_ + orhs_ );
+            tosres_ = ctrans( olhs_ + orhs_ );
+            refres_ = ctrans( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkTransposeResults<OMT1,OMT2>();
+      }
+
+      // Conjugate transpose addition with evaluated matrices
+      {
+         test_  = "Conjugate transpose addition with evaluated matrices";
+         error_ = "Failed addition operation";
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( eval( lhs_ ) + eval( rhs_ ) );
+            todres_ = ctrans( eval( lhs_ ) + eval( rhs_ ) );
+            tsres_  = ctrans( eval( lhs_ ) + eval( rhs_ ) );
+            tosres_ = ctrans( eval( lhs_ ) + eval( rhs_ ) );
+            refres_ = ctrans( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkTransposeResults<MT1,MT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( eval( lhs_ ) + eval( orhs_ ) );
+            todres_ = ctrans( eval( lhs_ ) + eval( orhs_ ) );
+            tsres_  = ctrans( eval( lhs_ ) + eval( orhs_ ) );
+            tosres_ = ctrans( eval( lhs_ ) + eval( orhs_ ) );
+            refres_ = ctrans( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkTransposeResults<MT1,OMT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( eval( olhs_ ) + eval( rhs_ ) );
+            todres_ = ctrans( eval( olhs_ ) + eval( rhs_ ) );
+            tsres_  = ctrans( eval( olhs_ ) + eval( rhs_ ) );
+            tosres_ = ctrans( eval( olhs_ ) + eval( rhs_ ) );
+            refres_ = ctrans( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkTransposeResults<OMT1,MT2>();
+
+         try {
+            initTransposeResults();
+            tdres_  = ctrans( eval( olhs_ ) + eval( orhs_ ) );
+            todres_ = ctrans( eval( olhs_ ) + eval( orhs_ ) );
+            tsres_  = ctrans( eval( olhs_ ) + eval( orhs_ ) );
+            tosres_ = ctrans( eval( olhs_ ) + eval( orhs_ ) );
+            refres_ = ctrans( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkTransposeResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the abs sparse matrix/dense matrix addition.
 //
 // \return void
@@ -3621,414 +4181,6 @@ void OperationTest<MT1,MT2>::testAbsOperation()
             sres_   -= abs( eval( olhs_ ) + eval( orhs_ ) );
             osres_  -= abs( eval( olhs_ ) + eval( orhs_ ) );
             refres_ -= abs( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conj sparse matrix/dense matrix addition.
-//
-// \return void
-// \exception std::runtime_error Addition error detected.
-//
-// This function tests the conj matrix addition with plain assignment, addition assignment,
-// and subtraction assignment. In case any error resulting from the addition or the subsequent
-// assignment is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename MT1    // Type of the left-hand side sparse matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conj addition
-      //=====================================================================================
-
-      // Conj addition with the given matrices
-      {
-         test_  = "Conj addition with the given matrices";
-         error_ = "Failed addition operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ + rhs_ );
-            odres_  = conj( lhs_ + rhs_ );
-            sres_   = conj( lhs_ + rhs_ );
-            osres_  = conj( lhs_ + rhs_ );
-            refres_ = conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ + orhs_ );
-            odres_  = conj( lhs_ + orhs_ );
-            sres_   = conj( lhs_ + orhs_ );
-            osres_  = conj( lhs_ + orhs_ );
-            refres_ = conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   = conj( olhs_ + rhs_ );
-            odres_  = conj( olhs_ + rhs_ );
-            sres_   = conj( olhs_ + rhs_ );
-            osres_  = conj( olhs_ + rhs_ );
-            refres_ = conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   = conj( olhs_ + orhs_ );
-            odres_  = conj( olhs_ + orhs_ );
-            sres_   = conj( olhs_ + orhs_ );
-            osres_  = conj( olhs_ + orhs_ );
-            refres_ = conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-      // Conj addition with evaluated matrices
-      {
-         test_  = "Conj addition with evaluated matrices";
-         error_ = "Failed addition operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) + eval( rhs_ ) );
-            odres_  = conj( eval( lhs_ ) + eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) + eval( rhs_ ) );
-            osres_  = conj( eval( lhs_ ) + eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) + eval( orhs_ ) );
-            odres_  = conj( eval( lhs_ ) + eval( orhs_ ) );
-            sres_   = conj( eval( lhs_ ) + eval( orhs_ ) );
-            osres_  = conj( eval( lhs_ ) + eval( orhs_ ) );
-            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   = conj( eval( olhs_ ) + eval( rhs_ ) );
-            odres_  = conj( eval( olhs_ ) + eval( rhs_ ) );
-            sres_   = conj( eval( olhs_ ) + eval( rhs_ ) );
-            osres_  = conj( eval( olhs_ ) + eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   = conj( eval( olhs_ ) + eval( orhs_ ) );
-            odres_  = conj( eval( olhs_ ) + eval( orhs_ ) );
-            sres_   = conj( eval( olhs_ ) + eval( orhs_ ) );
-            osres_  = conj( eval( olhs_ ) + eval( orhs_ ) );
-            refres_ = conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-
-      //=====================================================================================
-      // Conj addition with addition assignment
-      //=====================================================================================
-
-      // Conj addition with addition assignment with the given matrices
-      {
-         test_  = "Conj addition with addition assignment with the given matrices";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ + rhs_ );
-            odres_  += conj( lhs_ + rhs_ );
-            sres_   += conj( lhs_ + rhs_ );
-            osres_  += conj( lhs_ + rhs_ );
-            refres_ += conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ + orhs_ );
-            odres_  += conj( lhs_ + orhs_ );
-            sres_   += conj( lhs_ + orhs_ );
-            osres_  += conj( lhs_ + orhs_ );
-            refres_ += conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   += conj( olhs_ + rhs_ );
-            odres_  += conj( olhs_ + rhs_ );
-            sres_   += conj( olhs_ + rhs_ );
-            osres_  += conj( olhs_ + rhs_ );
-            refres_ += conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   += conj( olhs_ + orhs_ );
-            odres_  += conj( olhs_ + orhs_ );
-            sres_   += conj( olhs_ + orhs_ );
-            osres_  += conj( olhs_ + orhs_ );
-            refres_ += conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-      // Conj addition with addition assignment with evaluated matrices
-      {
-         test_  = "Conj addition with addition assignment with evaluated matrices";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) + eval( rhs_ ) );
-            odres_  += conj( eval( lhs_ ) + eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) + eval( rhs_ ) );
-            osres_  += conj( eval( lhs_ ) + eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) + eval( orhs_ ) );
-            odres_  += conj( eval( lhs_ ) + eval( orhs_ ) );
-            sres_   += conj( eval( lhs_ ) + eval( orhs_ ) );
-            osres_  += conj( eval( lhs_ ) + eval( orhs_ ) );
-            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   += conj( eval( olhs_ ) + eval( rhs_ ) );
-            odres_  += conj( eval( olhs_ ) + eval( rhs_ ) );
-            sres_   += conj( eval( olhs_ ) + eval( rhs_ ) );
-            osres_  += conj( eval( olhs_ ) + eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   += conj( eval( olhs_ ) + eval( orhs_ ) );
-            odres_  += conj( eval( olhs_ ) + eval( orhs_ ) );
-            sres_   += conj( eval( olhs_ ) + eval( orhs_ ) );
-            osres_  += conj( eval( olhs_ ) + eval( orhs_ ) );
-            refres_ += conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-
-      //=====================================================================================
-      // Conj addition with subtraction assignment
-      //=====================================================================================
-
-      // Conj addition with subtraction assignment with the given matrices
-      {
-         test_  = "Conj addition with subtraction assignment with the given matrices";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ + rhs_ );
-            odres_  -= conj( lhs_ + rhs_ );
-            sres_   -= conj( lhs_ + rhs_ );
-            osres_  -= conj( lhs_ + rhs_ );
-            refres_ -= conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ + orhs_ );
-            odres_  -= conj( lhs_ + orhs_ );
-            sres_   -= conj( lhs_ + orhs_ );
-            osres_  -= conj( lhs_ + orhs_ );
-            refres_ -= conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( olhs_ + rhs_ );
-            odres_  -= conj( olhs_ + rhs_ );
-            sres_   -= conj( olhs_ + rhs_ );
-            osres_  -= conj( olhs_ + rhs_ );
-            refres_ -= conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( olhs_ + orhs_ );
-            odres_  -= conj( olhs_ + orhs_ );
-            sres_   -= conj( olhs_ + orhs_ );
-            osres_  -= conj( olhs_ + orhs_ );
-            refres_ -= conj( reflhs_ + refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-      // Conj addition with subtraction assignment with evaluated matrices
-      {
-         test_  = "Conj addition with subtraction assignment with evaluated matrices";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) + eval( rhs_ ) );
-            odres_  -= conj( eval( lhs_ ) + eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) + eval( rhs_ ) );
-            osres_  -= conj( eval( lhs_ ) + eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) + eval( orhs_ ) );
-            odres_  -= conj( eval( lhs_ ) + eval( orhs_ ) );
-            sres_   -= conj( eval( lhs_ ) + eval( orhs_ ) );
-            osres_  -= conj( eval( lhs_ ) + eval( orhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( eval( olhs_ ) + eval( rhs_ ) );
-            odres_  -= conj( eval( olhs_ ) + eval( rhs_ ) );
-            sres_   -= conj( eval( olhs_ ) + eval( rhs_ ) );
-            osres_  -= conj( eval( olhs_ ) + eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            dres_   -= conj( eval( olhs_ ) + eval( orhs_ ) );
-            odres_  -= conj( eval( olhs_ ) + eval( orhs_ ) );
-            sres_   -= conj( eval( olhs_ ) + eval( orhs_ ) );
-            osres_  -= conj( eval( olhs_ ) + eval( orhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) + eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
