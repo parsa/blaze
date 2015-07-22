@@ -124,6 +124,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/SVecAbsExprTrait.h>
 #include <blaze/math/traits/SVecConjExprTrait.h>
+#include <blaze/math/traits/SVecCTransExprTrait.h>
 #include <blaze/math/traits/SVecDVecAddExprTrait.h>
 #include <blaze/math/traits/SVecDVecCrossExprTrait.h>
 #include <blaze/math/traits/SVecDVecMultExprTrait.h>
