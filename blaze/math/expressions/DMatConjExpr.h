@@ -52,6 +52,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DMatConjExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -903,7 +904,7 @@ class DMatConjExpr : public DenseMatrix< DMatConjExpr<MT,SO>, SO >
 // The following example demonstrates the use of the \a conj function:
 
    \code
-   blaze::DynamicMatrix<double> A, B;
+   blaze::DynamicMatrix< complex<double> > A, B;
    // ... Resizing and initialization
    B = conj( A );
    \endcode
@@ -915,6 +916,35 @@ inline const DMatConjExpr<MT,SO> conj( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return DMatConjExpr<MT,SO>( ~dm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose matrix of \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The conjugate transpose of \a dm.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input matrix
+// \a dm.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = ctrans( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const typename CTransExprTrait<MT>::Type ctrans( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~dm ) );
 }
 //*************************************************************************************************
 
@@ -945,6 +975,29 @@ inline typename DMatConjExpr<MT,SO>::Operand conj( const DMatConjExpr<MT,SO>& dm
    BLAZE_FUNCTION_TRACE;
 
    return dm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose dense matrix expressions.
+// \ingroup dense_matrix
+//
+// \param dm The conjugate transpose dense matrix expression.
+// \return The conjugate transpose of \a dm.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense matrix conjugate transpose expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline const DMatTransExpr<MT,!SO> conj( const DMatTransExpr<DMatConjExpr<MT,SO>,!SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DMatTransExpr<MT,!SO>( dm.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1136,6 +1189,38 @@ struct TDMatConjExprTrait< DMatConjExpr<MT,true> >
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
                               , MT
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,true>, false > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , DMatTransExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatConjExprTrait< DMatTransExpr< DMatConjExpr<MT,false>, true > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , DMatTransExpr<MT,true>
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
