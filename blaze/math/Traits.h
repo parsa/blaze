@@ -206,6 +206,7 @@
 #include <blaze/math/traits/TSMatTSMatSubExprTrait.h>
 #include <blaze/math/traits/TSVecAbsExprTrait.h>
 #include <blaze/math/traits/TSVecConjExprTrait.h>
+#include <blaze/math/traits/TSVecCTransExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDVecMultExprTrait.h>
 #include <blaze/math/traits/TSVecEvalExprTrait.h>
