@@ -147,6 +147,53 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the complex conjugate tests.
+//
+// This compilation switch triggers the complex conjugate tests for all test scenarios. In case
+// the complex conjugate tests are activated, each operation is tested in combination with a
+// complex conjugate operation. The following example demonstrates this by means of the vector
+// addition:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b, c;
+   c = conj( a + b );  // Complex conjugate vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The complex conjugate tests are not included in the compilation process and not executed
+//   - 1: The complex conjugate tests are included in the compilation process, but not executed
+//   - 2: The complex conjugate tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compilation switch for the conjugate transpose tests.
+//
+// This compilation switch triggers the conjugate transpose tests for all test scenarios. In case
+// the conjugate transpose tests are activated, each operation is tested in combination with a
+// conjugate transpose operation. The following example demonstrates this by means of the vector
+// addition:
+
+   \code
+   blaze::DynamicVector< complex<double>, false > a, b;
+   blaze::DynamicVector< complex<double>, true > c;
+   c = ctrans( a + b );  // Conjugate transpose vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The conjugate transpose tests are not included in the compilation process and not executed
+//   - 1: The conjugate transpose tests are included in the compilation process, but not executed
+//   - 2: The conjugate transpose tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the abs tests.
 //
 // This compilation switch triggers the abs tests for all test scenarios. In case the abs
@@ -154,7 +201,7 @@ typedef double  TypeB;
 // following example demonstrates this by means of the vector addition:
 
    \code
-   blaze::DynamicVector<double> a, b, c;
+   blaze::DynamicVector<int> a, b, c;
    c = abs( a + b );  // Absolute value vector addition
    \endcode
 
@@ -165,28 +212,6 @@ typedef double  TypeB;
 //   - 2: The abs tests are included in the compilation process and executed
 */
 #define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compilation switch for the conj tests.
-//
-// This compilation switch triggers the conj tests for all test scenarios. In case the conj
-// tests are activated, each operation is tested in combination with an conj operation. The
-// following example demonstrates this by means of the vector addition:
-
-   \code
-   blaze::DynamicVector<double> a, b, c;
-   c = conj( a + b );  // Complex conjugate vector addition
-   \endcode
-
-// The following settings are possible:
-//
-//   - 0: The conj tests are not included in the compilation process and not executed
-//   - 1: The conj tests are included in the compilation process, but not executed
-//   - 2: The conj tests are included in the compilation process and executed
-*/
-#define BLAZETEST_MATHTEST_TEST_CONJ_OPERATION 0
 //*************************************************************************************************
 
 
