@@ -135,8 +135,9 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
-                          void testAbsOperation      ();
                           void testConjOperation     ();
+                          void testCTransOperation   ();
+                          void testAbsOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -260,8 +261,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
    testTransposeOperation();
-   testAbsOperation();
    testConjOperation();
+   testCTransOperation();
+   testAbsOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -1707,6 +1709,378 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the conjugate sparse vector/sparse vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the conjugate vector cross product with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the cross product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate cross product
+      //=====================================================================================
+
+      // Conjugate cross product with the given vectors
+      {
+         test_  = "Conjugate cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = conj( lhs_ % rhs_ );
+            sres_   = conj( lhs_ % rhs_ );
+            refres_ = conj( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Conjugate cross product with evaluated vectors
+      {
+         test_  = "Conjugate cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = conj( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = conj( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = conj( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate cross product with addition assignment
+      //=====================================================================================
+
+      // Conjugate cross product with addition assignment with the given vectors
+      {
+         test_  = "Conjugate cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( lhs_ % rhs_ );
+            sres_   += conj( lhs_ % rhs_ );
+            refres_ += conj( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Conjugate cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Conjugate cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += conj( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += conj( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate cross product with subtraction assignment
+      //=====================================================================================
+
+      // Conjugate cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Conjugate cross product with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( lhs_ % rhs_ );
+            sres_   -= conj( lhs_ % rhs_ );
+            refres_ -= conj( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Conjugate cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Conjugate cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= conj( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate cross product with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Conjugate cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= conj( lhs_ % rhs_ );
+            sres_   *= conj( lhs_ % rhs_ );
+            refres_ *= conj( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Conjugate cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Conjugate cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= conj( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= conj( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= conj( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate transpose sparse vector/sparse vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the conjugate transpose vector cross product with plain assignment,
+// addition assignment, subtraction assignment, and multiplication assignment. In case any
+// error resulting from the cross product or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testCTransOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate transpose cross product
+      //=====================================================================================
+
+      // Conjugate transpose cross product with the given vectors
+      {
+         test_  = "Conjugate transpose cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( lhs_ % rhs_ );
+            tsres_   = ctrans( lhs_ % rhs_ );
+            trefres_ = ctrans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+      // Conjugate transpose cross product with evaluated vectors
+      {
+         test_  = "Conjugate transpose cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   = ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ = ctrans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose cross product with addition assignment
+      //=====================================================================================
+
+      // Conjugate transpose cross product with addition assignment with the given vectors
+      {
+         test_  = "Conjugate transpose cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( lhs_ % rhs_ );
+            tsres_   += ctrans( lhs_ % rhs_ );
+            trefres_ += ctrans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+      // Conjugate transpose cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Conjugate transpose cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   += ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ += ctrans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose cross product with subtraction assignment
+      //=====================================================================================
+
+      // Conjugate transpose cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Conjugate transpose cross product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( lhs_ % rhs_ );
+            tsres_   -= ctrans( lhs_ % rhs_ );
+            trefres_ -= ctrans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+      // Conjugate transpose cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Conjugate transpose cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   -= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ -= ctrans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose cross product with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate transpose cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Conjugate transpose cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( lhs_ % rhs_ );
+            tsres_   *= ctrans( lhs_ % rhs_ );
+            trefres_ *= ctrans( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+
+      // Conjugate transpose cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Conjugate transpose cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            tsres_   *= ctrans( eval( lhs_ ) % eval( rhs_ ) );
+            trefres_ *= ctrans( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkTransposeResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the abs sparse vector/sparse vector cross product.
 //
 // \return void
@@ -1879,192 +2253,6 @@ void OperationTest<VT1,VT2>::testAbsOperation()
             dres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
             sres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) % eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conj sparse vector/sparse vector cross product.
-//
-// \return void
-// \exception std::runtime_error Cross product error detected.
-//
-// This function tests the conj vector cross product with plain assignment, addition assignment,
-// subtraction assignment, and multiplication assignment. In case any error resulting from the
-// cross product or the subsequent assignment is detected, a \a std::runtime_error exception
-// is thrown.
-*/
-template< typename VT1    // Type of the left-hand side sparse vector
-        , typename VT2 >  // Type of the right-hand side sparse vector
-void OperationTest<VT1,VT2>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conj cross product
-      //=====================================================================================
-
-      // Conj cross product with the given vectors
-      {
-         test_  = "Conj cross product with the given vectors";
-         error_ = "Failed cross product operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ % rhs_ );
-            sres_   = conj( lhs_ % rhs_ );
-            refres_ = conj( reflhs_ % refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conj cross product with evaluated vectors
-      {
-         test_  = "Conj cross product with evaluated vectors";
-         error_ = "Failed cross product operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) % eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Conj cross product with addition assignment
-      //=====================================================================================
-
-      // Conj cross product with addition assignment with the given vectors
-      {
-         test_  = "Conj cross product with addition assignment with the given vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ % rhs_ );
-            sres_   += conj( lhs_ % rhs_ );
-            refres_ += conj( reflhs_ % refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conj cross product with addition assignment with evaluated vectors
-      {
-         test_  = "Conj cross product with addition assignment with evaluated vectors";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) % eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Conj cross product with subtraction assignment
-      //=====================================================================================
-
-      // Conj cross product with subtraction assignment with the given vectors
-      {
-         test_  = "Conj cross product with subtraction assignment with the given types";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ % rhs_ );
-            sres_   -= conj( lhs_ % rhs_ );
-            refres_ -= conj( reflhs_ % refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conj cross product with subtraction assignment with evaluated vectors
-      {
-         test_  = "Conj cross product with subtraction assignment with evaluated vectors";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) % eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-
-      //=====================================================================================
-      // Conj cross product with multiplication assignment
-      //=====================================================================================
-
-      // Conj cross product with multiplication assignment with the given vectors
-      {
-         test_  = "Conj cross product with multiplication assignment with the given vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( lhs_ % rhs_ );
-            sres_   *= conj( lhs_ % rhs_ );
-            refres_ *= conj( reflhs_ % refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException( ex );
-         }
-
-         checkResults();
-      }
-
-      // Conj cross product with multiplication assignment with evaluated vectors
-      {
-         test_  = "Conj cross product with multiplication assignment with evaluated vectors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   *= conj( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ *= conj( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
