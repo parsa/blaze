@@ -186,6 +186,7 @@
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/TSMatAbsExprTrait.h>
 #include <blaze/math/traits/TSMatConjExprTrait.h>
+#include <blaze/math/traits/TSMatCTransExprTrait.h>
 #include <blaze/math/traits/TSMatDMatAddExprTrait.h>
 #include <blaze/math/traits/TSMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TSMatDMatSubExprTrait.h>
