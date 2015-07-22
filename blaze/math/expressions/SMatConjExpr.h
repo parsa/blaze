@@ -49,10 +49,12 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatConjExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SMatConjExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
@@ -819,7 +821,7 @@ class SMatConjExpr : public SparseMatrix< SMatConjExpr<MT,SO>, SO >
 // The following example demonstrates the use of the \a conj function:
 
    \code
-   blaze::CompressedMatrix<double> A, B;
+   blaze::CompressedMatrix< complex<double> > A, B;
    // ... Resizing and initialization
    B = conj( A );
    \endcode
@@ -831,6 +833,35 @@ inline const SMatConjExpr<MT,SO> conj( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    return SMatConjExpr<MT,SO>( ~sm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose matrix of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The conjugate transpose of \a sm.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input matrix
+// \a sm.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = ctrans( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const typename CTransExprTrait<MT>::Type ctrans( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~sm ) );
 }
 //*************************************************************************************************
 
@@ -861,6 +892,29 @@ inline typename SMatConjExpr<MT,TF>::Operand conj( const SMatConjExpr<MT,TF>& sm
    BLAZE_FUNCTION_TRACE;
 
    return sm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose sparse matrix expressions.
+// \ingroup sparse_matrix
+//
+// \param dm The conjugate transpose sparse matrix expression.
+// \return The conjugate transpose of \a sm.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a sparse matrix conjugate transpose expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline const SMatTransExpr<MT,!SO> conj( const SMatTransExpr<SMatConjExpr<MT,SO>,!SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SMatTransExpr<MT,!SO>( sm.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1052,6 +1106,38 @@ struct TSMatConjExprTrait< SMatConjExpr<MT,true> >
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
                               , MT
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,true>, false > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , SMatTransExpr<MT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TSMatConjExprTrait< SMatTransExpr< SMatConjExpr<MT,false>, true > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , SMatTransExpr<MT,true>
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
