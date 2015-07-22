@@ -150,8 +150,9 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
-                          void testAbsOperation      ();
                           void testConjOperation     ();
+                          void testCTransOperation   ();
+                          void testAbsOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -291,8 +292,9 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
    testTransposeOperation();
-   testAbsOperation();
    testConjOperation();
+   testCTransOperation();
+   testAbsOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -2471,6 +2473,570 @@ void OperationTest<MT,VT>::testTransposeOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the conjugate sparse matrix/dense vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the conjugate matrix/vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<MT,VT>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate multiplication
+      //=====================================================================================
+
+      // Conjugate multiplication with the given matrix/vector
+      {
+         test_  = "Conjugate multiplication with the given matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = conj( lhs_ * rhs_ );
+            sres_   = conj( lhs_ * rhs_ );
+            refres_ = conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = conj( olhs_ * rhs_ );
+            sres_   = conj( olhs_ * rhs_ );
+            refres_ = conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Conjugate multiplication with evaluated matrix/vector
+      {
+         test_  = "Conjugate multiplication with evaluated matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = conj( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   = conj( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate multiplication with addition assignment
+      //=====================================================================================
+
+      // Conjugate multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Conjugate multiplication with addition assignment with the given matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( lhs_ * rhs_ );
+            sres_   += conj( lhs_ * rhs_ );
+            refres_ += conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += conj( olhs_ * rhs_ );
+            sres_   += conj( olhs_ * rhs_ );
+            refres_ += conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Conjugate multiplication with addition assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate multiplication with addition assignment with evaluated matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += conj( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   += conj( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Conjugate multiplication with subtraction assignment with the given matrix/vector
+      {
+         test_  = "Conjugate multiplication with subtraction assignment with the given matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( lhs_ * rhs_ );
+            sres_   -= conj( lhs_ * rhs_ );
+            refres_ -= conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= conj( olhs_ * rhs_ );
+            sres_   -= conj( olhs_ * rhs_ );
+            refres_ -= conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Conjugate multiplication with subtraction assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate multiplication with subtraction assignment with evaluated matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= conj( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   -= conj( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate multiplication with multiplication assignment with the given matrix/vector
+      {
+         test_  = "Conjugate multiplication with multiplication assignment with the given matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= conj( lhs_ * rhs_ );
+            sres_   *= conj( lhs_ * rhs_ );
+            refres_ *= conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= conj( olhs_ * rhs_ );
+            sres_   *= conj( olhs_ * rhs_ );
+            refres_ *= conj( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Conjugate multiplication with multiplication assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate multiplication with multiplication assignment with evaluated matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ *= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= conj( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   *= conj( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ *= conj( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate transpose sparse matrix/dense vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the conjugate transpose matrix/vector multiplication with plain
+// assignment, addition assignment, subtraction assignment, and multiplication assignment.
+// In case any error resulting from the multiplication or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<MT,VT>::testCTransOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate transpose multiplication
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with the given matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with the given matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( lhs_ * rhs_ );
+            tsres_   = ctrans( lhs_ * rhs_ );
+            trefres_ = ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( olhs_ * rhs_ );
+            tsres_   = ctrans( olhs_ * rhs_ );
+            trefres_ = ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+      // Conjugate transpose multiplication with evaluated matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with evaluated matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            tsres_   = ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ = ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            tsres_   = ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            trefres_ = ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose multiplication with addition assignment
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with addition assignment with the given matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( lhs_ * rhs_ );
+            tsres_   += ctrans( lhs_ * rhs_ );
+            trefres_ += ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( olhs_ * rhs_ );
+            tsres_   += ctrans( olhs_ * rhs_ );
+            trefres_ += ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+      // Conjugate transpose multiplication with addition assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with addition assignment with evaluated matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            tsres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            tsres_   += ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with subtraction assignment with the given matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with subtraction assignment with the given matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( lhs_ * rhs_ );
+            tsres_   -= ctrans( lhs_ * rhs_ );
+            trefres_ -= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( olhs_ * rhs_ );
+            tsres_   -= ctrans( olhs_ * rhs_ );
+            trefres_ -= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+      // Conjugate transpose multiplication with subtraction assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with subtraction assignment with evaluated matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            tsres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            tsres_   -= ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with multiplication assignment with the given matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with multiplication assignment with the given matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( lhs_ * rhs_ );
+            tsres_   *= ctrans( lhs_ * rhs_ );
+            trefres_ *= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( olhs_ * rhs_ );
+            tsres_   *= ctrans( olhs_ * rhs_ );
+            trefres_ *= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+
+      // Conjugate transpose multiplication with multiplication assignment with evaluated matrix/vector
+      {
+         test_  = "Conjugate transpose multiplication with multiplication assignment with evaluated matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            tsres_   *= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ *= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkTransposeResults<MT>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            tsres_   *= ctrans( eval( olhs_ ) * eval( rhs_ ) );
+            trefres_ *= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkTransposeResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the abs sparse matrix/dense vector multiplication.
 //
 // \return void
@@ -2739,288 +3305,6 @@ void OperationTest<MT,VT>::testAbsOperation()
             dres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
             sres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
             refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the conj sparse matrix/dense vector multiplication.
-//
-// \return void
-// \exception std::runtime_error Multiplication error detected.
-//
-// This function tests the conj matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error
-// resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
-*/
-template< typename MT    // Type of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-void OperationTest<MT,VT>::testConjOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-   {
-      //=====================================================================================
-      // Conj multiplication
-      //=====================================================================================
-
-      // Conj multiplication with the given matrix/vector
-      {
-         test_  = "Conj multiplication with the given matrix/vector";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = conj( lhs_ * rhs_ );
-            sres_   = conj( lhs_ * rhs_ );
-            refres_ = conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   = conj( olhs_ * rhs_ );
-            sres_   = conj( olhs_ * rhs_ );
-            refres_ = conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-      // Conj multiplication with evaluated matrix/vector
-      {
-         test_  = "Conj multiplication with evaluated matrix/vector";
-         error_ = "Failed multiplication operation";
-
-         try {
-            initResults();
-            dres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   = conj( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   = conj( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ = conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-
-      //=====================================================================================
-      // Conj multiplication with addition assignment
-      //=====================================================================================
-
-      // Conj multiplication with addition assignment with the given matrix/vector
-      {
-         test_  = "Conj multiplication with addition assignment with the given matrix/vector";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( lhs_ * rhs_ );
-            sres_   += conj( lhs_ * rhs_ );
-            refres_ += conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   += conj( olhs_ * rhs_ );
-            sres_   += conj( olhs_ * rhs_ );
-            refres_ += conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-      // Conj multiplication with addition assignment with evaluated matrix/vector
-      {
-         test_  = "Conj multiplication with addition assignment with evaluated matrix/vector";
-         error_ = "Failed addition assignment operation";
-
-         try {
-            initResults();
-            dres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   += conj( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   += conj( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ += conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-
-      //=====================================================================================
-      // Conj multiplication with subtraction assignment
-      //=====================================================================================
-
-      // Conj multiplication with subtraction assignment with the given matrix/vector
-      {
-         test_  = "Conj multiplication with subtraction assignment with the given matrix/vector";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( lhs_ * rhs_ );
-            sres_   -= conj( lhs_ * rhs_ );
-            refres_ -= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   -= conj( olhs_ * rhs_ );
-            sres_   -= conj( olhs_ * rhs_ );
-            refres_ -= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-      // Conj multiplication with subtraction assignment with evaluated matrix/vector
-      {
-         test_  = "Conj multiplication with subtraction assignment with evaluated matrix/vector";
-         error_ = "Failed subtraction assignment operation";
-
-         try {
-            initResults();
-            dres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   -= conj( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   -= conj( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ -= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-
-      //=====================================================================================
-      // Conj multiplication with multiplication assignment
-      //=====================================================================================
-
-      // Conj multiplication with multiplication assignment with the given matrix/vector
-      {
-         test_  = "Conj multiplication with multiplication assignment with the given matrix/vector";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( lhs_ * rhs_ );
-            sres_   *= conj( lhs_ * rhs_ );
-            refres_ *= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   *= conj( olhs_ * rhs_ );
-            sres_   *= conj( olhs_ * rhs_ );
-            refres_ *= conj( reflhs_ * refrhs_ );
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
-
-         checkResults<TMT>();
-      }
-
-      // Conj multiplication with multiplication assignment with evaluated matrix/vector
-      {
-         test_  = "Conj multiplication with multiplication assignment with evaluated matrix/vector";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            dres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= conj( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= conj( eval( reflhs_ ) * eval( refrhs_ ) );
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            dres_   *= conj( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   *= conj( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ *= conj( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
