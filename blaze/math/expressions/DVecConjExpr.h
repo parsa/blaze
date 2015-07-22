@@ -51,6 +51,7 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ConjExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DVecConjExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecConjExprTrait.h>
@@ -904,7 +905,7 @@ class DVecConjExpr : public DenseVector< DVecConjExpr<VT,TF>, TF >
 // The following example demonstrates the use of the \a conj function:
 
    \code
-   blaze::DynamicVector<double> a, b;
+   blaze::DynamicVector< complex<double> > a, b;
    // ... Resizing and initialization
    b = conj( a );
    \endcode
@@ -916,6 +917,35 @@ inline const DVecConjExpr<VT,TF> conj( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return DVecConjExpr<VT,TF>( ~dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the conjugate transpose vector of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The conjugate transpose of \a dv.
+//
+// The \a ctrans function returns an expression representing the conjugate transpose (also called
+// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input vector
+// \a dv.\n
+// The following example demonstrates the use of the \a ctrans function:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = ctrans( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const typename CTransExprTrait<VT>::Type ctrans( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~dv ) );
 }
 //*************************************************************************************************
 
@@ -946,6 +976,29 @@ inline typename DVecConjExpr<VT,TF>::Operand conj( const DVecConjExpr<VT,TF>& dv
    BLAZE_FUNCTION_TRACE;
 
    return dv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Complex conjugate function for conjugate transpose dense vector expressions.
+// \ingroup dense_vector
+//
+// \param dv The conjugate transpose dense vector expression.
+// \return The conjugate transpose of \a dv.
+//
+// This function implements a performance optimized treatment of the complex conjugate operation
+// on a dense vector conjugate transpose expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const DVecTransExpr<VT,!TF> conj( const DVecTransExpr<DVecConjExpr<VT,TF>,!TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecTransExpr<VT,!TF>( dv.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1002,6 +1055,38 @@ struct TDVecConjExprTrait< DVecConjExpr<VT,true> >
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
                               , VT
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecConjExprTrait< DVecTransExpr< DVecConjExpr<VT,true>, false > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
+                              , DVecTransExpr<VT,false>
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecConjExprTrait< DVecTransExpr< DVecConjExpr<VT,false>, true > >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
+                              , DVecTransExpr<VT,true>
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
