@@ -53,6 +53,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/DMatAbsExprTrait.h>
 #include <blaze/math/traits/DMatConjExprTrait.h>
+#include <blaze/math/traits/DMatCTransExprTrait.h>
 #include <blaze/math/traits/DMatDMatAddExprTrait.h>
 #include <blaze/math/traits/DMatDMatMultExprTrait.h>
 #include <blaze/math/traits/DMatDMatSubExprTrait.h>
