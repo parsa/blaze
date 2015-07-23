@@ -348,6 +348,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 2UL );
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
+   testScaledOperation( DET( 2 ) );
    testTransposeOperation();
    testConjOperation();
    testCTransOperation();

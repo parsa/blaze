@@ -292,6 +292,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testScaledOperation( 2UL );
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
+   testScaledOperation( DET( 2 ) );
    testTransposeOperation();
    testConjOperation();
    testCTransOperation();

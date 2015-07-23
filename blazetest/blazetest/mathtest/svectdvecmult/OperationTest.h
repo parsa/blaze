@@ -301,6 +301,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2UL );
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
+   testScaledOperation( SET( 2 ) );
    testTransposeOperation();
    testConjOperation();
    testCTransOperation();
