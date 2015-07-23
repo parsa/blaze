@@ -1287,6 +1287,26 @@ namespace blaze {}
    v1 += trans( v2 );  // OK: Addition assignment of two column vectors
    \endcode
 
+// \n \subsection vector_operations_conjugate_transpose Conjugate Transpose
+//
+// It is also possible to compute the conjugate transpose of a vector. This operation is available
+// via the \c ctrans() function:
+
+   \code
+   blaze::CompressedVector< complex<float>, rowVector > v1( 4UL );
+   blaze::DynamicVector< complex<float>, columnVector > v2( 4UL );
+
+   v1 = ctrans( v2 );  // Compute the conjugate transpose vector
+   \endcode
+
+// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
+// \c trans() function in any order:
+
+   \code
+   v1 = trans( conj( v2 ) );  // Computing the conjugate transpose vector
+   v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
+   \endcode
+
 // \n \subsection vector_operations_normalize Normalize
 //
 // The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
@@ -2364,6 +2384,26 @@ namespace blaze {}
    M1 = M2;            // Assigning a column-major matrix to a row-major matrix
    M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
    M1 += trans( M2 );  // Addition assignment of two row-major matrices
+   \endcode
+
+// \n \subsection matrix_operations_conjugate_transpose Conjugate Transpose
+//
+// The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermetian
+// conjugate, or transjugate) can be computed via the \a ctrans() function:
+
+   \code
+   blaze::DynamicMatrix< complex<float>, rowMajor > M1( 5UL, 2UL );
+   blaze::CompressedMatrix< complex<float>, columnMajor > M2( 2UL, 5UL );
+
+   M1 = ctrans( M2 );  // Compute the conjugate transpose matrix
+   \endcode
+
+// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
+// \c trans() function in any order:
+
+   \code
+   M1 = trans( conj( M2 ) );  // Computing the conjugate transpose matrix
+   M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
    \endcode
 
 // \n \subsection matrix_operations_swap Swap
