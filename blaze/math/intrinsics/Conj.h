@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn sse_int8_t conj( sse_int8_t )
+/*!\fn sse_int8_t conj( const sse_int8_t& )
 // \brief Complex conjugate of a vector of 8-bit integral values.
 // \ingroup intrinsics
 //
@@ -69,7 +69,7 @@ BLAZE_ALWAYS_INLINE sse_int8_t conj( const sse_int8_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int16_t conj( sse_int16_t )
+/*!\fn sse_int16_t conj( const sse_int16_t& )
 // \brief Complex conjugate of a vector of 16-bit integral values.
 // \ingroup intrinsics
 //
@@ -84,7 +84,7 @@ BLAZE_ALWAYS_INLINE sse_int16_t conj( const sse_int16_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int32_t conj( sse_int32_t )
+/*!\fn sse_int32_t conj( const sse_int32_t& )
 // \brief Complex conjugate of a vector of 32-bit integral values.
 // \ingroup intrinsics
 //
@@ -99,7 +99,7 @@ BLAZE_ALWAYS_INLINE sse_int32_t conj( const sse_int32_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int64_t conj( sse_int64_t )
+/*!\fn sse_int64_t conj( const sse_int64_t& )
 // \brief Complex conjugate of a vector of 64-bit integral values.
 // \ingroup intrinsics
 //
@@ -114,7 +114,7 @@ BLAZE_ALWAYS_INLINE sse_int64_t conj( const sse_int64_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_float_t conj( sse_float_t )
+/*!\fn sse_float_t conj( const sse_float_t& )
 // \brief Complex conjugate of a vector of single precision floating point values.
 // \ingroup intrinsics
 //
@@ -129,7 +129,7 @@ BLAZE_ALWAYS_INLINE sse_float_t conj( const sse_float_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_double_t conj( sse_double_t )
+/*!\fn sse_double_t conj( const sse_double_t& )
 // \brief Complex conjugate of a vector of double precision floating point values.
 // \ingroup intrinsics
 //
@@ -144,7 +144,7 @@ BLAZE_ALWAYS_INLINE sse_double_t conj( const sse_double_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cfloat_t conj( sse_cfloat_t )
+/*!\fn sse_cfloat_t conj( const sse_cfloat_t& )
 // \brief Complex conjugate of a vector of single precision complex values.
 // \ingroup intrinsics
 //
@@ -172,7 +172,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cdouble_t conj( sse_cdouble_t )
+/*!\fn sse_cdouble_t conj( const sse_cdouble_t& )
 // \brief Complex conjugate of a vector of double precision complex values.
 // \ingroup intrinsics
 //
