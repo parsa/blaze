@@ -68,7 +68,7 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the resulting expression type of a sparse
 // vector transpose operation. Given the non-transpose sparse vector type \a VT, the nested
-// type \a Type corresponds to the resulting expression type. In case either \a VT is not a
+// type \a Type corresponds to the resulting expression type. In case \a VT is not a
 // non-transpose sparse vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT >  // Type of the sparse vector

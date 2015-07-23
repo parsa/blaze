@@ -68,8 +68,8 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the resulting expression type of a dense
 // vector serial evaluation operation. Given the non-transpose dense vector type \a VT, the
-// nested type \a Type corresponds to the resulting expression type. In case either \a VT is
-// not a non-transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
+// nested type \a Type corresponds to the resulting expression type. In case \a VT is not
+// a non-transpose dense vector type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename VT >  // Type of the dense vector
 struct DVecSerialExprTrait

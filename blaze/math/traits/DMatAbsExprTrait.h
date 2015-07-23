@@ -67,9 +67,9 @@ namespace blaze {
 // \ingroup math_traits
 //
 // Via this type trait it is possible to evaluate the resulting expression type of a dense
-// matrix absolute value operation. Given the row-major dense matrix type \a MT, the
-// nested type \a Type corresponds to the resulting expression type. In case either \a MT
-// is not a row-major dense matrix type, the resulting \a Type is set to \a INVALID_TYPE.
+// matrix absolute value operation. Given the row-major dense matrix type \a MT, the nested
+// type \a Type corresponds to the resulting expression type. In case \a MT is not a row-major
+// dense matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename MT >  // Type of the dense matrix
 struct DMatAbsExprTrait

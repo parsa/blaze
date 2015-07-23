@@ -68,8 +68,8 @@ namespace blaze {
 //
 // Via this type trait it is possible to evaluate the resulting expression type of a sparse
 // matrix absolute value operation. Given the column-major sparse matrix type \a MT, the
-// nested type \a Type corresponds to the resulting expression type. In case either \a MT
-// is not a column-major sparse matrix type, the resulting \a Type is set to \a INVALID_TYPE.
+// nested type \a Type corresponds to the resulting expression type. In case \a MT is not
+// a column-major sparse matrix type, the resulting \a Type is set to \a INVALID_TYPE.
 */
 template< typename MT >  // Type of the sparse matrix
 struct TSMatAbsExprTrait
