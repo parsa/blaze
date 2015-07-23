@@ -938,6 +938,14 @@ inline const DVecConjExpr<VT,TF> conj( const DenseVector<VT,TF>& dv )
    // ... Resizing and initialization
    b = ctrans( a );
    \endcode
+
+// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// \a trans function in any order:
+
+   \code
+   b = trans( conj( a ) );  // Computing the conjugate transpose vector
+   b = conj( trans( a ) );  // Computing the conjugate transpose vector
+   \endcode
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag

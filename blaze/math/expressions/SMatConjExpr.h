@@ -854,6 +854,14 @@ inline const SMatConjExpr<MT,SO> conj( const SparseMatrix<MT,SO>& sm )
    // ... Resizing and initialization
    B = ctrans( A );
    \endcode
+
+// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// \a trans function in any order:
+
+   \code
+   B = trans( conj( A ) );  // Computing the conjugate transpose matrix
+   B = conj( trans( A ) );  // Computing the conjugate transpose matrix
+   \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
