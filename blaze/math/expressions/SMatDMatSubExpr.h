@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -726,6 +727,24 @@ struct Columns< SMatDMatSubExpr<MT1,MT2,SO> >
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< SMatDMatSubExpr<MT1,MT2,SO> >
    : public IsTrue< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2, bool SO >
+struct IsHermitian< SMatDMatSubExpr<MT1,MT2,SO> >
+   : public IsTrue< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
