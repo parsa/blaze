@@ -1063,7 +1063,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         cgemv( y, A, x, complex<float>( 1.0F, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( 1.0F ), complex<float>( 0.0F ) );
       }
    }
    /*! \endcond */
@@ -1096,7 +1096,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         zgemv( y, A, x, complex<double>( 1.0, 0.0 ), complex<double>( 0.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( 1.0 ), complex<double>( 0.0 ) );
       }
    }
    /*! \endcond */
@@ -1752,7 +1752,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          addAssign( y, tmp );
       }
       else {
-         cgemv( y, A, x, complex<float>( 1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( 1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -1786,7 +1786,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          addAssign( y, tmp );
       }
       else {
-         zgemv( y, A, x, complex<double>( 1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( 1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -2416,7 +2416,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          subAssign( y, tmp );
       }
       else {
-         cgemv( y, A, x, complex<float>( -1.0F, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( -1.0F ), complex<float>( 1.0F ) );
       }
    }
    /*! \endcond */
@@ -2450,7 +2450,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          subAssign( y, tmp );
       }
       else {
-         zgemv( y, A, x, complex<double>( -1.0, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( -1.0 ), complex<double>( 1.0 ) );
       }
    }
    /*! \endcond */
@@ -3667,7 +3667,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          ctrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         cgemv( y, A, x, complex<float>( scalar, 0.0F ), complex<float>( 0.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( scalar ), complex<float>( 0.0F ) );
       }
    }
 #endif
@@ -3700,7 +3700,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          ztrmv( y, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
       }
       else {
-         zgemv( y, A, x, complex<double>( scalar, 0.0 ), complex<double>( 0.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( scalar ), complex<double>( 0.0 ) );
       }
    }
 #endif
@@ -4355,7 +4355,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          addAssign( y, tmp );
       }
       else {
-         cgemv( y, A, x, complex<float>( scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -4389,7 +4389,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          addAssign( y, tmp );
       }
       else {
-         zgemv( y, A, x, complex<double>( scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
@@ -5020,7 +5020,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          subAssign( y, tmp );
       }
       else {
-         cgemv( y, A, x, complex<float>( -scalar, 0.0F ), complex<float>( 1.0F, 0.0F ) );
+         cgemv( y, A, x, complex<float>( -scalar ), complex<float>( 1.0F ) );
       }
    }
 #endif
@@ -5054,7 +5054,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          subAssign( y, tmp );
       }
       else {
-         zgemv( y, A, x, complex<double>( -scalar, 0.0 ), complex<double>( 1.0, 0.0 ) );
+         zgemv( y, A, x, complex<double>( -scalar ), complex<double>( 1.0 ) );
       }
    }
 #endif
