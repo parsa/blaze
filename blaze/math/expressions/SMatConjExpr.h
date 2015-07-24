@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -974,6 +975,23 @@ struct Columns< SMatConjExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< SMatConjExpr<MT,SO> > : public IsTrue< IsSymmetric<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsHermitian< SMatConjExpr<MT,SO> > : public IsTrue< IsHermitian<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
