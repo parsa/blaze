@@ -85,6 +85,7 @@ class OperationTest
    void testIsNan();
    void testIsSquare();
    void testIsSymmetric();
+   void testIsHermitian();
    void testIsUniform();
    void testIsLower();
    void testIsUniLower();
