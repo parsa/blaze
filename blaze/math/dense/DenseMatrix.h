@@ -45,13 +45,16 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsReal.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -580,6 +583,9 @@ template< typename MT, bool SO >
 bool isSymmetric( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
+bool isHermitian( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
 bool isUniform( const DenseMatrix<MT,SO>& dm );
 
 template< typename MT, bool SO >
@@ -721,6 +727,81 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
             if( !equal( A(i,j), A(j,i) ) )
                return false;
          }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is Hermitian.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is Hermitian, \a false if not.
+//
+// This function checks if the given dense matrix is an Hermitian matrix. The matrix is considered
+// to be an Hermitian matrix if it is a square matrix whose conjugate transpose is equal to itself
+// (\f$ A = \overline{A^T} \f$), i.e. each matrix element \f$ a_{ij} \f$ is equal to the complex
+// conjugate of the element \f$ a_{ji} \f$. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isHermitian( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an Hermitian matrix:
+
+   \code
+   if( isHermitian( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isHermitian( const DenseMatrix<MT,SO>& dm )
+{
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::CompositeType  CT;
+
+   if( IsHermitian<MT>::value )
+      return true;
+
+   if( !IsNumeric<ET>::value || !isSquare( ~dm ) )
+      return false;
+
+   if( (~dm).rows() < 2UL )
+      return true;
+
+   if( IsTriangular<MT>::value )
+      return isDiagonal( ~dm );
+
+   CT A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( size_t j=0UL; j<i; ++j ) {
+            if( !equal( A(i,j), conj( A(j,i) ) ) )
+               return false;
+         }
+         if( !isReal( A(i,i) ) )
+            return false;
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( size_t i=0UL; i<j; ++i ) {
+            if( !equal( A(i,j), conj( A(j,i) ) ) )
+               return false;
+         }
+         if( !isReal( A(j,j) ) )
+            return false;
       }
    }
 
