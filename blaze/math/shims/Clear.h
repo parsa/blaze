@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_SHIMS_CLEAR_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -55,7 +62,7 @@ namespace blaze {
 // data type to its default state. Values of built-in data type are reset to zero.
 */
 template< typename Type >
-inline void clear( Type& clearable )
+BLAZE_ALWAYS_INLINE void clear( Type& clearable )
 {
    clearable = Type(0);
 }

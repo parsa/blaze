@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -66,7 +67,7 @@ namespace blaze {
 // as for instance built-in data types, the default behavior is not changed.
 */
 template< typename T >
-inline typename EnableIf< Or< IsBuiltin<T>, IsComplex<T> >, const T& >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< Or< IsBuiltin<T>, IsComplex<T> >, const T& >::Type
    serial( const T& a )
 {
    return a;

@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_SHIMS_MOVE_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -58,7 +65,7 @@ namespace blaze {
 // operation, but is guaranteed to be in a valid and destructible but unspecified state.
 */
 template< typename Dst, typename Src >
-inline void move( Dst& dst, Src& src )
+BLAZE_ALWAYS_INLINE void move( Dst& dst, Src& src )
 {
    dst = src;
 }

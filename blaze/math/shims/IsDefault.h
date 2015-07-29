@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_SHIMS_ISDEFAULT_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -65,7 +72,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type >
-inline bool isDefault( const Type& v )
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v )
 {
    return v == Type();
 }

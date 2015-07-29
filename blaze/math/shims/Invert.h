@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_SHIMS_INVERT_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -54,7 +61,7 @@ namespace blaze {
 // The invert shim represents an abstract interface for inverting a value/object of any given
 // data type. For single precision floating point values this results in \f$ \frac{1}{a} \f$.
 */
-inline float inv( float a )
+BLAZE_ALWAYS_INLINE float inv( float a )
 {
    return ( 1.0F / a );
 }
@@ -71,7 +78,7 @@ inline float inv( float a )
 // The invert shim represents an abstract interface for inverting a value/object of any given
 // data type. For double precision floating point values this results in \f$ \frac{1}{a} \f$.
 */
-inline double inv( double a )
+BLAZE_ALWAYS_INLINE double inv( double a )
 {
    return ( 1.0 / a );
 }
@@ -88,7 +95,7 @@ inline double inv( double a )
 // The invert shim represents an abstract interface for inverting a value/object of any given
 // data type. For long double floating point values this results in \f$ \frac{1}{a} \f$.
 */
-inline long double inv( long double a )
+BLAZE_ALWAYS_INLINE long double inv( long double a )
 {
    return ( 1.0L / a );
 }

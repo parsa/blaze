@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_SHIMS_RESET_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -55,7 +62,7 @@ namespace blaze {
 // any given data type to its default value. Values of built-in data type are reset to zero.
 */
 template< typename Type >
-inline void reset( Type& resettable )
+BLAZE_ALWAYS_INLINE void reset( Type& resettable )
 {
    resettable = Type(0);
 }

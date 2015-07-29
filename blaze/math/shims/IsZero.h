@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -76,7 +77,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type >
-inline typename EnableIf< IsNumeric<Type>, bool >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<Type>, bool >::Type
    isZero( const Type& v )
 {
    return v == Type(0);
@@ -93,7 +94,7 @@ inline typename EnableIf< IsNumeric<Type>, bool >::Type
 // \return \a false.
 */
 template< typename Type >
-inline typename DisableIf< IsNumeric<Type>, bool >::Type
+BLAZE_ALWAYS_INLINE typename DisableIf< IsNumeric<Type>, bool >::Type
    isZero( const Type& v )
 {
    UNUSED_PARAMETER( v );

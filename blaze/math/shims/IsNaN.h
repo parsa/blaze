@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 
@@ -76,7 +77,7 @@ namespace blaze {
 // data type results in a compile time error.
 */
 template< typename T >
-inline typename EnableIf< IsFloatingPoint<T>, bool >::Type isnan( T a )
+BLAZE_ALWAYS_INLINE typename EnableIf< IsFloatingPoint<T>, bool >::Type isnan( T a )
 {
    return a != a;
 }
