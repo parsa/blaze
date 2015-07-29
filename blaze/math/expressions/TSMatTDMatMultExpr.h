@@ -839,7 +839,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -1177,7 +1177,7 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
