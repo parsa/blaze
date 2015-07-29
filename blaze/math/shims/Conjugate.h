@@ -66,8 +66,8 @@ namespace blaze {
 // computes the complex conjugate by reversing the sign of the imaginary part:
 
    \code
-   const blaze::complex a( 1.0, 2.0 );
-   const blaze::complex b( conj( a ) );  // Results in ( 1, -2 )
+   const blaze::complex<double> a( 1.0, 2.0 );
+   const blaze::complex<double> b( conj( a ) );  // Results in ( 1, -2 )
    \endcode
 
 // Values of other data types, such as all built-in data types, are considered complex numbers
