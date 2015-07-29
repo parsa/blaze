@@ -62,9 +62,9 @@ namespace blaze {
 // \param v The value to be tested.
 // \return \a true in case the given value is 0, \a false otherwise.
 //
-// The isZero shim provides an abstract interface for testing a value/object whether it represents
-// the numeric value 0. In case the value/object is 0, the function returns \a true, otherwise it
-// returns \a false.
+// The \a isZero shim provides an abstract interface for testing a value/object of any type
+// whether it represents the numeric value 0. In case the value/object is 0, the function
+// returns \a true, otherwise it returns \a false.
 
    \code
    const int i1 = 0;                // isZero( i1 ) returns true

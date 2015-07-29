@@ -58,7 +58,7 @@ namespace blaze {
 // \param resettable The value/object to be resetted.
 // \return void
 //
-// The reset shim represents an abstract interface for the resetting of a value/object of
+// The \a reset shim represents an abstract interface for the resetting of a value/object of
 // any given data type to its default value. Values of built-in data type are reset to zero.
 */
 template< typename Type >

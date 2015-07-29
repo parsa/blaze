@@ -58,7 +58,7 @@ namespace blaze {
 // \param a The single precision value to be inverted.
 // \return The inverse of the given value.
 //
-// The invert shim represents an abstract interface for inverting a value/object of any given
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For single precision floating point values this results in \f$ \frac{1}{a} \f$.
 */
 BLAZE_ALWAYS_INLINE float inv( float a )
@@ -75,7 +75,7 @@ BLAZE_ALWAYS_INLINE float inv( float a )
 // \param a The double precision value to be inverted.
 // \return The inverse of the given value.
 //
-// The invert shim represents an abstract interface for inverting a value/object of any given
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For double precision floating point values this results in \f$ \frac{1}{a} \f$.
 */
 BLAZE_ALWAYS_INLINE double inv( double a )
@@ -92,7 +92,7 @@ BLAZE_ALWAYS_INLINE double inv( double a )
 // \param a The long double value to be inverted.
 // \return The inverse of the given value.
 //
-// The invert shim represents an abstract interface for inverting a value/object of any given
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For long double floating point values this results in \f$ \frac{1}{a} \f$.
 */
 BLAZE_ALWAYS_INLINE long double inv( long double a )

@@ -62,7 +62,7 @@ namespace blaze {
 // \param a The value/object to be evaluated serially.
 // \return The serialized operation.
 //
-// The serial shim represents an abstract interface for the serialization of the evaluation of
+// The \a serial shim represents an abstract interface for the serialization of the evaluation of
 // a value/object of any given data type. For data types that are per default evaluated serially,
 // as for instance built-in data types, the default behavior is not changed.
 */

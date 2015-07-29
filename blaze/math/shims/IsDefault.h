@@ -58,7 +58,7 @@ namespace blaze {
 // \param v The value/object to be tested for its default state.
 // \return \a true in case the given value/object is in its default state, \a false otherwise.
 //
-// The isDefault shim represents an abstract interface for testing a value/object whether
+// The \a isDefault shim represents an abstract interface for testing a value/object whether
 // it is in its default state or not. In case the value/object is in its default state, the
 // function returns \a true, otherwise it returns \a false. For built-in data types, the
 // function returns \a true in case the current value is zero.

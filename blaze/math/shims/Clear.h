@@ -58,7 +58,7 @@ namespace blaze {
 // \param clearable The value/object to be cleared.
 // \return void
 //
-// The clear shim represents an abstract interface for clearing a value/object of any given
+// The \a clear shim represents an abstract interface for clearing a value/object of any given
 // data type to its default state. Values of built-in data type are reset to zero.
 */
 template< typename Type >

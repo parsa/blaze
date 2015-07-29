@@ -59,7 +59,7 @@ namespace blaze {
 // \param a The value/object to be squared.
 // \return The result of the square operation.
 //
-// The square shim represents an abstract interface for squaring a value/object of any given
+// The \a sq shim represents an abstract interface for squaring a value/object of any given
 // data type. For values of built-in data type this results in a plain multiplication.
 */
 template< typename T >

@@ -61,9 +61,9 @@ namespace blaze {
 // \param a The given value/object.
 // \return The complex conjugate of the given value.
 //
-// The conjugate shim represents an abstract interface for the computation of the complex
-// conjugate of any given data type. In case the given value is of complex type the function
-// computes the complex conjugate by reversing the sign of the imaginary part:
+// The \a conj shim represents an abstract interface for the computation of the complex conjugate
+// of any given data type. In case the given value is of complex type the function computes the
+// complex conjugate by reversing the sign of the imaginary part:
 
    \code
    const blaze::complex<double> a( 1.0, 2.0 );
