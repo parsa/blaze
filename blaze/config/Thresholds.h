@@ -228,6 +228,23 @@ const size_t TSMATDMATMULT_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Column-major sparse matrix/column-major dense matrix multiplication threshold.
+// \ingroup config
+//
+// This setting specifies the threshold between the application of the Blaze kernels for small
+// and for large column-major sparse matrix/column-major dense matrix multiplications. In case
+// the number of elements of the target matrix is equal or higher than this value, the kernel for
+// large matrices is preferred over the kernel for small matrices. In case the number of elements
+// in the target matrix is smaller, the kernel for small matrices is used.
+//
+// The default setting for this threshold is 22500 (which for instance corresponds to a matrix
+// size of \f$ 150 \times 150 \f$).
+*/
+const size_t TSMATTDMATMULT_THRESHOLD = 22500UL;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
