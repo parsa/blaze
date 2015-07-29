@@ -211,7 +211,7 @@ typedef StaticVector<double,2UL,false>  Vec2d;
 /*!\brief 2-dimensional vector with system-specific precision.
 // \ingroup static_vector_2
 */
-typedef StaticVector<real,2UL,false>  Vec2;
+typedef StaticVector<real_t,2UL,false>  Vec2;
 //*************************************************************************************************
 
 
@@ -235,7 +235,7 @@ typedef StaticVector<double,3UL,false>  Vec3d;
 /*!\brief 3-dimensional vector with system-specific precision.
 // \ingroup static_vector_3
 */
-typedef StaticVector<real,3UL,false>  Vec3;
+typedef StaticVector<real_t,3UL,false>  Vec3;
 //*************************************************************************************************
 
 
@@ -259,7 +259,7 @@ typedef StaticVector<double,6UL,false>  Vec6d;
 /*!\brief 6-dimensional vector with system-specific precision.
 // \ingroup static_vector_6
 */
-typedef StaticVector<real,6UL,false>  Vec6;
+typedef StaticVector<real_t,6UL,false>  Vec6;
 //*************************************************************************************************
 
 } // namespace blaze

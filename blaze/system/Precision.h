@@ -66,7 +66,7 @@
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( blaze::real );
+BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( blaze::real_t );
 
 }
 /*! \endcond */

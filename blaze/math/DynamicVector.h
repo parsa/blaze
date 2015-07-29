@@ -210,7 +210,7 @@ typedef DynamicVector<double,false>  VecNd;
 /*!\brief N-dimensional vector with system-specific precision.
 // \ingroup dynamic_vector
 */
-typedef DynamicVector<real,false>  VecN;
+typedef DynamicVector<real_t,false>  VecN;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -220,7 +220,7 @@ typedef StaticMatrix<double,2UL,2UL,false>  Mat2x2d;
 /*!\brief 2x2 matrix with system-specific precision.
 // \ingroup static_matrix_2x2
 */
-typedef StaticMatrix<real,2UL,2UL,false>  Mat2x2;
+typedef StaticMatrix<real_t,2UL,2UL,false>  Mat2x2;
 //*************************************************************************************************
 
 
@@ -244,7 +244,7 @@ typedef StaticMatrix<double,3UL,3UL,false>  Mat3x3d;
 /*!\brief 3x3 matrix with system-specific precision.
 // \ingroup static_matrix_3x3
 */
-typedef StaticMatrix<real,3UL,3UL,false>  Mat3x3;
+typedef StaticMatrix<real_t,3UL,3UL,false>  Mat3x3;
 //*************************************************************************************************
 
 
@@ -268,7 +268,7 @@ typedef StaticMatrix<double,4UL,4UL,false>  Mat4x4d;
 /*!\brief 4x4 matrix with system-specific precision.
 // \ingroup static_matrix_4x4
 */
-typedef StaticMatrix<real,4UL,4UL,false>  Mat4x4;
+typedef StaticMatrix<real_t,4UL,4UL,false>  Mat4x4;
 //*************************************************************************************************
 
 
@@ -292,7 +292,7 @@ typedef StaticMatrix<double,5UL,5UL,false>  Mat5x5d;
 /*!\brief 5x5 matrix with system-specific precision.
 // \ingroup static_matrix_5x5
 */
-typedef StaticMatrix<real,5UL,5UL,false>  Mat5x5;
+typedef StaticMatrix<real_t,5UL,5UL,false>  Mat5x5;
 //*************************************************************************************************
 
 
@@ -316,7 +316,7 @@ typedef StaticMatrix<double,6UL,6UL,false>  Mat6x6d;
 /*!\brief 6x6 matrix with system-specific precision.
 // \ingroup static_matrix_6x6
 */
-typedef StaticMatrix<real,6UL,6UL,false>  Mat6x6;
+typedef StaticMatrix<real_t,6UL,6UL,false>  Mat6x6;
 //*************************************************************************************************
 
 } // namespace blaze

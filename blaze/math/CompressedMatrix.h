@@ -366,7 +366,7 @@ typedef CompressedMatrix<double,false>  CMatMxNd;
 /*!\brief MxN matrix with system-specific precision.
 // \ingroup compressed_matrix
 */
-typedef CompressedMatrix<real,false>  CMatMxN;
+typedef CompressedMatrix<real_t,false>  CMatMxN;
 //*************************************************************************************************
 
 } // namespace blaze

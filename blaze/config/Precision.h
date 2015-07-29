@@ -42,9 +42,9 @@ namespace blaze {
 // This type definition offers the possibility to switch the floating point precision of
 // the Blaze library between float, double and long double.
 //
-// Valid types for the \a real floating point type: <a>float, double, long double</a>
+// Valid types for the \a real_t floating point type: <a>float, double, long double</a>
 */
-typedef double  real;
+typedef double  real_t;
 //*************************************************************************************************
 
 } // namespace blaze

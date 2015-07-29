@@ -354,7 +354,7 @@ typedef CompressedVector<double,false>  CVecNd;
 /*!\brief Compressed vector with system-specific precision.
 // \ingroup compressed_vector
 */
-typedef CompressedVector<real,false>  CVecN;
+typedef CompressedVector<real_t,false>  CVecN;
 //*************************************************************************************************
 
 } // namespace blaze

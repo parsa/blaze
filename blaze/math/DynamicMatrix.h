@@ -220,7 +220,7 @@ typedef DynamicMatrix<double,false>  MatMxNd;
 /*!\brief MxN matrix with system-specific precision.
 // \ingroup dynamic_matrix
 */
-typedef DynamicMatrix<real,false>  MatMxN;
+typedef DynamicMatrix<real_t,false>  MatMxN;
 //*************************************************************************************************
 
 } // namespace blaze
