@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Real.h
+//  \brief Header file for the real shim
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,26 +32,61 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_REAL_H_
+#define _BLAZE_MATH_SHIMS_REAL_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsNaN.h>
-#include <blaze/math/shims/IsOne.h>
-#include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Move.h>
-#include <blaze/math/shims/Real.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Square.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  REAL SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Computing the real part of the given value/object.
+// \ingroup math_shims
+//
+// \param a The given value/object.
+// \return The real part of the given value.
+//
+// The \a real shim represents an abstract interface for the computation of the real part of
+// any given data type. In case the given value is of complex type the function returns the
+// real part:
+
+   \code
+   const blaze::complex<double> a( 3.0, -2.0 );
+   const double b( real( a ) );  // Results in 3.0
+   \endcode
+
+// Values of built-in data type are considered complex numbers with an imaginary part of 0. Thus
+// the returned value corresponds to the given value:
+
+   \code
+   const double a( -3.0 );
+   const double b( real( a ) );  // Results in -3.0
+   \endcode
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE typename EnableIf< IsBuiltin<T>, T >::Type
+   real( T a )
+{
+   return a;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
