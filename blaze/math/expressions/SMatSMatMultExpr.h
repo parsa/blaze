@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
