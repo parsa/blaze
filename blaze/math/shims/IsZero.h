@@ -86,7 +86,7 @@ inline typename EnableIf< IsNumeric<Type>, bool >::Type
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Overload of the isZero function for non-numeric data types.
+/*!\brief Overload of the \a isZero function for non-numeric data types.
 // \ingroup math_shims
 //
 // \param v The value/object to be tested.
