@@ -44,13 +44,16 @@
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsReal.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -300,6 +303,9 @@ template< typename MT, bool SO >
 bool isSymmetric( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
+bool isHermitian( const SparseMatrix<MT,SO>& sm );
+
+template< typename MT, bool SO >
 bool isUniform( const SparseMatrix<MT,SO>& sm );
 
 template< typename MT, bool SO >
@@ -455,6 +461,98 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 
             const ConstIterator pos( A.find( j, i ) );
             if( pos == A.end(i) || !equal( pos->value(), element->value() ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is Hermitian.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is Hermitian, \a false if not.
+//
+// This function checks if the given sparse matrix is an Hermitian matrix. The matrix is considered
+// to be an Hermitian matrix if it is a square matrix whose conjugate transpose is equal to itself
+// (\f$ A = \overline{A^T} \f$), i.e. each matrix element \f$ a_{ij} \f$ is equal to the complex
+// conjugate of the element \f$ a_{ji} \f$. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isHermitian( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in an Hermitian matrix:
+
+   \code
+   if( isHermitian( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isHermitian( const SparseMatrix<MT,SO>& sm )
+{
+   typedef typename MT::ResultType     RT;
+   typedef typename MT::ElementType    ET;
+   typedef typename MT::ReturnType     RN;
+   typedef typename MT::CompositeType  CT;
+   typedef typename If< IsExpression<RN>, const RT, CT >::Type  Tmp;
+   typedef typename RemoveReference<Tmp>::Type::ConstIterator   ConstIterator;
+
+   if( IsHermitian<MT>::value )
+      return true;
+
+   if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
+      return false;
+
+   if( (~sm).rows() < 2UL )
+      return true;
+
+   Tmp A( ~sm );  // Evaluation of the sparse matrix operand
+
+   if( SO == rowMajor ) {
+      for( size_t i=0UL; i<A.rows(); ++i ) {
+         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         {
+            const size_t j( element->index() );
+
+            if( isDefault( element->value() ) )
+               continue;
+
+            if( i == j && !isReal( element->value() ) )
+               return false;
+
+            const ConstIterator pos( A.find( j, i ) );
+            if( pos == A.end(j) || !equal( pos->value(), conj( element->value() ) ) )
+               return false;
+         }
+      }
+   }
+   else {
+      for( size_t j=0UL; j<A.columns(); ++j ) {
+         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         {
+            const size_t i( element->index() );
+
+            if( isDefault( element->value() ) )
+               continue;
+
+            if( j == i && !isReal( element->value() ) )
+               return false;
+
+            const ConstIterator pos( A.find( j, i ) );
+            if( pos == A.end(i) || !equal( pos->value(), conj( element->value() ) ) )
                return false;
          }
       }
