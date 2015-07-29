@@ -47,6 +47,7 @@
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlylowermatrix/StrictlyLowerProxy.h>
 #include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -299,6 +300,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
