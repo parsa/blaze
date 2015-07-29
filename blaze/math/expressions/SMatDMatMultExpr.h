@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
@@ -79,7 +80,6 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -145,29 +145,12 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
-       evaluation strategy. In case the target matrix is column-major and either of the
-       two matrix operands is symmetric, \a value is set to 1 and an optimized evaluation
-       strategy is selected. Otherwise \a value is set to 0 and the default strategy is
-       chosen. */
-   template< typename T1, typename T2, typename T3 >
-   struct CanExploitSymmetry {
-      enum { value = IsColumnMajorMatrix<T1>::value &&
-                     ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
    /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct IsEvaluationRequired {
-      enum { value = ( evaluateLeft || evaluateRight ) &&
-                     !CanExploitSymmetry<T1,T2,T3>::value };
+      enum { value = ( evaluateLeft || evaluateRight ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -448,8 +431,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline typename DisableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      assign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+   friend inline void assign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -471,10 +453,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default assignment to row-major dense matrices**********************************************
+   //**Default assignment to dense matrices********************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a sparse matrix-dense matrix multiplication to row-major
-   //        dense matrices (\f$ A=B*C \f$).
+   /*!\brief Default assignment of a sparse matrix-dense matrix multiplication to dense matrices
+   //        (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -482,49 +464,58 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the default row-major assignment kernel for the sparse matrix-
-   // dense matrix multiplication.
+   // This function implements the default assignment kernel for the sparse matrix-dense matrix
+   // multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
-      selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<A.rows(); ++i )
+      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+
+      reset( C );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
-         for( size_t j=0UL; j<(~C).columns(); ++j ) {
-            reset( (~C)(i,j) );
-         }
+         const size_t jtmp( min( jj+block, B.columns() ) );
 
-         ConstIterator element( A.begin(i) );
-         const ConstIterator end( A.end(i) );
-
-         for( ; element!=end; ++element )
+         for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const size_t index( element->index() );
+            ConstIterator element( A.begin(i) );
+            const ConstIterator end( A.end(i) );
 
-            if( IsDiagonal<MT5>::value )
+            for( ; element!=end; ++element )
             {
-               (~C)(i,index) = element->value() * B(index,index);
-            }
-            else
-            {
-               const size_t jbegin( ( IsUpper<MT5>::value )
-                                    ?( IsStrictlyUpper<MT5>::value ? index+1UL : index )
-                                    :( 0UL ) );
-               const size_t jend( ( IsLower<MT5>::value )
-                                  ?( IsStrictlyLower<MT5>::value ? index : index+1UL )
-                                  :( B.columns() ) );
-               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+               const size_t i1( element->index() );
 
-               for( size_t j=jbegin; j<jend; ++j ) {
-                  if( isDefault( (~C)(i,j) ) )
-                     (~C)(i,j) = element->value() * B(index,j);
-                  else
-                     (~C)(i,j) += element->value() * B(index,j);
+               if( IsDiagonal<MT5>::value )
+               {
+                  C(i,i1) = element->value() * B(i1,i1);
+               }
+               else
+               {
+                  const size_t jbegin( ( IsUpper<MT5>::value )
+                                       ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                       :( jj ) );
+                  const size_t jend( ( IsLower<MT5>::value )
+                                     ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                     :( jtmp ) );
+
+                  if( IsTriangular<MT5>::value && jbegin >= jend )
+                     continue;
+
+                  BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+                  for( size_t j=jbegin; j<jend; ++j ) {
+                     if( isDefault( C(i,j) ) )
+                        C(i,j) = element->value() * B(i1,j);
+                     else
+                        C(i,j) += element->value() * B(i1,j);
+                  }
                }
             }
          }
@@ -533,10 +524,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Optimized assignment to row-major dense matrices********************************************
+   //**Optimized assignment to dense matrices******************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Optimized assignment of a sparse matrix-dense matrix multiplication to row-major
-   //        dense matrices (\f$ A=B*C \f$).
+   /*!\brief Optimized assignment of a sparse matrix-dense matrix multiplication to dense matrices
+   //        (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -544,93 +535,108 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the optimized row-major assignment kernel for the sparse matrix-
-   // dense matrix multiplication.
+   // This function implements the optimized assignment kernel for the sparse matrix-dense matrix
+   // multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
-      selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      reset( ~C );
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
 
-      for( size_t i=0UL; i<A.rows(); ++i )
+      reset( C );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const size_t jtmp( min( jj+block, B.columns() ) );
 
-         const size_t nonzeros( A.nonZeros(i) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
-
-         for( size_t k=0UL; k<kpos; k+=4UL )
+         for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
-            ++element;
-            const size_t i2( element->index() );
-            const ET1    v2( element->value() );
-            ++element;
-            const size_t i3( element->index() );
-            const ET1    v3( element->value() );
-            ++element;
-            const size_t i4( element->index() );
-            const ET1    v4( element->value() );
-            ++element;
+            const ConstIterator end( A.end(i) );
+            ConstIterator element( A.begin(i) );
 
-            BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
+            const size_t nonzeros( A.nonZeros(i) );
+            const size_t kpos( nonzeros & size_t(-4) );
+            BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i4 : i4+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+            for( size_t k=0UL; k<kpos; k+=4UL )
+            {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
+               ++element;
+               const size_t i2( element->index() );
+               const ET1    v2( element->value() );
+               ++element;
+               const size_t i3( element->index() );
+               const ET1    v3( element->value() );
+               ++element;
+               const size_t i4( element->index() );
+               const ET1    v4( element->value() );
+               ++element;
 
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+               BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) += v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
-               (~C)(i,j+1UL) += v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
-               (~C)(i,j+2UL) += v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
-               (~C)(i,j+3UL) += v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
+                                  :( jtmp ) );
+
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
+
+               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+               const size_t jnum( jend - jbegin );
+               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+               for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                  C(i,j    ) += v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
+                  C(i,j+1UL) += v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
+                  C(i,j+2UL) += v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
+                  C(i,j+3UL) += v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
+               }
+               for( size_t j=jpos; j<jend; ++j ) {
+                  C(i,j) += v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
+               }
             }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) += v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
-            }
-         }
 
-         for( ; element!=end; ++element )
-         {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
+            for( ; element!=end; ++element )
+            {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i1 : i1+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                  :( jtmp ) );
 
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
 
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) += v1 * B(i1,j    );
-               (~C)(i,j+1UL) += v1 * B(i1,j+1UL);
-               (~C)(i,j+2UL) += v1 * B(i1,j+2UL);
-               (~C)(i,j+3UL) += v1 * B(i1,j+3UL);
-            }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) += v1 * B(i1,j);
+               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+               const size_t jnum( jend - jbegin );
+               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+               for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                  C(i,j    ) += v1 * B(i1,j    );
+                  C(i,j+1UL) += v1 * B(i1,j+1UL);
+                  C(i,j+2UL) += v1 * B(i1,j+2UL);
+                  C(i,j+3UL) += v1 * B(i1,j+3UL);
+               }
+               for( size_t j=jpos; j<jend; ++j ) {
+                  C(i,j) += v1 * B(i1,j);
+               }
             }
          }
       }
@@ -638,10 +644,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized assignment to row-major dense matrices*******************************************
+   //**Vectorized assignment to dense matrices*****************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Vectorized assignment of a sparse matrix-dense matrix multiplication to row-major
-   //        dense matrices (\f$ A=B*C \f$).
+   /*!\brief Vectorized assignment of a sparse matrix-dense matrix multiplication to dense matrices
+   //        (\f$ A=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -649,19 +655,19 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the vectorized row-major assignment kernel for the sparse matrix-
-   // dense matrix multiplication.
+   // This function implements the vectorized assignment kernel for the sparse matrix-dense matrix
+   // multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
-      selectAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      reset( ~C );
+      reset( C );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
@@ -698,7 +704,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) + v1 * B.load(i1,j) + v2 * B.load(i2,j) + v3 * B.load(i3,j) + v4 * B.load(i4,j) );
+               C.store( i, j, C.load(i,j) + v1 * B.load(i1,j) + v2 * B.load(i2,j) + v3 * B.load(i3,j) + v4 * B.load(i4,j) );
             }
          }
 
@@ -716,89 +722,8 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) + v1 * B.load(i1,j) );
+               C.store( i, j, C.load(i,j) + v1 * B.load(i1,j) );
             }
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default assignment to column-major dense matrices*******************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default assignment of a sparse matrix-dense matrix multiplication to column-major
-   //        dense matrices (\f$ A=B*C \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side dense matrix operand.
-   // \param B The right-hand side sparse matrix operand.
-   // \return void
-   //
-   // This function implements the default column-major assignment kernel for the sparse matrix-
-   // dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      typedef typename MT4::ConstIterator  ConstIterator;
-
-      const size_t jpos( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<jpos; j+=4UL ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                     :( A.end(i) ) );
-
-            if( element == end ) {
-               reset( (~C)(i,j    ) );
-               reset( (~C)(i,j+1UL) );
-               reset( (~C)(i,j+2UL) );
-               reset( (~C)(i,j+3UL) );
-               continue;
-            }
-
-            (~C)(i,j    ) = element->value() * B(element->index(),j    );
-            (~C)(i,j+1UL) = element->value() * B(element->index(),j+1UL);
-            (~C)(i,j+2UL) = element->value() * B(element->index(),j+2UL);
-            (~C)(i,j+3UL) = element->value() * B(element->index(),j+3UL);
-            ++element;
-            for( ; element!=end; ++element ) {
-               (~C)(i,j    ) += element->value() * B(element->index(),j    );
-               (~C)(i,j+1UL) += element->value() * B(element->index(),j+1UL);
-               (~C)(i,j+2UL) += element->value() * B(element->index(),j+2UL);
-               (~C)(i,j+3UL) += element->value() * B(element->index(),j+3UL);
-            }
-         }
-      }
-
-      for( size_t j=jpos; j<B.columns(); ++j ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                     :( A.end(i) ) );
-
-            if( element == end ) {
-               reset( (~C)(i,j) );
-               continue;
-            }
-
-            (~C)(i,j) = element->value() * B(element->index(),j);
-            ++element;
-            for( ; element!=end; ++element )
-               (~C)(i,j) += element->value() * B(element->index(),j);
          }
       }
    }
@@ -842,40 +767,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Restructuring assignment to column-major matrices*******************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring assignment of a sparse matrix-dense matrix multiplication to a
-   //        column-major matrix (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring assignment of a sparse matrix-
-   // dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this function can only be selected by the compiler
-   // in case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      assign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         assign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         assign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Addition assignment to dense matrices*******************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Addition assignment of a sparse matrix-dense matrix multiplication to a dense matrix
@@ -913,10 +804,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default addition assignment to row-major dense matrices*************************************
+   //**Default addition assignment to dense matrices***********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default addition assignment of a sparse matrix-dense matrix multiplication to
-   //        row-major dense matrices (\f$ A+=B*C \f$).
+   //        dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -924,37 +815,135 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the default row-major addition assignment kernel for the sparse
-   // matrix-dense matrix multiplication.
+   // This function implements the default addition assignment kernel for the sparse matrix-dense
+   // matrix multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
-      selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<A.rows(); ++i )
+      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const size_t jtmp( min( jj+block, B.columns() ) );
 
-         for( ; element!=end; ++element )
+         for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const size_t i1( element->index() );
+            const ConstIterator end( A.end(i) );
+            ConstIterator element( A.begin(i) );
 
-            if( IsDiagonal<MT5>::value )
+            for( ; element!=end; ++element )
             {
-               (~C)(i,i1) += element->value() * B(i1,i1);
+               const size_t i1( element->index() );
+
+               if( IsDiagonal<MT5>::value )
+               {
+                  C(i,i1) += element->value() * B(i1,i1);
+               }
+               else
+               {
+                  const size_t jbegin( ( IsUpper<MT5>::value )
+                                       ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                       :( jj ) );
+                  const size_t jend( ( IsLower<MT5>::value )
+                                     ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                     :( jtmp ) );
+
+                  if( IsTriangular<MT5>::value && jbegin >= jend )
+                     continue;
+
+                  BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+                  const size_t jnum( jend - jbegin );
+                  const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+                  BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+                  for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                     C(i,j    ) += element->value() * B(i1,j    );
+                     C(i,j+1UL) += element->value() * B(i1,j+1UL);
+                     C(i,j+2UL) += element->value() * B(i1,j+2UL);
+                     C(i,j+3UL) += element->value() * B(i1,j+3UL);
+                  }
+                  for( size_t j=jpos; j<jend; ++j ) {
+                     C(i,j) += element->value() * B(i1,j);
+                  }
+               }
             }
-            else
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Optimized addition assignment to dense matrices*********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Optimized addition assignment of a sparse matrix-dense matrix multiplication to
+   //        dense matrices (\f$ A+=B*C \f$).
+   // \ingroup dense_matrix
+   //
+   // \param C The target left-hand side dense matrix.
+   // \param A The left-hand side sparse matrix operand.
+   // \param B The right-hand side dense matrix operand.
+   // \return void
+   //
+   // This function implements the optimized addition assignment kernel for the sparse matrix-
+   // dense matrix multiplication.
+   */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   {
+      typedef typename MT4::ConstIterator  ConstIterator;
+
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
+      {
+         const size_t jtmp( min( jj+block, B.columns() ) );
+
+         for( size_t i=0UL; i<A.rows(); ++i )
+         {
+            const ConstIterator end( A.end(i) );
+            ConstIterator element( A.begin(i) );
+
+            const size_t nonzeros( A.nonZeros(i) );
+            const size_t kpos( nonzeros & size_t(-4) );
+            BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
+
+            for( size_t k=0UL; k<kpos; k+=4UL )
             {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
+               ++element;
+               const size_t i2( element->index() );
+               const ET1    v2( element->value() );
+               ++element;
+               const size_t i3( element->index() );
+               const ET1    v3( element->value() );
+               ++element;
+               const size_t i4( element->index() );
+               const ET1    v4( element->value() );
+               ++element;
+
+               BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
+
                const size_t jbegin( ( IsUpper<MT5>::value )
-                                    ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ):( 0UL ) );
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
                const size_t jend( ( IsLower<MT5>::value )
-                                  ?( IsStrictlyLower<MT5>::value ? i1 : i1+1UL )
-                                  :( B.columns() ) );
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
+                                  :( jtmp ) );
+
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
+
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
                const size_t jnum( jend - jbegin );
@@ -962,13 +951,45 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
                BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
 
                for( size_t j=jbegin; j<jpos; j+=4UL ) {
-                  (~C)(i,j    ) += element->value() * B(i1,j    );
-                  (~C)(i,j+1UL) += element->value() * B(i1,j+1UL);
-                  (~C)(i,j+2UL) += element->value() * B(i1,j+2UL);
-                  (~C)(i,j+3UL) += element->value() * B(i1,j+3UL);
+                  C(i,j    ) += v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
+                  C(i,j+1UL) += v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
+                  C(i,j+2UL) += v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
+                  C(i,j+3UL) += v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
                }
                for( size_t j=jpos; j<jend; ++j ) {
-                  (~C)(i,j) += element->value() * B(i1,j);
+                  C(i,j) += v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
+               }
+            }
+
+            for( ; element!=end; ++element )
+            {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
+
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                  :( jtmp ) );
+
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
+
+               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+               const size_t jnum( jend - jbegin );
+               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+               for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                  C(i,j    ) += v1 * B(i1,j    );
+                  C(i,j+1UL) += v1 * B(i1,j+1UL);
+                  C(i,j+2UL) += v1 * B(i1,j+2UL);
+                  C(i,j+3UL) += v1 * B(i1,j+3UL);
+               }
+               for( size_t j=jpos; j<jend; ++j ) {
+                  C(i,j) += v1 * B(i1,j);
                }
             }
          }
@@ -977,113 +998,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Optimized addition assignment to row-major dense matrices***********************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Optimized addition assignment of a sparse matrix-dense matrix multiplication to
-   //        row-major dense matrices (\f$ A+=B*C \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side sparse matrix operand.
-   // \param B The right-hand side dense matrix operand.
-   // \return void
-   //
-   // This function implements the optimized row-major addition assignment kernel for the sparse
-   // matrix-dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
-      selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
-   {
-      typedef typename MT4::ConstIterator  ConstIterator;
-
-      for( size_t i=0UL; i<A.rows(); ++i )
-      {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
-
-         const size_t nonzeros( A.nonZeros(i) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
-
-         for( size_t k=0UL; k<kpos; k+=4UL )
-         {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
-            ++element;
-            const size_t i2( element->index() );
-            const ET1    v2( element->value() );
-            ++element;
-            const size_t i3( element->index() );
-            const ET1    v3( element->value() );
-            ++element;
-            const size_t i4( element->index() );
-            const ET1    v4( element->value() );
-            ++element;
-
-            BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
-
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i4 : i4+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
-
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
-
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) += v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
-               (~C)(i,j+1UL) += v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
-               (~C)(i,j+2UL) += v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
-               (~C)(i,j+3UL) += v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
-            }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) += v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
-            }
-         }
-
-         for( ; element!=end; ++element )
-         {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
-
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i1 : i1+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
-
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
-
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) += v1 * B(i1,j    );
-               (~C)(i,j+1UL) += v1 * B(i1,j+1UL);
-               (~C)(i,j+2UL) += v1 * B(i1,j+2UL);
-               (~C)(i,j+3UL) += v1 * B(i1,j+3UL);
-            }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) += v1 * B(i1,j);
-            }
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Vectorized addition assignment to row-major dense matrices**********************************
+   //**Vectorized addition assignment to dense matrices********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized addition assignment of a sparse matrix-dense matrix multiplication to
-   //        row-major dense matrices (\f$ A+=B*C \f$).
+   //        dense matrices (\f$ A+=B*C \f$).
    // \ingroup dense_matrix
    //
    // \param C The target left-hand side dense matrix.
@@ -1091,14 +1009,14 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the vectorized row-major addition assignment kernel for the sparse
-   // matrix-dense matrix multiplication.
+   // This function implements the vectorized addition assignment kernel for the sparse matrix-
+   // dense matrix multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
-      selectAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -1138,7 +1056,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) + v1 * B.load(i1,j) + v2 * B.load(i2,j) + v3 * B.load(i3,j) + v4 * B.load(i4,j) );
+               C.store( i, j, C.load(i,j) + v1 * B.load(i1,j) + v2 * B.load(i2,j) + v3 * B.load(i3,j) + v4 * B.load(i4,j) );
             }
          }
 
@@ -1156,105 +1074,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) + v1 * B.load(i1,j) );
+               C.store( i, j, C.load(i,j) + v1 * B.load(i1,j) );
             }
          }
       }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default addition assignment to column-major dense matrices**********************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default addition assignment of a sparse matrix-dense matrix multiplication to
-   //        column-major dense matrices (\f$ A+=B*C \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side dense matrix operand.
-   // \param B The right-hand side sparse matrix operand.
-   // \return void
-   //
-   // This function implements the default column-major addition assignment kernel for the sparse
-   // matrix-dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      typedef typename MT4::ConstIterator  ConstIterator;
-
-      const size_t jpos( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<jpos; j+=4UL ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                     :( A.end(i) ) );
-
-            for( ; element!=end; ++element ) {
-               (~C)(i,j    ) += element->value() * B(element->index(),j    );
-               (~C)(i,j+1UL) += element->value() * B(element->index(),j+1UL);
-               (~C)(i,j+2UL) += element->value() * B(element->index(),j+2UL);
-               (~C)(i,j+3UL) += element->value() * B(element->index(),j+3UL);
-            }
-         }
-      }
-
-      for( size_t j=jpos; j<B.columns(); ++j ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                     :( A.end(i) ) );
-
-            for( ; element!=end; ++element )
-               (~C)(i,j) += element->value() * B(element->index(),j);
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Restructuring addition assignment to column-major matrices**********************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring addition assignment of a sparse matrix-dense matrix multiplication to
-   //        a column-major matrix (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be added.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring addition assignment of a sparse
-   // matrix-dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this function can only be selected by the compiler in
-   // case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      addAssign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         addAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         addAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1300,7 +1123,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Default subtraction assignment to row-major dense matrices**********************************
+   //**Default subtraction assignment to dense matrices********************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Default subtraction assignment of a sparse matrix-dense matrix multiplication
    //        (\f$ A-=B*C \f$).
@@ -1311,51 +1134,63 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the default row-major subtraction assignment kernel for the sparse
-   // matrix-dense matrix multiplication.
+   // This function implements the default subtraction assignment kernel for the sparse matrix-
+   // dense matrix multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseDefaultKernel<MT3,MT4,MT5> >::Type
-      selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<A.rows(); ++i )
+      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const size_t jtmp( min( jj+block, B.columns() ) );
 
-         for( ; element!=end; ++element )
+         for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const size_t i1( element->index() );
+            const ConstIterator end( A.end(i) );
+            ConstIterator element( A.begin(i) );
 
-            if( IsDiagonal<MT5>::value )
+            for( ; element!=end; ++element )
             {
-               (~C)(i,i1) -= element->value() * B(i1,i1);
-            }
-            else
-            {
-               const size_t jbegin( ( IsUpper<MT5>::value )
-                                    ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ):( 0UL ) );
-               const size_t jend( ( IsLower<MT5>::value )
-                                  ?( IsStrictlyLower<MT5>::value ? i1 : i1+1UL )
-                                  :( B.columns() ) );
-               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+               const size_t i1( element->index() );
 
-               const size_t jnum( jend - jbegin );
-               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
-
-               for( size_t j=jbegin; j<jpos; j+=4UL ) {
-                  (~C)(i,j    ) -= element->value() * B(i1,j    );
-                  (~C)(i,j+1UL) -= element->value() * B(i1,j+1UL);
-                  (~C)(i,j+2UL) -= element->value() * B(i1,j+2UL);
-                  (~C)(i,j+3UL) -= element->value() * B(i1,j+3UL);
+               if( IsDiagonal<MT5>::value )
+               {
+                  C(i,i1) -= element->value() * B(i1,i1);
                }
-               for( size_t j=jpos; j<jend; ++j ) {
-                  (~C)(i,j) -= element->value() * B(i1,j);
+               else
+               {
+                  const size_t jbegin( ( IsUpper<MT5>::value )
+                                       ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                       :( jj ) );
+                  const size_t jend( ( IsLower<MT5>::value )
+                                     ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                     :( jtmp ) );
+
+                  if( IsTriangular<MT5>::value && jbegin >= jend )
+                     continue;
+
+                  BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+                  const size_t jnum( jend - jbegin );
+                  const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+                  BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+                  for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                     C(i,j    ) -= element->value() * B(i1,j    );
+                     C(i,j+1UL) -= element->value() * B(i1,j+1UL);
+                     C(i,j+2UL) -= element->value() * B(i1,j+2UL);
+                     C(i,j+3UL) -= element->value() * B(i1,j+3UL);
+                  }
+                  for( size_t j=jpos; j<jend; ++j ) {
+                     C(i,j) -= element->value() * B(i1,j);
+                  }
                }
             }
          }
@@ -1364,7 +1199,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Optimized subtraction assignment to row-major dense matrices********************************
+   //**Optimized subtraction assignment to dense matrices******************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Optimized subtraction assignment of a sparse matrix-dense matrix multiplication
    //        (\f$ A-=B*C \f$).
@@ -1375,91 +1210,106 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the optimized row-major subtraction assignment kernel for the
-   // sparse matrix-dense matrix multiplication.
+   // This function implements the optimized subtraction assignment kernel for the sparse matrix-
+   // dense matrix multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseOptimizedKernel<MT3,MT4,MT5> >::Type
-      selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef typename MT4::ConstIterator  ConstIterator;
 
-      for( size_t i=0UL; i<A.rows(); ++i )
+      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
+
+      for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const size_t jtmp( min( jj+block, B.columns() ) );
 
-         const size_t nonzeros( A.nonZeros(i) );
-         const size_t kpos( nonzeros & size_t(-4) );
-         BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
-
-         for( size_t k=0UL; k<kpos; k+=4UL )
+         for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
-            ++element;
-            const size_t i2( element->index() );
-            const ET1    v2( element->value() );
-            ++element;
-            const size_t i3( element->index() );
-            const ET1    v3( element->value() );
-            ++element;
-            const size_t i4( element->index() );
-            const ET1    v4( element->value() );
-            ++element;
+            const ConstIterator end( A.end(i) );
+            ConstIterator element( A.begin(i) );
 
-            BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
+            const size_t nonzeros( A.nonZeros(i) );
+            const size_t kpos( nonzeros & size_t(-4) );
+            BLAZE_INTERNAL_ASSERT( ( nonzeros - ( nonzeros % 4UL ) ) == kpos, "Invalid end calculation" );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i4 : i4+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+            for( size_t k=0UL; k<kpos; k+=4UL )
+            {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
+               ++element;
+               const size_t i2( element->index() );
+               const ET1    v2( element->value() );
+               ++element;
+               const size_t i3( element->index() );
+               const ET1    v3( element->value() );
+               ++element;
+               const size_t i4( element->index() );
+               const ET1    v4( element->value() );
+               ++element;
 
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+               BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) -= v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
-               (~C)(i,j+1UL) -= v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
-               (~C)(i,j+2UL) -= v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
-               (~C)(i,j+3UL) -= v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
+                                  :( jtmp ) );
+
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
+
+               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+               const size_t jnum( jend - jbegin );
+               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+               for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                  C(i,j    ) -= v1 * B(i1,j    ) + v2 * B(i2,j    ) + v3 * B(i3,j    ) + v4 * B(i4,j    );
+                  C(i,j+1UL) -= v1 * B(i1,j+1UL) + v2 * B(i2,j+1UL) + v3 * B(i3,j+1UL) + v4 * B(i4,j+1UL);
+                  C(i,j+2UL) -= v1 * B(i1,j+2UL) + v2 * B(i2,j+2UL) + v3 * B(i3,j+2UL) + v4 * B(i4,j+2UL);
+                  C(i,j+3UL) -= v1 * B(i1,j+3UL) + v2 * B(i2,j+3UL) + v3 * B(i3,j+3UL) + v4 * B(i4,j+3UL);
+               }
+               for( size_t j=jpos; j<jend; ++j ) {
+                  C(i,j) -= v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
+               }
             }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) -= v1 * B(i1,j) + v2 * B(i2,j) + v3 * B(i3,j) + v4 * B(i4,j);
-            }
-         }
 
-         for( ; element!=end; ++element )
-         {
-            const size_t i1( element->index() );
-            const ET1    v1( element->value() );
+            for( ; element!=end; ++element )
+            {
+               const size_t i1( element->index() );
+               const ET1    v1( element->value() );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 )
-                                 :( 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( IsStrictlyLower<MT5>::value ? i1 : i1+1UL )
-                               :( B.columns() ) );
-            BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+               const size_t jbegin( ( IsUpper<MT5>::value )
+                                    ?( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
+                                    :( jj ) );
+               const size_t jend( ( IsLower<MT5>::value )
+                                  ?( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
+                                  :( jtmp ) );
 
-            const size_t jnum( jend - jbegin );
-            const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
-            BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+               if( IsTriangular<MT5>::value && jbegin >= jend )
+                  continue;
 
-            for( size_t j=jbegin; j<jpos; j+=4UL ) {
-               (~C)(i,j    ) -= v1 * B(i1,j    );
-               (~C)(i,j+1UL) -= v1 * B(i1,j+1UL);
-               (~C)(i,j+2UL) -= v1 * B(i1,j+2UL);
-               (~C)(i,j+3UL) -= v1 * B(i1,j+3UL);
-            }
-            for( size_t j=jpos; j<jend; ++j ) {
-               (~C)(i,j) -= v1 * B(i1,j);
+               BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+               const size_t jnum( jend - jbegin );
+               const size_t jpos( jbegin + ( jnum & size_t(-4) ) );
+               BLAZE_INTERNAL_ASSERT( ( jbegin + jnum - ( jnum % 4UL ) ) == jpos, "Invalid end calculation" );
+
+               for( size_t j=jbegin; j<jpos; j+=4UL ) {
+                  C(i,j    ) -= v1 * B(i1,j    );
+                  C(i,j+1UL) -= v1 * B(i1,j+1UL);
+                  C(i,j+2UL) -= v1 * B(i1,j+2UL);
+                  C(i,j+3UL) -= v1 * B(i1,j+3UL);
+               }
+               for( size_t j=jpos; j<jend; ++j ) {
+                  C(i,j) -= v1 * B(i1,j);
+               }
             }
          }
       }
@@ -1467,7 +1317,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Vectorized subtraction assignment to row-major dense matrices*******************************
+   //**Vectorized subtraction assignment to dense matrices*****************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Vectorized subtraction assignment of a sparse matrix-dense matrix multiplication
    //        (\f$ A-=B*C \f$).
@@ -1478,14 +1328,14 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    // \param B The right-hand side dense matrix operand.
    // \return void
    //
-   // This function implements the vectorized row-major subtraction assignment kernel for the
-   // sparse matrix-dense matrix multiplication.
+   // This function implements the vectorized subtraction assignment kernel for the sparse matrix-
+   // dense matrix multiplication.
    */
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
-      selectSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
@@ -1525,7 +1375,7 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) - v1 * B.load(i1,j) - v2 * B.load(i2,j) - v3 * B.load(i3,j) - v4 * B.load(i4,j) );
+               C.store( i, j, C.load(i,j) - v1 * B.load(i1,j) - v2 * B.load(i2,j) - v3 * B.load(i3,j) - v4 * B.load(i4,j) );
             }
          }
 
@@ -1543,105 +1393,10 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; j+=IT::size ) {
-               (~C).store( i, j, (~C).load(i,j) - v1 * B.load(i1,j) );
+               C.store( i, j, C.load(i,j) - v1 * B.load(i1,j) );
             }
          }
       }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Default subtraction assignment to column-major dense matrices*******************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Default subtraction assignment of a sparse matrix-dense matrix multiplication to
-   //        column-major matrices (\f$ A-=B*C \f$).
-   // \ingroup dense_matrix
-   //
-   // \param C The target left-hand side dense matrix.
-   // \param A The left-hand side dense matrix operand.
-   // \param B The right-hand side sparse matrix operand.
-   // \return void
-   //
-   // This function implements the default column-major subtraction assignment kernel for the
-   // sparse matrix-dense matrix multiplication.
-   */
-   template< typename MT3    // Type of the left-hand side target matrix
-           , typename MT4    // Type of the left-hand side matrix operand
-           , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline void selectSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
-   {
-      typedef typename MT4::ConstIterator  ConstIterator;
-
-      const size_t jpos( B.columns() & size_t(-4) );
-      BLAZE_INTERNAL_ASSERT( ( B.columns() - ( B.columns() % 4UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<jpos; j+=4UL ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                     :( A.end(i) ) );
-
-            for( ; element!=end; ++element ) {
-               (~C)(i,j    ) -= element->value() * B(element->index(),j    );
-               (~C)(i,j+1UL) -= element->value() * B(element->index(),j+1UL);
-               (~C)(i,j+2UL) -= element->value() * B(element->index(),j+2UL);
-               (~C)(i,j+3UL) -= element->value() * B(element->index(),j+3UL);
-            }
-         }
-      }
-
-      for( size_t j=jpos; j<B.columns(); ++j ) {
-         for( size_t i=0UL; i<A.rows(); ++i )
-         {
-            ConstIterator element( ( IsLower<MT5>::value )
-                                   ?( IsStrictlyLower<MT5>::value ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                   :( A.begin(i) ) );
-            const ConstIterator end( ( IsUpper<MT5>::value )
-                                     ?( IsStrictlyUpper<MT5>::value ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                     :( A.end(i) ) );
-
-            for( ; element!=end; ++element )
-               (~C)(i,j) -= element->value() * B(element->index(),j);
-         }
-      }
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Restructuring subtraction assignment to column-major matrices*******************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring subtraction assignment of a sparse matrix-dense matrix multiplication
-   //        to a column-major matrix (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be subtracted.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring subtraction assignment of a sparse
-   // matrix-dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this function can only be selected by the compiler in
-   // case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      subAssign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         subAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         subAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1738,40 +1493,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Restructuring SMP assignment to column-major matrices***************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring SMP assignment of a sparse matrix-dense matrix multiplication to a
-   //        column-major matrix (\f$ C=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be assigned.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring SMP assignment of a sparse
-   // matrix-dense matrix multiplication expression to a column-major matrix. Due to the
-   // explicit application of the SFINAE principle this function can only be selected by the
-   // compiler in case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      smpAssign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         smpAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         smpAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**SMP addition assignment to dense matrices***************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief SMP addition assignment of a sparse matrix-dense matrix multiplication to a dense
@@ -1809,40 +1530,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpAddAssign( ~lhs, A * B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Restructuring SMP addition assignment to column-major matrices******************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring SMP addition assignment of a sparse matrix-dense matrix multiplication
-   //        to a column-major matrix (\f$ C+=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be added.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring SMP addition assignment of a sparse
-   // matrix-dense matrix multiplication expression to a column-major matrix. Due to the explicit
-   // application of the SFINAE principle this function can only be selected by the compiler in
-   // case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      smpAddAssign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         smpAddAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         smpAddAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1888,40 +1575,6 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpSubAssign( ~lhs, A * B );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Restructuring SMP subtraction assignment to column-major matrices***************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Restructuring SMP subtraction assignment of a sparse matrix-dense matrix multiplication
-   //        to a column-major matrix (\f$ C-=A*B \f$).
-   // \ingroup dense_matrix
-   //
-   // \param lhs The target left-hand side matrix.
-   // \param rhs The right-hand side multiplication expression to be subtracted.
-   // \return void
-   //
-   // This function implements the symmetry-based restructuring SMP subtraction assignment of a
-   // sparse matrix-dense matrix multiplication expression to a column-major matrix. Due to the
-   // explicit application of the SFINAE principle this function can only be selected by the
-   // compiler in case the symmetry of either of the two matrix operands can be exploited.
-   */
-   template< typename MT >  // Type of the target matrix
-   friend inline typename EnableIf< CanExploitSymmetry<MT,MT1,MT2> >::Type
-      smpSubAssign( Matrix<MT,true>& lhs, const SMatDMatMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-
-      if( IsSymmetric<MT1>::value )
-         smpSubAssign( ~lhs, trans( rhs.lhs_ ) * rhs.rhs_ );
-      else
-         smpSubAssign( ~lhs, rhs.lhs_ * trans( rhs.rhs_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
