@@ -225,10 +225,17 @@ inline DiagonalProxy<MT>::DiagonalProxy( const DiagonalProxy& dp )
 //
 // \param dp Diagonal proxy to be copied.
 // \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to upper matrix element.
+//
+// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
 inline DiagonalProxy<MT>& DiagonalProxy<MT>::operator=( const DiagonalProxy& dp )
 {
+   if( restricted_ )
+      throw std::invalid_argument( "Invalid assignment to non-diagonal matrix element" );
+
    value_ = dp.value_;
 
    return *this;
