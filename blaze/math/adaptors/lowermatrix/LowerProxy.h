@@ -225,10 +225,17 @@ inline LowerProxy<MT>::LowerProxy( const LowerProxy& lp )
 //
 // \param lp Lower proxy to be copied.
 // \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to upper matrix element.
+//
+// In case the proxy represents an element in the upper matrix, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
 inline const LowerProxy<MT>& LowerProxy<MT>::operator=( const LowerProxy& lp ) const
 {
+   if( restricted_ )
+      throw std::invalid_argument( "Invalid assignment to upper matrix element" );
+
    value_ = lp.value_;
 
    return *this;
