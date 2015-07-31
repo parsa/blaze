@@ -227,10 +227,17 @@ inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( const StrictlyUpperProxy& uup
 //
 // \param uup Proxy to be copied.
 // \return Reference to the assigned proxy.
+// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
+//
+// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
+// a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const StrictlyUpperProxy& uup ) const
 {
+   if( restricted_ )
+      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+
    value_ = uup.value_;
 
    return *this;
