@@ -5298,171 +5298,283 @@ void SparseTest::testFunctionCall()
    {
       test_ = "Row-major DiagonalMatrix::operator()";
 
-      DT diag( 3UL );
+      // Good cases
+      {
+         DT diag( 3UL );
 
-      // Writing the element (1,1)
-      diag(1,1) = 1;
+         // Writing the element (1,1)
+         diag(1,1) = 1;
 
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 1UL );
-      checkNonZeros( diag, 1UL );
-      checkNonZeros( diag, 0UL, 0UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 0UL );
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 1UL );
+         checkNonZeros( diag, 1UL );
+         checkNonZeros( diag, 0UL, 0UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 0UL );
 
-      if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Writing the element (2,2)
+         diag(2,2) = 2;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 2UL );
+         checkNonZeros( diag, 2UL );
+         checkNonZeros( diag, 0UL, 0UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Adding to the element (0,0)
+         diag(0,0) += 3;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Subtracting from the element (1,1)
+         diag(1,1) -= 4;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0  2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Multiplying the element (2,2)
+         diag(2,2) *= -3;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Dividing the element (2,2)
+         diag(2,2) /= 2;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Writing the element (2,2)
-      diag(2,2) = 2;
+      // Failure cases
+      {
+         DT diag( 3UL );
 
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 2UL );
-      checkNonZeros( diag, 2UL );
-      checkNonZeros( diag, 0UL, 0UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
+         // Trying to write the lower element (2,1)
+         try {
+            diag(2,1) = 5;
 
-      if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the lower element (2,1)
+         try {
+            diag(2,1) += 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the lower element (2,1)
+         try {
+            diag(2,1) -= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the lower element (2,1)
+         try {
+            diag(2,1) *= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the lower element (2,1)
+         try {
+            diag(2,1) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (1,2)
+         try {
+            diag(1,2) = 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the upper element (1,2)
+         try {
+            diag(1,2) += 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the upper element (1,2)
+         try {
+            diag(1,2) -= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the upper element (1,2)
+         try {
+            diag(1,2) *= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the upper element (1,2)
+         try {
+            diag(1,2) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-
-      // Adding to the element (0,0)
-      diag(0,0) += 3;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Subtracting from the element (1,1)
-      diag(1,1) -= 4;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0  2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Multiplying the element (2,2)
-      diag(2,2) *= -3;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Dividing the element (2,2)
-      diag(2,2) /= 2;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to write the element (2,1)
-      try {
-         diag(2,1) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to lower matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      // Trying to write the element (1,2)
-      try {
-         diag(1,2) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to upper matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -5473,171 +5585,283 @@ void SparseTest::testFunctionCall()
    {
       test_ = "Column-major DiagonalMatrix::operator()";
 
-      ODT diag( 3UL );
+      // Good cases
+      {
+         ODT diag( 3UL );
 
-      // Writing the element (1,1)
-      diag(1,1) = 1;
+         // Writing the element (1,1)
+         diag(1,1) = 1;
 
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 1UL );
-      checkNonZeros( diag, 1UL );
-      checkNonZeros( diag, 0UL, 0UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 0UL );
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 1UL );
+         checkNonZeros( diag, 1UL );
+         checkNonZeros( diag, 0UL, 0UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 0UL );
 
-      if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Writing the element (2,2)
+         diag(2,2) = 2;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 2UL );
+         checkNonZeros( diag, 2UL );
+         checkNonZeros( diag, 0UL, 0UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Adding to the element (0,0)
+         diag(0,0) += 3;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) != 0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Subtracting from the element (1,1)
+         diag(1,1) -= 4;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) != 0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) != 0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != 2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0  2 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Multiplying the element (2,2)
+         diag(2,2) *= -3;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Dividing the element (2,2)
+         diag(2,2) /= 2;
+
+         checkRows    ( diag, 3UL );
+         checkColumns ( diag, 3UL );
+         checkCapacity( diag, 3UL );
+         checkNonZeros( diag, 3UL );
+         checkNonZeros( diag, 0UL, 1UL );
+         checkNonZeros( diag, 1UL, 1UL );
+         checkNonZeros( diag, 2UL, 1UL );
+
+         if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
+             diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
+             diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n"
+                << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Writing the element (2,2)
-      diag(2,2) = 2;
+      // Failure cases
+      {
+         ODT diag( 3UL );
 
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 2UL );
-      checkNonZeros( diag, 2UL );
-      checkNonZeros( diag, 0UL, 0UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
+         // Trying to write the lower element (2,1)
+         try {
+            diag(2,1) = 5;
 
-      if( diag(0,0) != 0 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the lower element (2,1)
+         try {
+            diag(2,1) += 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the lower element (2,1)
+         try {
+            diag(2,1) -= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the lower element (2,1)
+         try {
+            diag(2,1) *= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the lower element (2,1)
+         try {
+            diag(2,1) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (1,2)
+         try {
+            diag(1,2) = 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the upper element (1,2)
+         try {
+            diag(1,2) += 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the upper element (1,2)
+         try {
+            diag(1,2) -= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the upper element (1,2)
+         try {
+            diag(1,2) *= 5;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the upper element (1,2)
+         try {
+            diag(1,2) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << diag << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-
-      // Adding to the element (0,0)
-      diag(0,0) += 3;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) != 0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != 1 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) != 0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3 0 0 )\n( 0 1 0 )\n( 0 0 2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Subtracting from the element (1,1)
-      diag(1,1) -= 4;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) != 0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) != 0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != 2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0  2 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Multiplying the element (2,2)
-      diag(2,2) *= -3;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -6 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -6 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Dividing the element (2,2)
-      diag(2,2) /= 2;
-
-      checkRows    ( diag, 3UL );
-      checkColumns ( diag, 3UL );
-      checkCapacity( diag, 3UL );
-      checkNonZeros( diag, 3UL );
-      checkNonZeros( diag, 0UL, 1UL );
-      checkNonZeros( diag, 1UL, 1UL );
-      checkNonZeros( diag, 2UL, 1UL );
-
-      if( diag(0,0) != 3 || diag(0,1) !=  0 || diag(0,2) !=  0 ||
-          diag(1,0) != 0 || diag(1,1) != -3 || diag(1,2) !=  0 ||
-          diag(2,0) != 0 || diag(2,1) !=  0 || diag(2,2) != -3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n"
-             << "   Expected result:\n( 3  0  0 )\n( 0 -3  0 )\n( 0  0 -3 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to write the element (2,1)
-      try {
-         diag(2,1) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to lower matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      // Trying to write the element (1,2)
-      try {
-         diag(1,2) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to upper matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << diag << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
