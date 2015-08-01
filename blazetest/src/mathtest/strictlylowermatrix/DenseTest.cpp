@@ -4516,171 +4516,244 @@ void DenseTest::testFunctionCall()
    {
       test_ = "Row-major StrictlyLowerMatrix::operator()";
 
-      LT lower( 3UL );
+      // Good cases
+      {
+         LT lower( 3UL );
 
-      // Writing the element (2,1)
-      lower(2,1) = 2;
+         // Writing the lower element (2,1)
+         lower(2,1) = 2;
 
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 1UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 0UL );
-      checkNonZeros( lower, 2UL, 1UL );
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 1UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 0UL );
+         checkNonZeros( lower, 2UL, 1UL );
 
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 0 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n( 0 2 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 0 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n( 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Writing the lower element (1,0)
+         lower(1,0) = lower(2,1);
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 2UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 1UL );
+
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Adding to the lower element (2,0)
+         lower(2,0) += 3;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 2UL );
+
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 3 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Subtracting from the lower element (1,0)
+         lower(1,0) -= 4;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 2UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0 0 0 )\n( -2 0 0 )\n(  3 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Multiplying the lower element (2,1)
+         lower(2,1) *= -3;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 2UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != -6 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -6  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Dividing the lower element (2,1)
+         lower(2,1) /= 2;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 2UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != -3 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -3  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Writing the element (1,0)
-      lower(1,0) = lower(2,1);
+      // Failure cases
+      {
+         LT lower( 3UL );
 
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 2UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 1UL );
+         // Trying to write the diagonal element (1,1)
+         try {
+            lower(1,1) = 5;
 
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 0 2 0 )\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (1,2)
+         try {
+            lower(1,2) = 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (0,1)
+         try {
+            lower(0,1) = lower(2,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the upper element (0,2)
+         try {
+            lower(0,2) += 3;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the upper element (0,1)
+         try {
+            lower(0,1) -= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the upper element (1,2)
+         try {
+            lower(1,2) *= -3;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the upper element (1,2)
+         try {
+            lower(1,2) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-
-      // Adding to the element (2,0)
-      lower(2,0) += 3;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 2UL );
-
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 3 2 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Subtracting from the element (1,0)
-      lower(1,0) -= 4;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 2UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0 0 0 )\n( -2 0 0 )\n(  3 2 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Multiplying the element (2,1)
-      lower(2,1) *= -3;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 2UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != -6 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -6  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Dividing the element (2,1)
-      lower(2,1) /= 2;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 2UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != -3 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -3  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to write the element (1,1)
-      try {
-         lower(1,1) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to diagonal matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      // Trying to write the element (1,2)
-      try {
-         lower(1,2) = 6;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to upper matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -4691,171 +4764,244 @@ void DenseTest::testFunctionCall()
    {
       test_ = "Column-major StrictlyLowerMatrix::operator()";
 
-      OLT lower( 3UL );
+      // Good cases
+      {
+         OLT lower( 3UL );
 
-      // Writing the element (2,1)
-      lower(2,1) = 2;
+         // Writing the lower element (2,1)
+         lower(2,1) = 2;
 
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 1UL );
-      checkNonZeros( lower, 0UL, 0UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 1UL );
+         checkNonZeros( lower, 0UL, 0UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
 
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 0 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n( 0 2 0 )\n";
-         throw std::runtime_error( oss.str() );
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 0 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 0 0 0 )\n( 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Writing the lower element (1,0)
+         lower(1,0) = lower(2,1);
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 2UL );
+         checkNonZeros( lower, 0UL, 1UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
+
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 0 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Adding to the lower element (2,0)
+         lower(2,0) += 3;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 2UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
+
+         if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) != 3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 3 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Subtracting from the lower element (1,0)
+         lower(1,0) -= 4;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 2UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0 0 0 )\n( -2 0 0 )\n(  3 2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Multiplying the lower element (2,1)
+         lower(2,1) *= -3;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 2UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != -6 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -6  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         // Dividing the lower element (2,1)
+         lower(2,1) /= 2;
+
+         checkRows    ( lower, 3UL );
+         checkColumns ( lower, 3UL );
+         checkCapacity( lower, 9UL );
+         checkNonZeros( lower, 3UL );
+         checkNonZeros( lower, 0UL, 2UL );
+         checkNonZeros( lower, 1UL, 1UL );
+         checkNonZeros( lower, 2UL, 0UL );
+
+         if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
+             lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
+             lower(2,0) !=  3 || lower(2,1) != -3 || lower(2,2) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n"
+                << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -3  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      // Writing the element (1,0)
-      lower(1,0) = lower(2,1);
+      // Failure cases
+      {
+         OLT lower( 3UL );
 
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 2UL );
-      checkNonZeros( lower, 0UL, 1UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
+         // Trying to write the diagonal element (1,1)
+         try {
+            lower(1,1) = 5;
 
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 0 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 0 2 0 )\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (1,2)
+         try {
+            lower(1,2) = 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to write the upper element (0,1)
+         try {
+            lower(0,1) = lower(2,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the upper element (0,2)
+         try {
+            lower(0,2) += 3;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to subtract from the upper element (0,1)
+         try {
+            lower(0,1) -= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to multiply the upper element (1,2)
+         try {
+            lower(1,2) *= -3;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the upper element (1,2)
+         try {
+            lower(1,2) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-
-      // Adding to the element (2,0)
-      lower(2,0) += 3;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
-
-      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) != 3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 3 2 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Subtracting from the element (1,0)
-      lower(1,0) -= 4;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) != 0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) != 0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != 2 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0 0 0 )\n( -2 0 0 )\n(  3 2 0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Multiplying the element (2,1)
-      lower(2,1) *= -3;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != -6 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -6  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Dividing the element (2,1)
-      lower(2,1) /= 2;
-
-      checkRows    ( lower, 3UL );
-      checkColumns ( lower, 3UL );
-      checkCapacity( lower, 9UL );
-      checkNonZeros( lower, 3UL );
-      checkNonZeros( lower, 0UL, 2UL );
-      checkNonZeros( lower, 1UL, 1UL );
-      checkNonZeros( lower, 2UL, 0UL );
-
-      if( lower(0,0) !=  0 || lower(0,1) !=  0 || lower(0,2) != 0 ||
-          lower(1,0) != -2 || lower(1,1) !=  0 || lower(1,2) != 0 ||
-          lower(2,0) !=  3 || lower(2,1) != -3 || lower(2,2) != 0 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n"
-             << "   Expected result:\n(  0  0  0 )\n( -2  0  0 )\n(  3 -3  0 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Trying to write the element (1,1)
-      try {
-         lower(1,1) = 5;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to diagonal matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      // Trying to write the element (1,2)
-      try {
-         lower(1,2) = 6;
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment to upper matrix element succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << lower << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
