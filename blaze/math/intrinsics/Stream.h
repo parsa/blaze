@@ -46,11 +46,9 @@
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 
