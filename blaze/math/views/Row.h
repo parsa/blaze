@@ -49,6 +49,7 @@
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
+#include <blaze/math/typetraits/IsMatRealExpr.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
@@ -355,6 +356,31 @@ inline typename EnableIf< IsMatConjExpr<MT>, typename RowExprTrait<MT>::Type >::
    BLAZE_FUNCTION_TRACE;
 
    return conj( row( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix real operation.
+// \ingroup views
+//
+// \param matrix The constant matrix real operation.
+// \param index The index of the row.
+// \return View on the specified row of the real operation.
+//
+// This function returns an expression representing the specified row of the given matrix real
+// operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatRealExpr<MT>, typename RowExprTrait<MT>::Type >::Type
+   row( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return real( row( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
