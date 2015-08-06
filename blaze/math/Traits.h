@@ -60,6 +60,7 @@
 #include <blaze/math/traits/DMatDMatSubExprTrait.h>
 #include <blaze/math/traits/DMatDVecMultExprTrait.h>
 #include <blaze/math/traits/DMatEvalExprTrait.h>
+#include <blaze/math/traits/DMatRealExprTrait.h>
 #include <blaze/math/traits/DMatScalarDivExprTrait.h>
 #include <blaze/math/traits/DMatScalarMultExprTrait.h>
 #include <blaze/math/traits/DMatSerialExprTrait.h>
