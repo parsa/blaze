@@ -52,6 +52,7 @@
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
+#include <blaze/math/typetraits/IsMatRealExpr.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
@@ -675,6 +676,35 @@ inline typename EnableIf< IsMatConjExpr<MT>, typename SubmatrixExprTrait<MT,AF>:
    BLAZE_FUNCTION_TRACE;
 
    return conj( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix real operation.
+// \ingroup views
+//
+// \param matrix The constant matrix real operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the real operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// real operation.
+*/
+template< bool AF      // Alignment flag
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatRealExpr<MT>, typename SubmatrixExprTrait<MT,AF>::Type >::Type
+   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return real( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
 }
 /*! \endcond */
 //*************************************************************************************************
