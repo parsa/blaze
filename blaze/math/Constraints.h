@@ -72,6 +72,7 @@
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/constraints/RealExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Restricted.h>

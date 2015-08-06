@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
+#include <blaze/math/typetraits/IsRealExpr.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRow.h>
