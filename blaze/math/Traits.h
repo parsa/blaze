@@ -98,6 +98,7 @@
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RealExprTrait.h>
 #include <blaze/math/traits/RealTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SerialExprTrait.h>
