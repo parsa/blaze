@@ -158,6 +158,7 @@
 #include <blaze/math/traits/TDMatDMatMultExprTrait.h>
 #include <blaze/math/traits/TDMatDMatSubExprTrait.h>
 #include <blaze/math/traits/TDMatEvalExprTrait.h>
+#include <blaze/math/traits/TDMatImagExprTrait.h>
 #include <blaze/math/traits/TDMatRealExprTrait.h>
 #include <blaze/math/traits/TDMatScalarDivExprTrait.h>
 #include <blaze/math/traits/TDMatScalarMultExprTrait.h>
