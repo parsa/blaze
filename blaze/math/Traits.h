@@ -97,6 +97,7 @@
 #include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/DVecTSVecMultExprTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
+#include <blaze/math/traits/ImagExprTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
 #include <blaze/math/traits/MathTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
