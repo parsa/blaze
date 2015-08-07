@@ -106,6 +106,7 @@
 #include <blaze/math/constraints/VecAbsExpr.h>
 #include <blaze/math/constraints/VecConjExpr.h>
 #include <blaze/math/constraints/VecEvalExpr.h>
+#include <blaze/math/constraints/VecImagExpr.h>
 #include <blaze/math/constraints/VecRealExpr.h>
 #include <blaze/math/constraints/VecScalarDivExpr.h>
 #include <blaze/math/constraints/VecScalarMultExpr.h>
