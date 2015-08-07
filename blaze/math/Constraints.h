@@ -62,6 +62,7 @@
 #include <blaze/math/constraints/MatAbsExpr.h>
 #include <blaze/math/constraints/MatConjExpr.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
+#include <blaze/math/constraints/MatImagExpr.h>
 #include <blaze/math/constraints/MatMatAddExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
