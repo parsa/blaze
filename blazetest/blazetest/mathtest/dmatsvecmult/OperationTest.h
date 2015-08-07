@@ -150,9 +150,10 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
+                          void testAbsOperation      ();
                           void testConjOperation     ();
                           void testCTransOperation   ();
-                          void testAbsOperation      ();
+                          void testRealOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -293,9 +294,10 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    testScaledOperation( 2.0 );
    testScaledOperation( DET( 2 ) );
    testTransposeOperation();
+   testAbsOperation();
    testConjOperation();
    testCTransOperation();
-   testAbsOperation();
+   testRealOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -2474,6 +2476,288 @@ void OperationTest<MT,VT>::testTransposeOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the abs dense matrix/sparse vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the abs matrix/vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error
+// resulting from the multiplication or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , typename VT >  // Type of the right-hand side sparse vector
+void OperationTest<MT,VT>::testAbsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Abs multiplication
+      //=====================================================================================
+
+      // Abs multiplication with the given matrix/vector
+      {
+         test_  = "Abs multiplication with the given matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = abs( lhs_ * rhs_ );
+            sres_   = abs( lhs_ * rhs_ );
+            refres_ = abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = abs( olhs_ * rhs_ );
+            sres_   = abs( olhs_ * rhs_ );
+            refres_ = abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Abs multiplication with evaluated matrix/vector
+      {
+         test_  = "Abs multiplication with evaluated matrix/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = abs( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   = abs( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Abs multiplication with addition assignment
+      //=====================================================================================
+
+      // Abs multiplication with addition assignment with the given matrix/vector
+      {
+         test_  = "Abs multiplication with addition assignment with the given matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += abs( lhs_ * rhs_ );
+            sres_   += abs( lhs_ * rhs_ );
+            refres_ += abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += abs( olhs_ * rhs_ );
+            sres_   += abs( olhs_ * rhs_ );
+            refres_ += abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Abs multiplication with addition assignment with evaluated matrix/vector
+      {
+         test_  = "Abs multiplication with addition assignment with evaluated matrix/vector";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += abs( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   += abs( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Abs multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Abs multiplication with subtraction assignment with the given matrix/vector
+      {
+         test_  = "Abs multiplication with subtraction assignment with the given matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= abs( lhs_ * rhs_ );
+            sres_   -= abs( lhs_ * rhs_ );
+            refres_ -= abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= abs( olhs_ * rhs_ );
+            sres_   -= abs( olhs_ * rhs_ );
+            refres_ -= abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Abs multiplication with subtraction assignment with evaluated matrix/vector
+      {
+         test_  = "Abs multiplication with subtraction assignment with evaluated matrix/vector";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= abs( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   -= abs( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Abs multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Abs multiplication with multiplication assignment with the given matrix/vector
+      {
+         test_  = "Abs multiplication with multiplication assignment with the given matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= abs( lhs_ * rhs_ );
+            sres_   *= abs( lhs_ * rhs_ );
+            refres_ *= abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= abs( olhs_ * rhs_ );
+            sres_   *= abs( olhs_ * rhs_ );
+            refres_ *= abs( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Abs multiplication with multiplication assignment with evaluated matrix/vector
+      {
+         test_  = "Abs multiplication with multiplication assignment with evaluated matrix/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the conjugate dense matrix/sparse vector multiplication.
 //
 // \return void
@@ -3038,37 +3322,37 @@ void OperationTest<MT,VT>::testCTransOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs dense matrix/sparse vector multiplication.
+/*!\brief Testing the \a real dense matrix/sparse vector multiplication.
 //
 // \return void
 // \exception std::runtime_error Multiplication error detected.
 //
-// This function tests the abs matrix/vector multiplication with plain assignment, addition
-// assignment, subtraction assignment, and multiplication assignment. In case any error
-// resulting from the multiplication or the subsequent assignment is detected, a
-// \a std::runtime_error exception is thrown.
+// This function tests the \a real matrix/vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
 */
 template< typename MT    // Type of the left-hand side dense matrix
         , typename VT >  // Type of the right-hand side sparse vector
-void OperationTest<MT,VT>::testAbsOperation()
+void OperationTest<MT,VT>::testRealOperation()
 {
-#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+#if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
    {
       //=====================================================================================
-      // Abs multiplication
+      // Real multiplication
       //=====================================================================================
 
-      // Abs multiplication with the given matrix/vector
+      // Real multiplication with the given matrix/vector
       {
-         test_  = "Abs multiplication with the given matrix/vector";
+         test_  = "Real multiplication with the given matrix/vector";
          error_ = "Failed multiplication operation";
 
          try {
             initResults();
-            dres_   = abs( lhs_ * rhs_ );
-            sres_   = abs( lhs_ * rhs_ );
-            refres_ = abs( reflhs_ * refrhs_ );
+            dres_   = real( lhs_ * rhs_ );
+            sres_   = real( lhs_ * rhs_ );
+            refres_ = real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3078,9 +3362,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   = abs( olhs_ * rhs_ );
-            sres_   = abs( olhs_ * rhs_ );
-            refres_ = abs( reflhs_ * refrhs_ );
+            dres_   = real( olhs_ * rhs_ );
+            sres_   = real( olhs_ * rhs_ );
+            refres_ = real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3089,16 +3373,16 @@ void OperationTest<MT,VT>::testAbsOperation()
          checkResults<TMT>();
       }
 
-      // Abs multiplication with evaluated matrix/vector
+      // Real multiplication with evaluated matrix/vector
       {
-         test_  = "Abs multiplication with evaluated matrix/vector";
+         test_  = "Real multiplication with evaluated matrix/vector";
          error_ = "Failed multiplication operation";
 
          try {
             initResults();
-            dres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   = abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   = real( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = real( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3108,9 +3392,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   = abs( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   = abs( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   = real( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   = real( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ = real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3121,19 +3405,19 @@ void OperationTest<MT,VT>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs multiplication with addition assignment
+      // Real multiplication with addition assignment
       //=====================================================================================
 
-      // Abs multiplication with addition assignment with the given matrix/vector
+      // Real multiplication with addition assignment with the given matrix/vector
       {
-         test_  = "Abs multiplication with addition assignment with the given matrix/vector";
+         test_  = "Real multiplication with addition assignment with the given matrix/vector";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
-            dres_   += abs( lhs_ * rhs_ );
-            sres_   += abs( lhs_ * rhs_ );
-            refres_ += abs( reflhs_ * refrhs_ );
+            dres_   += real( lhs_ * rhs_ );
+            sres_   += real( lhs_ * rhs_ );
+            refres_ += real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3143,9 +3427,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   += abs( olhs_ * rhs_ );
-            sres_   += abs( olhs_ * rhs_ );
-            refres_ += abs( reflhs_ * refrhs_ );
+            dres_   += real( olhs_ * rhs_ );
+            sres_   += real( olhs_ * rhs_ );
+            refres_ += real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3154,16 +3438,16 @@ void OperationTest<MT,VT>::testAbsOperation()
          checkResults<TMT>();
       }
 
-      // Abs multiplication with addition assignment with evaluated matrix/vector
+      // Real multiplication with addition assignment with evaluated matrix/vector
       {
-         test_  = "Abs multiplication with addition assignment with evaluated matrix/vector";
+         test_  = "Real multiplication with addition assignment with evaluated matrix/vector";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
-            dres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   += abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   += real( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += real( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3173,9 +3457,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   += abs( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   += abs( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   += real( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   += real( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ += real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3186,19 +3470,19 @@ void OperationTest<MT,VT>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs multiplication with subtraction assignment
+      // Real multiplication with subtraction assignment
       //=====================================================================================
 
-      // Abs multiplication with subtraction assignment with the given matrix/vector
+      // Real multiplication with subtraction assignment with the given matrix/vector
       {
-         test_  = "Abs multiplication with subtraction assignment with the given matrix/vector";
+         test_  = "Real multiplication with subtraction assignment with the given matrix/vector";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
-            dres_   -= abs( lhs_ * rhs_ );
-            sres_   -= abs( lhs_ * rhs_ );
-            refres_ -= abs( reflhs_ * refrhs_ );
+            dres_   -= real( lhs_ * rhs_ );
+            sres_   -= real( lhs_ * rhs_ );
+            refres_ -= real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3208,9 +3492,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   -= abs( olhs_ * rhs_ );
-            sres_   -= abs( olhs_ * rhs_ );
-            refres_ -= abs( reflhs_ * refrhs_ );
+            dres_   -= real( olhs_ * rhs_ );
+            sres_   -= real( olhs_ * rhs_ );
+            refres_ -= real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3219,16 +3503,16 @@ void OperationTest<MT,VT>::testAbsOperation()
          checkResults<TMT>();
       }
 
-      // Abs multiplication with subtraction assignment with evaluated matrix/vector
+      // Real multiplication with subtraction assignment with evaluated matrix/vector
       {
-         test_  = "Abs multiplication with subtraction assignment with evaluated matrix/vector";
+         test_  = "Real multiplication with subtraction assignment with evaluated matrix/vector";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
-            dres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   -= abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3238,9 +3522,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   -= abs( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   -= abs( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   -= real( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   -= real( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ -= real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3251,19 +3535,19 @@ void OperationTest<MT,VT>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs multiplication with multiplication assignment
+      // Real multiplication with multiplication assignment
       //=====================================================================================
 
-      // Abs multiplication with multiplication assignment with the given matrix/vector
+      // Real multiplication with multiplication assignment with the given matrix/vector
       {
-         test_  = "Abs multiplication with multiplication assignment with the given matrix/vector";
+         test_  = "Real multiplication with multiplication assignment with the given matrix/vector";
          error_ = "Failed multiplication assignment operation";
 
          try {
             initResults();
-            dres_   *= abs( lhs_ * rhs_ );
-            sres_   *= abs( lhs_ * rhs_ );
-            refres_ *= abs( reflhs_ * refrhs_ );
+            dres_   *= real( lhs_ * rhs_ );
+            sres_   *= real( lhs_ * rhs_ );
+            refres_ *= real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3273,9 +3557,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   *= abs( olhs_ * rhs_ );
-            sres_   *= abs( olhs_ * rhs_ );
-            refres_ *= abs( reflhs_ * refrhs_ );
+            dres_   *= real( olhs_ * rhs_ );
+            sres_   *= real( olhs_ * rhs_ );
+            refres_ *= real( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
@@ -3284,16 +3568,16 @@ void OperationTest<MT,VT>::testAbsOperation()
          checkResults<TMT>();
       }
 
-      // Abs multiplication with multiplication assignment with evaluated matrix/vector
+      // Real multiplication with multiplication assignment with evaluated matrix/vector
       {
-         test_  = "Abs multiplication with multiplication assignment with evaluated matrix/vector";
+         test_  = "Real multiplication with multiplication assignment with evaluated matrix/vector";
          error_ = "Failed multiplication assignment operation";
 
          try {
             initResults();
-            dres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
-            sres_   *= abs( eval( lhs_ ) * eval( rhs_ ) );
-            refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   *= real( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<MT>( ex );
@@ -3303,9 +3587,9 @@ void OperationTest<MT,VT>::testAbsOperation()
 
          try {
             initResults();
-            dres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
-            sres_   *= abs( eval( olhs_ ) * eval( rhs_ ) );
-            refres_ *= abs( eval( reflhs_ ) * eval( refrhs_ ) );
+            dres_   *= real( eval( olhs_ ) * eval( rhs_ ) );
+            sres_   *= real( eval( olhs_ ) * eval( rhs_ ) );
+            refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
