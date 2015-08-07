@@ -147,6 +147,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the \a abs tests.
+//
+// This compilation switch triggers the \a abs tests for all test scenarios. In case the \a abs
+// tests are activated, each operation is tested in combination with an \a abs operation. The
+// following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<int> a, b, c;
+   c = abs( a + b );  // Absolute value vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The \a abs tests are not included in the compilation process and not executed
+//   - 1: The \a abs tests are included in the compilation process, but not executed
+//   - 2: The \a abs tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the complex conjugate tests.
 //
 // This compilation switch triggers the complex conjugate tests for all test scenarios. In case
@@ -194,32 +216,32 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
-/*!\brief Compilation switch for the abs tests.
+/*!\brief Compilation switch for the \a real tests.
 //
-// This compilation switch triggers the abs tests for all test scenarios. In case the abs
-// tests are activated, each operation is tested in combination with an abs operation. The
+// This compilation switch triggers the \a real tests for all test scenarios. In case the \a real
+// tests are activated, each operation is tested in combination with an \a real operation. The
 // following example demonstrates this by means of the vector addition:
 
    \code
    blaze::DynamicVector<int> a, b, c;
-   c = abs( a + b );  // Absolute value vector addition
+   c = real( a + b );  // Real part vector addition
    \endcode
 
 // The following settings are possible:
 //
-//   - 0: The abs tests are not included in the compilation process and not executed
-//   - 1: The abs tests are included in the compilation process, but not executed
-//   - 2: The abs tests are included in the compilation process and executed
+//   - 0: The \a real tests are not included in the compilation process and not executed
+//   - 1: The \a real tests are included in the compilation process, but not executed
+//   - 2: The \a real tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_ABS_OPERATION 0
+#define BLAZETEST_MATHTEST_TEST_REAL_OPERATION 0
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Compilation switch for the eval tests.
+/*!\brief Compilation switch for the \a eval tests.
 //
-// This compilation switch triggers the eval tests for all test scenarios. In case the eval
-// tests are activated, each operation is tested in combination with an eval operation. The
+// This compilation switch triggers the \a eval tests for all test scenarios. In case the \a eval
+// tests are activated, each operation is tested in combination with an \a eval operation. The
 // following example demonstrates this by means of the vector addition:
 
    \code
@@ -229,9 +251,9 @@ typedef double  TypeB;
 
 // The following settings are possible:
 //
-//   - 0: The eval tests are not included in the compilation process and not executed
-//   - 1: The eval tests are included in the compilation process, but not executed
-//   - 2: The eval tests are included in the compilation process and executed
+//   - 0: The \a eval tests are not included in the compilation process and not executed
+//   - 1: The \a eval tests are included in the compilation process, but not executed
+//   - 2: The \a eval tests are included in the compilation process and executed
 */
 #define BLAZETEST_MATHTEST_TEST_EVAL_OPERATION 0
 //*************************************************************************************************
