@@ -135,9 +135,10 @@ class OperationTest
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
                           void testTransposeOperation();
+                          void testAbsOperation      ();
                           void testConjOperation     ();
                           void testCTransOperation   ();
-                          void testAbsOperation      ();
+                          void testRealOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -262,9 +263,10 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2.0 );
    testScaledOperation( DET( 2 ) );
    testTransposeOperation();
+   testAbsOperation();
    testConjOperation();
    testCTransOperation();
-   testAbsOperation();
+   testRealOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -1710,6 +1712,192 @@ void OperationTest<VT1,VT2>::testTransposeOperation()
 
 
 //*************************************************************************************************
+/*!\brief Testing the abs sparse vector/dense vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the abs vector cross product with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// cross product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testAbsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Abs cross product
+      //=====================================================================================
+
+      // Abs cross product with the given vectors
+      {
+         test_  = "Abs cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = abs( lhs_ % rhs_ );
+            sres_   = abs( lhs_ % rhs_ );
+            refres_ = abs( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Abs cross product with evaluated vectors
+      {
+         test_  = "Abs cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = abs( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = abs( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = abs( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Abs cross product with addition assignment
+      //=====================================================================================
+
+      // Abs cross product with addition assignment with the given vectors
+      {
+         test_  = "Abs cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += abs( lhs_ % rhs_ );
+            sres_   += abs( lhs_ % rhs_ );
+            refres_ += abs( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Abs cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Abs cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += abs( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += abs( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += abs( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Abs cross product with subtraction assignment
+      //=====================================================================================
+
+      // Abs cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Abs cross product with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= abs( lhs_ % rhs_ );
+            sres_   -= abs( lhs_ % rhs_ );
+            refres_ -= abs( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Abs cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Abs cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= abs( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= abs( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= abs( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Abs cross product with multiplication assignment
+      //=====================================================================================
+
+      // Abs cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Abs cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= abs( lhs_ % rhs_ );
+            sres_   *= abs( lhs_ % rhs_ );
+            refres_ *= abs( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Abs cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Abs cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= abs( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the conjugate sparse vector/dense vector cross product.
 //
 // \return void
@@ -2082,37 +2270,37 @@ void OperationTest<VT1,VT2>::testCTransOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the abs sparse vector/dense vector cross product.
+/*!\brief Testing the \a real sparse vector/dense vector cross product.
 //
 // \return void
 // \exception std::runtime_error Cross product error detected.
 //
-// This function tests the abs vector cross product with plain assignment, addition assignment,
+// This function tests the \a real vector cross product with plain assignment, addition assignment,
 // subtraction assignment, and multiplication assignment. In case any error resulting from the
 // cross product or the subsequent assignment is detected, a \a std::runtime_error exception
 // is thrown.
 */
 template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testAbsOperation()
+void OperationTest<VT1,VT2>::testRealOperation()
 {
-#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+#if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
    {
       //=====================================================================================
-      // Abs cross product
+      // Real cross product
       //=====================================================================================
 
-      // Abs cross product with the given vectors
+      // Real cross product with the given vectors
       {
-         test_  = "Abs cross product with the given vectors";
+         test_  = "Real cross product with the given vectors";
          error_ = "Failed cross product operation";
 
          try {
             initResults();
-            dres_   = abs( lhs_ % rhs_ );
-            sres_   = abs( lhs_ % rhs_ );
-            refres_ = abs( reflhs_ % refrhs_ );
+            dres_   = real( lhs_ % rhs_ );
+            sres_   = real( lhs_ % rhs_ );
+            refres_ = real( reflhs_ % refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2121,16 +2309,16 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs cross product with evaluated vectors
+      // Real cross product with evaluated vectors
       {
-         test_  = "Abs cross product with evaluated vectors";
+         test_  = "Real cross product with evaluated vectors";
          error_ = "Failed cross product operation";
 
          try {
             initResults();
-            dres_   = abs( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   = abs( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ = abs( eval( reflhs_ ) % eval( refrhs_ ) );
+            dres_   = real( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = real( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = real( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2141,19 +2329,19 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs cross product with addition assignment
+      // Real cross product with addition assignment
       //=====================================================================================
 
-      // Abs cross product with addition assignment with the given vectors
+      // Real cross product with addition assignment with the given vectors
       {
-         test_  = "Abs cross product with addition assignment with the given vectors";
+         test_  = "Real cross product with addition assignment with the given vectors";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
-            dres_   += abs( lhs_ % rhs_ );
-            sres_   += abs( lhs_ % rhs_ );
-            refres_ += abs( reflhs_ % refrhs_ );
+            dres_   += real( lhs_ % rhs_ );
+            sres_   += real( lhs_ % rhs_ );
+            refres_ += real( reflhs_ % refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2162,16 +2350,16 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs cross product with addition assignment with evaluated vectors
+      // Real cross product with addition assignment with evaluated vectors
       {
-         test_  = "Abs cross product with addition assignment with evaluated vectors";
+         test_  = "Real cross product with addition assignment with evaluated vectors";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
-            dres_   += abs( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   += abs( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ += abs( eval( reflhs_ ) % eval( refrhs_ ) );
+            dres_   += real( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += real( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += real( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2182,19 +2370,19 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs cross product with subtraction assignment
+      // Real cross product with subtraction assignment
       //=====================================================================================
 
-      // Abs cross product with subtraction assignment with the given vectors
+      // Real cross product with subtraction assignment with the given vectors
       {
-         test_  = "Abs cross product with subtraction assignment with the given types";
+         test_  = "Real cross product with subtraction assignment with the given types";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
-            dres_   -= abs( lhs_ % rhs_ );
-            sres_   -= abs( lhs_ % rhs_ );
-            refres_ -= abs( reflhs_ % refrhs_ );
+            dres_   -= real( lhs_ % rhs_ );
+            sres_   -= real( lhs_ % rhs_ );
+            refres_ -= real( reflhs_ % refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2203,16 +2391,16 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs cross product with subtraction assignment with evaluated vectors
+      // Real cross product with subtraction assignment with evaluated vectors
       {
-         test_  = "Abs cross product with subtraction assignment with evaluated vectors";
+         test_  = "Real cross product with subtraction assignment with evaluated vectors";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
-            dres_   -= abs( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   -= abs( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ -= abs( eval( reflhs_ ) % eval( refrhs_ ) );
+            dres_   -= real( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= real( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= real( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2223,19 +2411,19 @@ void OperationTest<VT1,VT2>::testAbsOperation()
 
 
       //=====================================================================================
-      // Abs cross product with multiplication assignment
+      // Real cross product with multiplication assignment
       //=====================================================================================
 
-      // Abs cross product with multiplication assignment with the given vectors
+      // Real cross product with multiplication assignment with the given vectors
       {
-         test_  = "Abs cross product with multiplication assignment with the given vectors";
+         test_  = "Real cross product with multiplication assignment with the given vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
             initResults();
-            dres_   *= abs( lhs_ % rhs_ );
-            sres_   *= abs( lhs_ % rhs_ );
-            refres_ *= abs( reflhs_ % refrhs_ );
+            dres_   *= real( lhs_ % rhs_ );
+            sres_   *= real( lhs_ % rhs_ );
+            refres_ *= real( reflhs_ % refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException( ex );
@@ -2244,16 +2432,16 @@ void OperationTest<VT1,VT2>::testAbsOperation()
          checkResults();
       }
 
-      // Abs cross product with multiplication assignment with evaluated vectors
+      // Real cross product with multiplication assignment with evaluated vectors
       {
-         test_  = "Abs cross product with multiplication assignment with evaluated vectors";
+         test_  = "Real cross product with multiplication assignment with evaluated vectors";
          error_ = "Failed multiplication assignment operation";
 
          try {
             initResults();
-            dres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
-            sres_   *= abs( eval( lhs_ ) % eval( rhs_ ) );
-            refres_ *= abs( eval( reflhs_ ) % eval( refrhs_ ) );
+            dres_   *= real( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= real( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= real( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
