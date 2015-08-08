@@ -139,6 +139,7 @@ class OperationTest
                           void testConjOperation     ();
                           void testCTransOperation   ();
                           void testRealOperation     ();
+                          void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -267,6 +268,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testConjOperation();
    testCTransOperation();
    testRealOperation();
+   testImagOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -2442,6 +2444,192 @@ void OperationTest<VT1,VT2>::testRealOperation()
             dres_   *= real( eval( lhs_ ) % eval( rhs_ ) );
             sres_   *= real( eval( lhs_ ) % eval( rhs_ ) );
             refres_ *= real( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the \a imag dense vector/dense vector cross product.
+//
+// \return void
+// \exception std::runtime_error Cross product error detected.
+//
+// This function tests the \a imag vector cross product with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// cross product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Imag cross product
+      //=====================================================================================
+
+      // Imag cross product with the given vectors
+      {
+         test_  = "Imag cross product with the given vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ % rhs_ );
+            sres_   = imag( lhs_ % rhs_ );
+            refres_ = imag( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag cross product with evaluated vectors
+      {
+         test_  = "Imag cross product with evaluated vectors";
+         error_ = "Failed cross product operation";
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   = imag( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Imag cross product with addition assignment
+      //=====================================================================================
+
+      // Imag cross product with addition assignment with the given vectors
+      {
+         test_  = "Imag cross product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ % rhs_ );
+            sres_   += imag( lhs_ % rhs_ );
+            refres_ += imag( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag cross product with addition assignment with evaluated vectors
+      {
+         test_  = "Imag cross product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   += imag( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Imag cross product with subtraction assignment
+      //=====================================================================================
+
+      // Imag cross product with subtraction assignment with the given vectors
+      {
+         test_  = "Imag cross product with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ % rhs_ );
+            sres_   -= imag( lhs_ % rhs_ );
+            refres_ -= imag( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag cross product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Imag cross product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   -= imag( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) % eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Imag cross product with multiplication assignment
+      //=====================================================================================
+
+      // Imag cross product with multiplication assignment with the given vectors
+      {
+         test_  = "Imag cross product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( lhs_ % rhs_ );
+            sres_   *= imag( lhs_ % rhs_ );
+            refres_ *= imag( reflhs_ % refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag cross product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Imag cross product with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( eval( lhs_ ) % eval( rhs_ ) );
+            sres_   *= imag( eval( lhs_ ) % eval( rhs_ ) );
+            refres_ *= imag( eval( reflhs_ ) % eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
