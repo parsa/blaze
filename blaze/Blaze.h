@@ -1277,6 +1277,28 @@ namespace blaze {}
    b = real( a );
    \endcode
 
+// \n \subsection vector_operators_imag Imaginary Part
+//
+// The \c imag() function can be used on a dense or sparse vector to extract the imaginary part
+// of each element of the vector:
+
+   \code
+   using blaze::StaticVector;
+
+   typedef std::complex<double>  cplx;
+
+   // Creating the vector
+   //    ( (-2,-1) )
+   //    ( ( 1, 1) )
+   StaticVector<cplx,2UL> a( cplx(-2.0,-1.0), cplx(1.0,1.0) );
+
+   // Extracting the imaginary part of each vector element
+   //    ( -1 )
+   //    (  1 )
+   StaticVector<double,2UL> b;
+   b = imag( a );
+   \endcode
+
 // \n \subsection vector_operations_length Vector Length
 //
 // In order to calculate the length of a vector, both the \c length() and \c sqrLength() function
@@ -2415,6 +2437,29 @@ namespace blaze {}
    //    ( 1  0 )
    StaticMatrix<double,2UL,2UL> B;
    B = real( A );
+   \endcode
+
+// \n \subsection matrix_operators_imag Imaginary Part
+//
+// The \c imag() function can be used on a dense or sparse matrix to extract the imaginary part
+// of each element of the matrix:
+
+   \code
+   using blaze::StaticMatrix;
+
+   typedef std::complex<double>  cplx;
+
+   // Creating the matrix
+   //    ( (1,0)  (-2,-1) )
+   //    ( (1,1)  ( 0, 1) )
+   StaticMatrix<cplx,2UL,2UL> A( cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ),
+                                 cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) );
+
+   // Extracting the imaginary part of each matrix element
+   //    ( 0 -1 )
+   //    ( 1  1 )
+   StaticMatrix<double,2UL,2UL> B;
+   B = imag( A );
    \endcode
 
 // \n \subsection matrix_operations_matrix_transpose Matrix Transpose
