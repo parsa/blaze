@@ -197,7 +197,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this SVecTransposer.
    //
-   // \b Note: A division by zero is only checked by an user assert.
+   // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline typename EnableIf< IsNumeric<Other>, SVecTransposer >::Type& operator/=( Other rhs )
@@ -300,7 +300,7 @@ class SVecTransposer : public SparseVector< SVecTransposer<VT,TF>, TF >
    // value is a default value (for instance 0 in case of an integral element type) the value is
    // not appended. Per default the values are not tested.
    //
-   // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+   // \note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
    inline void append( size_t index, const ElementType& value, bool check=false ) {

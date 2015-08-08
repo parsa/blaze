@@ -72,9 +72,9 @@ namespace blaze {
 // This function provides a platform independent check for NaN values since some compilers
 // don't support the \a isnan function (although is is part of the latest C standard library).
 //
-// \b Note: Since NaN values are only defined for floating point types, this \a isnan can
-// only be used for floating point types. The attempt to use this function for an integral
-// data type results in a compile time error.
+// \note: Since NaN values are only defined for floating point types, this \a isnan can only
+// be used for floating point types. The attempt to use this function for an integral data
+// type results in a compile time error.
 */
 template< typename T >
 BLAZE_ALWAYS_INLINE typename EnableIf< IsFloatingPoint<T>, bool >::Type isnan( T a )

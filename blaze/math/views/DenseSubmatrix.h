@@ -1936,7 +1936,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
 // This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
 // attempt to scale such a submatrix results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
@@ -5296,7 +5296,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 // This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
 // attempt to scale such a submatrix results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
@@ -8288,7 +8288,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 // This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
 // attempt to scale such a submatrix results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
@@ -11259,7 +11259,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 // This operator cannot be used for submatrices on lower or upper unitriangular matrices. The
 // attempt to scale such a submatrix results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar

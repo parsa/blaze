@@ -1251,7 +1251,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,SO,SF> >::Type&
 // floating point data type or the division assignment operator for the given integral data
 // type.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
@@ -1968,7 +1968,7 @@ inline typename SparseColumn<MT,SO,SF>::ConstIterator
 // value is a default value (for instance 0 in case of an integral element type) the value is
 // not appended. Per default the values are not tested.
 //
-// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT  // Type of the sparse matrix
@@ -3273,7 +3273,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,false> >::Type
 // floating point data type or the division assignment operator for the given integral data
 // type.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
@@ -4037,7 +4037,7 @@ inline typename SparseColumn<MT,false,false>::ConstIterator
 // value is a default value (for instance 0 in case of an integral element type) the value is
 // not appended. Per default the values are not tested.
 //
-// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix
@@ -5134,7 +5134,7 @@ inline typename EnableIf< IsNumeric<Other>, SparseColumn<MT,false,true> >::Type&
 // floating point data type or the division assignment operator for the given integral data
 // type.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the sparse matrix
 template< typename Other >  // Data type of the right-hand side scalar
@@ -5855,7 +5855,7 @@ inline typename SparseColumn<MT,false,true>::ConstIterator
 // value is a default value (for instance 0 in case of an integral element type) the value is
 // not appended. Per default the values are not tested.
 //
-// \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+// \note: Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
 template< typename MT >  // Type of the sparse matrix

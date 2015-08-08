@@ -1153,7 +1153,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,SO,SF> >::Type&
 // This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
 // to scale such a row results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
         , bool SO           // Storage order
@@ -3245,7 +3245,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,false,false> >::Type&
 // This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
 // to scale such a row results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar
@@ -4865,7 +4865,7 @@ inline typename EnableIf< IsNumeric<Other>, DenseColumn<MT,false,true> >::Type&
 // This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
 // to scale such a row results in a compilation error!
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename MT >     // Type of the dense matrix
 template< typename Other >  // Data type of the right-hand side scalar

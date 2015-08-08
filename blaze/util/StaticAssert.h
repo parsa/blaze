@@ -92,8 +92,8 @@ namespace blaze {
       BLAZE_STATIC_ASSERT( !std::numeric_limits<T>::is_integer );
    \endcode
 
-// \b Note: blaze::BLAZE_STATIC_ASSERT can only can expressions of integral type. Floating
-// point expressions cannot be checked at compile time!
+// \note: blaze::BLAZE_STATIC_ASSERT can only can expressions of integral type. Floating point
+// expressions cannot be checked at compile time!
 //
 // \b Acknowledgements: blaze::BLAZE_STATIC_ASSERT builds on ideas developed by John Maddock
 // within the Boost C++ framework (www.boost.org). However, it uses a slightly changed compile

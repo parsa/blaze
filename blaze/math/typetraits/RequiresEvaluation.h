@@ -82,7 +82,7 @@ struct RequiresEvaluationHelper
 // Otherwise \a value is set to 0, \a Type is \a FalseType, and the class derives from
 // \a FalseType.
 //
-// \b Note that this type trait can only be applied to Blaze vector or matrix expressions
+// \note that this type trait can only be applied to Blaze vector or matrix expressions
 // or any other type providing the nested type \a CompositeType. In case this nested type
 // is not available, applying the type trait results in a compile time error!
 */

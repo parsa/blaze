@@ -1345,7 +1345,7 @@ inline typename EnableIf< IsNumeric<Other>, HybridMatrix<Type,M,N,SO> >::Type&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the matrix.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
@@ -3801,7 +3801,7 @@ inline typename EnableIf< IsNumeric<Other>, HybridMatrix<Type,M,N,true> >::Type&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the matrix.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows

@@ -182,8 +182,8 @@ inline Matrix<Type,SO>::Matrix()
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \b Note: This constructor is only responsible to allocate the required dynamic memory. No
-//          element initialization is performed!
+// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// element initialization is performed!
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order

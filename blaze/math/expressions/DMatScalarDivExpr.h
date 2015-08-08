@@ -931,7 +931,7 @@ class DMatScalarDivExpr : public DenseMatrix< DMatScalarDivExpr<MT,ST,SO>, SO >
 // type of the involved data types \a T1::ElementType and \a T2. Note that this operator only
 // works for scalar values of built-in data type.
 //
-// \b Note: A division by zero is only checked by an user assert.
+// \note: A division by zero is only checked by an user assert.
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , bool SO        // Storage order of the left-hand side dense matrix

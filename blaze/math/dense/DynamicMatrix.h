@@ -481,8 +481,8 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix()
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \b Note: This constructor is only responsible to allocate the required dynamic memory. No
-//          element initialization is performed!
+// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// element initialization is performed!
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -2780,8 +2780,8 @@ inline DynamicMatrix<Type,true>::DynamicMatrix()
 // \param m The number of rows of the matrix.
 // \param n The number of columns of the matrix.
 //
-// \b Note: This constructor is only responsible to allocate the required dynamic memory. No
-//          element initialization is performed!
+// \note: This constructor is only responsible to allocate the required dynamic memory. No
+// element initialization is performed!
 */
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n )

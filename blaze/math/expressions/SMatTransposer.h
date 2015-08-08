@@ -235,7 +235,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this SMatTransposer.
    //
-   // \b Note: A division by zero is only checked by an user assert.
+   // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator/=( Other rhs )
@@ -395,7 +395,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // value is a default value (for instance 0 in case of an integral element type) the value is
    // not appended. Per default the values are not tested.
    //
-   // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+   // \note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
    inline void append( size_t i, size_t j, const ElementType& value, bool check=false ) {
@@ -413,7 +413,7 @@ class SMatTransposer : public SparseMatrix< SMatTransposer<MT,SO>, SO >
    // After completion of row/column \a i via the append() function, this function can be called to
    // finalize row/column \a i and prepare the next row/column for insertion process via append().
    //
-   // \b Note: Although finalize() does not allocate new memory, it still invalidates all iterators
+   // \note: Although finalize() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
    inline void finalize( size_t i ) {
@@ -706,7 +706,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // \param rhs The right-hand side scalar value for the division.
    // \return Reference to this SMatTransposer.
    //
-   // \b Note: A division by zero is only checked by an user assert.
+   // \note: A division by zero is only checked by an user assert.
    */
    template< typename Other >  // Data type of the right-hand side scalar
    inline typename EnableIf< IsNumeric<Other>, SMatTransposer >::Type& operator/=( Other rhs )
@@ -863,7 +863,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // value is a default value (for instance 0 in case of an integral element type) the value is
    // not appended. Per default the values are not tested.
    //
-   // \b Note: Although append() does not allocate new memory, it still invalidates all iterators
+   // \note: Although append() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
    void append( size_t i, size_t j, const ElementType& value, bool check=false ) {
@@ -881,7 +881,7 @@ class SMatTransposer<MT,true> : public SparseMatrix< SMatTransposer<MT,true>, tr
    // After completion of column \a i via the append() function, this function can be called to
    // finalize column \a i and prepare the next row/column for insertion process via append().
    //
-   // \b Note: Although finalize() does not allocate new memory, it still invalidates all iterators
+   // \note: Although finalize() does not allocate new memory, it still invalidates all iterators
    // returned by the end() functions!
    */
    inline void finalize( size_t j ) {
