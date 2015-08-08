@@ -238,6 +238,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the \a imag tests.
+//
+// This compilation switch triggers the \a imag tests for all test scenarios. In case the \a imag
+// tests are activated, each operation is tested in combination with an \a imag operation. The
+// following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<int> a, b, c;
+   c = imag( a + b );  // Imaginary part vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The \a imag tests are not included in the compilation process and not executed
+//   - 1: The \a imag tests are included in the compilation process, but not executed
+//   - 2: The \a imag tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_IMAG_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the \a eval tests.
 //
 // This compilation switch triggers the \a eval tests for all test scenarios. In case the \a eval
