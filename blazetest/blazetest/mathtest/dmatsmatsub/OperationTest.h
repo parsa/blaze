@@ -172,6 +172,7 @@ class OperationTest
                           void testConjOperation     ();
                           void testCTransOperation   ();
                           void testRealOperation     ();
+                          void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubmatrixOperation();
@@ -353,6 +354,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testConjOperation();
    testCTransOperation();
    testRealOperation();
+   testImagOperation();
    testEvalOperation();
    testSerialOperation();
    testSubmatrixOperation();
@@ -4592,6 +4594,414 @@ void OperationTest<MT1,MT2>::testRealOperation()
             sres_   -= real( eval( olhs_ ) - eval( orhs_ ) );
             osres_  -= real( eval( olhs_ ) - eval( orhs_ ) );
             refres_ -= real( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the \a imag dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the \a imag matrix subtraction with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the subtraction or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Imag subtraction
+      //=====================================================================================
+
+      // Imag subtraction with the given matrices
+      {
+         test_  = "Imag subtraction with the given matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ - rhs_ );
+            odres_  = imag( lhs_ - rhs_ );
+            sres_   = imag( lhs_ - rhs_ );
+            osres_  = imag( lhs_ - rhs_ );
+            refres_ = imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ - orhs_ );
+            odres_  = imag( lhs_ - orhs_ );
+            sres_   = imag( lhs_ - orhs_ );
+            osres_  = imag( lhs_ - orhs_ );
+            refres_ = imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = imag( olhs_ - rhs_ );
+            odres_  = imag( olhs_ - rhs_ );
+            sres_   = imag( olhs_ - rhs_ );
+            osres_  = imag( olhs_ - rhs_ );
+            refres_ = imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = imag( olhs_ - orhs_ );
+            odres_  = imag( olhs_ - orhs_ );
+            sres_   = imag( olhs_ - orhs_ );
+            osres_  = imag( olhs_ - orhs_ );
+            refres_ = imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Imag subtraction with evaluated matrices
+      {
+         test_  = "Imag subtraction with evaluated matrices";
+         error_ = "Failed subtraction operation";
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  = imag( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   = imag( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  = imag( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  = imag( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   = imag( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  = imag( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ = imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   = imag( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  = imag( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   = imag( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  = imag( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   = imag( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  = imag( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   = imag( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  = imag( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ = imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Imag subtraction with addition assignment
+      //=====================================================================================
+
+      // Imag subtraction with addition assignment with the given matrices
+      {
+         test_  = "Imag subtraction with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ - rhs_ );
+            odres_  += imag( lhs_ - rhs_ );
+            sres_   += imag( lhs_ - rhs_ );
+            osres_  += imag( lhs_ - rhs_ );
+            refres_ += imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ - orhs_ );
+            odres_  += imag( lhs_ - orhs_ );
+            sres_   += imag( lhs_ - orhs_ );
+            osres_  += imag( lhs_ - orhs_ );
+            refres_ += imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += imag( olhs_ - rhs_ );
+            odres_  += imag( olhs_ - rhs_ );
+            sres_   += imag( olhs_ - rhs_ );
+            osres_  += imag( olhs_ - rhs_ );
+            refres_ += imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += imag( olhs_ - orhs_ );
+            odres_  += imag( olhs_ - orhs_ );
+            sres_   += imag( olhs_ - orhs_ );
+            osres_  += imag( olhs_ - orhs_ );
+            refres_ += imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Imag subtraction with addition assignment with evaluated matrices
+      {
+         test_  = "Imag subtraction with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  += imag( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   += imag( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  += imag( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  += imag( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   += imag( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  += imag( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ += imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   += imag( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  += imag( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   += imag( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  += imag( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   += imag( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  += imag( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   += imag( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  += imag( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ += imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Imag subtraction with subtraction assignment
+      //=====================================================================================
+
+      // Imag subtraction with subtraction assignment with the given matrices
+      {
+         test_  = "Imag subtraction with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ - rhs_ );
+            odres_  -= imag( lhs_ - rhs_ );
+            sres_   -= imag( lhs_ - rhs_ );
+            osres_  -= imag( lhs_ - rhs_ );
+            refres_ -= imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ - orhs_ );
+            odres_  -= imag( lhs_ - orhs_ );
+            sres_   -= imag( lhs_ - orhs_ );
+            osres_  -= imag( lhs_ - orhs_ );
+            refres_ -= imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( olhs_ - rhs_ );
+            odres_  -= imag( olhs_ - rhs_ );
+            sres_   -= imag( olhs_ - rhs_ );
+            osres_  -= imag( olhs_ - rhs_ );
+            refres_ -= imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( olhs_ - orhs_ );
+            odres_  -= imag( olhs_ - orhs_ );
+            sres_   -= imag( olhs_ - orhs_ );
+            osres_  -= imag( olhs_ - orhs_ );
+            refres_ -= imag( reflhs_ - refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Imag subtraction with subtraction assignment with evaluated matrices
+      {
+         test_  = "Imag subtraction with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) - eval( rhs_ ) );
+            odres_  -= imag( eval( lhs_ ) - eval( rhs_ ) );
+            sres_   -= imag( eval( lhs_ ) - eval( rhs_ ) );
+            osres_  -= imag( eval( lhs_ ) - eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) - eval( orhs_ ) );
+            odres_  -= imag( eval( lhs_ ) - eval( orhs_ ) );
+            sres_   -= imag( eval( lhs_ ) - eval( orhs_ ) );
+            osres_  -= imag( eval( lhs_ ) - eval( orhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( eval( olhs_ ) - eval( rhs_ ) );
+            odres_  -= imag( eval( olhs_ ) - eval( rhs_ ) );
+            sres_   -= imag( eval( olhs_ ) - eval( rhs_ ) );
+            osres_  -= imag( eval( olhs_ ) - eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) - eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            dres_   -= imag( eval( olhs_ ) - eval( orhs_ ) );
+            odres_  -= imag( eval( olhs_ ) - eval( orhs_ ) );
+            sres_   -= imag( eval( olhs_ ) - eval( orhs_ ) );
+            osres_  -= imag( eval( olhs_ ) - eval( orhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) - eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
