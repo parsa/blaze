@@ -155,6 +155,7 @@ class OperationTest
                           void testConjOperation     ();
                           void testCTransOperation   ();
                           void testRealOperation     ();
+                          void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -299,6 +300,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testConjOperation();
    testCTransOperation();
    testRealOperation();
+   testImagOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -3591,6 +3593,288 @@ void OperationTest<VT,MT>::testRealOperation()
             dres_   *= real( eval( lhs_ ) * eval( orhs_ ) );
             sres_   *= real( eval( lhs_ ) * eval( orhs_ ) );
             refres_ *= real( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the \a imag dense vector/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the \a imag vector/matrix multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Imag multiplication
+      //=====================================================================================
+
+      // Imag multiplication with the given vector/matrix
+      {
+         test_  = "Imag multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ * rhs_ );
+            sres_   = imag( lhs_ * rhs_ );
+            refres_ = imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ * orhs_ );
+            sres_   = imag( lhs_ * orhs_ );
+            refres_ = imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Imag multiplication with evaluated vector/matrix
+      {
+         test_  = "Imag multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   = imag( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with addition assignment
+      //=====================================================================================
+
+      // Imag multiplication with addition assignment with the given vector/matrix
+      {
+         test_  = "Imag multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ * rhs_ );
+            sres_   += imag( lhs_ * rhs_ );
+            refres_ += imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ * orhs_ );
+            sres_   += imag( lhs_ * orhs_ );
+            refres_ += imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Imag multiplication with addition assignment with evaluated vector/matrix
+      {
+         test_  = "Imag multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   += imag( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Imag multiplication with subtraction assignment with the given vector/matrix
+      {
+         test_  = "Imag multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ * rhs_ );
+            sres_   -= imag( lhs_ * rhs_ );
+            refres_ -= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ * orhs_ );
+            sres_   -= imag( lhs_ * orhs_ );
+            refres_ -= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Imag multiplication with subtraction assignment with evaluated vector/matrix
+      {
+         test_  = "Imag multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   -= imag( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Imag multiplication with multiplication assignment with the given vector/matrix
+      {
+         test_  = "Imag multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( lhs_ * rhs_ );
+            sres_   *= imag( lhs_ * rhs_ );
+            refres_ *= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= imag( lhs_ * orhs_ );
+            sres_   *= imag( lhs_ * orhs_ );
+            refres_ *= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Imag multiplication with multiplication assignment with evaluated vector/matrix
+      {
+         test_  = "Imag multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ *= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            dres_   *= imag( eval( lhs_ ) * eval( orhs_ ) );
+            sres_   *= imag( eval( lhs_ ) * eval( orhs_ ) );
+            refres_ *= imag( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TMT>( ex );
