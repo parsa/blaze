@@ -153,6 +153,7 @@ class OperationTest
                           void testConjOperation     ();
                           void testCTransOperation   ();
                           void testRealOperation     ();
+                          void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
@@ -303,6 +304,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testConjOperation();
    testCTransOperation();
    testRealOperation();
+   testImagOperation();
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
@@ -3609,6 +3611,288 @@ void OperationTest<VT1,VT2>::testRealOperation()
             tdres_   *= real( eval( tlhs_ ) * eval( trhs_ ) );
             tsres_   *= real( eval( tlhs_ ) * eval( trhs_ ) );
             trefres_ *= real( eval( treflhs_ ) * eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the \a imag dense vector/dense vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the \a imag vector multiplication with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error
+// resulting from the multiplication or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Imag multiplication
+      //=====================================================================================
+
+      // Imag multiplication with the given vectors
+      {
+         test_  = "Imag multiplication with the given vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ * rhs_ );
+            sres_   = imag( lhs_ * rhs_ );
+            refres_ = imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   = imag( tlhs_ * trhs_ );
+            tsres_   = imag( tlhs_ * trhs_ );
+            trefres_ = imag( treflhs_ * trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Imag multiplication with evaluated vectors
+      {
+         test_  = "Imag multiplication with evaluated vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   = imag( eval( tlhs_ ) * eval( trhs_ ) );
+            tsres_   = imag( eval( tlhs_ ) * eval( trhs_ ) );
+            trefres_ = imag( eval( treflhs_ ) * eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with addition assignment
+      //=====================================================================================
+
+      // Imag multiplication with addition assignment with the given vectors
+      {
+         test_  = "Imag multiplication with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ * rhs_ );
+            sres_   += imag( lhs_ * rhs_ );
+            refres_ += imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   += imag( tlhs_ * trhs_ );
+            tsres_   += imag( tlhs_ * trhs_ );
+            trefres_ += imag( treflhs_ * trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Imag multiplication with addition assignment with evaluated vectors
+      {
+         test_  = "Imag multiplication with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   += imag( eval( tlhs_ ) * eval( trhs_ ) );
+            tsres_   += imag( eval( tlhs_ ) * eval( trhs_ ) );
+            trefres_ += imag( eval( treflhs_ ) * eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Imag multiplication with subtraction assignment with the given vectors
+      {
+         test_  = "Imag multiplication with subtraction assignment with the given types";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ * rhs_ );
+            sres_   -= imag( lhs_ * rhs_ );
+            refres_ -= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   -= imag( tlhs_ * trhs_ );
+            tsres_   -= imag( tlhs_ * trhs_ );
+            trefres_ -= imag( treflhs_ * trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Imag multiplication with subtraction assignment with evaluated vectors
+      {
+         test_  = "Imag multiplication with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   -= imag( eval( tlhs_ ) * eval( trhs_ ) );
+            tsres_   -= imag( eval( tlhs_ ) * eval( trhs_ ) );
+            trefres_ -= imag( eval( treflhs_ ) * eval( trefrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Imag multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Imag multiplication with multiplication assignment with the given vectors
+      {
+         test_  = "Imag multiplication with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( lhs_ * rhs_ );
+            sres_   *= imag( lhs_ * rhs_ );
+            refres_ *= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= imag( tlhs_ * trhs_ );
+            tsres_   *= imag( tlhs_ * trhs_ );
+            trefres_ *= imag( treflhs_ * trefrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Imag multiplication with multiplication assignment with evaluated vectors
+      {
+         test_  = "Imag multiplication with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            dres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   *= imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ *= imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            tdres_   *= imag( eval( tlhs_ ) * eval( trhs_ ) );
+            tsres_   *= imag( eval( tlhs_ ) * eval( trhs_ ) );
+            trefres_ *= imag( eval( treflhs_ ) * eval( trefrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException<TVT1,TVT2>( ex );
