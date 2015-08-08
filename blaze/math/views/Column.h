@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsMatRealExpr.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
 #include <blaze/math/typetraits/IsMatScalarMultExpr.h>
+#include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
@@ -433,6 +434,31 @@ inline typename EnableIf< IsMatEvalExpr<MT>, typename ColumnExprTrait<MT>::Type 
    BLAZE_FUNCTION_TRACE;
 
    return eval( column( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix serialization operation.
+// \ingroup views
+//
+// \param matrix The constant matrix serialization operation.
+// \param index The index of the column.
+// \return View on the specified column of the serialization operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// serialization operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatSerialExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+   column( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return serial( column( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
