@@ -46,6 +46,7 @@
 #include <blaze/math/typetraits/IsMatAbsExpr.h>
 #include <blaze/math/typetraits/IsMatConjExpr.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
+#include <blaze/math/typetraits/IsMatImagExpr.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
@@ -314,15 +315,15 @@ inline typename EnableIf< IsMatScalarDivExpr<MT>, typename ColumnExprTrait<MT>::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix abs operation.
+/*!\brief Creating a view on a specific column of the given matrix \a abs operation.
 // \ingroup views
 //
-// \param matrix The constant matrix abs operation.
+// \param matrix The constant matrix \a abs operation.
 // \param index The index of the column.
-// \return View on the specified column of the abs operation.
+// \return View on the specified column of the \a abs operation.
 //
-// This function returns an expression representing the specified column of the given matrix abs
-// operation.
+// This function returns an expression representing the specified column of the given matrix
+// \a abs operation.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
@@ -339,15 +340,15 @@ inline typename EnableIf< IsMatAbsExpr<MT>, typename ColumnExprTrait<MT>::Type >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix conj operation.
+/*!\brief Creating a view on a specific column of the given matrix \a conj operation.
 // \ingroup views
 //
-// \param matrix The constant matrix conj operation.
+// \param matrix The constant matrix \a conj operation.
 // \param index The index of the column.
-// \return View on the specified column of the conj operation.
+// \return View on the specified column of the \a conj operation.
 //
-// This function returns an expression representing the specified column of the given matrix conj
-// operation.
+// This function returns an expression representing the specified column of the given matrix
+// \a conj operation.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
@@ -364,15 +365,15 @@ inline typename EnableIf< IsMatConjExpr<MT>, typename ColumnExprTrait<MT>::Type 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix real operation.
+/*!\brief Creating a view on a specific column of the given matrix \a real operation.
 // \ingroup views
 //
-// \param matrix The constant matrix real operation.
+// \param matrix The constant matrix \a real operation.
 // \param index The index of the column.
-// \return View on the specified column of the real operation.
+// \return View on the specified column of the \a real operation.
 //
-// This function returns an expression representing the specified column of the given matrix real
-// operation.
+// This function returns an expression representing the specified column of the given matrix
+// \a real operation.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
@@ -382,6 +383,31 @@ inline typename EnableIf< IsMatRealExpr<MT>, typename ColumnExprTrait<MT>::Type 
    BLAZE_FUNCTION_TRACE;
 
    return real( column( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix \a imag operation.
+// \ingroup views
+//
+// \param matrix The constant matrix \a imag operation.
+// \param index The index of the column.
+// \return View on the specified column of the \a imag operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// \a imag operation.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline typename EnableIf< IsMatImagExpr<MT>, typename ColumnExprTrait<MT>::Type >::Type
+   column( const Matrix<MT,SO>& matrix, size_t index )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return imag( column( (~matrix).operand(), index ) );
 }
 /*! \endcond */
 //*************************************************************************************************
