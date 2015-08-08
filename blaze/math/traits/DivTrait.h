@@ -62,7 +62,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the DivTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section divtrait_general General
 //
@@ -186,7 +186,7 @@ struct DivTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of DivTrait specializations for the built-in data types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the DivTrait specializations for the built-in data types.
 */
@@ -203,7 +203,7 @@ struct DivTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of DivTrait specializations for the complex data type.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the DivTrait specializations for the complex data type.
 */

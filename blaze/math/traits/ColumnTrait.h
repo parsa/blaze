@@ -60,7 +60,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the ColumnTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section columntrait_general General
 //

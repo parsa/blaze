@@ -62,7 +62,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the AddTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section addtrait_general General
 //
@@ -186,7 +186,7 @@ struct AddTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of AddTrait specializations for the built-in data types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the AddTrait specializations for the built-in data types.
 */
@@ -203,7 +203,7 @@ struct AddTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of AddTrait specializations for the complex data type.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the AddTrait specializations for the complex data type.
 */

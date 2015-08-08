@@ -55,7 +55,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the CrossTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section crosstrait_general General
 //

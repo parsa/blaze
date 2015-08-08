@@ -60,7 +60,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the SubmatrixTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section submatrixtrait_general General
 //

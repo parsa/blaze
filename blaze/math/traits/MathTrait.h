@@ -62,7 +62,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the MathTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section mathtrait_general General
 //
@@ -180,7 +180,7 @@ struct MathTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization for two identical types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This specialization of the MathTrait class template handles the special case that the two
 // given types are identical. In this case, the nested types \a HighType and \a LowType are
@@ -210,7 +210,7 @@ struct MathTrait<T,T>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of MathTrait specializations for the built-in data types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the MathTrait specializations for the built-in data types.
 */
@@ -228,7 +228,7 @@ struct MathTrait<T,T>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of MathTrait specializations for the complex data type.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the MathTrait specializations for the complex data type.
 */

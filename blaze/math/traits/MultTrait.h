@@ -62,7 +62,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the MultTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section multtrait_general General
 //
@@ -186,7 +186,7 @@ struct MultTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of MultTrait specializations for the built-in data types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the MultTrait specializations for the built-in data types.
 */
@@ -203,7 +203,7 @@ struct MultTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of MultTrait specializations for the complex data type.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the MultTrait specializations for the complex data type.
 */

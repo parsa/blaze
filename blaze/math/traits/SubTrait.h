@@ -62,7 +62,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the SubTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // \section subtrait_general General
 //
@@ -186,7 +186,7 @@ struct SubTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of SubTrait specializations for the built-in data types.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the SubTrait specializations for the built-in data types.
 */
@@ -203,7 +203,7 @@ struct SubTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the creation of SubTrait specializations for the complex data type.
-// \ingroup math
+// \ingroup math_traits
 //
 // This macro is used for the setup of the SubTrait specializations for the complex data type.
 */

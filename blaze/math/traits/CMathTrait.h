@@ -46,7 +46,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Base template for the CMathTrait class.
-// \ingroup math
+// \ingroup math_traits
 //
 // The CMathTrait template evaluates the return type of the mathematical functions defined
 // in the C++ header \<cmath\> depending on the type of the template argument. In case of an
@@ -84,7 +84,7 @@ struct CMathTrait
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief CMathTrait<float> specialization.
-// \ingroup math
+// \ingroup math_traits
 */
 template<>
 struct CMathTrait<float>
@@ -98,7 +98,7 @@ struct CMathTrait<float>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief CMathTrait<long double> specialization.
-// \ingroup math
+// \ingroup math_traits
 */
 template<>
 struct CMathTrait<long double>
