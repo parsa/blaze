@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/IsVecAbsExpr.h>
 #include <blaze/math/typetraits/IsVecConjExpr.h>
 #include <blaze/math/typetraits/IsVecEvalExpr.h>
+#include <blaze/math/typetraits/IsVecImagExpr.h>
 #include <blaze/math/typetraits/IsVecRealExpr.h>
 #include <blaze/math/typetraits/IsVecScalarDivExpr.h>
 #include <blaze/math/typetraits/IsVecScalarMultExpr.h>
@@ -654,16 +655,16 @@ inline typename EnableIf< IsVecScalarDivExpr<VT>, typename SubvectorExprTrait<VT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector abs operation.
+/*!\brief Creating a view on a specific subvector of the given vector \a abs operation.
 // \ingroup views
 //
-// \param vector The constant vector abs operation.
+// \param vector The constant vector \a abs operation.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
-// \return View on the specified subvector of the abs operation.
+// \return View on the specified subvector of the \a abs operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
-// abs operation.
+// \a abs operation.
 */
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
@@ -681,16 +682,16 @@ inline typename EnableIf< IsVecAbsExpr<VT>, typename SubvectorExprTrait<VT,AF>::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector conj operation.
+/*!\brief Creating a view on a specific subvector of the given vector \a conj operation.
 // \ingroup views
 //
-// \param vector The constant vector conj operation.
+// \param vector The constant vector \a conj operation.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
-// \return View on the specified subvector of the conj operation.
+// \return View on the specified subvector of the \a conj operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
-// conj operation.
+// \a conj operation.
 */
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
@@ -708,16 +709,16 @@ inline typename EnableIf< IsVecConjExpr<VT>, typename SubvectorExprTrait<VT,AF>:
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector real operation.
+/*!\brief Creating a view on a specific subvector of the given vector \a real operation.
 // \ingroup views
 //
-// \param vector The constant vector real operation.
+// \param vector The constant vector \a real operation.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
-// \return View on the specified subvector of the real operation.
+// \return View on the specified subvector of the \a real operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
-// real operation.
+// \a real operation.
 */
 template< bool AF      // Alignment flag
         , typename VT  // Type of the vector
@@ -728,6 +729,33 @@ inline typename EnableIf< IsVecRealExpr<VT>, typename SubvectorExprTrait<VT,AF>:
    BLAZE_FUNCTION_TRACE;
 
    return real( subvector<AF>( (~vector).operand(), index, size ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector \a imag operation.
+// \ingroup views
+//
+// \param vector The constant vector \a imag operation.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \return View on the specified subvector of the \a imag operation.
+//
+// This function returns an expression representing the specified subvector of the given vector
+// \a imag operation.
+*/
+template< bool AF      // Alignment flag
+        , typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline typename EnableIf< IsVecImagExpr<VT>, typename SubvectorExprTrait<VT,AF>::Type >::Type
+   subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return imag( subvector<AF>( (~vector).operand(), index, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
