@@ -51,7 +51,6 @@
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/UniqueArray.h>
 
 
 namespace blazetest {
@@ -80,8 +79,6 @@ class OperationTest : private blaze::NonCopyable
    //**Type definitions****************************************************************************
    typedef blaze::IntrinsicTrait<T>  IT;             //!< Intrinsic trait for the given numeric type.
    typedef typename IT::Type         IntrinsicType;  //!< Intrinsic type for the given numeric type.
-
-   typedef blaze::UniqueArray<T,blaze::Deallocate>  Ptr;  //!< Smart pointer for the aligned memory.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -94,6 +91,13 @@ class OperationTest : private blaze::NonCopyable
    /*!\name Constructors */
    //@{
    explicit OperationTest();
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~OperationTest();
    //@}
    //**********************************************************************************************
 
@@ -168,6 +172,26 @@ OperationTest<T>::OperationTest()
    }
 
    testReduction();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DESTRUCTOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief The destructor for the intrinsic operation test.
+*/
+template< typename T >  // Data type of the intrinsic test
+OperationTest<T>::~OperationTest()
+{
+   blaze::deallocate( a_ );
+   blaze::deallocate( b_ );
 }
 //*************************************************************************************************
 
