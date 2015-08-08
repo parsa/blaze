@@ -151,6 +151,7 @@ class OperationTest
                           void testConjOperation     ();
                           void testCTransOperation   ();
                           void testRealOperation     ();
+                          void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubmatrixOperation();
@@ -308,6 +309,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testConjOperation();
    testCTransOperation();
    testRealOperation();
+   testImagOperation();
    testEvalOperation();
    testSerialOperation();
    testSubmatrixOperation();
@@ -2027,6 +2029,162 @@ void OperationTest<VT1,VT2>::testRealOperation()
             sres_   -= real( eval( lhs_ ) * eval( rhs_ ) );
             osres_  -= real( eval( lhs_ ) * eval( rhs_ ) );
             refres_ -= real( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the \a imag dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the \a imag outer product with plain assignment, addition assignment,
+// and subtraction assignment. In case any error resulting from the outer product or the
+// subsequent assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Imag outer product
+      //=====================================================================================
+
+      // Imag outer product with the given vectors
+      {
+         test_  = "Imag outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = imag( lhs_ * rhs_ );
+            odres_  = imag( lhs_ * rhs_ );
+            sres_   = imag( lhs_ * rhs_ );
+            osres_  = imag( lhs_ * rhs_ );
+            refres_ = imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag outer product with evaluated vectors
+      {
+         test_  = "Imag outer product with evaluated vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            dres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  = imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   = imag( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  = imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ = imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Imag outer product with addition assignment
+      //=====================================================================================
+
+      // Imag outer product with addition assignment with the given vectors
+      {
+         test_  = "Imag outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( lhs_ * rhs_ );
+            odres_  += imag( lhs_ * rhs_ );
+            sres_   += imag( lhs_ * rhs_ );
+            osres_  += imag( lhs_ * rhs_ );
+            refres_ += imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Imag outer product with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            dres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  += imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   += imag( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  += imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ += imag( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Imag outer product with subtraction assignment
+      //=====================================================================================
+
+      // Imag outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Imag outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( lhs_ * rhs_ );
+            odres_  -= imag( lhs_ * rhs_ );
+            sres_   -= imag( lhs_ * rhs_ );
+            osres_  -= imag( lhs_ * rhs_ );
+            refres_ -= imag( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Imag outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Imag outer product with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            dres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            odres_  -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            sres_   -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            osres_  -= imag( eval( lhs_ ) * eval( rhs_ ) );
+            refres_ -= imag( eval( reflhs_ ) * eval( refrhs_ ) );
          }
          catch( std::exception& ex ) {
             convertException( ex );
