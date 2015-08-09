@@ -146,7 +146,7 @@ namespace blaze {}
 //**Configuration and Installation*****************************************************************
 /*!\page configuration_and_installation Configuration and Installation
 //
-// <center> Next: \ref getting_started </center> \n
+// Next: \ref getting_started \n
 //
 // Setting up the \b Blaze library on a particular system is a fairly easy two step process. Since
 // \b Blaze is a template library and therefore mainly consists of header files no compilation is
@@ -289,15 +289,13 @@ namespace blaze {}
 // For Windows users, a comfortable compilation of the extended \b Blaze features is not (yet)
 // supported.
 //
-// \n <center> Next: \ref getting_started </center>
+// \n Next: \ref getting_started
 */
 //*************************************************************************************************
 
 
 //**Getting Started********************************************************************************
 /*!\page getting_started Getting Started
-//
-// <center> Previous: \ref configuration_and_installation &nbsp; &nbsp; Next: \ref vector_types </center> \n
 //
 // This short tutorial serves the purpose to give a quick overview of the way mathematical
 // expressions have to be formulated in \b Blaze. Starting with \ref vector_types, the following
@@ -469,16 +467,13 @@ namespace blaze {}
 // matrix types, all possible operations on vectors and matrices, and of course all possible
 // mathematical expressions.
 //
-// \n <center> Previous: \ref configuration_and_installation &nbsp; &nbsp; Next: \ref vector_types </center>
+// \n Previous: \ref configuration_and_installation &nbsp; &nbsp; Next: \ref vector_types
 */
 //*************************************************************************************************
 
 
 //**Vector Types***********************************************************************************
 /*!\page vector_types Vector Types
-//
-// <center> Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_operations </center> \n
-//
 //
 // \tableofcontents
 //
@@ -605,16 +600,13 @@ namespace blaze {}
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
-// \n <center> Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_operations </center>
+// \n Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_operations
 */
 //*************************************************************************************************
 
 
 //**Vector Operations******************************************************************************
 /*!\page vector_operations Vector Operations
-//
-// <center> Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrix_types </center>
-//
 //
 // \tableofcontents
 //
@@ -1382,16 +1374,13 @@ namespace blaze {}
    swap( v1, v2 );  // Swapping the contents of v1 and v2
    \endcode
 
-// \n <center> Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrix_types </center>
+// \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrix_types
 */
 //*************************************************************************************************
 
 
 //**Matrix Types***********************************************************************************
 /*!\page matrix_types Matrix Types
-//
-// <center> Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_operations </center> \n
-//
 //
 // \tableofcontents
 //
@@ -1510,16 +1499,13 @@ namespace blaze {}
 //             The default value is blaze::rowMajor.
 //
 //
-// \n <center> Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_operations </center>
+// \n Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_operations
 */
 //*************************************************************************************************
 
 
 //**Matrix Operations******************************************************************************
 /*!\page matrix_operations Matrix Operations
-//
-// <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices </center>
-//
 //
 // \tableofcontents
 //
@@ -2508,16 +2494,13 @@ namespace blaze {}
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
 
-// \n <center> Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices </center>
+// \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices
 */
 //*************************************************************************************************
 
 
 //**Symmetric Matrices*****************************************************************************
 /*!\page adaptors_symmetric_matrices Symmetric Matrices
-//
-// <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices </center>
-//
 //
 // \tableofcontents
 //
@@ -2994,16 +2977,13 @@ namespace blaze {}
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 
-// \n <center> Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices </center>
+// \n Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices
 */
 //*************************************************************************************************
 
 
 //**Triangular Matrices****************************************************************************
 /*!\page adaptors_triangular_matrices Triangular Matrices
-//
-// <center> Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref views_subvectors </center>
-//
 //
 // \tableofcontents
 //
@@ -3928,16 +3908,13 @@ namespace blaze {}
    C = A * B;  // Results in a upper matrix; no runtime overhead
    \endcode
 
-// \n <center> Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref views_subvectors </center>
+// \n Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref views_subvectors
 */
 //*************************************************************************************************
 
 
 //**Subvectors*************************************************************************************
 /*!\page views_subvectors Subvectors
-//
-// <center> Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices </center> \n
-//
 //
 // \tableofcontents
 //
@@ -4354,16 +4331,13 @@ namespace blaze {}
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 
-// \n <center> Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices </center>
+// \n Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices
 */
 //*************************************************************************************************
 
 
 //**Submatrices************************************************************************************
 /*!\page views_submatrices Submatrices
-//
-// <center> Previous: \ref views_subvectors &nbsp; &nbsp; Next: \ref views_rows </center> \n
-//
 //
 // \tableofcontents
 //
@@ -4846,16 +4820,13 @@ namespace blaze {}
    submatrix( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 
-// \n <center> Previous: \ref views_subvectors &nbsp; &nbsp; Next: \ref views_rows </center>
+// \n Previous: \ref views_subvectors &nbsp; &nbsp; Next: \ref views_rows
 */
 //*************************************************************************************************
 
 
 //**Rows*******************************************************************************************
 /*!\page views_rows Rows
-//
-// <center> Previous: \ref views_submatrices &nbsp; &nbsp; Next: \ref views_columns </center> \n
-//
 //
 // \tableofcontents
 //
@@ -5168,16 +5139,13 @@ namespace blaze {}
 // Although \b Blaze performs the resulting vector/matrix multiplication as efficiently as possible
 // using a row-major storage order for matrix A would result in a more efficient evaluation.
 //
-// \n <center> Previous: \ref views_submatrices &nbsp; &nbsp; Next: \ref views_columns </center>
+// \n Previous: \ref views_submatrices &nbsp; &nbsp; Next: \ref views_columns
 */
 //*************************************************************************************************
 
 
 //**Columns****************************************************************************************
 /*!\page views_columns Columns
-//
-// <center> Previous: \ref views_rows &nbsp; &nbsp; Next: \ref addition </center> \n
-//
 //
 // \tableofcontents
 //
@@ -5491,15 +5459,13 @@ namespace blaze {}
 // Although \b Blaze performs the resulting matrix/vector multiplication as efficiently as possible
 // using a column-major storage order for matrix B would result in a more efficient evaluation.
 //
-// \n <center> Previous: \ref views_rows &nbsp; &nbsp; Next: \ref addition </center>
+// \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref addition
 */
 //*************************************************************************************************
 
 
 //**Addition***************************************************************************************
 /*!\page addition Addition
-//
-// <center> Previous: \ref views_columns &nbsp; &nbsp; Next: \ref subtraction </center> \n
 //
 // The addition of vectors and matrices is as intuitive as the addition of scalar values. For both
 // the vector addition as well as the matrix addition the addition operator can be used. It even
@@ -5558,15 +5524,13 @@ namespace blaze {}
    M3 = M1 + M2;  // Vectorized addition of two row-major, single precision dense matrices
    \endcode
 
-// \n <center> Previous: \ref views_columns &nbsp; &nbsp; Next: \ref subtraction </center>
+// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref subtraction
 */
 //*************************************************************************************************
 
 
 //**Subtraction************************************************************************************
 /*!\page subtraction Subtraction
-//
-// <center> Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication </center> \n
 //
 // The subtraction of vectors and matrices works exactly as intuitive as the addition, but with
 // the subtraction operator. For both the vector subtraction as well as the matrix subtraction
@@ -5623,15 +5587,13 @@ namespace blaze {}
    M3 = M1 - M2;  // Vectorized subtraction of two row-major, single precision dense matrices
    \endcode
 
-// \n <center> Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication </center>
+// \n Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication
 */
 //*************************************************************************************************
 
 
 //**Scalar Multiplication**************************************************************************
 /*!\page scalar_multiplication Scalar Multiplication
-//
-// <center> Previous: \ref subtraction &nbsp; &nbsp; Next: \ref componentwise_multiplication </center> \n
 //
 // The scalar multiplication is the multiplication of a scalar value with a vector or a matrix.
 // In \b Blaze it is possible to use all built-in/fundamental data types except bool as scalar
@@ -5665,15 +5627,13 @@ namespace blaze {}
    M1.scale( scalar );  // Scalar multiplication
    \endcode
 
-// \n <center> Previous: \ref subtraction &nbsp; &nbsp; Next: \ref componentwise_multiplication </center>
+// \n Previous: \ref subtraction &nbsp; &nbsp; Next: \ref componentwise_multiplication
 */
 //*************************************************************************************************
 
 
 //**Vector/Vector Multiplication*******************************************************************
 /*!\page vector_vector_multiplication Vector/Vector Multiplication
-//
-// <center> Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication </center> \n
 //
 // \n \section componentwise_multiplication Componentwise Multiplication
 // <hr>
@@ -5805,15 +5765,13 @@ namespace blaze {}
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
 // column vectors.
 //
-// \n <center> Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication </center>
+// \n Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref matrix_vector_multiplication
 */
 //*************************************************************************************************
 
 
 //**Matrix/Vector Multiplication*******************************************************************
 /*!\page matrix_vector_multiplication Matrix/Vector Multiplication
-//
-// <center> Previous: \ref outer_product &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication </center> \n
 //
 // In \b Blaze matrix/vector multiplications can be as intuitively formulated as in mathematical
 // textbooks. Just as in textbooks there are two different multiplications between a matrix and
@@ -5837,15 +5795,13 @@ namespace blaze {}
 // that the highest performance for a multiplication between a dense matrix and a dense vector can
 // be achieved if both the matrix and the vector have the same scalar element type.
 //
-// \n <center> Previous: \ref outer_product &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication </center>
+// \n Previous: \ref outer_product &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication
 */
 //*************************************************************************************************
 
 
 //**Matrix/Matrix Multiplication*******************************************************************
 /*!\page matrix_matrix_multiplication Matrix/Matrix Multiplication
-//
-// <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization </center> \n
 //
 // The matrix/matrix multiplication can be formulated exactly as in mathematical textbooks:
 
@@ -5865,15 +5821,13 @@ namespace blaze {}
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// \n <center> Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization </center>
+// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
 */
 //*************************************************************************************************
 
 
 //**OpenMP Parallelization*************************************************************************
 /*!\page openmp_parallelization OpenMP Parallelization
-//
-// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref cpp_threads_parallelization </center> \n
 //
 // One of the main motivations of the \b Blaze 1.x releases was to achieve maximum performance
 // on a single CPU core for all possible operations. However, today's CPUs are not single core
@@ -6116,15 +6070,13 @@ namespace blaze {}
 // Please note that the use of the \c BLAZE_SERIAL_SECTION (see also \ref serial_execution) does
 // NOT work in this context!
 //
-// \n <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref cpp_threads_parallelization </center>
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref cpp_threads_parallelization
 */
 //*************************************************************************************************
 
 
 //**C++11 Thread Parallelization*******************************************************************
 /*!\page cpp_threads_parallelization C++11 Thread Parallelization
-//
-// <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization </center> \n
 //
 // In addition to the OpenMP-based shared memory parallelization, starting with \b Blaze 2.1,
 // \b Blaze also provides a shared memory parallelization based on C++11 threads.
@@ -6222,15 +6174,13 @@ namespace blaze {}
 // this function no further computation may be executed! Also note that this function has an
 // effect for Visual Studio compilers only and doesn't need to be used with any other compiler.
 //
-// \n <center> Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization </center>
+// \n Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization
 */
 //*************************************************************************************************
 
 
 //**Boost Thread Parallelization*******************************************************************
 /*!\page boost_threads_parallelization Boost Thread Parallelization
-//
-// <center> Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution </center> \n
 //
 // The third available shared memory parallelization provided with \b Blaze is based on Boost
 // threads.
@@ -6297,15 +6247,13 @@ namespace blaze {}
 // have been determined using the OpenMP parallelization and require individual adaption for
 // the Boost thread parallelization.
 //
-// \n <center> Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution </center>
+// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution
 */
 //*************************************************************************************************
 
 
 //**Serial Execution*******************************************************************************
 /*!\page serial_execution Serial Execution
-//
-// <center> Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center> \n
 //
 // Sometimes it may be necessary to enforce the serial execution of specific operations. For this
 // purpose, the \b Blaze library offers three possible options: the serialization of a single
@@ -6382,15 +6330,13 @@ namespace blaze {}
 // In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared-memory
 // parallelization is deactivated altogether.
 //
-// \n <center> Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref vector_serialization </center>
+// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref vector_serialization
 */
 //*************************************************************************************************
 
 
 //**Vector Serialization***************************************************************************
 /*!\page vector_serialization Vector Serialization
-//
-// <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center> \n
 //
 // Sometimes it is necessary to store vector and/or matrices on disk, for instance for storing
 // results or for sharing specific setups with other people. The \b Blaze math serialization
@@ -6475,20 +6421,18 @@ namespace blaze {}
 //  - the element type of the serialized and reconstituted vector must match, which means
 //    that on the source and destination platform the general type (signed/unsigned integral
 //    or floating point) and the size of the type must be exactly the same
-//  - when reconstituting a StaticVector, its size must match the size of the serialized vector
+//  - when reconstituting a \c StaticVector, its size must match the size of the serialized vector
 //
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// \n <center> Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization </center>
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization
 */
 //*************************************************************************************************
 
 
 //**Matrix Serialization***************************************************************************
 /*!\page matrix_serialization Matrix Serialization
-//
-// <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization </center> \n
 //
 // The serialization of matrices works in the same manner as the serialization of vectors. The
 // following example demonstrates the (de-)serialization of dense and sparse matrices:
@@ -6568,22 +6512,19 @@ namespace blaze {}
 //  - the element type of the serialized and reconstituted matrix must match, which means
 //    that on the source and destination platform the general type (signed/unsigned integral
 //    or floating point) and the size of the type must be exactly the same
-//  - when reconstituting a StaticMatrix, the number of rows and columns must match those of
-//    the serialized matrix
+//  - when reconstituting a \c StaticMatrix, the number of rows and columns must match those
+//    of the serialized matrix
 //
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// \n <center> Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization </center> \n
+// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
 */
 //*************************************************************************************************
 
 
 //**Intra-Statement Optimization*******************************************************************
 /*!\page intra_statement_optimization Intra-Statement Optimization
-//
-// <center> Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
-//
 //
 // One of the prime features of the \b Blaze library is the automatic intra-statement optimization.
 // In order to optimize the overall performance of every single statement \b Blaze attempts to
@@ -6680,16 +6621,13 @@ namespace blaze {}
    y = eval( A * B ) * x;
    \endcode
 
-// \n <center> Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files </center> \n
+// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
 */
 //*************************************************************************************************
 
 
 //**Configuration Files****************************************************************************
 /*!\page configuration_files Configuration Files
-//
-// <center> Previous: \ref intra_statement_optimization </center> \n
-//
 //
 // \tableofcontents
 //
@@ -6790,7 +6728,7 @@ namespace blaze {}
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n <center> Previous: \ref intra_statement_optimization </center>
+// \n Previous: \ref intra_statement_optimization
 */
 //*************************************************************************************************
 
