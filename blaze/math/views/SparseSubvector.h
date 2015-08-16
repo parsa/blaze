@@ -865,6 +865,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseSubvector<VT2,AF2,TF2>& b );
 
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< SparseSubvector<VT2,AF2,TF2> >::Type
       derestrict( SparseSubvector<VT2,AF2,TF2>& sv );
@@ -2217,6 +2220,36 @@ inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseSubvector<VT
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a sparse subvector.
+// \ingroup sparse_subvector
+//
+// \param lhs The target left-hand side sparse subvector.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index < lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
