@@ -276,8 +276,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
 
    UNUSED_PARAMETER( lhs );
@@ -323,8 +323,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
 
    UNUSED_PARAMETER( lhs );
@@ -367,8 +367,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
 
    UNUSED_PARAMETER( lhs );
@@ -416,8 +416,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
 
    UNUSED_PARAMETER( lhs );
@@ -463,8 +463,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
@@ -520,8 +520,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
@@ -576,8 +576,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
@@ -638,8 +638,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
