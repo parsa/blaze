@@ -43,7 +43,10 @@
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/Dense.h>
 #include <blaze/math/adaptors/lowermatrix/Sparse.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
@@ -62,7 +65,9 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -200,8 +205,429 @@ inline void swap( LowerMatrix<MT,SO,DF>& a, LowerMatrix<MT,SO,DF>& b ) /* throw(
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   if( column <= row )
+      return true;
+
+   const size_t iend( min( column - row, (~rhs).size() ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t ibegin( ( row < column )?( 0UL ):( row - column + 1UL ) );
+
+   for( size_t i=ibegin; i<(~rhs).size(); ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   if( column <= row )
+      return true;
+
+   const RhsIterator last( (~rhs).lowerBound( column - row ) );
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
+      if( !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( ( row < column )?( 0UL ):( row - column + 1UL ) ) );
+
+   for( ; element!=last; ++element ) {
+      if( !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( row + 1UL >= column + N )
+      return true;
+
+   const size_t iend( min( column + N - row - 1UL, M ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row + i >= column );
+      const size_t jbegin( ( containsDiagonal )?( row + i - column + 1UL ):( 0UL ) );
+
+      for( size_t j=jbegin; j<N; ++j ) {
+         if( !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( row + 1UL >= column + N )
+      return true;
+
+   const size_t jbegin( ( row < column )?( 0UL ):( row - column + 1UL ) );
+
+   for( size_t j=jbegin; j<N; ++j )
+   {
+      const size_t iend( min( column + j - row, M ) );
+
+      for( size_t i=0UL; i<iend; ++i ) {
+         if( !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( row + 1UL >= column + N )
+      return true;
+
+   const size_t iend( min( column + N - row - 1UL, M ) );
+
+   for( size_t i=0UL; i<iend; ++i )
+   {
+      const bool containsDiagonal( row + i >= column );
+      const size_t index( ( containsDiagonal )?( row + i - column + 1UL ):( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(i) );
+      RhsIterator element( (~rhs).lowerBound( i, index ) );
+
+      for( ; element!=last; ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( row + 1UL >= column + N )
+      return true;
+
+   const size_t jbegin( ( row < column )?( 0UL ):( row - column + 1UL ) );
+
+   for( size_t j=jbegin; j<N; ++j )
+   {
+      const size_t index( column + j - row );
+      const RhsIterator last( (~rhs).lowerBound( min( index, M ), j ) );
+
+      for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns a reference to the instance without the access restrictions to the upper part.
-// \ingroup math_shims
+// \ingroup lower_matrix
 //
 // \param m The lower matrix to be derestricted.
 // \return Reference to the matrix without access restrictions.
