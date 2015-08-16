@@ -47,7 +47,9 @@
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
@@ -68,7 +70,9 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -201,6 +205,392 @@ inline void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) /* 
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t index( ( column <= row )?( 0UL ):( column - row ) );
+
+   for( size_t i=0UL; i<index; ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   for( size_t i=index+1UL; i<(~rhs).size(); ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t index( ( row <= column )?( 0UL ):( row - column ) );
+
+   for( size_t i=0UL; i<index; ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   for( size_t i=index+1UL; i<(~rhs).size(); ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   const size_t index( column - row );
+
+   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      if( element->index() != index && !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   const size_t index( row - column );
+
+   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      if( element->index() != index && !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<N; ++j ) {
+         if( ( row + i != column + j ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=0UL; i<M; ++i ) {
+         if( ( column + j != row + i ) && !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+         if( ( row + i != column + element->index() ) && !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a diagonal matrix.
+// \ingroup diagonal_matrix
+//
+// \param lhs The target left-hand side diagonal matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+         if( ( column + j != row + element->index() ) && !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
