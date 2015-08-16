@@ -44,7 +44,11 @@
 #include <blaze/math/adaptors/uniuppermatrix/Dense.h>
 #include <blaze/math/adaptors/uniuppermatrix/Sparse.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DerestrictTrait.h>
@@ -63,7 +67,9 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -240,6 +246,478 @@ inline void swap( UniUpperMatrix<MT,SO,DF>& a, UniUpperMatrix<MT,SO,DF>& b ) /* 
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   if( column >= row + (~rhs).size() )
+      return true;
+
+   const bool containsDiagonal( column >= row );
+   const size_t ibegin( ( !containsDiagonal )?( 0UL ):( column - row + 1UL ) );
+
+   if( containsDiagonal && !isOne( (~rhs)[column-row] ) )
+      return false;
+
+   for( size_t i=ibegin; i<(~rhs).size(); ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side dense vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side dense vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
+                                    const DenseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   if( row < column )
+      return true;
+
+   const bool containsDiagonal( row < column + (~rhs).size() );
+   const size_t iend( min( row - column, (~rhs).size() ) );
+
+   for( size_t i=0UL; i<iend; ++i ) {
+      if( !isDefault( (~rhs)[i] ) )
+         return false;
+   }
+
+   if( containsDiagonal && !isOne( (~rhs)[iend] ) )
+      return false;
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   if( column >= row + (~rhs).size() )
+      return true;
+
+   const bool containsDiagonal( column >= row );
+   const size_t index( ( containsDiagonal )?( column - row ):( 0UL ) );
+   const RhsIterator last( (~rhs).end() );
+   RhsIterator element( (~rhs).lowerBound( index ) );
+
+   if( containsDiagonal ) {
+      if( element == last || element->index() != index || !isOne( element->value() ) )
+         return false;
+      ++element;
+   }
+
+   for( ; element!=last; ++element ) {
+      if( !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse vector to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side sparse vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename VT >  // Type of the right-hand side sparse vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT,SO,DF>& lhs,
+                                    const SparseVector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
+
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename VT::ConstIterator  RhsIterator;
+
+   if( row < column )
+      return true;
+
+   const bool containsDiagonal( row < column + (~rhs).size() );
+   const size_t index( row - column );
+   const RhsIterator last( (~rhs).lowerBound( index ) );
+
+   if( containsDiagonal ) {
+      if( last == (~rhs).end() || last->index() != index || !isOne( last->value() ) )
+         return false;
+   }
+
+   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
+      if( !isDefault( element->value() ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( column + 1UL >= row + M )
+      return true;
+
+   const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
+
+   for( size_t i=ibegin; i<M; ++i )
+   {
+      const size_t jend( min( row + i - column, N ) );
+
+      for( size_t j=0UL; j<jend; ++j ) {
+         if( !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+
+      const bool containsDiagonal( row + i < column + N );
+
+      if( containsDiagonal && !isOne( (~rhs)(i,jend) ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense matrix to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side dense matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side dense matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
+                                    const DenseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( column + 1UL >= row + M )
+      return true;
+
+   const size_t jend( min( row + M - column, N ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column + j >= row );
+
+      if( containsDiagonal && !isOne( (~rhs)(column+j-row,j) ) )
+         return false;
+
+      const size_t ibegin( ( containsDiagonal )?( column + j - row + 1UL ):( 0UL ) );
+
+      for( size_t i=ibegin; i<M; ++i ) {
+         if( !isDefault( (~rhs)(i,j) ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( column + 1UL >= row + M )
+      return true;
+
+   const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
+
+   for( size_t i=ibegin; i<M; ++i )
+   {
+      const bool containsDiagonal( row + i < column + N );
+
+      const size_t index( row + i - column );
+      const RhsIterator last( (~rhs).lowerBound( i, min( index, N ) ) );
+
+      if( containsDiagonal ) {
+         if( last == (~rhs).end(i) || ( last->index() != index ) || !isOne( last->value() ) )
+            return false;
+      }
+
+      for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to a uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param lhs The target left-hand side uniupper matrix.
+// \param rhs The right-hand side sparse matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1    // Type of the adapted matrix
+        , bool SO         // Storage order of the adapted matrix
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
+                                    const SparseMatrix<MT2,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   typedef typename MT2::ConstIterator  RhsIterator;
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( column + 1UL >= row + M )
+      return true;
+
+   const size_t jend( min( row + M - column, N ) );
+
+   for( size_t j=0UL; j<jend; ++j )
+   {
+      const bool containsDiagonal( column + j >= row );
+      const size_t index( ( containsDiagonal )?( column + j - row ):( 0UL ) );
+
+      const RhsIterator last( (~rhs).end(j) );
+      RhsIterator element( (~rhs).lowerBound( index, j ) );
+
+      if( containsDiagonal ) {
+         if( element == last || ( element->index() != index ) || !isOne( element->value() ) )
+            return false;
+         ++element;
+      }
+
+      for( ; element!=last; ++element ) {
+         if( !isDefault( element->value() ) )
+            return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
