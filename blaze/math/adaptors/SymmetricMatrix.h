@@ -45,7 +45,11 @@
 #include <blaze/math/adaptors/symmetricmatrix/DenseNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/SparseNonNumeric.h>
 #include <blaze/math/adaptors/symmetricmatrix/SparseNumeric.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
+#include <blaze/math/shims/Equal.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -63,7 +67,9 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
 
@@ -202,6 +208,60 @@ inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>&
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a matrix to a symmetric matrix.
+// \ingroup symmetric_matrix
+//
+// \param lhs The target left-hand side symmetric matrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+                                    const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
+
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs );
+
+   const size_t M( (~rhs).rows()    );
+   const size_t N( (~rhs).columns() );
+
+   if( ( row + M <= column ) || ( column + N <= row ) )
+      return true;
+
+   const bool   lower( row > column );
+   const size_t size ( min( row + M, column + N ) - ( lower ? row : column ) );
+
+   if( size < 2UL )
+      return true;
+
+   const size_t subrow( lower ? 0UL : column - row );
+   const size_t subcol( lower ? row - column : 0UL );
+
+   return isSymmetric( submatrix( ~rhs, subrow, subcol, size, size ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
