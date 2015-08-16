@@ -620,6 +620,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseRow<MT2,SO2,SF2> >::Type
       derestrict( DenseRow<MT2,SO2,SF2>& dm );
@@ -2735,6 +2738,9 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseRow<MT2,SO2,SF2> >::Type
       derestrict( DenseRow<MT2,SO2,SF2>& dm );
@@ -4320,6 +4326,9 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const DenseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseRow<MT2,SO2,SF2> >::Type
@@ -6030,6 +6039,36 @@ inline bool isSame( const DenseRow<MT,SO,SF>& a, const DenseRow<MT,SO,SF>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a dense row.
+// \ingroup dense_row
+//
+// \param lhs The target left-hand side dense row.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAssign( const DenseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index < (~rhs).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
