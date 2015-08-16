@@ -1036,6 +1036,14 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   inline bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                          size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
@@ -4040,6 +4048,14 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseSubmatrix<MT2,AF2,SO2>& b );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   inline bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                          size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
@@ -6812,6 +6828,76 @@ inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseSubmatrix<MT
             ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
             ( a.m_ == b.m_ ) && ( a.n_ == b.n_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a sparse submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                       size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a matrix to a sparse submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the sparse matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool tryAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                       size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row < lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
