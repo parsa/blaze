@@ -145,18 +145,6 @@ template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
-
-template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
-
-template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
-
-template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
-
-template< typename VT1, bool TF1, typename VT2, bool TF2 >
 BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b );
 //@}
 //*************************************************************************************************
@@ -391,118 +379,6 @@ BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve 
 
 
 //*************************************************************************************************
-/*!\brief Default implementation of the assignment of a vector to a vector.
-// \ingroup vector
-//
-// \param lhs The target left-hand side vector.
-// \param rhs The right-hand side vector to be assigned.
-// \return void
-//
-// This function implements the default assignment of a vector to another vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side vector
-        , bool TF1      // Transpose flag of the left-hand side vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-BLAZE_ALWAYS_INLINE void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   (~lhs).assign( ~rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Default implementation of the addition assignment of a vector to a vector.
-// \ingroup vector
-//
-// \param lhs The target left-hand side vector.
-// \param rhs The right-hand side vector to be added.
-// \return void
-//
-// This function implements the default addition assignment of a vector to a vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side vector
-        , bool TF1      // Transpose flag of the left-hand side vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-BLAZE_ALWAYS_INLINE void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   (~lhs).addAssign( ~rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Default implementation of the subtraction assignment of a vector to a vector.
-// \ingroup vector
-//
-// \param lhs The target left-hand side vector.
-// \param rhs The right-hand side vector to be subtracted.
-// \return void
-//
-// This function implements the default subtraction assignment of a vector to a vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side vector
-        , bool TF1      // Transpose flag of the left-hand side vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-BLAZE_ALWAYS_INLINE void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   (~lhs).subAssign( ~rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Default implementation of the multiplication assignment of a vector to a vector.
-// \ingroup vector
-//
-// \param lhs The target left-hand side vector.
-// \param rhs The right-hand side vector to be multiplied.
-// \return void
-//
-// This function implements the default multiplication assignment of a vector to a vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side vector
-        , bool TF1      // Transpose flag of the left-hand side vector
-        , typename VT2  // Type of the right-hand side vector
-        , bool TF2 >    // Transpose flag of the right-hand side vector
-BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
-   (~lhs).multAssign( ~rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Returns whether the two given vectors represent the same observable state.
 // \ingroup vector
 //
@@ -544,6 +420,157 @@ BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>
    return ( IsSame<VT1,VT2>::value &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector to be assigned.
+// \return void
+//
+// This function implements the default assignment of a vector to another vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE void assign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   (~lhs).assign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the addition assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector to be added.
+// \return void
+//
+// This function implements the default addition assignment of a vector to a vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE void addAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   (~lhs).addAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the subtraction assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector to be subtracted.
+// \return void
+//
+// This function implements the default subtraction assignment of a vector to a vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE void subAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   (~lhs).subAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the multiplication assignment of a vector to a vector.
+// \ingroup vector
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector to be multiplied.
+// \return void
+//
+// This function implements the default multiplication assignment of a vector to a vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE void multAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+   (~lhs).multAssign( ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a vector.
+//
+// \param lhs The target left-hand side vector.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1  // Type of the left-hand side vector
+        , bool TF1      // Transpose flag of the left-hand side vector
+        , typename VT2  // Type of the right-hand side vector
+        , bool TF2 >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index < (~lhs).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() - index <= (~rhs).size(), "Invalid vector size" );
+
+   UNUSED_PARAMETER( lhs, rhs, index );
+
+   return true;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
