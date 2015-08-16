@@ -564,6 +564,9 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
       derestrict( SparseRow<MT2,SO2,SF2>& dm );
@@ -2767,6 +2770,9 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
       derestrict( SparseRow<MT2,SO2,SF2>& dm );
@@ -4420,6 +4426,9 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
@@ -6213,6 +6222,36 @@ inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b )
 {
    return ( isSame( a.matrix_, b.matrix_ ) && ( a.row_ == b.row_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a sparse row.
+// \ingroup sparse_row
+//
+// \param lhs The target left-hand side sparse row.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index < (~rhs).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
