@@ -42,6 +42,7 @@
 
 #include <stdexcept>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -156,18 +157,6 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
-
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
-
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
-
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
-
-template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix );
@@ -540,6 +529,70 @@ BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool
 
 
 //*************************************************************************************************
+/*!\brief Checks if the given matrix is a square matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be checked.
+// \return \a true if the matrix is a square matrix, \a false if not.
+//
+// This function checks if the number of rows and columns of the given matrix are equal. If
+// they are, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix )
+{
+   return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the two given matrices represent the same observable state.
+// \ingroup matrix
+//
+// \param a The first matrix to be tested for its state.
+// \param b The second matrix to be tested for its state.
+// \return \a true in case the two matrices share a state, \a false otherwise.
+//
+// The isSame function provides an abstract interface for testing if the two given matrices
+// represent the same observable state. This happens for instance in case \c a and \c b refer
+// to the same matrix or in case \c a and \c b are aliases for the same matrix. In case both
+// matrices represent the same observable state, the function returns \a true, other it returns
+// \a false.
+
+   \code
+   typedef blaze::DynamicMatrix<int>          MatrixType;
+   typedef blaze::DenseSubmatrix<MatrixType>  SubmatrixType;
+
+   MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
+   MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
+
+   SubmatrixType sub1 = submatrix( mat1, 0UL, 0UL, 4UL, 5UL );  // Submatrix fully covering mat1
+   SubmatrixType sub2 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+   SubmatrixType sub3 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+
+   isSame( mat1, mat1 );  // returns true since both objects refer to the same matrix
+   isSame( mat1, mat2 );  // returns false since mat1 and mat2 are two different matrices
+   isSame( mat1, sub1 );  // returns true since sub1 represents the same observable state as mat1
+   isSame( mat1, sub3 );  // returns false since sub3 only covers part of mat1
+   isSame( sub2, sub3 );  // returns true since sub1 and sub2 refer to exactly the same part of mat1
+   isSame( sub1, sub3 );  // returns false since sub1 and sub3 refer to different parts of mat1
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
+{
+   return ( IsSame<MT1,MT2>::value &&
+            reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Backend implementation of the assignment of two matrices with the same storage order.
 // \ingroup matrix
@@ -615,6 +668,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -641,6 +695,7 @@ BLAZE_ALWAYS_INLINE void assign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rh
 
    assign_backend( ~lhs, ~rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -722,6 +777,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the addition assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -748,6 +804,7 @@ BLAZE_ALWAYS_INLINE void addAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>&
 
    addAssign_backend( ~lhs, ~rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -829,6 +886,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< IsSymmetric<MT2> >::Type
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the subtraction assignment of a matrix to matrix.
 // \ingroup matrix
 //
@@ -855,10 +913,12 @@ BLAZE_ALWAYS_INLINE void subAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>&
 
    subAssign_backend( ~lhs, ~rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the multiplication assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -884,70 +944,77 @@ BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>
 
    (~lhs).multAssign( ~rhs );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Checks if the given matrix is a square matrix.
-// \ingroup matrix
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a matrix.
 //
-// \param matrix The matrix to be checked.
-// \return \a true if the matrix is a square matrix, \a false if not.
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
 //
-// This function checks if the number of rows and columns of the given matrix are equal. If
-// they are, the function returns \a true, otherwise it returns \a false.
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix )
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                    size_t row, size_t column )
 {
-   return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~lhs).rows() - row <= (~rhs).size() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~lhs).columns() - column <= (~rhs).size() ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column );
+
+   return true;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the two given matrices represent the same observable state.
-// \ingroup matrix
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a matrix to a matrix.
 //
-// \param a The first matrix to be tested for its state.
-// \param b The second matrix to be tested for its state.
-// \return \a true in case the two matrices share a state, \a false otherwise.
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side matrix to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
 //
-// The isSame function provides an abstract interface for testing if the two given matrices
-// represent the same observable state. This happens for instance in case \c a and \c b refer
-// to the same matrix or in case \c a and \c b are aliases for the same matrix. In case both
-// matrices represent the same observable state, the function returns \a true, other it returns
-// \a false.
-
-   \code
-   typedef blaze::DynamicMatrix<int>          MatrixType;
-   typedef blaze::DenseSubmatrix<MatrixType>  SubmatrixType;
-
-   MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
-   MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
-
-   SubmatrixType sub1 = submatrix( mat1, 0UL, 0UL, 4UL, 5UL );  // Submatrix fully covering mat1
-   SubmatrixType sub2 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
-   SubmatrixType sub3 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
-
-   isSame( mat1, mat1 );  // returns true since both objects refer to the same matrix
-   isSame( mat1, mat2 );  // returns false since mat1 and mat2 are two different matrices
-   isSame( mat1, sub1 );  // returns true since sub1 represents the same observable state as mat1
-   isSame( mat1, sub3 );  // returns false since sub3 only covers part of mat1
-   isSame( sub2, sub3 );  // returns true since sub1 and sub2 refer to exactly the same part of mat1
-   isSame( sub1, sub3 );  // returns false since sub1 and sub3 refer to different parts of mat1
-   \endcode
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
 */
 template< typename MT1  // Type of the left-hand side matrix
         , bool SO1      // Storage order of the left-hand side matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b )
+BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                                    size_t row, size_t column )
 {
-   return ( IsSame<MT1,MT2>::value &&
-            reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
+   BLAZE_INTERNAL_ASSERT( row < (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column < (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~lhs).rows() - row ) <= (~rhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~lhs).columns() - column ) <= (~rhs).columns(), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column );
+
+   return true;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
