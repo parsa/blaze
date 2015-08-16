@@ -1014,6 +1014,9 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
 
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
       derestrict( DenseSubvector<VT2,AF2,TF2>& dv );
@@ -2582,6 +2585,9 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseSubvector<VT2,AF2,TF2>& b );
 
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
       derestrict( DenseSubvector<VT2,AF2,TF2>& dv );
@@ -4036,14 +4042,17 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4175,14 +4184,17 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4314,14 +4326,17 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4453,14 +4468,17 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseVector<VT3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseVector<VT3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseVector<VT3,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
 
-   template< typename VT3, bool AF3, bool TF3 >
-   friend bool isSame( const DenseSubvector<VT3,AF3,TF3>& a, const DenseSubvector<VT3,AF3,TF3>& b );
+   template< typename VT3, bool AF, bool TF >
+   friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseSubvector<VT3,AF,TF>& b );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4631,6 +4649,36 @@ inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseSubvector<VT,A
 {
    return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to a dense subvector.
+// \ingroup dense_subvector
+//
+// \param lhs The target left-hand side dense subvector.
+// \param rhs The right-hand side vector to be assigned.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index < lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
