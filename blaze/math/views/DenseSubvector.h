@@ -1295,6 +1295,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Elem
 // \param rhs Dense subvector to be copied.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Subvector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two subvectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -1313,12 +1314,17 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Dens
    if( size() != rhs.size() )
       throw std::invalid_argument( "Subvector sizes do not match" );
 
+   if( !tryAssign( vector_, rhs, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
    if( rhs.canAlias( &vector_ ) ) {
-      const ResultType tmp( ~rhs );
-      smpAssign( *this, tmp );
+      const ResultType tmp( rhs );
+      smpAssign( left, tmp );
    }
    else {
-      smpAssign( *this, rhs );
+      smpAssign( left, rhs );
    }
 
    return *this;
@@ -1332,6 +1338,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Dens
 // \param rhs Vector to be assigned.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -1348,14 +1355,22 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpAssign( left, tmp );
    }
    else {
       if( IsSparseVector<VT2>::value )
          reset();
-      smpAssign( *this, ~rhs );
+      smpAssign( left, right );
    }
 
    return *this;
@@ -1369,6 +1384,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
 // \param rhs The right-hand side vector to be added to the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1385,12 +1401,20 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpAddAssign( left, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( left, right );
    }
 
    return *this;
@@ -1404,6 +1428,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
 // \param rhs The right-hand side vector to be subtracted from the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1420,12 +1445,20 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpSubAssign( left, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( left, right );
    }
 
    return *this;
@@ -1440,6 +1473,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
 // \param rhs The right-hand side vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1456,12 +1490,14 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vec
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
       const ResultType tmp( *this * (~rhs) );
-      smpAssign( *this, tmp );
+      smpAssign( left, tmp );
    }
    else {
-      smpMultAssign( *this, ~rhs );
+      smpMultAssign( left, ~rhs );
    }
 
    return *this;
@@ -1483,7 +1519,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >::Type&
    DenseSubvector<VT,AF,TF>::operator*=( Other rhs )
 {
-   smpAssign( *this, (*this) * rhs );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   smpAssign( left, (*this) * rhs );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1507,7 +1545,9 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,AF,TF> >::Type&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   smpAssign( *this, (*this) / rhs );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   smpAssign( left, (*this) / rhs );
+
    return *this;
 }
 //*************************************************************************************************
@@ -2875,6 +2915,7 @@ inline DenseSubvector<VT,aligned,TF>&
 // \param rhs Dense subvector to be copied.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Subvector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two subvectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -2893,12 +2934,17 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != rhs.size() )
       throw std::invalid_argument( "Subvector sizes do not match" );
 
+   if( !tryAssign( vector_, rhs, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( ~rhs );
-      smpAssign( *this, tmp );
+      smpAssign( left, tmp );
    }
    else {
-      smpAssign( *this, rhs );
+      smpAssign( left, rhs );
    }
 
    return *this;
@@ -2914,6 +2960,7 @@ inline DenseSubvector<VT,aligned,TF>&
 // \param rhs Vector to be assigned.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -2930,14 +2977,22 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpAssign( left, tmp );
    }
    else {
       if( IsSparseVector<VT2>::value )
          reset();
-      smpAssign( *this, ~rhs );
+      smpAssign( left, right );
    }
 
    return *this;
@@ -2953,6 +3008,7 @@ inline DenseSubvector<VT,aligned,TF>&
 // \param rhs The right-hand side vector to be added to the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -2969,12 +3025,20 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpAddAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpAddAssign( left, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( left, right );
    }
 
    return *this;
@@ -2990,6 +3054,7 @@ inline DenseSubvector<VT,aligned,TF>&
 // \param rhs The right-hand side vector to be subtracted from the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -3006,12 +3071,20 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      smpSubAssign( *this, tmp );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpSubAssign( left, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( left, right );
    }
 
    return *this;
@@ -3028,6 +3101,7 @@ inline DenseSubvector<VT,aligned,TF>&
 // \param rhs The right-hand side vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -3044,12 +3118,14 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
    if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
       const ResultType tmp( *this * (~rhs) );
-      smpAssign( *this, tmp );
+      smpAssign( left, tmp );
    }
    else {
-      smpMultAssign( *this, ~rhs );
+      smpMultAssign( left, ~rhs );
    }
 
    return *this;
@@ -3072,7 +3148,9 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >::Type&
    DenseSubvector<VT,aligned,TF>::operator*=( Other rhs )
 {
-   smpAssign( *this, (*this) * rhs );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   smpAssign( left, (*this) * rhs );
+
    return *this;
 }
 /*! \endcond */
@@ -3097,7 +3175,9 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubvector<VT,aligned,TF> >::Typ
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   smpAssign( *this, (*this) / rhs );
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   smpAssign( left, (*this) / rhs );
+
    return *this;
 }
 /*! \endcond */
@@ -4673,7 +4753,7 @@ template< typename VT1    // Type of the dense vector
         , typename VT2 >  // Type of the right-hand side vector
 inline bool tryAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
 {
-   BLAZE_INTERNAL_ASSERT( index < lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
