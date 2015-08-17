@@ -75,6 +75,7 @@
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -771,8 +772,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    /*!\name Assignment operators */
    //@{
                             inline SparseSubvector& operator= ( const SparseSubvector& rhs );
-   template< typename VT2 > inline SparseSubvector& operator= ( const DenseVector<VT2,TF>&  rhs );
-   template< typename VT2 > inline SparseSubvector& operator= ( const SparseVector<VT2,TF>& rhs );
+   template< typename VT2 > inline SparseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator+=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator-=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline SparseSubvector& operator*=( const Vector<VT2,TF>& rhs );
@@ -1099,6 +1099,7 @@ inline typename SparseSubvector<VT,AF,TF>::ConstIterator SparseSubvector<VT,AF,T
 // \param rhs Sparse subvector to be copied.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Subvector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two subvectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -1120,14 +1121,19 @@ inline SparseSubvector<VT,AF,TF>&
    if( size() != rhs.size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   if( !tryAssign( vector_, rhs, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
       reset();
-      assign( *this, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( *this, rhs );
+      assign( left, rhs );
    }
 
    return *this;
@@ -1136,11 +1142,12 @@ inline SparseSubvector<VT,AF,TF>&
 
 
 //*************************************************************************************************
-/*!\brief Assignment operator for dense vectors.
+/*!\brief Assignment operator for different vectors.
 //
 // \param rhs Dense vector to be assigned.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
@@ -1148,68 +1155,34 @@ inline SparseSubvector<VT,AF,TF>&
 template< typename VT     // Type of the sparse vector
         , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
-template< typename VT2 >  // Type of the right-hand side dense vector
+template< typename VT2 >  // Type of the right-hand side vector
 inline SparseSubvector<VT,AF,TF>&
-   SparseSubvector<VT,AF,TF>::operator=( const DenseVector<VT2,TF>& rhs )
+   SparseSubvector<VT,AF,TF>::operator=( const Vector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( typename VT2::ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
       reset();
-      assign( *this, tmp );
+      assign( left, tmp );
    }
    else {
       reset();
-      assign( *this, ~rhs );
-   }
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Assignment operator for different sparse vectors.
-//
-// \param rhs Sparse vector to be assigned.
-// \return Reference to the assigned subvector.
-// \exception std::invalid_argument Vector sizes do not match.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument
-// exception is thrown.
-*/
-template< typename VT     // Type of the sparse vector
-        , bool AF         // Alignment flag
-        , bool TF >       // Transpose flag
-template< typename VT2 >  // Type of the right-hand side sparse vector
-inline SparseSubvector<VT,AF,TF>&
-   SparseSubvector<VT,AF,TF>::operator=( const SparseVector<VT2,TF>& rhs )
-{
-   using blaze::assign;
-
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( typename VT2::ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
-
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
-
-   if( RequiresEvaluation<VT2>::value || (~rhs).canAlias( &vector_ ) ) {
-      const typename VT2::ResultType tmp( ~rhs );
-      reset();
-      assign( *this, tmp );
-   }
-   else {
-      reset();
-      assign( *this, ~rhs );
+      assign( left, right );
    }
 
    return *this;
@@ -1234,12 +1207,29 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline SparseSubvector<VT,AF,TF>&
    SparseSubvector<VT,AF,TF>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::addAssign;
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+
+   typedef typename AddTrait<ResultType,typename VT2::ResultType>::Type  AddType;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   addAssign( *this, ~rhs );
+   const AddType tmp( *this + (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
 
    return *this;
 }
@@ -1263,12 +1253,29 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline SparseSubvector<VT,AF,TF>&
    SparseSubvector<VT,AF,TF>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   using blaze::subAssign;
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
+
+   typedef typename SubTrait<ResultType,typename VT2::ResultType>::Type  SubType;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   subAssign( *this, ~rhs );
+   const SubType tmp( *this - (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
 
    return *this;
 }
@@ -1293,18 +1300,29 @@ template< typename VT2 >  // Type of the right-hand side vector
 inline SparseSubvector<VT,AF,TF>&
    SparseSubvector<VT,AF,TF>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
    typedef typename MultTrait<ResultType,typename VT2::ResultType>::Type  MultType;
 
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
 
    const MultType tmp( *this * (~rhs) );
-   reset();
-   assign( tmp );
+
+   if( !tryAssign( vector_, tmp, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   left.reset();
+   assign( left, tmp );
 
    return *this;
 }
@@ -2244,7 +2262,7 @@ template< typename VT1    // Type of the sparse vector
         , typename VT2 >  // Type of the right-hand side vector
 inline bool tryAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
 {
-   BLAZE_INTERNAL_ASSERT( index < lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
