@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-#include <blaze/math/constraints/Restricted.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -57,7 +56,6 @@
 #include <blaze/math/expressions/Row.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -79,7 +77,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -90,7 +87,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Null.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -520,34 +516,6 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    /*!\name Utility functions */
    //@{
    inline size_t extendCapacity() const;
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -581,7 +549,6 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( MT );
-   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -799,7 +766,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseRow& rhs
    if( size() != rhs.size() )
       throw std::invalid_argument( "Row sizes do not match" );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -855,7 +822,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const DenseVector<VT
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !preservesInvariant( matrix_, right ) )
+   if( !tryAssign( matrix_, right, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -909,7 +876,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator=( const SparseVector<V
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !preservesInvariant( matrix_, right ) )
+   if( !tryAssign( matrix_, right, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -973,7 +940,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const DenseVector<V
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1028,7 +995,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator+=( const SparseVector<
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1085,7 +1052,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const DenseVector<V
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1141,7 +1108,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const SparseVector<
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1526,273 +1493,6 @@ inline size_t SparseRow<MT,SO,SF>::extendCapacity() const
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying matrix.
-//
-// \param lhs The matrix to be assigned to.
-// \param rhs The vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying matrix of type \a MT would be
-// violated by an assignment of the given vector \a rhs. In case the matrix would be preserved,
-// the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side vector
-inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs )
-{
-   UNUSED_PARAMETER( lhs, rhs );
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
-
-   for( size_t i=ibegin; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
-
-   if( IsUniLower<MT2>::value ) {
-      if( element == last || element->index() != row_ || !isOne( element->value() ) )
-         return false;
-      ++element;
-   }
-
-   for( ; element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
-
-   for( size_t i=0UL; i<iend; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
-
-   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
-      return false;
-
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given dense vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   for( size_t i=0UL; i<row_; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   for( size_t i=row_+1UL; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given sparse vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , bool SF >      // Symmetry flag
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,SO,SF>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      if( element->index() != row_ && !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -2044,8 +1744,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,SO,SF>::assign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
@@ -2077,8 +1775,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,SO,SF>::assign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
@@ -2106,8 +1802,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,SO,SF>::addAssign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
@@ -2140,8 +1834,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,SO,SF>::addAssign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
@@ -2175,8 +1867,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,SO,SF>::subAssign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
@@ -2209,8 +1899,6 @@ template< typename MT    // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,SO,SF>::subAssign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
@@ -2725,39 +2413,6 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -2786,7 +2441,6 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
-   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3004,7 +2658,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const Sp
    if( size() != rhs.size() )
       throw std::invalid_argument( "Row sizes do not match" );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3051,7 +2705,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator=( const Ve
 
    const typename VT::CompositeType tmp( ~rhs );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3103,7 +2757,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator+=( const V
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3155,7 +2809,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator-=( const V
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3539,273 +3193,6 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::scale( const Other&
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying matrix.
-//
-// \param lhs The matrix to be assigned to.
-// \param rhs The vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying matrix of type \a MT would be
-// violated by an assignment of the given vector \a rhs. In case the matrix would be preserved,
-// the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side vector
-inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs )
-{
-   UNUSED_PARAMETER( lhs, rhs );
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
-
-   for( size_t i=ibegin; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
-
-   if( IsUniLower<MT2>::value ) {
-      if( element == last || element->index() != row_ || !isOne( element->value() ) )
-         return false;
-      ++element;
-   }
-
-   for( ; element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
-
-   for( size_t i=0UL; i<iend; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
-
-   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
-      return false;
-
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given dense vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   for( size_t i=0UL; i<row_; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   for( size_t i=row_+1UL; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given sparse vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,false,false>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      if( element->index() != row_ && !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -4100,8 +3487,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,false>::assign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( size_t j=0UL; j<(~rhs).size(); ++j ) {
@@ -4128,8 +3513,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,false>::assign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    size_t j( 0UL );
@@ -4163,8 +3546,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseRow<MT,false,false>::addAssign( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( AddType );
@@ -4195,8 +3576,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side vector
 inline void SparseRow<MT,false,false>::subAssign( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( SubType );
@@ -4384,34 +3763,6 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    /*!\name Utility functions */
    //@{
    inline size_t extendCapacity() const;
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs );
-
-   template< typename MT2, bool SO2, typename VT >
-   inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-      preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -4443,7 +3794,6 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE        ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE      ( MT );
-   BLAZE_STATIC_ASSERT( !IsRestricted<MT>::value || IsLower<MT>::value || IsUpper<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4661,7 +4011,7 @@ inline SparseRow<MT,false,true>& SparseRow<MT,false,true>::operator=( const Spar
    if( size() != rhs.size() )
       throw std::invalid_argument( "Row sizes do not match" );
 
-   if( !preservesInvariant( matrix_, rhs ) )
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4718,7 +4068,7 @@ inline SparseRow<MT,false,true>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !preservesInvariant( matrix_, right ) )
+   if( !tryAssign( matrix_, right, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4773,7 +4123,7 @@ inline SparseRow<MT,false,true>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !preservesInvariant( matrix_, right ) )
+   if( !tryAssign( matrix_, right, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4838,7 +4188,7 @@ inline SparseRow<MT,false,true>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4894,7 +4244,7 @@ inline SparseRow<MT,false,true>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4952,7 +4302,7 @@ inline SparseRow<MT,false,true>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -5009,7 +4359,7 @@ inline SparseRow<MT,false,true>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !preservesInvariant( matrix_, tmp ) )
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -5397,273 +4747,6 @@ inline size_t SparseRow<MT,false,true>::extendCapacity() const
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying matrix.
-//
-// \param lhs The matrix to be assigned to.
-// \param rhs The vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying matrix of type \a MT would be
-// violated by an assignment of the given vector \a rhs. In case the matrix would be preserved,
-// the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side vector
-inline typename EnableIf< Not< IsRestricted<MT2> >, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const Vector<VT,true>& rhs )
-{
-   UNUSED_PARAMETER( lhs, rhs );
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   if( IsUniLower<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   const size_t ibegin( ( IsStrictlyLower<MT2>::value )?( row_ ):( row_+1UL ) );
-
-   for( size_t i=ibegin; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying lower triangular matrix.
-//
-// \param lhs The lower matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying lower triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsLower<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const bool checkDiagonal( IsUniLower<MT2>::value || IsStrictlyLower<MT2>::value );
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( ( checkDiagonal )?( row_ ):( row_+1UL ) ) );
-
-   if( IsUniLower<MT2>::value ) {
-      if( element == last || element->index() != row_ || !isOne( element->value() ) )
-         return false;
-      ++element;
-   }
-
-   for( ; element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given dense vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   const size_t iend( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) );
-
-   for( size_t i=0UL; i<iend; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   if( IsUniUpper<MT2>::value && !isOne( (~rhs)[row_] ) )
-      return false;
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying upper triangular matrix.
-//
-// \param lhs The upper matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying upper triangular matrix of type
-// \a MT would be violated by an assignment of the given sparse vector \a rhs. In case the
-// matrix would be preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< And< IsUpper<MT2>, Not< IsDiagonal<MT2> > >, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   const RhsIterator last( (~rhs).lowerBound( ( IsStrictlyUpper<MT2>::value )?( row_+1UL ):( row_ ) ) );
-
-   if( IsUniUpper<MT2>::value && ( last == (~rhs).end() || last->index() != row_ || !isOne( last->value() ) ) )
-      return false;
-
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
-      if( !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The dense vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given dense vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side dense vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const DenseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   for( size_t i=0UL; i<row_; ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   for( size_t i=row_+1UL; i<size(); ++i ) {
-      if( !isDefault( (~rhs)[i] ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking for possible invariant violations of the underlying diagonal matrix.
-//
-// \param lhs The diagonal matrix to be assigned to.
-// \param rhs The sparse vector to be checked.
-// \return \a true in case the invariants of the matrix are preserved, \a false if not.
-//
-// This function checks if the invariants of the underlying diagonal matrix of type \a MT would
-// be violated by an assignment of the given sparse vector \a rhs. In case the matrix would be
-// preserved, the function returns \a true. Otherwise it returns \a false.
-*/
-template< typename MT >  // Type of the sparse matrix
-template< typename MT2   // Type of the left-hand side sparse matrix
-        , bool SO2       // Storage order of the left-hand side sparse matrix
-        , typename VT >  // Type of the right-hand side sparse vector
-inline typename EnableIf< IsDiagonal<MT2>, bool >::Type
-   SparseRow<MT,false,true>::preservesInvariant( const SparseMatrix<MT2,SO2>& lhs, const SparseVector<VT,true>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
-
-   UNUSED_PARAMETER( lhs );
-
-   typedef typename VT::ConstIterator  RhsIterator;
-
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
-      if( element->index() != row_ && !isDefault( element->value() ) )
-         return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -5920,8 +5003,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,true>::assign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
@@ -5953,8 +5034,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,true>::assign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
@@ -5982,8 +5061,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,true>::addAssign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
@@ -6016,8 +5093,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,true>::addAssign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename AddTrait<ResultType,typename VT::ResultType>::Type  AddType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
@@ -6051,8 +5126,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side dense vector
 inline void SparseRow<MT,false,true>::subAssign( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
@@ -6085,8 +5158,6 @@ template< typename MT >  // Type of the sparse matrix
 template< typename VT >  // Type of the right-hand side sparse vector
 inline void SparseRow<MT,false,true>::subAssign( const SparseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_RESTRICTED( MT );
-
    typedef typename SubTrait<ResultType,typename VT::ResultType>::Type  SubType;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
@@ -6246,7 +5317,7 @@ template< typename MT    // Type of the sparse matrix
         , typename VT >  // Type of the right-hand side vector
 inline bool tryAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
-   BLAZE_INTERNAL_ASSERT( index < (~rhs).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
