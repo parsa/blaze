@@ -1,5 +1,8 @@
 *.d
 *.o
+ColumnTest
 DenseTest
+RowTest
 SparseTest
+SubmatrixTest
 
