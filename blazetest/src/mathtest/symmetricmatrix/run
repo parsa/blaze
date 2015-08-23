@@ -37,7 +37,13 @@ PATH_SYMMETRICMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SymmetricMatrix tests..."
 
-EXE=$PATH_SYMMETRICMATRIX/DenseNumericTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/DenseNonNumericTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_SYMMETRICMATRIX/SparseNonNumericTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseNumericTest;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/DenseNonNumericTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseNumericTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SparseNonNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SubmatrixNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/SubmatrixNonNumericTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/RowNumericTest;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/RowNonNumericTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/ColumnNumericTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SYMMETRICMATRIX/ColumnNonNumericTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

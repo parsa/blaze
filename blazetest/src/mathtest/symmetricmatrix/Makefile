@@ -54,13 +54,25 @@ noop: $(BIN)
 
 
 # Build rules
+ColumnNonNumericTest: ColumnNonNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ColumnNumericTest: ColumnNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseNonNumericTest: DenseNonNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseNumericTest: DenseNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+RowNonNumericTest: RowNonNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+RowNumericTest: RowNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseNonNumericTest: SparseNonNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseNumericTest: SparseNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SubmatrixNonNumericTest: SubmatrixNonNumericTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SubmatrixNumericTest: SubmatrixNumericTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

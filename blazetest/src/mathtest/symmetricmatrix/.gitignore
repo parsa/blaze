@@ -1,7 +1,13 @@
 *.d
 *.o
-DenseNumericTest
+ColumnNonNumericTest
+ColumnNumericTest
 DenseNonNumericTest
-SparseNumericTest
+DenseNumericTest
+RowNonNumericTest
+RowNumericTest
 SparseNonNumericTest
+SparseNumericTest
+SubmatrixNonNumericTest
+SubmatrixNumericTest
 
