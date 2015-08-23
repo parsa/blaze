@@ -1137,6 +1137,26 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    friend bool tryAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
@@ -1614,7 +1634,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1722,7 +1742,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3757,6 +3777,26 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    friend bool tryAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
@@ -4207,7 +4247,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4315,7 +4355,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -5958,6 +5998,26 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    friend bool tryAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
@@ -6431,7 +6491,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -6539,7 +6599,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -8196,6 +8256,26 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    friend bool tryAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const DenseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< DenseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( DenseSubmatrix<MT2,AF2,SO2>& dm );
@@ -8638,7 +8718,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -8746,7 +8826,7 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
       throw std::invalid_argument( "Matrix sizes do not match" );
 
-   if( !tryAssign( matrix_, ~rhs, row_, column_ ) )
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -10482,6 +10562,182 @@ inline bool tryAssign( const DenseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,S
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
    return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param lhs The target left-hand side dense submatrix.
+// \param rhs The right-hand side vector to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryAddAssign( const DenseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to a dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param lhs The target left-hand side dense submatrix.
+// \param rhs The right-hand side matrix to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the dense matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool tryAddAssign( const DenseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param lhs The target left-hand side dense submatrix.
+// \param rhs The right-hand side vector to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool trySubAssign( const DenseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a dense submatrix.
+// \ingroup dense_submatrix
+//
+// \param lhs The target left-hand side dense submatrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the dense matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySubAssign( const DenseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a dense
+//        submatrix.
+// \ingroup dense_submatrix
+//
+// \param lhs The target left-hand side dense submatrix.
+// \param rhs The right-hand side vector to be multiplied.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryMultAssign( const DenseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                           size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
 }
 /*! \endcond */
 //*************************************************************************************************
