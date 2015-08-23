@@ -990,7 +990,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<
    if( (~rhs).size() != size_ )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
+   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       DynamicVector<Type,TF> tmp( *this * (~rhs) );
       swap( tmp );
    }

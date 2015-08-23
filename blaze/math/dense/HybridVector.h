@@ -1069,7 +1069,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
    if( (~rhs).size() != size_ )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
+   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       HybridVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }

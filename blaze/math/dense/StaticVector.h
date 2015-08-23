@@ -1216,7 +1216,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
    if( (~rhs).size() != N )
       throw std::invalid_argument( "Vector sizes do not match" );
 
-   if( (~rhs).canAlias( this ) || IsSparseVector<VT>::value ) {
+   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       StaticVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
