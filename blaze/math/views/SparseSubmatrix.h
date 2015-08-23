@@ -982,6 +982,26 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
@@ -1266,7 +1286,7 @@ inline typename SparseSubmatrix<MT,AF,SO>::ConstIterator
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse submatrix. In case the
 // current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
@@ -1292,7 +1312,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       throw std::invalid_argument( "Submatrix sizes do not match" );
 
    if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1321,7 +1341,7 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // The sparse submatrix is initialized as a copy of the given matrix. In case the current sizes
 // of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also, if
@@ -1348,7 +1368,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1377,7 +1397,7 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -1408,7 +1428,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    const AddType tmp( *this + (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1430,7 +1450,7 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -1461,7 +1481,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    const SubType tmp( *this - (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1483,7 +1503,7 @@ inline SparseSubmatrix<MT,AF,SO>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -1515,7 +1535,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    const MultType tmp( *this * (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3230,6 +3250,26 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    friend bool tryAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
                           size_t row, size_t column );
 
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool tryAddAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename MT3, bool SO3 >
+   friend bool trySubAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Matrix<MT3,SO3>& rhs,
+                             size_t row, size_t column );
+
+   template< typename MT2, bool AF2, bool SO2, typename VT, bool TF >
+   friend bool tryMultAssign( const SparseSubmatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
+                              size_t row, size_t column );
+
    template< typename MT2, bool AF2, bool SO2 >
    friend typename DerestrictTrait< SparseSubmatrix<MT2,AF2,SO2> >::Type
       derestrict( SparseSubmatrix<MT2,AF2,SO2>& sm );
@@ -3492,7 +3532,7 @@ inline typename SparseSubmatrix<MT,AF,true>::ConstIterator
 // \param rhs Sparse submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // The sparse submatrix is initialized as a copy of the given sparse submatrix. In case the
 // current sizes of the two submatrices don't match, a \a std::invalid_argument exception is
@@ -3517,7 +3557,7 @@ inline SparseSubmatrix<MT,AF,true>&
       throw std::invalid_argument( "Submatrix sizes do not match" );
 
    if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3548,7 +3588,7 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs Matrix to be assigned.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // The sparse submatrix is initialized as a copy of the given matrix. In case the current sizes
 // of the two matrices don't match, a \a std::invalid_argument exception is thrown. Also, if
@@ -3574,7 +3614,7 @@ inline SparseSubmatrix<MT,AF,true>&
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3605,7 +3645,7 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix to be added to the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -3635,7 +3675,7 @@ inline SparseSubmatrix<MT,AF,true>&
    const AddType tmp( *this + (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3659,7 +3699,7 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix to be subtracted from the submatrix.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -3689,7 +3729,7 @@ inline SparseSubmatrix<MT,AF,true>&
    const SubType tmp( *this - (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3713,7 +3753,7 @@ inline SparseSubmatrix<MT,AF,true>&
 // \param rhs The right-hand side matrix for the multiplication.
 // \return Reference to the sparse submatrix.
 // \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to matrix adaptor.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
@@ -3744,7 +3784,7 @@ inline SparseSubmatrix<MT,AF,true>&
    const MultType tmp( *this * (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to matrix adaptor" );
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -5344,6 +5384,184 @@ inline bool tryAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
    return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a sparse submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side vector to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryAddAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to a sparse submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side matrix to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the sparse matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool tryAddAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a sparse
+//        submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side vector to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool trySubAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a sparse
+//        submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the sparse matrix
+        , bool AF       // Alignment flag
+        , bool SO1      // Storage order
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySubAssign( const SparseSubmatrix<MT1,AF,SO1>& lhs, const Matrix<MT2,SO2>& rhs,
+                          size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a sparse
+//        submatrix.
+// \ingroup sparse_submatrix
+//
+// \param lhs The target left-hand side sparse submatrix.
+// \param rhs The right-hand side vector to be multiplied.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryMultAssign( const SparseSubmatrix<MT,AF,SO>& lhs, const Vector<VT,TF>& rhs,
+                           size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
+
+   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
 }
 /*! \endcond */
 //*************************************************************************************************
