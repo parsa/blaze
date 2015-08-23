@@ -427,7 +427,8 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, DenseColumn >::Type&
@@ -584,6 +585,15 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
@@ -971,7 +981,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator+=( const Vector<VT
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !tryAddAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1020,7 +1030,7 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !trySubAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1042,12 +1052,13 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the dense column.
+// \param rhs The right-hand side dense vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1055,8 +1066,8 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator-=( const Vector<VT
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
         , bool SF >      // Symmetry flag
-template< typename VT >  // Type of the right-hand side vector
-inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const Vector<VT,false>& rhs )
+template< typename VT >  // Type of the right-hand side dense vector
+inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
@@ -1064,15 +1075,63 @@ inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const Vector<VT
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const ResultType tmp( *this * (~rhs) );
-      smpAssign( left, tmp );
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const typename VT::ResultType tmp( right );
+      smpMultAssign( left, tmp );
    }
    else {
-      smpMultAssign( left, ~rhs );
+      smpMultAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename VT >  // Type of the right-hand side sparse vector
+inline DenseColumn<MT,SO,SF>& DenseColumn<MT,SO,SF>::operator*=( const SparseVector<VT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   const ResultType right( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -2310,7 +2369,8 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, DenseColumn >::Type&
@@ -2380,6 +2440,15 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
@@ -2741,7 +2810,7 @@ inline DenseColumn<MT,false,false>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !tryAddAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -2791,7 +2860,7 @@ inline DenseColumn<MT,false,false>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !trySubAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -2815,20 +2884,21 @@ inline DenseColumn<MT,false,false>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the dense column.
+// \param rhs The right-hand side dense vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-template< typename VT >  // Type of the right-hand side vector
+template< typename VT >  // Type of the right-hand side dense vector
 inline DenseColumn<MT,false,false>&
-   DenseColumn<MT,false,false>::operator*=( const Vector<VT,false>& rhs )
+   DenseColumn<MT,false,false>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
@@ -2836,15 +2906,64 @@ inline DenseColumn<MT,false,false>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const ResultType tmp( *this * (~rhs) );
-      smpAssign( left, tmp );
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const typename VT::ResultType tmp( right );
+      smpMultAssign( left, tmp );
    }
    else {
-      smpMultAssign( left, ~rhs );
+      smpMultAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline DenseColumn<MT,false,false>&
+   DenseColumn<MT,false,false>::operator*=( const SparseVector<VT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   const ResultType right( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -3514,7 +3633,8 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    template< typename VT > inline DenseColumn& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline DenseColumn& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline DenseColumn& operator*=( const Vector<VT,false>& rhs );
+   template< typename VT > inline DenseColumn& operator*=( const DenseVector<VT,false>&  rhs );
+   template< typename VT > inline DenseColumn& operator*=( const SparseVector<VT,false>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, DenseColumn >::Type&
@@ -3662,6 +3782,15 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const DenseColumn<MT2,SO2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< DenseColumn<MT2,SO2,SF2> >::Type
@@ -4046,7 +4175,7 @@ inline DenseColumn<MT,false,true>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !tryAddAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4096,7 +4225,7 @@ inline DenseColumn<MT,false,true>&
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+   if( !trySubAssign( matrix_, right, 0UL, col_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted matrix" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4120,20 +4249,21 @@ inline DenseColumn<MT,false,true>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the dense column.
+// \param rhs The right-hand side dense vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-template< typename VT >  // Type of the right-hand side vector
+template< typename VT >  // Type of the right-hand side dense vector
 inline DenseColumn<MT,false,true>&
-   DenseColumn<MT,false,true>::operator*=( const Vector<VT,false>& rhs )
+   DenseColumn<MT,false,true>::operator*=( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
@@ -4141,15 +4271,64 @@ inline DenseColumn<MT,false,true>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) || IsSparseVector<VT>::value ) {
-      const ResultType tmp( *this * (~rhs) );
-      smpAssign( left, tmp );
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const typename VT::ResultType tmp( right );
+      smpMultAssign( left, tmp );
    }
    else {
-      smpMultAssign( left, ~rhs );
+      smpMultAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
+   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
+// \return Reference to the assigned column.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+template< typename VT >  // Type of the right-hand side sparse vector
+inline DenseColumn<MT,false,true>&
+   DenseColumn<MT,false,true>::operator*=( const SparseVector<VT,false>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   const ResultType right( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, right, 0UL, col_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
    BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
@@ -5115,6 +5294,96 @@ inline bool tryAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>&
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a dense column.
+// \ingroup dense_column
+//
+// \param lhs The target left-hand side dense column.
+// \param rhs The right-hand side vector to be added.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAddAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a dense column.
+// \ingroup dense_column
+//
+// \param lhs The target left-hand side dense column.
+// \param rhs The right-hand side vector to be subtracted.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool trySubAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a dense column.
+// \ingroup dense_column
+//
+// \param lhs The target left-hand side dense column.
+// \param rhs The right-hand side vector to be multiplied.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryMultAssign( const DenseColumn<MT,SO,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryMultAssign( lhs.matrix_, ~rhs, index, lhs.col_ );
 }
 /*! \endcond */
 //*************************************************************************************************
