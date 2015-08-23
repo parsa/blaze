@@ -832,7 +832,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator-=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline DenseSubvector& operator*=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline DenseSubvector& operator*=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline DenseSubvector& operator*=( const SparseVector<VT2,TF>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, DenseSubvector >::Type&
@@ -1016,6 +1017,15 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
 
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryMultAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
@@ -1404,7 +1414,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
+   if( !tryAddAssign( vector_, right, offset_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted vector" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1448,7 +1458,7 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
+   if( !trySubAssign( vector_, right, offset_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted vector" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -1467,10 +1477,10 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the dense subvector.
+// \param rhs The right-hand side dense vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
@@ -1481,8 +1491,9 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
 template< typename VT     // Type of the dense vector
         , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
-template< typename VT2 >  // Type of the right-hand side vector
-inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vector<VT2,TF>& rhs )
+template< typename VT2 >  // Type of the right-hand side dense vector
+inline DenseSubvector<VT,AF,TF>&
+   DenseSubvector<VT,AF,TF>::operator*=( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
@@ -1490,15 +1501,60 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator*=( const Vec
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
-      const ResultType tmp( *this * (~rhs) );
-      smpAssign( left, tmp );
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpMultAssign( left, tmp );
    }
    else {
-      smpMultAssign( left, ~rhs );
+      smpMultAssign( left, right );
    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense subvector.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side sparse vector
+inline DenseSubvector<VT,AF,TF>&
+   DenseSubvector<VT,AF,TF>::operator*=( const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   const ResultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
 
    return *this;
 }
@@ -2468,7 +2524,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    template< typename VT2 > inline DenseSubvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator+=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline DenseSubvector& operator-=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline DenseSubvector& operator*=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline DenseSubvector& operator*=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline DenseSubvector& operator*=( const SparseVector<VT2,TF>& rhs );
 
    template< typename Other >
    inline typename EnableIf< IsNumeric<Other>, DenseSubvector >::Type&
@@ -2627,6 +2684,15 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
 
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryMultAssign( const DenseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< DenseSubvector<VT2,AF2,TF2> >::Type
@@ -3028,7 +3094,7 @@ inline DenseSubvector<VT,aligned,TF>&
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
+   if( !tryAddAssign( vector_, right, offset_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted vector" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3074,7 +3140,7 @@ inline DenseSubvector<VT,aligned,TF>&
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
+   if( !trySubAssign( vector_, right, offset_ ) )
       throw std::invalid_argument( "Invalid assignment to restricted vector" );
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -3095,10 +3161,10 @@ inline DenseSubvector<VT,aligned,TF>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a vector
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side vector to be multiplied with the dense subvector.
+// \param rhs The right-hand side dense vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
@@ -3108,9 +3174,9 @@ inline DenseSubvector<VT,aligned,TF>&
 */
 template< typename VT     // Type of the dense vector
         , bool TF >       // Transpose flag
-template< typename VT2 >  // Type of the right-hand side vector
+template< typename VT2 >  // Type of the right-hand side dense vector
 inline DenseSubvector<VT,aligned,TF>&
-   DenseSubvector<VT,aligned,TF>::operator*=( const Vector<VT2,TF>& rhs )
+   DenseSubvector<VT,aligned,TF>::operator*=( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
@@ -3118,15 +3184,61 @@ inline DenseSubvector<VT,aligned,TF>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( vector_, right, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &vector_ ) || IsSparseVector<VT2>::value ) {
-      const ResultType tmp( *this * (~rhs) );
-      smpAssign( left, tmp );
+   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+      const typename VT2::ResultType tmp( right );
+      smpMultAssign( left, tmp );
    }
    else {
-      smpMultAssign( left, ~rhs );
+      smpMultAssign( left, right );
    }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense subvector.
+// \return Reference to the assigned subvector.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename VT     // Type of the dense vector
+        , bool TF >       // Transpose flag
+template< typename VT2 >  // Type of the right-hand side sparse vector
+inline DenseSubvector<VT,aligned,TF>&
+   DenseSubvector<VT,aligned,TF>::operator*=( const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() )
+      throw std::invalid_argument( "Vector sizes do not match" );
+
+   const ResultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( vector_, tmp, offset_ ) )
+      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+
+   smpAssign( left, tmp );
 
    return *this;
 }
@@ -4133,6 +4245,15 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4275,6 +4396,15 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4417,6 +4547,15 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4559,6 +4698,15 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
 
    template< typename VT3, bool AF, bool TF, typename VT4 >
    friend bool tryAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryAddAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool trySubAssign( const DenseSubvector<VT2,AF,TF>& lhs, const Vector<VT3,TF>& rhs, size_t index );
+
+   template< typename VT3, bool AF, bool TF, typename VT4 >
+   friend bool tryMultAssign( const DenseSubvector<VT3,AF,TF>& lhs, const Vector<VT4,TF>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4757,6 +4905,98 @@ inline bool tryAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a dense subvector.
+// \ingroup dense_subvector
+//
+// \param lhs The target left-hand side dense subvector.
+// \param rhs The right-hand side vector to be added.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAddAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAddAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a dense
+//        subvector.
+// \ingroup dense_subvector
+//
+// \param lhs The target left-hand side dense subvector.
+// \param rhs The right-hand side vector to be subtracted.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool trySubAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return trySubAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a dense
+//        subvector.
+// \ingroup dense_subvector
+//
+// \param lhs The target left-hand side dense subvector.
+// \param rhs The right-hand side vector to be multiplied.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryMultAssign( const DenseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryMultAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
 }
 /*! \endcond */
 //*************************************************************************************************
