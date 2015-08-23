@@ -868,6 +868,15 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    template< typename VT2, bool AF2, bool TF2, typename VT3 >
    friend bool tryAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
 
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryAddAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool trySubAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
+   template< typename VT2, bool AF2, bool TF2, typename VT3 >
+   friend bool tryMultAssign( const SparseSubvector<VT2,AF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
+
    template< typename VT2, bool AF2, bool TF2 >
    friend typename DerestrictTrait< SparseSubvector<VT2,AF2,TF2> >::Type
       derestrict( SparseSubvector<VT2,AF2,TF2>& sv );
@@ -1196,6 +1205,7 @@ inline SparseSubvector<VT,AF,TF>&
 // \param rhs The right-hand side vector to be added to the sparse subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1242,6 +1252,7 @@ inline SparseSubvector<VT,AF,TF>&
 // \param rhs The right-hand side vector to be subtracted from the sparse subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1289,6 +1300,7 @@ inline SparseSubvector<VT,AF,TF>&
 // \param rhs The right-hand side vector to be multiplied with the sparse subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -2266,6 +2278,98 @@ inline bool tryAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,T
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a sparse subvector.
+// \ingroup sparse_subvector
+//
+// \param lhs The target left-hand side sparse subvector.
+// \param rhs The right-hand side vector to be added.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAddAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAddAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a sparse
+//        subvector.
+// \ingroup sparse_subvector
+//
+// \param lhs The target left-hand side sparse subvector.
+// \param rhs The right-hand side vector to be subtracted.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool trySubAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return trySubAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a sparse
+//        subvector.
+// \ingroup sparse_subvector
+//
+// \param lhs The target left-hand side sparse subvector.
+// \param rhs The right-hand side vector to be multiplied.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1    // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryMultAssign( const SparseSubvector<VT1,AF,TF>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryMultAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
 }
 /*! \endcond */
 //*************************************************************************************************
