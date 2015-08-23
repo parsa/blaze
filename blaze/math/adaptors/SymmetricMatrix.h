@@ -232,8 +232,8 @@ template< typename MT1  // Type of the adapted matrix
         , bool DF       // Density flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
-                                    const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+                       const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
@@ -260,6 +260,67 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
    const size_t subcol( lower ? row - column : 0UL );
 
    return isSymmetric( submatrix( ~rhs, subrow, subcol, size, size ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to a symmetric matrix.
+// \ingroup symmetric_matrix
+//
+// \param lhs The target left-hand side symmetric matrix.
+// \param rhs The right-hand side matrix to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+                          const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a symmetric
+//        matrix.
+// \ingroup symmetric_matrix
+//
+// \param lhs The target left-hand side symmetric matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+                          const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
