@@ -37,5 +37,8 @@ PATH_DIAGONALMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DiagonalMatrix tests..."
 
-EXE=$PATH_DIAGONALMATRIX/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_DIAGONALMATRIX/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DIAGONALMATRIX/DenseTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DIAGONALMATRIX/SparseTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DIAGONALMATRIX/SubmatrixTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DIAGONALMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DIAGONALMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
