@@ -223,8 +223,8 @@ template< typename MT    // Type of the adapted matrix
         , bool SO        // Storage order of the adapted matrix
         , bool DF        // Density flag
         , typename VT >  // Type of the right-hand side dense vector
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
-                                    const DenseVector<VT,false>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                       const DenseVector<VT,false>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
@@ -270,8 +270,8 @@ template< typename MT    // Type of the adapted matrix
         , bool SO        // Storage order of the adapted matrix
         , bool DF        // Density flag
         , typename VT >  // Type of the right-hand side dense vector
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
-                                    const DenseVector<VT,true>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                       const DenseVector<VT,true>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
@@ -314,8 +314,8 @@ template< typename MT    // Type of the adapted matrix
         , bool SO        // Storage order of the adapted matrix
         , bool DF        // Density flag
         , typename VT >  // Type of the right-hand side sparse vector
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
-                                    const SparseVector<VT,false>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                       const SparseVector<VT,false>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
@@ -363,8 +363,8 @@ template< typename MT    // Type of the adapted matrix
         , bool SO        // Storage order of the adapted matrix
         , bool DF        // Density flag
         , typename VT >  // Type of the right-hand side sparse vector
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
-                                    const SparseVector<VT,true>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                       const SparseVector<VT,true>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
@@ -410,8 +410,8 @@ template< typename MT1    // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
         , bool DF         // Density flag
         , typename MT2 >  // Type of the right-hand side dense matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
-                                    const DenseMatrix<MT2,false>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                       const DenseMatrix<MT2,false>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
@@ -467,8 +467,8 @@ template< typename MT1    // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
         , bool DF         // Density flag
         , typename MT2 >  // Type of the right-hand side dense matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
-                                    const DenseMatrix<MT2,true>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                       const DenseMatrix<MT2,true>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
@@ -523,8 +523,8 @@ template< typename MT1    // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
         , bool DF         // Density flag
         , typename MT2 >  // Type of the right-hand side sparse matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
-                                    const SparseMatrix<MT2,false>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                       const SparseMatrix<MT2,false>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
@@ -585,8 +585,8 @@ template< typename MT1    // Type of the adapted matrix
         , bool SO         // Storage order of the adapted matrix
         , bool DF         // Density flag
         , typename MT2 >  // Type of the right-hand side sparse matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
-                                    const SparseMatrix<MT2,true>& rhs, size_t row, size_t column )
+inline bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
+                       const SparseMatrix<MT2,true>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
 
@@ -619,6 +619,126 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const LowerMatrix<MT1,SO,DF>& lhs,
    }
 
    return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side vector to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF      // Density flag
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool tryAddAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side matrix to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool tryAddAssign( const LowerMatrix<MT1,SO1,DF>& lhs,
+                          const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side vector to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF      // Density flag
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+inline bool trySubAssign( const LowerMatrix<MT,SO,DF>& lhs,
+                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a lower matrix.
+// \ingroup lower_matrix
+//
+// \param lhs The target left-hand side lower matrix.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the adapted matrix
+        , bool SO1      // Storage order of the adapted matrix
+        , bool DF       // Density flag
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline bool trySubAssign( const LowerMatrix<MT1,SO1,DF>& lhs,
+                          const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   return tryAssign( lhs, ~rhs, row, column );
 }
 /*! \endcond */
 //*************************************************************************************************
