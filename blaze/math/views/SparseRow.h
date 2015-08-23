@@ -535,6 +535,15 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
       derestrict( SparseRow<MT2,SO2,SF2>& dm );
@@ -1132,6 +1141,7 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator-=( const SparseVector<
 // \param rhs The right-hand side vector to be multiplied with the sparse row.
 // \return Reference to the sparse row.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -1158,9 +1168,13 @@ inline SparseRow<MT,SO,SF>& SparseRow<MT,SO,SF>::operator*=( const Vector<VT,tru
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   const MultType tmp( *this * (~rhs) );
    left.reset();
    assign( left, tmp );
 
@@ -2428,6 +2442,15 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
       derestrict( SparseRow<MT2,SO2,SF2>& dm );
@@ -2833,6 +2856,7 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator-=( const V
 // \param rhs The right-hand side vector to be multiplied with the sparse row.
 // \return Reference to the sparse row.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -2857,9 +2881,13 @@ inline SparseRow<MT,false,false>& SparseRow<MT,false,false>::operator*=( const V
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   const MultType tmp( *this * (~rhs) );
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
@@ -3781,6 +3809,15 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    template< typename MT2, bool SO2, bool SF2, typename VT >
    friend bool tryAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
 
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryAddAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool trySubAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
+   template< typename MT2, bool SO2, bool SF2, typename VT >
+   friend bool tryMultAssign( const SparseRow<MT2,SO2,SF2>& lhs, const Vector<VT,true>& rhs, size_t index );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend typename DerestrictTrait< SparseRow<MT2,SO2,SF2> >::Type
       derestrict( SparseRow<MT2,SO2,SF2>& dm );
@@ -4385,6 +4422,7 @@ inline SparseRow<MT,false,true>&
 // \param rhs The right-hand side vector to be multiplied with the sparse row.
 // \return Reference to the sparse row.
 // \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
@@ -4410,9 +4448,13 @@ inline SparseRow<MT,false,true>&
    if( size() != (~rhs).size() )
       throw std::invalid_argument( "Vector sizes do not match" );
 
+   const MultType tmp( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, tmp, row_, 0UL ) )
+      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   const MultType tmp( *this * (~rhs) );
    left.reset();
    assign( left, tmp );
 
@@ -5321,6 +5363,96 @@ inline bool tryAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
    return tryAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to a sparse row.
+// \ingroup sparse_row
+//
+// \param lhs The target left-hand side sparse row.
+// \param rhs The right-hand side vector to be added.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryAddAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a sparse row.
+// \ingroup sparse_row
+//
+// \param lhs The target left-hand side sparse row.
+// \param rhs The right-hand side vector to be subtracted.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool trySubAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a sparse row.
+// \ingroup sparse_row
+//
+// \param lhs The target left-hand side sparse row.
+// \param rhs The right-hand side vector to be multiplied.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF        // Symmetry flag
+        , typename VT >  // Type of the right-hand side vector
+inline bool tryMultAssign( const SparseRow<MT,SO,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+
+   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_, index );
 }
 /*! \endcond */
 //*************************************************************************************************
