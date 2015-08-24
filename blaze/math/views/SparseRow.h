@@ -530,6 +530,9 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -2437,6 +2440,9 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -3803,6 +3809,9 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseRow<MT2,SO2,SF2>& row );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseRow<MT2,SO2,SF2>& a, const SparseRow<MT2,SO2,SF2>& b );
 
@@ -5242,6 +5251,9 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const SparseRow<MT,SO,SF>& row );
 
 template< typename MT, bool SO, bool SF >
+inline bool isIntact( const SparseRow<MT,SO,SF>& row );
+
+template< typename MT, bool SO, bool SF >
 inline bool isSame( const SparseRow<MT,SO,SF>& a, const SparseRow<MT,SO,SF>& b );
 //@}
 //*************************************************************************************************
@@ -5312,6 +5324,34 @@ inline bool isDefault( const SparseRow<MT,SO,SF>& row )
    for( ConstIterator element=row.begin(); element!=end; ++element )
       if( !isDefault( element->value() ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given sparse row are intact.
+// \ingroup sparse_row
+//
+// \param row The sparse row to be tested.
+// \return \a true in case the given row's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the sparse row are intact, i.e. if its state
+// is valid. In case the invariants are intact, the function returns \a true, else it will
+// return \a false. The following example demonstrates the use of the \a isIntact() function:
+
+   \code
+   blaze::CompressedMatrix<double,rowMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( row( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isIntact( const SparseRow<MT,SO,SF>& row )
+{
+   return ( row.row_ <= row.matrix_.rows() &&
+            isIntact( row.matrix_ ) );
 }
 //*************************************************************************************************
 
