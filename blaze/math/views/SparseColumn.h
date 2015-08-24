@@ -532,6 +532,9 @@ class SparseColumn : public SparseVector< SparseColumn<MT,SO,SF>, false >
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -2443,6 +2446,9 @@ class SparseColumn<MT,false,false> : public SparseVector< SparseColumn<MT,false,
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -3820,6 +3826,9 @@ class SparseColumn<MT,false,true> : public SparseVector< SparseColumn<MT,false,t
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const SparseColumn<MT2,SO2,SF2>& column );
+
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const SparseColumn<MT2,SO2,SF2>& a, const SparseColumn<MT2,SO2,SF2>& b );
 
@@ -5263,6 +5272,9 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const SparseColumn<MT,SO,SF>& column );
 
 template< typename MT, bool SO, bool SF >
+inline bool isIntact( const SparseColumn<MT,SO,SF>& column );
+
+template< typename MT, bool SO, bool SF >
 inline bool isSame( const SparseColumn<MT,SO,SF>& a, const SparseColumn<MT,SO,SF>& b );
 //@}
 //*************************************************************************************************
@@ -5333,6 +5345,35 @@ inline bool isDefault( const SparseColumn<MT,SO,SF>& column )
    for( ConstIterator element=column.begin(); element!=end; ++element )
       if( !isDefault( element->value() ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given sparse column are intact.
+// \ingroup sparse_column
+//
+// \param column The sparse column to be tested.
+// \return \a true in case the given column's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the sparse column are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicMatrix<double,columnMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( column( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isIntact( const SparseColumn<MT,SO,SF>& column )
+{
+   return ( column.col_ <= column.matrix_.columns() &&
+            isIntact( column.matrix_ ) );
 }
 //*************************************************************************************************
 
