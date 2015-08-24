@@ -5209,6 +5209,9 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
+inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m );
+
+template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) /* throw() */;
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -5302,6 +5305,35 @@ template< typename Type  // Data type of the matrix
 inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given hybrid matrix are intact.
+// \ingroup hybrid_matrix
+//
+// \param m The hybrid matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the hybrid matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::HybridMatrix<double,3,5> A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m )
+{
+   return ( m.rows() <= M && m.columns() <= N );
 }
 //*************************************************************************************************
 
