@@ -97,6 +97,9 @@ template< typename MT, bool SO, bool DF, bool NF >
 inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< typename MT, bool SO, bool DF, bool NF >
+inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m );
+
+template< typename MT, bool SO, bool DF, bool NF >
 inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -187,6 +190,38 @@ template< typename MT  // Type of the adapted matrix
 inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m )
 {
    return isDefault( m.matrix_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given symmetric matrix are intact.
+// \ingroup symmetric_matrix
+//
+// \param m The symmetric matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the symmetric matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   SymmetricMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF      // Density flag
+        , bool NF >    // Numeric flag
+inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m )
+{
+   return ( isIntact( m.matrix_ ) && isSymmetric( m.matrix_ ) );
 }
 //*************************************************************************************************
 

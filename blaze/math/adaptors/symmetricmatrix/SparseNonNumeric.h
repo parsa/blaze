@@ -601,6 +601,9 @@ class SymmetricMatrix<MT,SO,false,false>
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2, bool NF2 >
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
+
+   template< typename MT2, bool SO2, bool DF2, bool NF2 >
+   friend bool isIntact( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
