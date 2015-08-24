@@ -96,6 +96,9 @@ template< typename MT, bool SO, bool DF >
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
+inline bool isIntact( const StrictlyUpperMatrix<MT,SO,DF>& m );
+
+template< typename MT, bool SO, bool DF >
 inline void swap( StrictlyUpperMatrix<MT,SO,DF>& a, StrictlyUpperMatrix<MT,SO,DF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -228,6 +231,37 @@ template< typename MT  // Type of the adapted matrix
 inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m )
 {
    return isDefault_backend( m, typename IsResizable<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given strictly upper matrix are intact.
+// \ingroup strictly_upper_matrix
+//
+// \param m The strictly upper matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the strictly upper matrix are intact, i.e.
+// if its state is valid. In case the invariants are intact, the function returns \a true, else
+// it will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StrictlyUpperMatrix;
+
+   StrictlyUpperMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool isIntact( const StrictlyUpperMatrix<MT,SO,DF>& m )
+{
+   return ( isIntact( m.matrix_ ) && isStrictlyUpper( m.matrix_ ) );
 }
 //*************************************************************************************************
 
