@@ -581,6 +581,9 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
 
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -2436,6 +2439,9 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
 
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -3776,6 +3782,9 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 > friend class DenseColumn;
+
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseColumn<MT2,SO2,SF2>& column );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseColumn<MT2,SO2,SF2>& a, const DenseColumn<MT2,SO2,SF2>& b );
@@ -5176,6 +5185,9 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const DenseColumn<MT,SO,SF>& column );
 
 template< typename MT, bool SO, bool SF >
+inline bool isIntact( const DenseColumn<MT,SO,SF>& column );
+
+template< typename MT, bool SO, bool SF >
 inline bool isSame( const DenseColumn<MT,SO,SF>& a, const DenseColumn<MT,SO,SF>& b );
 //@}
 //*************************************************************************************************
@@ -5243,6 +5255,35 @@ inline bool isDefault( const DenseColumn<MT,SO,SF>& column )
    for( size_t i=0UL; i<column.size(); ++i )
       if( !isDefault( column[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dense column are intact.
+// \ingroup dense_column
+//
+// \param column The dense column to be tested.
+// \return \a true in case the given column's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dense column are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicMatrix<int,columnMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( column( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isIntact( const DenseColumn<MT,SO,SF>& column )
+{
+   return ( column.col_ <= column.matrix_.columns() &&
+            isIntact( column.matrix_ ) );
 }
 //*************************************************************************************************
 
