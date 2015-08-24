@@ -581,6 +581,9 @@ class DenseRow : public DenseVector< DenseRow<MT,SO,SF>, true >
    template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
 
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -2436,6 +2439,9 @@ class DenseRow<MT,false,false> : public DenseVector< DenseRow<MT,false,false>, t
    template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
 
    template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row );
+
+   template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
 
    template< typename MT2, bool SO2, bool SF2, typename VT >
@@ -3765,6 +3771,9 @@ class DenseRow<MT,false,true> : public DenseVector< DenseRow<MT,false,true>, tru
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool SF2 > friend class DenseRow;
+
+   template< typename MT2, bool SO2, bool SF2 >
+   friend bool isIntact( const DenseRow<MT2,SO2,SF2>& row );
 
    template< typename MT2, bool SO2, bool SF2 >
    friend bool isSame( const DenseRow<MT2,SO2,SF2>& a, const DenseRow<MT2,SO2,SF2>& b );
@@ -5160,6 +5169,9 @@ template< typename MT, bool SO, bool SF >
 inline bool isDefault( const DenseRow<MT,SO,SF>& row );
 
 template< typename MT, bool SO, bool SF >
+inline bool isIntact( const DenseRow<MT,SO,SF>& row );
+
+template< typename MT, bool SO, bool SF >
 inline bool isSame( const DenseRow<MT,SO,SF>& a, const DenseRow<MT,SO,SF>& b );
 //@}
 //*************************************************************************************************
@@ -5227,6 +5239,34 @@ inline bool isDefault( const DenseRow<MT,SO,SF>& row )
    for( size_t i=0UL; i<row.size(); ++i )
       if( !isDefault( row[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dense row are intact.
+// \ingroup dense_row
+//
+// \param row The dense row to be tested.
+// \return \a true in case the given row's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dense row are intact, i.e. if its state
+// is valid. In case the invariants are intact, the function returns \a true, else it will
+// return \a false. The following example demonstrates the use of the \a isIntact() function:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( row( A, 0UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+inline bool isIntact( const DenseRow<MT,SO,SF>& row )
+{
+   return ( row.row_ <= row.matrix_.rows() &&
+            isIntact( row.matrix_ ) );
 }
 //*************************************************************************************************
 
