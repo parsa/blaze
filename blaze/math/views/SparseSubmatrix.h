@@ -957,6 +957,9 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -3225,6 +3228,9 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
       submatrix( const SparseSubmatrix<MT2,AF2,SO2>& sm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -5005,6 +5011,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
@@ -5119,6 +5128,36 @@ inline bool isDefault( const SparseSubmatrix<MT,AF,SO>& sm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given sparse submatrix are intact.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be tested.
+// \return \a true in case the given submatrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the sparse submatrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::CompressedMatrix<double,rowMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isIntact( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   return ( sm.row_ + sm.m_ <= sm.matrix_.rows() &&
+            sm.column_ + sm.n_ <= sm.matrix_.columns() &&
+            isIntact( sm.matrix_ ) );
 }
 //*************************************************************************************************
 
