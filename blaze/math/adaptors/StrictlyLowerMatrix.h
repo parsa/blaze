@@ -96,6 +96,9 @@ template< typename MT, bool SO, bool DF >
 inline bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
+inline bool isIntact( const StrictlyLowerMatrix<MT,SO,DF>& m );
+
+template< typename MT, bool SO, bool DF >
 inline void swap( StrictlyLowerMatrix<MT,SO,DF>& a, StrictlyLowerMatrix<MT,SO,DF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -215,9 +218,8 @@ inline bool isDefault_backend( const StrictlyLowerMatrix<MT,SO,DF>& m, FalseType
    \code
    using blaze::DynamicMatrix;
    using blaze::StrictlyLowerMatrix;
-   using blaze::rowMajor;
 
-   StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> > A;
+   StrictlyLowerMatrix< DynamicMatrix<int> > A;
    // ... Resizing and initialization
    if( isDefault( A ) ) { ... }
    \endcode
@@ -228,6 +230,37 @@ template< typename MT  // Type of the adapted matrix
 inline bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m )
 {
    return isDefault_backend( m, typename IsResizable<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given strictly lower matrix are intact.
+// \ingroup strictly_lower_matrix
+//
+// \param m The strictly lower matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the strictly lower matrix are intact, i.e.
+// if its state is valid. In case the invariants are intact, the function returns \a true, else
+// it will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StrictlyLowerMatrix;
+
+   StrictlyLowerMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool isIntact( const StrictlyLowerMatrix<MT,SO,DF>& m )
+{
+   return ( isIntact( m.matrix_ ) && isStrictlyLower( m.matrix_ ) );
 }
 //*************************************************************************************************
 
