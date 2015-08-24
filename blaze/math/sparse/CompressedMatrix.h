@@ -4704,6 +4704,9 @@ template< typename Type, bool SO >
 inline bool isDefault( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
+inline bool isIntact( const CompressedMatrix<Type,SO>& m );
+
+template< typename Type, bool SO >
 inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) /* throw() */;
 
 template< typename Type, bool SO >
@@ -4789,6 +4792,33 @@ template< typename Type  // Data type of the sparse matrix
 inline bool isDefault( const CompressedMatrix<Type,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given compressed matrix are intact.
+// \ingroup compressed_matrix
+//
+// \param m The compressed matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the compressed matrix are intact, i.e. if
+// its state is valid. In case the invariants are intact, the function returns \a true, else
+// it will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::CompressedMatrix<int> A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline bool isIntact( const CompressedMatrix<Type,SO>& m )
+{
+   return ( m.nonZeros() <= m.capacity() );
 }
 //*************************************************************************************************
 
