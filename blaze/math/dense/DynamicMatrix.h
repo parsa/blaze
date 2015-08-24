@@ -4813,6 +4813,9 @@ template< typename Type, bool SO >
 inline bool isDefault( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
+inline bool isIntact( const DynamicMatrix<Type,SO>& m );
+
+template< typename Type, bool SO >
 inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) /* throw() */;
 
 template< typename Type, bool SO >
@@ -4898,6 +4901,33 @@ template< typename Type  // Data type of the matrix
 inline bool isDefault( const DynamicMatrix<Type,SO>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dynamic matrix are intact.
+// \ingroup dynamic_matrix
+//
+// \param m The dynamic matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dynamic matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicMatrix<int> A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline bool isIntact( const DynamicMatrix<Type,SO>& m )
+{
+   return ( m.rows() * m.columns() <= m.capacity() );
 }
 //*************************************************************************************************
 
