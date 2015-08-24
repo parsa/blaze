@@ -711,6 +711,9 @@ class UpperMatrix<MT,SO,true>
    friend bool isDefault( const UpperMatrix<MT2,SO2,DF2>& m );
 
    template< typename MT2, bool SO2, bool DF2 >
+   friend bool isIntact( const UpperMatrix<MT2,SO2,DF2>& m );
+
+   template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( UpperMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
 
