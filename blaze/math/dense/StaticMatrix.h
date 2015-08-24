@@ -6106,6 +6106,9 @@ template< typename Type, size_t M, size_t N, bool SO >
 inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
+inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m );
+
+template< typename Type, size_t M, size_t N, bool SO >
 inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) /* throw() */;
 
 template< typename Type, size_t M, size_t N, bool SO >
@@ -6177,11 +6180,21 @@ inline void clear( StaticMatrix<Type,M,N,SO>& m )
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the given static matrix is in default state.
-// \ingroup static_matrix
+/*!\brief Returns whether the given dynamic matrix is in default state.
+// \ingroup dynamic_matrix
 //
 // \param m The matrix to be tested for its default state.
-// \return \a true in case the given matrix is component-wise zero, \a false otherwise.
+// \return \a true in case the given matrix's rows and columns are zero, \a false otherwise.
+//
+// This function checks whether the static matrix is in default (constructed) state. In case it
+// is in default state, the function returns \a true, else it will return \a false. The following
+// example demonstrates the use of the \a isDefault() function:
+
+   \code
+   blaze::StaticMatrix<double,3,5> A;
+   // ... Resizing and initialization
+   if( isDefault( A ) ) { ... }
+   \endcode
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -6199,6 +6212,37 @@ inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m )
          for( size_t i=0UL; i<M; ++i )
             if( !isDefault( m(i,j) ) ) return false;
    }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given static matrix are intact.
+// \ingroup static_matrix
+//
+// \param m The static matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the static matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::StaticMatrix<double,3,5> A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m )
+{
+   UNUSED_PARAMETER( m );
 
    return true;
 }
