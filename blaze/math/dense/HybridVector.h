@@ -2124,6 +2124,9 @@ template< typename Type, size_t N, bool TF >
 inline bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
+inline bool isIntact( const HybridVector<Type,N,TF>& v );
+
+template< typename Type, size_t N, bool TF >
 inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) /* throw() */;
 
 template< typename Type, size_t N, bool TF >
@@ -2189,6 +2192,34 @@ template< typename Type  // Data type of the vector
 inline bool isDefault( const HybridVector<Type,N,TF>& v )
 {
    return ( v.size() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given hybrid vector are intact.
+// \ingroup hybrid_vector
+//
+// \param v The hybrid vector to be tested.
+// \return \a true in case the given vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the hybrid vector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::HybridVector<double,3> a;
+   // ... Resizing and initialization
+   if( isIntact( a ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline bool isIntact( const HybridVector<Type,N,TF>& v )
+{
+   return ( v.size() <= N );
 }
 //*************************************************************************************************
 
