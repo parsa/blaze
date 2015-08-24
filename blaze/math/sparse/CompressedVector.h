@@ -1778,6 +1778,9 @@ template< typename Type, bool TF >
 inline bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
+inline bool isIntact( const CompressedVector<Type,TF>& v );
+
+template< typename Type, bool TF >
 inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) /* throw() */;
 
 template< typename Type, bool TF >
@@ -1840,6 +1843,33 @@ template< typename Type  // Data type of the vector
 inline bool isDefault( const CompressedVector<Type,TF>& v )
 {
    return ( v.size() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given compressed vector are intact.
+// \ingroup compressed_vector
+//
+// \param v The compressed vector to be tested.
+// \return \a true in case the given vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the compressed vector are intact, i.e. if
+// its state is valid. In case the invariants are intact, the function returns \a true, else
+// it will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isIntact( a ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline bool isIntact( const CompressedVector<Type,TF>& v )
+{
+   return ( v.nonZeros() <= v.capacity() );
 }
 //*************************************************************************************************
 
