@@ -282,6 +282,9 @@ class DiagonalMatrix<MT,SO,false>
    friend bool isDefault( const DiagonalMatrix<MT2,SO2,DF2>& m );
 
    template< typename MT2, bool SO2, bool DF2 >
+   friend bool isIntact( const DiagonalMatrix<MT2,SO2,DF2>& m );
+
+   template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( DiagonalMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
 

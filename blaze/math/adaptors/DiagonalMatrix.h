@@ -99,6 +99,9 @@ template< typename MT, bool SO, bool DF >
 inline bool isDefault( const DiagonalMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
+inline bool isIntact( const DiagonalMatrix<MT,SO,DF>& m );
+
+template< typename MT, bool SO, bool DF >
 inline void swap( DiagonalMatrix<MT,SO,DF>& a, DiagonalMatrix<MT,SO,DF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -174,7 +177,10 @@ inline void clear( DiagonalMatrix<MT,SO,DF>& m )
 // is not 0. The following example demonstrates the use of the \a isDefault function:
 
    \code
-   blaze::DiagonalMatrix<int> A;
+   using blaze::DynamicMatrix;
+   using blaze::DiagonalMatrix;
+
+   DiagonalMatrix< DynamicMatrix<int> > A;
    // ... Resizing and initialization
    if( isDefault( A ) ) { ... }
    \endcode
@@ -185,6 +191,37 @@ template< typename MT  // Type of the adapted matrix
 inline bool isDefault( const DiagonalMatrix<MT,SO,DF>& m )
 {
    return isDefault( m.matrix_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given diagonal matrix are intact.
+// \ingroup diagonal_matrix
+//
+// \param m The diagonal matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the diagonal matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DiagonalMatrix;
+
+   DiagonalMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool isIntact( const DiagonalMatrix<MT,SO,DF>& m )
+{
+   return ( isIntact( m.matrix_ ) && isDiagonal( m.matrix_ ) );
 }
 //*************************************************************************************************
 
