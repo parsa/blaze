@@ -1972,6 +1972,9 @@ template< typename Type, bool TF >
 inline bool isDefault( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
+inline bool isIntact( const DynamicVector<Type,TF>& v );
+
+template< typename Type, bool TF >
 inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) /* throw() */;
 
 template< typename Type, bool TF >
@@ -2034,6 +2037,33 @@ template< typename Type  // Data type of the vector
 inline bool isDefault( const DynamicVector<Type,TF>& v )
 {
    return ( v.size() == 0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dynamic vector are intact.
+// \ingroup dynamic_vector
+//
+// \param v The dynamic vector to be tested.
+// \return \a true in case the given vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dynamic vector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicVector<int> a;
+   // ... Resizing and initialization
+   if( isIntact( a ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline bool isIntact( const DynamicVector<Type,TF>& v )
+{
+   return ( v.size() <= v.capacity() );
 }
 //*************************************************************************************************
 
