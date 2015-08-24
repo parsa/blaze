@@ -857,6 +857,9 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
       subvector( const SparseSubvector<VT2,AF2,TF2>& sv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
+   friend bool isIntact( const SparseSubvector<VT2,AF2,TF2>& sv );
+
+   template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const SparseSubvector<VT2,AF2,TF2>& a, const SparseVector<VT2,TF2>& b );
 
    template< typename VT2, bool AF2, bool TF2 >
@@ -2107,6 +2110,9 @@ template< typename VT, bool AF, bool TF >
 inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv );
 
 template< typename VT, bool AF, bool TF >
+inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv );
+
+template< typename VT, bool AF, bool TF >
 inline bool isSame( const SparseSubvector<VT,AF,TF>& a, const SparseVector<VT,TF>& b );
 
 template< typename VT, bool AF, bool TF >
@@ -2183,6 +2189,35 @@ inline bool isDefault( const SparseSubvector<VT,AF,TF>& sv )
    for( ConstIterator element=sv.begin(); element!=end; ++element )
       if( !isDefault( element->value() ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given sparse subvector vector are intact.
+// \ingroup sparse_subvector
+//
+// \param sv The sparse subvector to be tested.
+// \return \a true in case the given subvector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the sparse subvector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::CompressedVector<double,rowVector> v;
+   // ... Resizing and initialization
+   if( isIntact( subvector( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline bool isIntact( const SparseSubvector<VT,AF,TF>& sv )
+{
+   return ( sv.offset_ + sv.size_ <= sv.vector_.size() &&
+            isIntact( sv.vector_ ) );
 }
 //*************************************************************************************************
 
