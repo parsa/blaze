@@ -96,6 +96,9 @@ template< typename MT, bool SO, bool DF >
 inline bool isDefault( const UniLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
+inline bool isIntact( const UniLowerMatrix<MT,SO,DF>& m );
+
+template< typename MT, bool SO, bool DF >
 inline void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) /* throw() */;
 //@}
 //*************************************************************************************************
@@ -213,9 +216,8 @@ inline bool isDefault_backend( const UniLowerMatrix<MT,SO,DF>& m, FalseType )
    \code
    using blaze::DynamicMatrix;
    using blaze::UniLowerMatrix;
-   using blaze::rowMajor;
 
-   UniLowerMatrix< DynamicMatrix<int,rowMajor> > A;
+   UniLowerMatrix< DynamicMatrix<int> > A;
    // ... Resizing and initialization
    if( isDefault( A ) ) { ... }
    \endcode
@@ -226,6 +228,37 @@ template< typename MT  // Type of the adapted matrix
 inline bool isDefault( const UniLowerMatrix<MT,SO,DF>& m )
 {
    return isDefault_backend( m, typename IsResizable<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given unilower matrix are intact.
+// \ingroup unilower_matrix
+//
+// \param m The unilower matrix to be tested.
+// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the unilower matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UniLowerMatrix;
+
+   UniLowerMatrix< DynamicMatrix<int> > A;
+   // ... Resizing and initialization
+   if( isIntact( A ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool isIntact( const UniLowerMatrix<MT,SO,DF>& m )
+{
+   return ( isIntact( m.matrix_ ) && isUniLower( m.matrix_ ) );
 }
 //*************************************************************************************************
 
