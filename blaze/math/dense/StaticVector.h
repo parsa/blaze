@@ -2178,6 +2178,9 @@ inline void clear( StaticVector<Type,N,TF>& v );
 template< typename Type, size_t N, bool TF >
 inline bool isDefault( const StaticVector<Type,N,TF>& v );
 
+template< typename Type, size_t N, bool TF >
+inline bool isIntact( const StaticVector<Type,N,TF>& v );
+
 template< typename Type, bool TF >
 inline const StaticVector<Type,2UL,TF> perp( const StaticVector<Type,2UL,TF>& v );
 
@@ -2254,6 +2257,36 @@ inline bool isDefault( const StaticVector<Type,N,TF>& v )
 {
    for( size_t i=0UL; i<N; ++i )
       if( !isDefault( v[i] ) ) return false;
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given static vector are intact.
+// \ingroup static_vector
+//
+// \param v The static vector to be tested.
+// \return \a true in case the given vector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the static vector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::StaticVector<double,3> a;
+   // ... Resizing and initialization
+   if( isIntact( a ) ) { ... }
+   \endcode
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+inline bool isIntact( const StaticVector<Type,N,TF>& v )
+{
+   UNUSED_PARAMETER( v );
+
    return true;
 }
 //*************************************************************************************************
