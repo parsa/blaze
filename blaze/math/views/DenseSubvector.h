@@ -1007,6 +1007,9 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv );
+
+   template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
 
    template< typename VT2, bool AF2, bool TF2 >
@@ -2674,6 +2677,9 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
       subvector( const DenseSubvector<VT2,AF2,TF2>& dv, size_t index, size_t size );
 
    template< typename VT2, bool AF2, bool TF2 >
+   friend bool isIntact( const DenseSubvector<VT2,AF2,TF2>& dv );
+
+   template< typename VT2, bool AF2, bool TF2 >
    friend bool isSame( const DenseSubvector<VT2,AF2,TF2>& a, const DenseVector<VT2,TF2>& b );
 
    template< typename VT2, bool AF2, bool TF2 >
@@ -4235,6 +4241,9 @@ class DenseSubvector< DVecDVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+
+   template< typename VT3, bool AF, bool TF >
    friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
    template< typename VT3, bool AF, bool TF >
@@ -4384,6 +4393,9 @@ class DenseSubvector< DVecSVecCrossExpr<VT1,VT2>, unaligned, false >
    template< bool AF1, typename VT, bool AF2, bool TF >
    friend const DenseSubvector<VT,AF1,TF>
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
+
+   template< typename VT3, bool AF, bool TF >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
 
    template< typename VT3, bool AF, bool TF >
    friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
@@ -4537,6 +4549,9 @@ class DenseSubvector< SVecDVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+
+   template< typename VT3, bool AF, bool TF >
    friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
    template< typename VT3, bool AF, bool TF >
@@ -4688,6 +4703,9 @@ class DenseSubvector< SVecSVecCrossExpr<VT1,VT2>, unaligned, false >
       subvector( const DenseSubvector<VT,AF2,TF>& dv, size_t index, size_t size );
 
    template< typename VT3, bool AF, bool TF >
+   friend bool isIntact( const DenseSubvector<VT3,AF,TF>& dv );
+
+   template< typename VT3, bool AF, bool TF >
    friend bool isSame( const DenseSubvector<VT3,AF,TF>& a, const DenseVector<VT3,TF>& b );
 
    template< typename VT3, bool AF, bool TF >
@@ -4736,6 +4754,9 @@ inline void clear( DenseSubvector<VT,AF,TF>& dv );
 
 template< typename VT, bool AF, bool TF >
 inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv );
+
+template< typename VT, bool AF, bool TF >
+inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv );
 
 template< typename VT, bool AF, bool TF >
 inline bool isSame( const DenseSubvector<VT,AF,TF>& a, const DenseVector<VT,TF>& b );
@@ -4810,6 +4831,35 @@ inline bool isDefault( const DenseSubvector<VT,AF,TF>& dv )
    for( size_t i=0UL; i<dv.size(); ++i )
       if( !isDefault( dv[i] ) ) return false;
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dense subvector vector are intact.
+// \ingroup dense_subvector
+//
+// \param dv The dense subvector to be tested.
+// \return \a true in case the given subvector's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dense subvector are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicVector<int,rowVector> v;
+   // ... Resizing and initialization
+   if( isIntact( subvector( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline bool isIntact( const DenseSubvector<VT,AF,TF>& dv )
+{
+   return ( dv.offset_ + dv.size_ <= dv.vector_.size() &&
+            isIntact( dv.vector_ ) );
 }
 //*************************************************************************************************
 
