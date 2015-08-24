@@ -1112,6 +1112,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -3752,6 +3755,9 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -5971,6 +5977,9 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    template< bool AF1, typename MT2, bool AF2, bool SO2 >
    friend const DenseSubmatrix<MT2,AF1,SO2>
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
+
+   template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
@@ -8231,6 +8240,9 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
       submatrix( const DenseSubmatrix<MT2,AF2,SO2>& dm, size_t row, size_t column, size_t m, size_t n );
 
    template< typename MT2, bool AF2, bool SO2 >
+   friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
+
+   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -10179,6 +10191,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isIntact( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
@@ -10297,6 +10312,36 @@ inline bool isDefault( const DenseSubmatrix<MT,AF,SO>& dm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the invariants of the given dense submatrix are intact.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be tested.
+// \return \a true in case the given submatrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the dense submatrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false. The following example demonstrates the use of the \a isIntact()
+// function:
+
+   \code
+   blaze::DynamicMatrix<double,rowMajor> A;
+   // ... Resizing and initialization
+   if( isIntact( submatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isIntact( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   return ( dm.row_ + dm.m_ <= dm.matrix_.rows() &&
+            dm.column_ + dm.n_ <= dm.matrix_.columns() &&
+            isIntact( dm.matrix_ ) );
 }
 //*************************************************************************************************
 
