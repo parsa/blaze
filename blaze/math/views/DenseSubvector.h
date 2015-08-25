@@ -1340,6 +1340,8 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Dens
       smpAssign( left, rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1386,6 +1388,8 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
       smpAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1430,6 +1434,8 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
       smpAddAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1473,6 +1479,8 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
    else {
       smpSubAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1520,6 +1528,8 @@ inline DenseSubvector<VT,AF,TF>&
       smpMultAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1558,6 +1568,8 @@ inline DenseSubvector<VT,AF,TF>&
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3019,6 +3031,8 @@ inline DenseSubvector<VT,aligned,TF>&
       smpAssign( left, rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -3067,6 +3081,8 @@ inline DenseSubvector<VT,aligned,TF>&
       smpAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -3113,6 +3129,8 @@ inline DenseSubvector<VT,aligned,TF>&
       smpAddAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -3158,6 +3176,8 @@ inline DenseSubvector<VT,aligned,TF>&
    else {
       smpSubAssign( left, right );
    }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3206,6 +3226,8 @@ inline DenseSubvector<VT,aligned,TF>&
       smpMultAssign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -3245,6 +3267,8 @@ inline DenseSubvector<VT,aligned,TF>&
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
    smpAssign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
