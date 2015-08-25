@@ -1329,9 +1329,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       assign( left, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1385,9 +1383,7 @@ inline SparseSubmatrix<MT,AF,SO>&
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1438,9 +1434,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1491,9 +1485,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1545,9 +1537,7 @@ inline SparseSubmatrix<MT,AF,SO>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3577,9 +3567,7 @@ inline SparseSubmatrix<MT,AF,true>&
       assign( left, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3634,9 +3622,7 @@ inline SparseSubmatrix<MT,AF,true>&
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3688,9 +3674,7 @@ inline SparseSubmatrix<MT,AF,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3742,9 +3726,7 @@ inline SparseSubmatrix<MT,AF,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -3797,9 +3779,7 @@ inline SparseSubmatrix<MT,AF,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsSymmetric<MT>::value || isSymmetric( derestrict( matrix_ ) ), "Symmetry violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
