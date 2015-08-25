@@ -798,8 +798,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseCo
       assign( left, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -852,8 +851,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const DenseVec
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -908,8 +906,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseVe
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -963,8 +960,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const DenseVe
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1019,8 +1015,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const SparseV
    left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1075,8 +1070,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const DenseVe
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1132,8 +1126,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const SparseV
    left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1184,8 +1177,7 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator*=( const Vector<
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2711,8 +2703,7 @@ inline SparseColumn<MT,false,false>&
       assign( left, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2753,8 +2744,7 @@ inline SparseColumn<MT,false,false>&
 
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2806,8 +2796,7 @@ inline SparseColumn<MT,false,false>&
 
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2859,8 +2848,7 @@ inline SparseColumn<MT,false,false>&
 
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -2911,8 +2899,7 @@ inline SparseColumn<MT,false,false>&
 
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4095,8 +4082,7 @@ inline SparseColumn<MT,false,true>& SparseColumn<MT,false,true>::operator=( cons
       assign( left, rhs );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4150,8 +4136,7 @@ inline SparseColumn<MT,false,true>&
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4207,8 +4192,7 @@ inline SparseColumn<MT,false,true>&
       assign( left, right );
    }
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4263,8 +4247,7 @@ inline SparseColumn<MT,false,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4320,8 +4303,7 @@ inline SparseColumn<MT,false,true>&
    left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4377,8 +4359,7 @@ inline SparseColumn<MT,false,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4435,8 +4416,7 @@ inline SparseColumn<MT,false,true>&
    left.reserve( tmp.nonZeros() );
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -4488,8 +4468,7 @@ inline SparseColumn<MT,false,true>&
    left.reset();
    assign( left, tmp );
 
-   BLAZE_INTERNAL_ASSERT( !IsLower<MT>::value || isLower( derestrict( matrix_ ) ), "Lower violation detected" );
-   BLAZE_INTERNAL_ASSERT( !IsUpper<MT>::value || isUpper( derestrict( matrix_ ) ), "Upper violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
 }
