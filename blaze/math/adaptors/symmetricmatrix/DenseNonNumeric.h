@@ -561,7 +561,7 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline bool isLowerOrUpper();
+   inline bool isLowerOrUpper() const;
    //@}
    //**********************************************************************************************
 
@@ -602,8 +602,8 @@ class SymmetricMatrix<MT,SO,true,false>
    template< typename MT2, bool SO2, bool DF2, bool NF2 >
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
 
-   template< typename MT2, bool SO2, bool DF2, bool NF2 >
-   friend bool isIntact( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
+   template< typename MT2, bool SO2 >
+   friend bool isIntact( const SymmetricMatrix<MT2,SO2,true,false>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1972,7 +1972,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::swap( SymmetricMatrix& m ) /* thr
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool SymmetricMatrix<MT,SO,true,false>::isLowerOrUpper()
+inline bool SymmetricMatrix<MT,SO,true,false>::isLowerOrUpper() const
 {
    return ( SO ) ? ( isUpper( matrix_ ) ) : ( isLower( matrix_ ) );
 }
