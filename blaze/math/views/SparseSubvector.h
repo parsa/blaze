@@ -1148,6 +1148,8 @@ inline SparseSubvector<VT,AF,TF>&
       assign( left, rhs );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1197,6 +1199,8 @@ inline SparseSubvector<VT,AF,TF>&
       assign( left, right );
    }
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1243,6 +1247,8 @@ inline SparseSubvector<VT,AF,TF>&
 
    left.reset();
    assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
@@ -1291,6 +1297,8 @@ inline SparseSubvector<VT,AF,TF>&
    left.reset();
    assign( left, tmp );
 
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
    return *this;
 }
 //*************************************************************************************************
@@ -1338,6 +1346,8 @@ inline SparseSubvector<VT,AF,TF>&
 
    left.reset();
    assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
    return *this;
 }
