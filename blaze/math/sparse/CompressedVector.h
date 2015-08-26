@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -73,6 +72,7 @@
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
@@ -818,8 +818,9 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator+=( const V
 {
    using blaze::addAssign;
 
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    addAssign( *this, ~rhs );
 
@@ -845,8 +846,9 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator-=( const V
 {
    using blaze::subAssign;
 
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    subAssign( *this, ~rhs );
 
@@ -871,8 +873,9 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    CompressedVector<Type,TF> tmp( *this * (~rhs) );
    swap( tmp );
@@ -1080,8 +1083,9 @@ typename CompressedVector<Type,TF>::Iterator
 
    const Iterator pos( lowerBound( index ) );
 
-   if( pos != end_ && pos->index_ == index )
-      throw std::invalid_argument( "Bad access index" );
+   if( pos != end_ && pos->index_ == index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Bad access index" );
+   }
 
    return insert( pos, index, value );
 }

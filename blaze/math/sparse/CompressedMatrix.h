@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <stdexcept>
 #include <vector>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/expressions/SparseMatrix.h>
@@ -78,6 +77,7 @@
 #include <blaze/util/constraints/SameSize.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Null.h>
@@ -990,8 +990,9 @@ inline CompressedMatrix<Type,SO>&
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    addAssign( *this, ~rhs );
    return *this;
@@ -1017,8 +1018,9 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const M
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    subAssign( *this, ~rhs );
    return *this;
@@ -1043,8 +1045,9 @@ template< typename MT    // Type of the right-hand side matrix
 inline CompressedMatrix<Type,SO>&
    CompressedMatrix<Type,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
-   if( (~rhs).rows() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    CompressedMatrix tmp( *this * (~rhs) );
    swap( tmp );
@@ -1337,8 +1340,9 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 
    const Iterator pos( lowerBound( i, j ) );
 
-   if( pos != end_[i] && pos->index_ == j )
-      throw std::invalid_argument( "Bad access index" );
+   if( pos != end_[i] && pos->index_ == j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Bad access index" );
+   }
 
    return insert( pos, i, j, value );
 }
@@ -3222,8 +3226,9 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator+=( con
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    addAssign( *this, ~rhs );
    return *this;
@@ -3250,8 +3255,9 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( con
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    subAssign( *this, ~rhs );
    return *this;
@@ -3277,8 +3283,9 @@ template< typename MT      // Type of the right-hand side matrix
 inline CompressedMatrix<Type,true>&
    CompressedMatrix<Type,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( (~rhs).rows() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    CompressedMatrix tmp( *this * (~rhs) );
    swap( tmp );
@@ -3572,8 +3579,9 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
    const Iterator pos( lowerBound( i, j ) );
 
-   if( pos != end_[j] && pos->index_ == i )
-      throw std::invalid_argument( "Bad access index" );
+   if( pos != end_[j] && pos->index_ == i ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Bad access index" );
+   }
 
    return insert( pos, i, j, value );
 }
