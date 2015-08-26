@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -54,6 +53,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -370,7 +370,7 @@ template< typename Archive  // Type of the archive
 void MatrixSerializer::serialize( Archive& archive, const Matrix<MT,SO>& mat )
 {
    if( !archive ) {
-      throw std::runtime_error( "Faulty archive detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Faulty archive detected" );
    }
 
    serializeHeader( archive, ~mat );
@@ -402,7 +402,7 @@ void MatrixSerializer::serializeHeader( Archive& archive, const MT& mat )
    archive << uint64_t( ( IsDenseMatrix<MT>::value ) ? ( mat.rows()*mat.columns() ) : ( mat.nonZeros() ) );
 
    if( !archive ) {
-      throw std::runtime_error( "File header could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "File header could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -437,7 +437,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const DenseMatrix<MT,S
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -476,7 +476,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -504,7 +504,7 @@ template< typename Archive  // Type of the archive
 void MatrixSerializer::deserialize( Archive& archive, Matrix<MT,SO>& mat )
 {
    if( !archive ) {
-      throw std::invalid_argument( "Faulty archive detected" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Faulty archive detected" );
    }
 
    deserializeHeader( archive, ~mat );
@@ -529,25 +529,25 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
    typedef typename MT::ElementType  ET;
 
    if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> rows_ >> columns_ >> number_ ) ) {
-      throw std::runtime_error( "Corrupt archive detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Corrupt archive detected" );
    }
    else if( version_ != 1UL ) {
-      throw std::runtime_error( "Invalid version detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid version detected" );
    }
    else if( ( type_ & 1U ) != 1U || ( type_ & (~7U) ) != 0U ) {
-      throw std::runtime_error( "Invalid matrix type detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid matrix type detected" );
    }
    else if( elementType_ != TypeValueMapping<ET>::value ) {
-      throw std::runtime_error( "Invalid element type detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid element type detected" );
    }
    else if( elementSize_ != sizeof( ET ) ) {
-      throw std::runtime_error( "Invalid element size detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid element size detected" );
    }
    else if( !IsResizable<MT>::value && ( rows_ != mat.rows() || columns_ != mat.columns() ) ) {
-      throw std::runtime_error( "Invalid matrix size detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid matrix size detected" );
    }
    else if( number_ > rows_*columns_ ) {
-      throw std::runtime_error( "Invalid number of elements detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid number of elements detected" );
    }
 }
 //*************************************************************************************************
@@ -658,7 +658,7 @@ typename EnableIfTrue< MT::vectorizable >::Type
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -694,7 +694,7 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -723,7 +723,7 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
    (~mat) = tmp;
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -767,7 +767,7 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -797,7 +797,7 @@ typename EnableIfTrue< MT::vectorizable >::Type
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -833,7 +833,7 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -862,7 +862,7 @@ typename EnableIf< IsNumeric< typename MT::ElementType > >::Type
    (~mat) = tmp;
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -906,7 +906,7 @@ typename DisableIf< IsNumeric< typename MT::ElementType > >::Type
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -945,7 +945,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -986,7 +986,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -1013,7 +1013,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
    (~mat) = tmp;
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -1052,7 +1052,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMat
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -1079,7 +1079,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
    (~mat) = tmp;
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -1120,7 +1120,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse matrix could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse matrix could not be deserialized" );
    }
 }
 //*************************************************************************************************

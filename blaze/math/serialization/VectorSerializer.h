@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -51,6 +50,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -336,7 +336,7 @@ template< typename Archive  // Type of the archive
 void VectorSerializer::serialize( Archive& archive, const Vector<VT,TF>& vec )
 {
    if( !archive ) {
-      throw std::runtime_error( "Faulty archive detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Faulty archive detected" );
    }
 
    serializeHeader( archive, ~vec );
@@ -367,7 +367,7 @@ void VectorSerializer::serializeHeader( Archive& archive, const VT& vec )
    archive << uint64_t( IsDenseVector<VT>::value ? vec.size() : vec.nonZeros() );
 
    if( !archive ) {
-      throw std::runtime_error( "File header could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "File header could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -392,7 +392,7 @@ void VectorSerializer::serializeVector( Archive& archive, const DenseVector<VT,T
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense vector could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense vector could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -420,7 +420,7 @@ void VectorSerializer::serializeVector( Archive& archive, const SparseVector<VT,
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse vector could not be serialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse vector could not be serialized" );
    }
 }
 //*************************************************************************************************
@@ -448,7 +448,7 @@ template< typename Archive  // Type of the archive
 void VectorSerializer::deserialize( Archive& archive, Vector<VT,TF>& vec )
 {
    if( !archive ) {
-      throw std::invalid_argument( "Faulty archive detected" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Faulty archive detected" );
    }
 
    deserializeHeader( archive, ~vec );
@@ -478,25 +478,25 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
    typedef typename VT::ElementType  ET;
 
    if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> size_ >> number_ ) ) {
-      throw std::runtime_error( "Corrupt archive detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Corrupt archive detected" );
    }
    else if( version_ != 1UL ) {
-      throw std::runtime_error( "Invalid version detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid version detected" );
    }
    else if( ( type_ & 1U ) != 0U || ( type_ & (~3U) ) != 0U ) {
-      throw std::runtime_error( "Invalid vector type detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid vector type detected" );
    }
    else if( elementType_ != TypeValueMapping<ET>::value ) {
-      throw std::runtime_error( "Invalid element type detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid element type detected" );
    }
    else if( elementSize_ != sizeof( ET ) ) {
-      throw std::runtime_error( "Invalid element size detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid element size detected" );
    }
    else if( !IsResizable<VT>::value && size_ != vec.size() ) {
-      throw std::runtime_error( "Invalid vector size detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid vector size detected" );
    }
    else if( number_ > size_ ) {
-      throw std::runtime_error( "Invalid number of elements detected" );
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid number of elements detected" );
    }
 }
 //*************************************************************************************************
@@ -606,7 +606,7 @@ typename DisableIfTrue< VT::vectorizable >::Type
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense vector could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -634,7 +634,7 @@ typename EnableIfTrue< VT::vectorizable >::Type
    archive.read( &(~vec)[0], size_ );
 
    if( !archive ) {
-      throw std::runtime_error( "Dense vector could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -668,7 +668,7 @@ void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse vector could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -703,7 +703,7 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Dense vector could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Dense vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
@@ -738,7 +738,7 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, SparseVector<V
    }
 
    if( !archive ) {
-      throw std::runtime_error( "Sparse vector could not be deserialized" );
+      BLAZE_THROW_RUNTIME_ERROR( "Sparse vector could not be deserialized" );
    }
 }
 //*************************************************************************************************
