@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/uppermatrix/UpperProxy.h>
@@ -75,6 +74,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -1168,8 +1168,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1199,8 +1200,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    if( IsUpper<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1208,8 +1210,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    else {
       MT tmp( ~rhs );
 
-      if( !isUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to upper matrix" );
+      if( !isUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1240,8 +1243,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1271,8 +1275,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    if( IsUpper<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1280,8 +1285,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to upper matrix" );
+      if( !isUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1312,8 +1318,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsUpper<MT2>::value && !isUpper( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1343,8 +1350,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    if( IsUpper<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1352,8 +1360,9 @@ inline typename EnableIf< IsComputation<MT2>, UpperMatrix<MT,SO,true>& >::Type
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to upper matrix" );
+      if( !isUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1383,13 +1392,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline UpperMatrix<MT,SO,true>&
    UpperMatrix<MT,SO,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isUpper( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to upper matrix" );
+   if( !isUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -2082,8 +2093,9 @@ inline const MT UpperMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T 
 {
    const MT tmp( ~m );
 
-   if( !IsUpper<MT2>::value && !isUpper( tmp ) )
-      throw std::invalid_argument( "Invalid setup of upper matrix" );
+   if( !IsUpper<MT2>::value && !isUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of upper matrix" );
+   }
 
    return tmp;
 }

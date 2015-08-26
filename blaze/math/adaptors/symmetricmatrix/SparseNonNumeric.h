@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <iterator>
-#include <stdexcept>
 #include <vector>
 #include <blaze/math/adaptors/symmetricmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/symmetricmatrix/NonNumericProxy.h>
@@ -77,6 +76,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -762,8 +762,9 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
 
    Tmp tmp( ~m );
 
-   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    assign( tmp );
@@ -797,8 +798,9 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 
    Tmp tmp( ~m );
 
-   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid setup of symmetric matrix" );
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    assign( trans( tmp ) );
@@ -1068,8 +1070,9 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false
 {
    using blaze::resize;
 
-   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<MT2>::value && !isSymmetric( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       SymmetricMatrix tmp( ~rhs );
@@ -1111,13 +1114,15 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>
 {
    using blaze::resize;
 
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    typename MT2::ResultType tmp( ~rhs );
 
-   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -1180,13 +1185,15 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef typename AddTrait<MT,typename MT2::ResultType>::Type  Tmp;
 
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    Tmp tmp( (*this) + ~rhs );
 
-   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -1249,13 +1256,15 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef typename SubTrait<MT,typename MT2::ResultType>::Type  Tmp;
 
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    Tmp tmp( (*this) - ~rhs );
 
-   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();
@@ -1318,13 +1327,15 @@ inline SymmetricMatrix<MT,SO,false,false>&
 
    typedef typename MultTrait<MT,typename MT2::ResultType>::Type  Tmp;
 
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    Tmp tmp( (*this) * ~rhs );
 
-   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to symmetric matrix" );
+   if( !IsSymmetric<Tmp>::value && !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
 
    resize( matrix_, tmp.rows(), tmp.columns() );
    reset();

@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <vector>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/strictlylowermatrix/BaseTemplate.h>
@@ -74,6 +73,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 
@@ -445,8 +445,9 @@ inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( const Matrix<MT2,S
    : matrix_( ~m )  // The adapted sparse matrix
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( matrix_ ) ) )
-      throw std::invalid_argument( "Invalid setup of strictly lower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( matrix_ ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly lower matrix" );
+   }
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
@@ -707,8 +708,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -741,8 +743,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >::Type
    StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    if( IsStrictlyLower<MT2>::value ) {
       matrix_ = ~rhs;
@@ -750,8 +753,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& 
    else {
       MT tmp( ~rhs );
 
-      if( !isStrictlyLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+      if( !isStrictlyLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -786,8 +790,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -820,8 +825,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >::Type
    StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    if( IsStrictlyLower<MT2>::value ) {
       matrix_ += ~rhs;
@@ -829,8 +835,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& 
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+      if( !isStrictlyLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -865,8 +872,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -899,8 +907,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >::Type
    StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    if( IsStrictlyLower<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -908,8 +917,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& 
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+      if( !isStrictlyLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -942,13 +952,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isStrictlyLower( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to strictly lower matrix" );
+   if( !isStrictlyLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -1219,8 +1231,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename StrictlyLowerMatrix<MT,SO,false>::Iterator
    StrictlyLowerMatrix<MT,SO,false>::set( size_t i, size_t j, const ElementType& value )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    return matrix_.set( i, j, value );
 }
@@ -1250,8 +1263,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename StrictlyLowerMatrix<MT,SO,false>::Iterator
    StrictlyLowerMatrix<MT,SO,false>::insert( size_t i, size_t j, const ElementType& value )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    return matrix_.insert( i, j, value );
 }
@@ -1804,8 +1818,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void StrictlyLowerMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    matrix_.append( i, j, value, check );
 }

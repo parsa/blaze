@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <vector>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/uniuppermatrix/BaseTemplate.h>
@@ -77,6 +76,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 
@@ -183,8 +183,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       inline UniUpperValue& operator=( const UniUpperValue& uv ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ = *uv.value;
          return *this;
       }
@@ -198,8 +199,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperValue& operator=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ = v;
          return *this;
       }
@@ -213,8 +215,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperValue& operator+=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ += v;
          return *this;
       }
@@ -228,8 +231,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperValue& operator-=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ -= v;
          return *this;
       }
@@ -243,8 +247,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperValue& operator*=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ *= v;
          return *this;
       }
@@ -258,8 +263,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperValue& operator/=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ /= v;
          return *this;
       }
@@ -299,8 +305,9 @@ class UniUpperMatrix<MT,SO,false>
       // real part.
       */
       inline void real( ValueType value ) const {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          value_->real( value );
       }
       //*******************************************************************************************
@@ -329,8 +336,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       inline void imag( ValueType value ) const {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          value_->imag( value );
       }
       //*******************************************************************************************
@@ -382,8 +390,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperElement& operator=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ = v;
          return *this;
       }
@@ -397,8 +406,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperElement& operator+=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ += v;
          return *this;
       }
@@ -412,8 +422,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperElement& operator-=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ -= v;
          return *this;
       }
@@ -427,8 +438,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperElement& operator*=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ *= v;
          return *this;
       }
@@ -442,8 +454,9 @@ class UniUpperMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniUpperElement& operator/=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ /= v;
          return *this;
       }
@@ -908,8 +921,9 @@ inline UniUpperMatrix<MT,SO,false>::UniUpperMatrix( size_t n, const std::vector<
 
    for( size_t i=0UL; i<n; ++i )
    {
-      if( nonzeros[i] == 0UL )
-         throw std::invalid_argument( "Invalid capacity specification" );
+      if( nonzeros[i] == 0UL ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid capacity specification" );
+      }
 
       matrix_.append( i, i, ElementType(1) );
       matrix_.finalize( i );
@@ -955,8 +969,9 @@ template< typename MT2  // Type of the foreign matrix
 inline UniUpperMatrix<MT,SO,false>::UniUpperMatrix( const Matrix<MT2,SO2>& m )
    : matrix_( ~m )  // The adapted sparse matrix
 {
-   if( !IsUniUpper<MT2>::value && !isUniUpper( matrix_ ) )
-      throw std::invalid_argument( "Invalid setup of uniupper matrix" );
+   if( !IsUniUpper<MT2>::value && !isUniUpper( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniupper matrix" );
+   }
 
    if( !IsUniUpper<MT2>::value )
       resetLower();
@@ -1216,8 +1231,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsUniUpper<MT2>::value && !isUniUpper( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+   if( IsStrictlyTriangular<MT2>::value || ( !IsUniUpper<MT2>::value && !isUniUpper( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1250,8 +1266,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Type
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    if( IsUniUpper<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1259,8 +1276,9 @@ inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Ty
    else {
       MT tmp( ~rhs );
 
-      if( !isUniUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+      if( !isUniUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1295,8 +1313,9 @@ inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::T
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1330,8 +1349,9 @@ inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Ty
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+       ( IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    if( IsStrictlyUpper<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1339,8 +1359,9 @@ inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Ty
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+      if( !isStrictlyUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1375,8 +1396,9 @@ inline typename DisableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::T
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1410,8 +1432,9 @@ inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Ty
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    if( IsStrictlyUpper<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1419,8 +1442,9 @@ inline typename EnableIf< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >::Ty
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+      if( !isStrictlyUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1453,13 +1477,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline UniUpperMatrix<MT,SO,false>&
    UniUpperMatrix<MT,SO,false>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isUniUpper( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to uniupper matrix" );
+   if( !isUniUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -1687,8 +1713,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniUpperMatrix<MT,SO,false>::Iterator
    UniUpperMatrix<MT,SO,false>::set( size_t i, size_t j, const ElementType& value )
 {
-   if( i >= j )
-      throw std::invalid_argument( "Invalid access to diagonal or lower matrix element" );
+   if( i >= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or lower matrix element" );
+   }
 
    return Iterator( matrix_.set( i, j, value ), ( SO ? j : i ) );
 }
@@ -1718,8 +1745,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniUpperMatrix<MT,SO,false>::Iterator
    UniUpperMatrix<MT,SO,false>::insert( size_t i, size_t j, const ElementType& value )
 {
-   if( i >= j )
-      throw std::invalid_argument( "Invalid access to diagonal or lower matrix element" );
+   if( i >= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or lower matrix element" );
+   }
 
    return Iterator( matrix_.insert( i, j, value ), ( SO ? j : i ) );
 }
@@ -1743,8 +1771,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UniUpperMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   if( i == j )
-      throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+   if( i == j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
 
    matrix_.erase( i, j );
 }
@@ -1771,8 +1800,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniUpperMatrix<MT,SO,false>::Iterator
    UniUpperMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   if( pos != matrix_.end(i) && pos->index() == i )
-      throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+   if( pos != matrix_.end(i) && pos->index() == i ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
 
    return Iterator( matrix_.erase( i, pos.base() ), i );
 }
@@ -1802,7 +1832,7 @@ inline typename UniUpperMatrix<MT,SO,false>::Iterator
 {
    for( Iterator element=first; element!=last; ++element ) {
       if( element->index() == i ) {
-         throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
       }
    }
 
@@ -2254,8 +2284,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UniUpperMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( i >= j )
-      throw std::invalid_argument( "Invalid access to diagonal or lower matrix element" );
+   if( i >= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or lower matrix element" );
+   }
 
    if( !check || !isDefault( value ) )
       matrix_.insert( i, j, value );

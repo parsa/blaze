@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <ostream>
-#include <stdexcept>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
@@ -56,6 +55,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/AddConst.h>
 #include <blaze/util/typetraits/AddReference.h>
 #include <blaze/util/Types.h>
@@ -235,8 +235,9 @@ inline StrictlyUpperProxy<MT>::StrictlyUpperProxy( const StrictlyUpperProxy& uup
 template< typename MT >  // Type of the adapted matrix
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const StrictlyUpperProxy& uup ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ = uup.value_;
 
@@ -259,8 +260,9 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator=( const T& value ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ = value;
 
@@ -283,8 +285,9 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator+=( const T& value ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ += value;
 
@@ -307,8 +310,9 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator-=( const T& value ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ -= value;
 
@@ -331,8 +335,9 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator*=( const T& value ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ *= value;
 
@@ -355,8 +360,9 @@ template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
 inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator/=( const T& value ) const
 {
-   if( restricted_ )
-      throw std::invalid_argument( "Invalid assignment to diagonal or lower matrix element" );
+   if( restricted_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   }
 
    value_ /= value;
 

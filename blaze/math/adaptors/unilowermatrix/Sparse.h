@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <vector>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/unilowermatrix/BaseTemplate.h>
@@ -78,6 +77,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 
@@ -184,8 +184,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       inline UniLowerValue& operator=( const UniLowerValue& uv ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ = *uv.value;
          return *this;
       }
@@ -199,8 +200,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerValue& operator=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ = v;
          return *this;
       }
@@ -214,8 +216,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerValue& operator+=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ += v;
          return *this;
       }
@@ -229,8 +232,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerValue& operator-=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ -= v;
          return *this;
       }
@@ -244,8 +248,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerValue& operator*=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ *= v;
          return *this;
       }
@@ -259,8 +264,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerValue& operator/=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *value_ /= v;
          return *this;
       }
@@ -300,8 +306,9 @@ class UniLowerMatrix<MT,SO,false>
       // real part.
       */
       inline void real( ValueType value ) const {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          value_->real( value );
       }
       //*******************************************************************************************
@@ -330,8 +337,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       inline void imag( ValueType value ) const {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          value_->imag( value );
       }
       //*******************************************************************************************
@@ -383,8 +391,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerElement& operator=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ = v;
          return *this;
       }
@@ -398,8 +407,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerElement& operator+=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ += v;
          return *this;
       }
@@ -413,8 +423,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerElement& operator-=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ -= v;
          return *this;
       }
@@ -428,8 +439,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerElement& operator*=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ *= v;
          return *this;
       }
@@ -443,8 +455,9 @@ class UniLowerMatrix<MT,SO,false>
       // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
       */
       template< typename T > inline UniLowerElement& operator/=( const T& v ) {
-         if( diagonal_ )
-            throw std::invalid_argument( "Invalid assignment to diagonal matrix element" );
+         if( diagonal_ ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
+         }
          *pos_ /= v;
          return *this;
       }
@@ -909,8 +922,9 @@ inline UniLowerMatrix<MT,SO,false>::UniLowerMatrix( size_t n, const std::vector<
 
    for( size_t i=0UL; i<n; ++i )
    {
-      if( nonzeros[i] == 0UL )
-         throw std::invalid_argument( "Invalid capacity specification" );
+      if( nonzeros[i] == 0UL ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid capacity specification" );
+      }
 
       matrix_.append( i, i, ElementType(1) );
       matrix_.finalize( i );
@@ -956,8 +970,9 @@ template< typename MT2  // Type of the foreign matrix
 inline UniLowerMatrix<MT,SO,false>::UniLowerMatrix( const Matrix<MT2,SO2>& m )
    : matrix_( ~m )  // The adapted sparse matrix
 {
-   if( !IsUniLower<MT2>::value && !isUniLower( matrix_ ) )
-      throw std::invalid_argument( "Invalid setup of unilower matrix" );
+   if( !IsUniLower<MT2>::value && !isUniLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of unilower matrix" );
+   }
 
    if( !IsUniLower<MT2>::value )
       resetUpper();
@@ -1217,8 +1232,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
    UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsUniLower<MT2>::value && !isUniLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+   if( IsStrictlyTriangular<MT2>::value || ( !IsUniLower<MT2>::value && !isUniLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1251,8 +1267,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Type
    UniLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    if( IsUniLower<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1260,8 +1277,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    else {
       MT tmp( ~rhs );
 
-      if( !isUniLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+      if( !isUniLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1296,8 +1314,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::T
    UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1331,8 +1350,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    UniLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    if( IsStrictlyLower<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1340,8 +1360,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+      if( !isStrictlyLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1376,8 +1397,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::T
    UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+       ( !IsStrictlyLower<MT2>::value && !isStrictlyLower( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1411,8 +1433,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    UniLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUpper<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    if( IsStrictlyLower<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1420,8 +1443,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+      if( !isStrictlyLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1454,13 +1478,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline UniLowerMatrix<MT,SO,false>&
    UniLowerMatrix<MT,SO,false>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isUniLower( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to unilower matrix" );
+   if( !isUniLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -1688,8 +1714,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniLowerMatrix<MT,SO,false>::Iterator
    UniLowerMatrix<MT,SO,false>::set( size_t i, size_t j, const ElementType& value )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    return Iterator( matrix_.set( i, j, value ), ( SO ? j : i ) );
 }
@@ -1719,8 +1746,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniLowerMatrix<MT,SO,false>::Iterator
    UniLowerMatrix<MT,SO,false>::insert( size_t i, size_t j, const ElementType& value )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    return Iterator( matrix_.insert( i, j, value ), ( SO ? j : i ) );
 }
@@ -1744,8 +1772,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UniLowerMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   if( i == j )
-      throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+   if( i == j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
 
    matrix_.erase( i, j );
 }
@@ -1772,8 +1801,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename UniLowerMatrix<MT,SO,false>::Iterator
    UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   if( pos != matrix_.end(i) && pos->index() == i )
-      throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+   if( pos != matrix_.end(i) && pos->index() == i ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+   }
 
    return Iterator( matrix_.erase( i, pos.base() ), i );
 }
@@ -1802,8 +1832,9 @@ inline typename UniLowerMatrix<MT,SO,false>::Iterator
    UniLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
    for( Iterator element=first; element!=last; ++element ) {
-      if( element->index() == i )
-         throw std::invalid_argument( "Invalid access to diagonal matrix element" );
+      if( element->index() == i ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal matrix element" );
+      }
    }
 
    return Iterator( matrix_.erase( i, first.base(), last.base() ), i );
@@ -2254,8 +2285,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void UniLowerMatrix<MT,SO,false>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( i <= j )
-      throw std::invalid_argument( "Invalid access to diagonal or upper matrix element" );
+   if( i <= j ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or upper matrix element" );
+   }
 
    if( !check || !isDefault( value ) )
       matrix_.insert( i, j, value );

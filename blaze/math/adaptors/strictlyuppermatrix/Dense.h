@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/strictlyuppermatrix/StrictlyUpperProxy.h>
@@ -76,6 +75,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -1170,8 +1170,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& 
    StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1201,8 +1202,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >::Type
    StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    if( IsStrictlyUpper<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1210,8 +1212,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
    else {
       MT tmp( ~rhs );
 
-      if( !isStrictlyUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+      if( !isStrictlyUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1243,8 +1246,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& 
    StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1274,8 +1278,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >::Type
    StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( IsUniTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    if( IsStrictlyUpper<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1283,8 +1288,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+      if( !isStrictlyUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1315,8 +1321,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >::Type
    StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1346,8 +1353,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >::Type
    StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    if( IsStrictlyUpper<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1355,8 +1363,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isStrictlyUpper( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+      if( !isStrictlyUpper( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1386,13 +1395,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline StrictlyUpperMatrix<MT,SO,true>&
    StrictlyUpperMatrix<MT,SO,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isStrictlyUpper( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to strictly upper matrix" );
+   if( !isStrictlyUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -2090,8 +2101,9 @@ inline const MT StrictlyUpperMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2
    const MT tmp( ~m );
 
    if( IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( tmp ) ) )
-      throw std::invalid_argument( "Invalid setup of strictly upper matrix" );
+       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( tmp ) ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly upper matrix" );
+   }
 
    return tmp;
 }

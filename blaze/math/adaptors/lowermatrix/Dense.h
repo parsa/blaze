@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/adaptors/lowermatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/lowermatrix/LowerProxy.h>
@@ -75,6 +74,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -1168,8 +1168,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1199,8 +1200,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    if( IsLower<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1208,8 +1210,9 @@ inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    else {
       MT tmp( ~rhs );
 
-      if( !isLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to lower matrix" );
+      if( !isLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1240,8 +1243,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1271,8 +1275,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    if( IsLower<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1280,8 +1285,9 @@ inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to lower matrix" );
+      if( !isLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1312,8 +1318,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsLower<MT2>::value && !isLower( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsLower<MT2>::value && !isLower( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1343,8 +1350,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    if( IsLower<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1352,8 +1360,9 @@ inline typename EnableIf< IsComputation<MT2>, LowerMatrix<MT,SO,true>& >::Type
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isLower( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to lower matrix" );
+      if( !isLower( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1383,13 +1392,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline LowerMatrix<MT,SO,true>&
    LowerMatrix<MT,SO,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isLower( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to lower matrix" );
+   if( !isLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -2082,8 +2093,9 @@ inline const MT LowerMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m, T 
 {
    const MT tmp( ~m );
 
-   if( !IsLower<MT2>::value && !isLower( tmp ) )
-      throw std::invalid_argument( "Invalid setup of lower matrix" );
+   if( !IsLower<MT2>::value && !isLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of lower matrix" );
+   }
 
    return tmp;
 }

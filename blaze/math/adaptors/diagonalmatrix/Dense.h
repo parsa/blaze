@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/adaptors/diagonalmatrix/BaseTemplate.h>
 #include <blaze/math/adaptors/diagonalmatrix/DiagonalProxy.h>
 #include <blaze/math/constraints/DenseMatrix.h>
@@ -73,6 +72,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -1153,8 +1153,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    matrix_ = ~rhs;
 
@@ -1184,8 +1185,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    if( IsDiagonal<MT2>::value ) {
       matrix_ = ~rhs;
@@ -1193,8 +1195,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
    else {
       MT tmp( ~rhs );
 
-      if( !isDiagonal( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+      if( !isDiagonal( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+      }
 
       move( matrix_, tmp );
    }
@@ -1225,8 +1228,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    matrix_ += ~rhs;
 
@@ -1256,8 +1260,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    if( IsDiagonal<MT2>::value ) {
       matrix_ += ~rhs;
@@ -1265,8 +1270,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isDiagonal( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+      if( !isDiagonal( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+      }
 
       matrix_ += tmp;
    }
@@ -1297,8 +1303,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    matrix_ -= ~rhs;
 
@@ -1328,8 +1335,9 @@ template< typename MT2  // Type of the right-hand side matrix
 inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Type
    DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    if( IsDiagonal<MT2>::value ) {
       matrix_ -= ~rhs;
@@ -1337,8 +1345,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
    else {
       typename MT2::ResultType tmp( ~rhs );
 
-      if( !isDiagonal( tmp ) )
-         throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+      if( !isDiagonal( tmp ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+      }
 
       matrix_ -= tmp;
    }
@@ -1368,13 +1377,15 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DiagonalMatrix<MT,SO,true>&
    DiagonalMatrix<MT,SO,true>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
-   if( matrix_.rows() != (~rhs).columns() )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( matrix_.rows() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    MT tmp( matrix_ * ~rhs );
 
-   if( !isDiagonal( tmp ) )
-      throw std::invalid_argument( "Invalid assignment to diagonal matrix" );
+   if( !isDiagonal( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
 
    move( matrix_, tmp );
 
@@ -1991,8 +2002,9 @@ inline const MT DiagonalMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>& m,
 {
    const MT tmp( ~m );
 
-   if( !IsDiagonal<MT2>::value && !isDiagonal( tmp ) )
-      throw std::invalid_argument( "Invalid setup of diagonal matrix" );
+   if( !IsDiagonal<MT2>::value && !isDiagonal( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
+   }
 
    return tmp;
 }
