@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -85,6 +84,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
@@ -1091,8 +1091,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator+=( const Matrix<MT,SO2>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1123,8 +1124,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<MT,SO2>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1155,8 +1157,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
-   if( (~rhs).rows() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    DynamicMatrix tmp( *this * (~rhs) );
    swap( tmp );
@@ -3380,8 +3383,9 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator+=( const Matrix<MT,SO>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -3413,8 +3417,9 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Matrix<MT,SO>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -3446,8 +3451,9 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( (~rhs).rows() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    DynamicMatrix tmp( *this * (~rhs) );
    swap( tmp );

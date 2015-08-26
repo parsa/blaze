@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <stdexcept>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -85,6 +84,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
@@ -524,11 +524,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<M*NN; ++i )
@@ -563,11 +565,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j )
@@ -627,11 +631,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j )
@@ -767,8 +773,9 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
 
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( (~m).rows() > M || (~m).columns() > N )
-      throw std::invalid_argument( "Invalid setup of hybrid matrix" );
+   if( (~m).rows() > M || (~m).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
+   }
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : n_ );
@@ -1197,8 +1204,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N )
-      throw std::invalid_argument( "Invalid assignment to hybrid matrix" );
+   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
@@ -1236,8 +1244,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator+=( const M
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1272,8 +1281,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1306,8 +1316,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
-   if( n_ != (~rhs).rows() || (~rhs).columns() > N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    HybridMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
@@ -1628,11 +1639,13 @@ void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    if( IsVectorizable<Type>::value && n < n_ ) {
       for( size_t i=0UL; i<m; ++i )
@@ -1698,8 +1711,9 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
 {
    using std::swap;
 
-   if( m_ > N || n_ > M )
-      throw std::logic_error( "Impossible transpose operation" );
+   if( m_ > N || n_ > M ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
 
    const size_t maxsize( max( m_, n_ ) );
    for( size_t i=1UL; i<maxsize; ++i )
@@ -2982,11 +2996,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<MM*N; ++i )
@@ -3022,11 +3038,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    for( size_t j=0UL; j<n; ++j ) {
       for( size_t i=0UL; i<m; ++i )
@@ -3087,11 +3105,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    for( size_t j=0UL; j<n; ++j ) {
       for( size_t i=0UL; i<m; ++i )
@@ -3230,8 +3250,9 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
 
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( (~m).rows() > M || (~m).columns() > N )
-      throw std::invalid_argument( "Invalid setup of hybrid matrix" );
+   if( (~m).rows() > M || (~m).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
+   }
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : m_ );
@@ -3647,8 +3668,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   if( (~rhs).rows() > M || (~rhs).columns() > N )
-      throw std::invalid_argument( "Invalid assignment to hybrid matrix" );
+   if( (~rhs).rows() > M || (~rhs).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
@@ -3687,8 +3709,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( con
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -3724,8 +3747,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -3759,8 +3783,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( n_ != (~rhs).rows() || (~rhs).columns() > N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    HybridMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
@@ -4082,11 +4107,13 @@ void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
 
-   if( m > M )
-      throw std::invalid_argument( "Invalid number of rows for hybrid matrix" );
+   if( m > M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
+   }
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid number of columns for hybrid matrix" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
+   }
 
    if( IsVectorizable<Type>::value && m < m_ ) {
       for( size_t j=0UL; j<n; ++j )
@@ -4154,8 +4181,9 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
 {
    using std::swap;
 
-   if( m_ > N || n_ > M )
-      throw std::logic_error( "Impossible transpose operation" );
+   if( m_ > N || n_ > M ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
 
    const size_t maxsize( max( m_, n_ ) );
    for( size_t j=1UL; j<maxsize; ++j )

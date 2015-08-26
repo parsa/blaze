@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -77,6 +76,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
@@ -923,8 +923,9 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<VT,TF>& rhs )
 {
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
@@ -955,8 +956,9 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<VT,TF>& rhs )
 {
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
@@ -987,8 +989,9 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side vector
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       DynamicVector<Type,TF> tmp( *this * (~rhs) );

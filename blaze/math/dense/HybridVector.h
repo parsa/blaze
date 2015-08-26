@@ -32,7 +32,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -65,6 +64,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
@@ -481,8 +481,9 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid size for hybrid vector" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
+   }
 
    if( IsNumeric<Type>::value ) {
       for( size_t i=0UL; i<NN; ++i )
@@ -512,8 +513,9 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid size for hybrid vector" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
+   }
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = init;
@@ -559,8 +561,9 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid setup of hybrid vector" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
+   }
 
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
@@ -663,8 +666,9 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( (~v).size() > N )
-      throw std::invalid_argument( "Invalid setup of hybrid vector" );
+   if( (~v).size() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
+   }
 
    for( size_t i=( IsSparseVector<VT>::value ? 0UL : size_ );
                i<( IsNumeric<Type>::value    ? NN  : size_ ); ++i ) {
@@ -960,8 +964,9 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Vector
 {
    using blaze::assign;
 
-   if( (~rhs).size() > N )
-      throw std::invalid_argument( "Invalid assignment to hybrid vector" );
+   if( (~rhs).size() > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       HybridVector tmp( ~rhs );
@@ -997,8 +1002,9 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator+=( const Vecto
 {
    using blaze::addAssign;
 
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
@@ -1031,8 +1037,9 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator-=( const Vecto
 {
    using blaze::subAssign;
 
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename VT::ResultType tmp( ~rhs );
@@ -1066,8 +1073,9 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
 {
    using blaze::multAssign;
 
-   if( (~rhs).size() != size_ )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~rhs).size() != size_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
       HybridVector tmp( *this * (~rhs) );
@@ -1265,8 +1273,9 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
 
-   if( n > N )
-      throw std::invalid_argument( "Invalid size for hybrid vector" );
+   if( n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
+   }
 
    if( IsVectorizable<Type>::value && n < size_ ) {
       for( size_t i=n; i<size_; ++i )

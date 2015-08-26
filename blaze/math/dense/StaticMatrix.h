@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <stdexcept>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -86,6 +85,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
@@ -568,8 +568,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( m > M || n > N )
-      throw std::invalid_argument( "Invalid setup of static matrix" );
+   if( m > M || n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
+   }
 
    for( size_t i=0UL; i<m; ++i ) {
       for( size_t j=0UL; j<n; ++j )
@@ -704,8 +705,9 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
 
-   if( (~m).rows() != M || (~m).columns() != N )
-      throw std::invalid_argument( "Invalid setup of static matrix" );
+   if( (~m).rows() != M || (~m).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
+   }
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : N ); j<NN; ++j ) {
@@ -1783,8 +1785,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
@@ -1821,8 +1824,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1857,8 +1861,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -1891,8 +1896,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
-   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    StaticMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
@@ -3471,8 +3477,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
 {
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( m > M || n > N )
-      throw std::invalid_argument( "Invalid setup of static matrix" );
+   if( m > M || n > N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
+   }
 
    for( size_t j=0UL; j<n; ++j ) {
       for( size_t i=0UL; i<m; ++i )
@@ -3611,8 +3618,9 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
 
    BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
 
-   if( (~m).rows() != M || (~m).columns() != N )
-      throw std::invalid_argument( "Invalid setup of static matrix" );
+   if( (~m).rows() != M || (~m).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
+   }
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : M ); i<MM; ++i ) {
@@ -4688,8 +4696,9 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Invalid assignment to static matrix" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
@@ -4727,8 +4736,9 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
 {
    using blaze::addAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -4764,8 +4774,9 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
 {
    using blaze::subAssign;
 
-   if( (~rhs).rows() != M || (~rhs).columns() != N )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~rhs).rows() != M || (~rhs).columns() != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    if( (~rhs).canAlias( this ) ) {
       typename MT::ResultType tmp( ~rhs );
@@ -4799,8 +4810,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    StaticMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
