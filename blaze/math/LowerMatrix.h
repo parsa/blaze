@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <stdexcept>
 #include <blaze/math/adaptors/LowerMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -50,6 +49,7 @@
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/UpperMatrix.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -192,8 +192,9 @@ inline const LowerMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    LowerMatrix<MT,SO,DF> matrix( n );
    randomize( matrix, nonzeros );
@@ -277,8 +278,9 @@ inline const LowerMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    LowerMatrix<MT,SO,DF> matrix( n );
    randomize( matrix, nonzeros, min, max );
@@ -390,8 +392,9 @@ inline void Rand< LowerMatrix<MT,SO,DF> >::randomize( LowerMatrix<MT,SO,DF>& mat
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 
@@ -525,8 +528,9 @@ inline void Rand< LowerMatrix<MT,SO,DF> >::randomize( LowerMatrix<MT,SO,DF>& mat
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > LowerMatrix<MT,SO,DF>::maxNonZeros( n ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 

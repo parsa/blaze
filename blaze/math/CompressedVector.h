@@ -45,6 +45,7 @@
 #include <blaze/math/sparse/CompressedVector.h>
 #include <blaze/math/SparseVector.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 
@@ -135,8 +136,9 @@ template< typename Type  // Data type of the vector
 inline const CompressedVector<Type,TF>
    Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros ) const
 {
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    CompressedVector<Type,TF> vector( size, nonzeros );
    randomize( vector, nonzeros );
@@ -188,8 +190,9 @@ template< typename Arg >  // Min/max argument type
 inline const CompressedVector<Type,TF>
    Rand< CompressedVector<Type,TF> >::generate( size_t size, size_t nonzeros, const Arg& min, const Arg& max ) const
 {
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    CompressedVector<Type,TF> vector( size, nonzeros );
    randomize( vector, nonzeros, min, max );
@@ -243,8 +246,9 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 {
    const size_t size( vector.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 
@@ -310,8 +314,9 @@ inline void Rand< CompressedVector<Type,TF> >::randomize( CompressedVector<Type,
 {
    const size_t size( vector.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 

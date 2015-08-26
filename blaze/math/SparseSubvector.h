@@ -40,12 +40,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/views/DenseSubvector.h>
 #include <blaze/math/views/SparseSubmatrix.h>
 #include <blaze/math/views/SparseSubvector.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 
@@ -137,8 +137,9 @@ inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,
 
    const size_t size( subvector.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 
@@ -210,8 +211,9 @@ inline void Rand< SparseSubvector<VT,AF,TF> >::randomize( SparseSubvector<VT,AF,
 
    const size_t size( subvector.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 

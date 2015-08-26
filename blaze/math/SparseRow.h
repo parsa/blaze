@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/SparseColumn.h>
 #include <blaze/math/views/SparseRow.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 
@@ -133,8 +133,9 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t n
 
    const size_t size( row.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 
@@ -204,8 +205,9 @@ inline void Rand< SparseRow<MT,SO> >::randomize( SparseRow<MT,SO>& row, size_t n
 
    const size_t size( row.size() );
 
-   if( nonzeros > size )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > size ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( size == 0UL ) return;
 

@@ -41,11 +41,11 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <stdexcept>
 #include <blaze/math/sparse/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/system/Precision.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Random.h>
 
 
@@ -140,8 +140,9 @@ template< typename Type  // Data type of the matrix
 inline const CompressedMatrix<Type,SO>
    Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros ) const
 {
-   if( nonzeros > m*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > m*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix, nonzeros );
@@ -196,8 +197,9 @@ inline const CompressedMatrix<Type,SO>
    Rand< CompressedMatrix<Type,SO> >::generate( size_t m, size_t n, size_t nonzeros,
                                                 const Arg& min, const Arg& max ) const
 {
-   if( nonzeros > m*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > m*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    CompressedMatrix<Type,SO> matrix( m, n );
    randomize( matrix, nonzeros, min, max );
@@ -253,8 +255,9 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
 
-   if( nonzeros > m*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > m*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( m == 0UL || n == 0UL ) return;
 
@@ -322,8 +325,9 @@ inline void Rand< CompressedMatrix<Type,SO> >::randomize( CompressedMatrix<Type,
    const size_t m( matrix.rows()    );
    const size_t n( matrix.columns() );
 
-   if( nonzeros > m*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > m*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( m == 0UL || n == 0UL ) return;
 

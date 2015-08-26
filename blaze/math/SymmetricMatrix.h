@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <stdexcept>
 #include <blaze/math/adaptors/SymmetricMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/Resizable.h>
@@ -49,6 +48,7 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -195,8 +195,9 @@ inline const SymmetricMatrix<MT,SO,DF,NF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    SymmetricMatrix<MT,SO,DF,NF> matrix( n );
    randomize( matrix, nonzeros );
@@ -283,8 +284,9 @@ inline const SymmetricMatrix<MT,SO,DF,NF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE         ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    SymmetricMatrix<MT,SO,DF,NF> matrix( n );
    randomize( matrix, nonzeros, min, max );
@@ -398,8 +400,9 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 
@@ -533,8 +536,9 @@ inline void Rand< SymmetricMatrix<MT,SO,DF,NF> >::randomize( SymmetricMatrix<MT,
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 
