@@ -136,8 +136,9 @@ namespace blaze {}
 //          </li>
 //       </ul>
 //    </li>
-//    <li> \ref intra_statement_optimization </li>
 //    <li> \ref configuration_files </li>
+//    <li> \ref error_reporting_customization </li>
+//    <li> \ref intra_statement_optimization </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -6518,110 +6519,7 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
-*/
-//*************************************************************************************************
-
-
-//**Intra-Statement Optimization*******************************************************************
-/*!\page intra_statement_optimization Intra-Statement Optimization
-//
-// One of the prime features of the \b Blaze library is the automatic intra-statement optimization.
-// In order to optimize the overall performance of every single statement \b Blaze attempts to
-// rearrange the operands based on their types. For instance, the following addition of dense and
-// sparse vectors
-
-   \code
-   blaze::DynamicVector<double> d1, d2, d3;
-   blaze::CompressedVector<double> s1;
-
-   // ... Resizing and initialization
-
-   d3 = d1 + s1 + d2;
-   \endcode
-
-// is automatically rearranged and evaluated as
-
-   \code
-   // ...
-   d3 = d1 + d2 + s1;  // <- Note that s1 and d2 have been rearranged
-   \endcode
-
-// This order of operands is highly favorable for the overall performance since the addition of
-// the two dense vectors \c d1 and \c d2 can be handled much more efficiently in a vectorized
-// fashion.
-//
-// This intra-statement optimization can have a tremendous effect on the performance of a statement.
-// Consider for instance the following computation:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   blaze::DynamicVector<double> x, y;
-
-   // ... Resizing and initialization
-
-   y = A * B * x;
-   \endcode
-
-// Since multiplications are evaluated from left to right, this statement would result in a
-// matrix/matrix multiplication, followed by a matrix/vector multiplication. However, if the
-// right subexpression is evaluated first, the performance can be dramatically improved since the
-// matrix/matrix multiplication can be avoided in favor of a second matrix/vector multiplication.
-// The \b Blaze library exploits this by automatically restructuring the expression such that the
-// right multiplication is evaluated first:
-
-   \code
-   // ...
-   y = A * ( B * x );
-   \endcode
-
-// Note however that although this intra-statement optimization may result in a measurable or
-// even significant performance improvement, this behavior may be undesirable for several reasons,
-// for instance because of numerical stability. Therefore, in case the order of evaluation matters,
-// the best solution is to be explicit and to separate a statement into several statements:
-
-   \code
-   blaze::DynamicVector<double> d1, d2, d3;
-   blaze::CompressedVector<double> s1;
-
-   // ... Resizing and initialization
-
-   d3  = d1 + s1;  // Compute the dense vector/sparse vector addition first ...
-   d3 += d2;       // ... and afterwards add the second dense vector
-   \endcode
-
-   \code
-   // ...
-   blaze::DynamicMatrix<double> A, B, C;
-   blaze::DynamicVector<double> x, y;
-
-   // ... Resizing and initialization
-
-   C = A * B;  // Compute the left-hand side matrix-matrix multiplication first ...
-   y = C * x;  // ... before the right-hand side matrix-vector multiplication
-   \endcode
-
-// Alternatively, it is also possible to use the \c eval() function to fix the order of evaluation:
-
-   \code
-   blaze::DynamicVector<double> d1, d2, d3;
-   blaze::CompressedVector<double> s1;
-
-   // ... Resizing and initialization
-
-   d3 = d1 + eval( s1 + d2 );
-   \endcode
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-   blaze::DynamicVector<double> x, y;
-
-   // ... Resizing and initialization
-
-   y = eval( A * B ) * x;
-   \endcode
-
-// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
+// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref configuration_files \n
 */
 //*************************************************************************************************
 
@@ -6728,7 +6626,218 @@ namespace blaze {}
 // whether streaming is beneficial or hurtful for performance.
 //
 //
-// \n Previous: \ref intra_statement_optimization
+// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref error_reporting_customization \n
+*/
+//*************************************************************************************************
+
+
+//**Customization of the Error Reporting Mechanism*************************************************
+/*!\page error_reporting_customization Customization of the Error Reporting Mechanism
+//
+// \tableofcontents
+//
+//
+// \n \section error_reporting_background Background
+//
+// The default way of \b Blaze to report errors of any kind is to throw a standard exception.
+// However, although in general this approach works well, in certain environments and under
+// special circumstances exceptions may not be the mechanism of choice and a different error
+// reporting mechanism may be desirable. For this reason, \b Blaze provides several macros,
+// which enable the customization of the error reporting mechanism. Via these macros it is
+// possible to replace the standard exceptions by some other exception type or a completely
+// different approach to report errors.
+//
+//
+// \n \section error_reporting_general_customization Customization of the Reporting Mechanism
+//
+// In some cases it might be necessary to adapt the entire error reporting mechanism and to
+// replace it by some other means to signal failure. The primary macro for this purpose is the
+// \a BLAZE_THROW macro:
+
+   \code
+   #define BLAZE_THROW( EXCEPTION ) \
+      throw EXCEPTION
+   \endcode
+
+// This macro represents the default mechanism of the \b Blaze library to report errors of any
+// kind. In order to customize the error reporing mechanism all that needs to be done is to
+// define the macro prior to including any \a Blaze header file. This will cause the \b Blaze
+// specific mechanism to be overridden. The following example demonstrates this by replacing
+// throwing an exceptions by an abort:
+
+   \code
+   #define BLAZE_THROW( EXCEPTION ) abort();
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Doing this will trigger an abort instead of throwing an exception whenever an error (such as
+// an invalid argument) is detected. Note that it is recommended to define the macro such that a
+// subsequent semicolon is required!
+//
+// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
+// conditions and environments. However, the customization of the error reporting mechanism via
+// this macro can have a significant effect on the library. Thus be advised to use the macro
+// with due care!
+//
+//
+// \n \section error_reporting_exception_customization Customization of the Type of Exceptions
+//
+// In addition to the customization of the entire error reporting mechanism it is also possible
+// to customize the type of exceptions being thrown. This can be achieved by customizing any
+// number of the following macros:
+
+   \code
+   #define BLAZE_THROW_BAD_ALLOC \
+      BLAZE_THROW( std::bad_alloc() )
+
+   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
+      BLAZE_THROW( std::invalid_argument( MESSAGE ) )
+
+   #define BLAZE_THROW_LENGTH_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::length_error( MESSAGE ) )
+
+   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::logic_error( MESSAGE ) )
+
+   #define BLAZE_THROW_RUNTIME_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::runtime_error( MESSAGE ) )
+   \endcode
+
+// In order to customize the type of exception the according macro has to be defined prior to
+// including any \a Blaze header file. This will override the \b Blaze default behavior. The
+// following example demonstrates this by replacing \a std::invalid_argument by a custom
+// exception type:
+
+   \code
+   class InvalidArgument
+   {
+    public:
+      InvalidArgument();
+      explicit InvalidArgument( const std::string& message );
+      // ...
+   };
+
+   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
+      BLAZE_THROW( InvalidArgument( MESSAGE ) )
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// By manually defining the macro, an \a InvalidArgument exception is thrown instead of a
+// \a std::invalid_argument exception. Note that it is recommended to define the macro such
+// that a subsequent semicolon is required!
+//
+// \warning These macros are provided with the intention to assist in adapting \b Blaze to
+// special conditions and environments. However, the customization of the type of an exception
+// via this macro may have an effect on the library. Thus be advised to use the macro with due
+// care!
+//
+//
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
+*/
+//*************************************************************************************************
+
+
+//**Intra-Statement Optimization*******************************************************************
+/*!\page intra_statement_optimization Intra-Statement Optimization
+//
+// One of the prime features of the \b Blaze library is the automatic intra-statement optimization.
+// In order to optimize the overall performance of every single statement \b Blaze attempts to
+// rearrange the operands based on their types. For instance, the following addition of dense and
+// sparse vectors
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3 = d1 + s1 + d2;
+   \endcode
+
+// is automatically rearranged and evaluated as
+
+   \code
+   // ...
+   d3 = d1 + d2 + s1;  // <- Note that s1 and d2 have been rearranged
+   \endcode
+
+// This order of operands is highly favorable for the overall performance since the addition of
+// the two dense vectors \c d1 and \c d2 can be handled much more efficiently in a vectorized
+// fashion.
+//
+// This intra-statement optimization can have a tremendous effect on the performance of a statement.
+// Consider for instance the following computation:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   y = A * B * x;
+   \endcode
+
+// Since multiplications are evaluated from left to right, this statement would result in a
+// matrix/matrix multiplication, followed by a matrix/vector multiplication. However, if the
+// right subexpression is evaluated first, the performance can be dramatically improved since the
+// matrix/matrix multiplication can be avoided in favor of a second matrix/vector multiplication.
+// The \b Blaze library exploits this by automatically restructuring the expression such that the
+// right multiplication is evaluated first:
+
+   \code
+   // ...
+   y = A * ( B * x );
+   \endcode
+
+// Note however that although this intra-statement optimization may result in a measurable or
+// even significant performance improvement, this behavior may be undesirable for several reasons,
+// for instance because of numerical stability. Therefore, in case the order of evaluation matters,
+// the best solution is to be explicit and to separate a statement into several statements:
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3  = d1 + s1;  // Compute the dense vector/sparse vector addition first ...
+   d3 += d2;       // ... and afterwards add the second dense vector
+   \endcode
+
+   \code
+   // ...
+   blaze::DynamicMatrix<double> A, B, C;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   C = A * B;  // Compute the left-hand side matrix-matrix multiplication first ...
+   y = C * x;  // ... before the right-hand side matrix-vector multiplication
+   \endcode
+
+// Alternatively, it is also possible to use the \c eval() function to fix the order of evaluation:
+
+   \code
+   blaze::DynamicVector<double> d1, d2, d3;
+   blaze::CompressedVector<double> s1;
+
+   // ... Resizing and initialization
+
+   d3 = d1 + eval( s1 + d2 );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   blaze::DynamicVector<double> x, y;
+
+   // ... Resizing and initialization
+
+   y = eval( A * B ) * x;
+   \endcode
+
+// \n Previous: \ref error_reporting_customization
 */
 //*************************************************************************************************
 
