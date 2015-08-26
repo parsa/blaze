@@ -42,9 +42,9 @@
 
 #include <cstdlib>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/util/Exception.h>
 #include <blaze/util/NonCreatable.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
 
@@ -289,7 +289,7 @@ inline To Converter<To,std::string>::convert( const std::string& from )
    if( !(iss >> to) ) {
       std::ostringstream error;
       error << "Invalid cast from std::string to " << typeid(to).name() << "\n";
-      throw std::runtime_error( error.str() );
+      BLAZE_THROW_RUNTIME_ERROR( error.str() );
    }
    return to;
 }
@@ -339,7 +339,7 @@ inline std::string Converter<std::string,From>::convert( const From& from )
    if( !(oss << from) ) {
       std::ostringstream error;
       error << "Invalid cast from " << typeid(from).name() << " to std::string\n";
-      throw std::runtime_error( error.str() );
+      BLAZE_THROW_RUNTIME_ERROR( error.str() );
    }
    return oss.str();
 }

@@ -41,11 +41,11 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <stdexcept>
 #include <blaze/util/Algorithm.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Convertible.h>
 #include <blaze/util/constraints/DerivedFrom.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/policies/PtrDelete.h>
 #include <blaze/util/policies/OptimalGrowth.h>
@@ -1714,7 +1714,7 @@ void PtrVector<T,D,G>::insert( T**const pos, PointerType p )
       ++size_;
    }
    else if( size_ == maxSize() ) {
-      throw std::length_error( "Maximum pointer vector length exceeded!" );
+      BLAZE_THROW_LENGTH_ERROR( "Maximum pointer vector length exceeded!" );
    }
    else {
       SizeType newCapacity( calcCapacity( capacity_+1 ) );
@@ -1828,7 +1828,7 @@ void PtrVector<T,D,G>::insert( T** pos, IteratorType first, IteratorType last, S
       size_ = newSize;
    }
    else if( newSize > maxSize() || newSize < size_ ) {
-      throw std::length_error( "Maximum pointer vector length exceeded!" );
+      BLAZE_THROW_LENGTH_ERROR( "Maximum pointer vector length exceeded!" );
    }
    else {
       PointerType* newBegin = new PointerType[newSize];

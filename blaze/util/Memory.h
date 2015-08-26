@@ -45,11 +45,11 @@
 #endif
 #include <cstdlib>
 #include <new>
-#include <stdexcept>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Byte.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
@@ -84,11 +84,12 @@ inline byte* allocate_backend( size_t size, size_t alignment )
 
 #if defined(_MSC_VER)
    raw = _aligned_malloc( size, alignment );
-   if( raw == NULL )
+   if( raw == NULL ) {
 #else
-   if( posix_memalign( &raw, alignment, size ) )
+   if( posix_memalign( &raw, alignment, size ) ) {
 #endif
-      throw std::bad_alloc();
+      BLAZE_THROW_BAD_ALLOC;
+   }
 
    return reinterpret_cast<byte*>( raw );
 }

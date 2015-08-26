@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <boost/bind.hpp>
 #include <blaze/util/Assert.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/PtrVector.h>
 #include <blaze/util/StaticAssert.h>
@@ -800,8 +800,9 @@ void ThreadPool<TT,MT,LT,CT>::resize( size_t n, bool block )
 {
    // Checking the given number of threads
 #if !(defined _MSC_VER)
-   if( n == 0 )
-      throw std::invalid_argument( "Invalid number of threads" );
+   if( n == 0 ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
+   }
 #endif
 
    // Adjusting the number of threads
