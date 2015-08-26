@@ -40,13 +40,13 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
 
 
@@ -138,8 +138,9 @@ template< typename PT    // Type of the proxy
 inline typename DenseVectorProxy<PT,VT>::Reference
    DenseVectorProxy<PT,VT>::operator[]( size_t index ) const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    return (~*this).get()[index];
 }
@@ -157,8 +158,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Pointer DenseVectorProxy<PT,VT>::data() const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    return (~*this).get().data();
 }
@@ -174,8 +176,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Iterator DenseVectorProxy<PT,VT>::begin() const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    return (~*this).get().begin();
 }
@@ -205,8 +208,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline typename DenseVectorProxy<PT,VT>::Iterator DenseVectorProxy<PT,VT>::end() const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    return (~*this).get().end();
 }
@@ -335,8 +339,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::resize( size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    (~*this).get().resize( n, preserve );
 }
@@ -360,8 +365,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::extend( size_t n, bool preserve ) const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    (~*this).get().extend( n, preserve );
 }
@@ -381,8 +387,9 @@ template< typename PT    // Type of the proxy
         , typename VT >  // Type of the dense vector
 inline void DenseVectorProxy<PT,VT>::reserve( size_t n ) const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    (~*this).get().reserve( n );
 }
@@ -400,8 +407,9 @@ template< typename PT       // Type of the proxy
 template< typename Other >  // Data type of the scalar value
 inline void DenseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 {
-   if( (~*this).isRestricted() )
-      throw std::invalid_argument( "Invalid access to restricted element" );
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
 
    (~*this).get().scale( scalar );
 }
