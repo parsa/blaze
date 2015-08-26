@@ -40,10 +40,10 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <omp.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 
@@ -90,8 +90,9 @@ BLAZE_ALWAYS_INLINE size_t getNumThreads()
 */
 BLAZE_ALWAYS_INLINE size_t setNumThreads( size_t number )
 {
-   if( number == 0UL )
-      throw std::invalid_argument( "Invalid number of threads" );
+   if( number == 0UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
+   }
 
    omp_set_num_threads( number );
 }

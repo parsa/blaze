@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Suffix.h>
 
 
@@ -138,8 +138,9 @@ bool ParallelSection<T>::active_ = false;
 template< typename T >
 inline ParallelSection<T>::ParallelSection( bool activate )
 {
-   if( active_ )
-      throw std::runtime_error( "Nested parallel sections detected" );
+   if( active_ ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Nested parallel sections detected" );
+   }
 
    active_ = activate;
 }

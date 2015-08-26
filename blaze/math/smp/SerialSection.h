@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
+#include <blaze/util/Exception.h>
 #include <blaze/util/Suffix.h>
 
 
@@ -138,8 +138,9 @@ bool SerialSection<T>::active_ = false;
 template< typename T >
 inline SerialSection<T>::SerialSection( bool activate )
 {
-   if( active_ )
-      throw std::runtime_error( "Nested serial sections detected" );
+   if( active_ ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Nested serial sections detected" );
+   }
 
    active_ = activate;
 }
