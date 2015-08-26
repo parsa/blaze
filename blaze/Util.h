@@ -55,6 +55,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/InputString.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Limits.h>
