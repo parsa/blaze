@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
@@ -63,6 +62,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
@@ -661,8 +661,9 @@ inline const SVecSVecSubExpr<T1,T2,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~lhs).size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    return SVecSVecSubExpr<T1,T2,TF>( ~lhs, ~rhs );
 }

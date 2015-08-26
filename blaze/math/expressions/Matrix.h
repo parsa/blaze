@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -50,6 +49,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
@@ -424,8 +424,9 @@ BLAZE_ALWAYS_INLINE typename DisableIf< IsResizable<MT> >::Type
 {
    UNUSED_PARAMETER( preserve );
 
-   if( (~matrix).rows() != m || (~matrix).columns() != n )
-      throw std::invalid_argument( "Matrix cannot be resized" );
+   if( (~matrix).rows() != m || (~matrix).columns() != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix cannot be resized" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -472,8 +473,9 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsResizable<MT>, IsSquare<MT> > >::Type
    resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
 {
-   if( m != n )
-      throw std::invalid_argument( "Invalid resize arguments for square matrix" );
+   if( m != n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square matrix" );
+   }
 
    (~matrix).resize( m, preserve );
 }

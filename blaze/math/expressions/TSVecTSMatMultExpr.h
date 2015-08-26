@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -67,6 +66,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/SelectType.h>
@@ -1007,8 +1007,9 @@ inline const typename DisableIf< Or< IsSymmetric<T2>, IsMatMatMultExpr<T2> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~vec).size() != (~mat).rows() )
-      throw std::invalid_argument( "Vector and matrix sizes do not match" );
+   if( (~vec).size() != (~mat).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
+   }
 
    return TSVecTSMatMultExpr<T1,T2>( ~vec, ~mat );
 }
@@ -1047,8 +1048,9 @@ inline const typename EnableIf< IsSymmetric<T2>, typename MultExprTrait<T1,T2>::
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( T2 );
 
-   if( (~vec).size() != (~mat).rows() )
-      throw std::invalid_argument( "Vector and matrix sizes do not match" );
+   if( (~vec).size() != (~mat).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
+   }
 
    return (~vec) * trans( ~mat );
 }

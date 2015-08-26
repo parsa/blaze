@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -72,6 +71,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Max.h>
@@ -798,8 +798,9 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return DMatTDMatSubExpr<T1,T2>( ~lhs, ~rhs );
 }
@@ -843,8 +844,9 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, Not< IsSymmetric<T2> > >
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return DMatTDMatSubExpr<T1,T2>( ~lhs, ~rhs );
 }
@@ -881,8 +883,9 @@ inline typename EnableIf< And< IsSymmetric<T1>, Not< IsSymmetric<T2> > >
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return trans( ~lhs ) - ~rhs;
 }
@@ -912,8 +915,9 @@ inline typename EnableIf< IsSymmetric<T2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return (~lhs) - trans( ~rhs );
 }
@@ -943,8 +947,9 @@ inline typename EnableIf< And< Not< IsSymmetric<T1> >, IsSymmetric<T2> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return (~lhs) - trans( ~rhs );
 }
@@ -974,8 +979,9 @@ inline typename EnableIf< IsSymmetric<T1>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    return trans( ~lhs ) - (~rhs);
 }

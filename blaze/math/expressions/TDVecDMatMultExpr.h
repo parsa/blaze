@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/blas/Level2.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -84,6 +83,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -5104,8 +5104,9 @@ inline const typename DisableIf< IsMatMatMultExpr<T2>, TDVecDMatMultExpr<T1,T2> 
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~vec).size() != (~mat).rows() )
-      throw std::invalid_argument( "Vector and matrix sizes do not match" );
+   if( (~vec).size() != (~mat).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
+   }
 
    return TDVecDMatMultExpr<T1,T2>( ~vec, ~mat );
 }

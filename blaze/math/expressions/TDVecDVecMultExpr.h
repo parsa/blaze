@@ -40,12 +40,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -131,8 +131,9 @@ inline typename DisableIf< TDVecDVecMultExprHelper<T1,T2>,
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~lhs).size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename T1::CompositeType         Lhs;
    typedef typename T2::CompositeType         Rhs;
@@ -191,8 +192,9 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~lhs).size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename T1::CompositeType         Lhs;
    typedef typename T2::CompositeType         Rhs;

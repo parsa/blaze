@@ -40,13 +40,13 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -112,8 +112,9 @@ inline const typename MultTrait<typename T1::ElementType,typename T2::ElementTyp
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( T1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( T2 );
 
-   if( (~lhs).size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( (~lhs).size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    if( (~rhs).nonZeros() == 0UL ) return MultType();
 

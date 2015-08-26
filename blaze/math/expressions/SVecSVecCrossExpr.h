@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <stdexcept>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/Forward.h>
@@ -58,6 +57,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/SelectType.h>
@@ -452,8 +452,9 @@ inline const SVecSVecCrossExpr<T1,T2>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).size() != 3UL || (~rhs).size() != 3UL )
-      throw std::invalid_argument( "Invalid vector size for cross product" );
+   if( (~lhs).size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
 
    return SVecSVecCrossExpr<T1,T2>( ~lhs, ~rhs );
 }
