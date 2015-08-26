@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -94,6 +93,7 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -1216,8 +1216,9 @@ inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t row, siz
    , isAligned_( ( column % IT::size == 0UL ) &&
                  ( column + n == matrix.columns() || n % IT::size == 0UL ) )
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
-      throw std::invalid_argument( "Invalid submatrix specification" );
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 //*************************************************************************************************
 
@@ -1524,11 +1525,13 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Dens
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
-   if( rows() != rhs.rows() || columns() != rhs.columns() )
-      throw std::invalid_argument( "Submatrix sizes do not match" );
+   if( rows() != rhs.rows() || columns() != rhs.columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Submatrix sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1570,14 +1573,16 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator=( const Matr
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -1630,11 +1635,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1684,13 +1691,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1734,11 +1743,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1788,13 +1799,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1836,13 +1849,15 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::operator*=( const Mat
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( columns() != (~rhs).rows() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2154,14 +2169,17 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
 {
-   if( rows() != columns() )
-      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+   if( rows() != columns() ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) )
-      throw std::runtime_error( "Invalid transpose of a lower matrix" );
+   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
+   }
 
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
-      throw std::runtime_error( "Invalid transpose of an upper matrix" );
+   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
@@ -3842,8 +3860,9 @@ inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t
    , isAligned_( ( row % IT::size == 0UL ) &&
                  ( row + m == matrix.rows() || m % IT::size == 0UL ) )
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
-      throw std::invalid_argument( "Invalid submatrix specification" );
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4125,11 +4144,13 @@ inline DenseSubmatrix<MT,unaligned,true>&
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
-   if( rows() != rhs.rows() || columns() != rhs.columns() )
-      throw std::invalid_argument( "Submatrix sizes do not match" );
+   if( rows() != rhs.rows() || columns() != rhs.columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Submatrix sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4172,14 +4193,16 @@ inline DenseSubmatrix<MT,unaligned,true>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -4232,11 +4255,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4286,13 +4311,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4336,11 +4363,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4390,13 +4419,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4439,13 +4470,15 @@ inline DenseSubmatrix<MT,unaligned,true>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( columns() != (~rhs).rows() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4740,14 +4773,17 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::transpose()
 {
-   if( rows() != columns() )
-      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+   if( rows() != columns() ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) )
-      throw std::runtime_error( "Invalid transpose of a lower matrix" );
+   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
+   }
 
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
-      throw std::runtime_error( "Invalid transpose of an upper matrix" );
+   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
@@ -6048,11 +6084,13 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t 
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
-      throw std::invalid_argument( "Invalid submatrix specification" );
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 
-   if( column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) )
-      throw std::invalid_argument( "Invalid submatrix alignment" );
+   if( column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6358,11 +6396,13 @@ inline DenseSubmatrix<MT,aligned,false>&
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
-   if( rows() != rhs.rows() || columns() != rhs.columns() )
-      throw std::invalid_argument( "Submatrix sizes do not match" );
+   if( rows() != rhs.rows() || columns() != rhs.columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Submatrix sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6405,14 +6445,16 @@ inline DenseSubmatrix<MT,aligned,false>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -6465,11 +6507,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6519,13 +6563,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6569,11 +6615,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6623,13 +6671,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6672,13 +6722,15 @@ inline DenseSubmatrix<MT,aligned,false>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( columns() != (~rhs).rows() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -6990,14 +7042,17 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::transpose()
 {
-   if( rows() != columns() )
-      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+   if( rows() != columns() ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) )
-      throw std::runtime_error( "Invalid transpose of a lower matrix" );
+   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
+   }
 
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
-      throw std::runtime_error( "Invalid transpose of an upper matrix" );
+   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
@@ -8295,11 +8350,13 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t r
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) )
-      throw std::invalid_argument( "Invalid submatrix specification" );
+   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 
-   if( row % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) )
-      throw std::invalid_argument( "Invalid submatrix alignment" );
+   if( row % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8575,11 +8632,13 @@ inline DenseSubmatrix<MT,aligned,true>&
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && row_ == rhs.row_ && column_ == rhs.column_ ) )
       return *this;
 
-   if( rows() != rhs.rows() || columns() != rhs.columns() )
-      throw std::invalid_argument( "Submatrix sizes do not match" );
+   if( rows() != rhs.rows() || columns() != rhs.columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Submatrix sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -8621,14 +8680,16 @@ inline DenseSubmatrix<MT,aligned,true>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename MT2::ResultType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename MT2::CompositeType, const MT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    if( IsSparseMatrix<MT2>::value )
       reset();
@@ -8681,11 +8742,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -8735,13 +8798,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -8785,11 +8850,13 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
-   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, ~rhs, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -8839,13 +8906,15 @@ inline typename EnableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -8888,13 +8957,15 @@ inline DenseSubmatrix<MT,aligned,true>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( columns() != (~rhs).rows() )
-      throw std::invalid_argument( "Matrix sizes do not match" );
+   if( columns() != (~rhs).rows() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, row_, column_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, row_, column_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -9189,14 +9260,17 @@ inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpose()
 {
-   if( rows() != columns() )
-      throw std::runtime_error( "Invalid transpose of a non-quadratic submatrix" );
+   if( rows() != columns() ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) )
-      throw std::runtime_error( "Invalid transpose of a lower matrix" );
+   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
+   }
 
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) )
-      throw std::runtime_error( "Invalid transpose of an upper matrix" );
+   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
+      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
@@ -10792,8 +10866,9 @@ inline const DenseSubmatrix<MT,AF1,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( ( row + m > dm.rows() ) || ( column + n > dm.columns() ) )
-      throw std::invalid_argument( "Invalid submatrix specification" );
+   if( ( row + m > dm.rows() ) || ( column + n > dm.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 
    return DenseSubmatrix<MT,AF1,SO>( dm.matrix_, dm.row_ + row, dm.column_ + column, m, n );
 }

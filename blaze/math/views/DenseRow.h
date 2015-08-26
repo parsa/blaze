@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -84,6 +83,7 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -640,8 +640,9 @@ inline DenseRow<MT,SO,SF>::DenseRow( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
-   if( matrix_.rows() <= index )
-      throw std::invalid_argument( "Invalid row access index" );
+   if( matrix_.rows() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
 }
 //*************************************************************************************************
 
@@ -887,11 +888,13 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const DenseRow& rhs )
 {
    if( &rhs == this ) return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Row sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Row sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -926,14 +929,16 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator=( const Vector<VT,true>&
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -976,14 +981,16 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator+=( const Vector<VT,true>
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAddAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1024,14 +1031,16 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator-=( const Vector<VT,true>
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !trySubAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1071,14 +1080,16 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const DenseVector<VT,
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryMultAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1119,13 +1130,15 @@ inline DenseRow<MT,SO,SF>& DenseRow<MT,SO,SF>::operator*=( const SparseVector<VT
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const ResultType right( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2490,8 +2503,9 @@ inline DenseRow<MT,false,false>::DenseRow( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
-   if( matrix_.rows() <= index )
-      throw std::invalid_argument( "Invalid row access index" );
+   if( matrix_.rows() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2704,11 +2718,13 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Dens
 {
    if( &rhs == this ) return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Row sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Row sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2744,14 +2760,16 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator=( const Vect
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2794,14 +2812,16 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator+=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAddAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2842,14 +2862,16 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator-=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !trySubAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2889,14 +2911,16 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Den
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryMultAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2937,13 +2961,15 @@ inline DenseRow<MT,false,false>& DenseRow<MT,false,false>::operator*=( const Spa
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const ResultType right( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3818,8 +3844,9 @@ inline DenseRow<MT,false,true>::DenseRow( MT& matrix, size_t index )
    : matrix_( matrix )  // The dense matrix containing the row
    , row_   ( index  )  // The index of the row in the matrix
 {
-   if( matrix_.rows() <= index )
-      throw std::invalid_argument( "Invalid row access index" );
+   if( matrix_.rows() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4062,11 +4089,13 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const DenseR
 {
    if( &rhs == this ) return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Row sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Row sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4101,14 +4130,16 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator=( const Vector
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4151,14 +4182,16 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator+=( const Vecto
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAddAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAddAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4199,14 +4232,16 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator-=( const Vecto
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !trySubAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !trySubAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4246,14 +4281,16 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Dense
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryMultAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryMultAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4294,13 +4331,15 @@ inline DenseRow<MT,false,true>& DenseRow<MT,false,true>::operator*=( const Spars
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const ResultType right( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, right, row_, 0UL ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, row_, 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 

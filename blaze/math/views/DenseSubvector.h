@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -76,6 +75,7 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -1081,8 +1081,9 @@ inline DenseSubvector<VT,AF,TF>::DenseSubvector( Operand vector, size_t index, s
    , isAligned_( ( index % IT::size == 0UL ) &&
                  ( index + n == vector.size() || n % IT::size == 0UL ) )
 {
-   if( index + n > vector.size() )
-      throw std::invalid_argument( "Invalid subvector specification" );
+   if( index + n > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 //*************************************************************************************************
 
@@ -1324,11 +1325,13 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Dens
    if( &rhs == this || ( &vector_ == &rhs.vector_ && offset_ == rhs.offset_ ) )
       return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Subvector sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Subvector sizes do not match" );
+   }
 
-   if( !tryAssign( vector_, rhs, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, rhs, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1367,14 +1370,16 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator=( const Vect
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1415,14 +1420,16 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator+=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAddAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAddAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1461,14 +1468,16 @@ inline DenseSubvector<VT,AF,TF>& DenseSubvector<VT,AF,TF>::operator-=( const Vec
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !trySubAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !trySubAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1509,14 +1518,16 @@ inline DenseSubvector<VT,AF,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryMultAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryMultAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1557,13 +1568,15 @@ inline DenseSubvector<VT,AF,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const ResultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( vector_, tmp, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, tmp, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2757,11 +2770,13 @@ inline DenseSubvector<VT,aligned,TF>::DenseSubvector( Operand vector, size_t ind
    , offset_( index  )  // The offset of the subvector within the dense vector
    , size_  ( n      )  // The size of the subvector
 {
-   if( index + n > vector.size() )
-      throw std::invalid_argument( "Invalid subvector specification" );
+   if( index + n > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 
-   if( offset_ % IT::size != 0UL || ( offset_ + size_ != vector_.size() && size_ % IT::size != 0UL ) )
-      throw std::invalid_argument( "Invalid subvector alignment" );
+   if( offset_ % IT::size != 0UL || ( offset_ + size_ != vector_.size() && size_ % IT::size != 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3015,11 +3030,13 @@ inline DenseSubvector<VT,aligned,TF>&
    if( &rhs == this || ( &vector_ == &rhs.vector_ && offset_ == rhs.offset_ ) )
       return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Subvector sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Subvector sizes do not match" );
+   }
 
-   if( !tryAssign( vector_, rhs, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, rhs, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3060,14 +3077,16 @@ inline DenseSubvector<VT,aligned,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3110,14 +3129,16 @@ inline DenseSubvector<VT,aligned,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAddAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAddAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3158,14 +3179,16 @@ inline DenseSubvector<VT,aligned,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !trySubAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !trySubAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3207,14 +3230,16 @@ inline DenseSubvector<VT,aligned,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( typename VT2::ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT2::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<VT>, typename VT2::CompositeType, const VT2& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryMultAssign( vector_, right, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryMultAssign( vector_, right, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3256,13 +3281,15 @@ inline DenseSubvector<VT,aligned,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const ResultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( vector_, tmp, offset_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted vector" );
+   if( !tryAssign( vector_, tmp, offset_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -5134,8 +5161,9 @@ inline const DenseSubvector<VT,AF1,TF>
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( index + size > dv.size() )
-      throw std::invalid_argument( "Invalid subvector specification" );
+   if( index + size > dv.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 
    return DenseSubvector<VT,AF1,TF>( dv.vector_, dv.offset_ + index, size );
 }

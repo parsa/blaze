@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <iterator>
-#include <stdexcept>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -83,6 +82,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
@@ -591,8 +591,9 @@ inline SparseColumn<MT,SO,SF>::SparseColumn( MT& matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
-   if( matrix_.columns() <= index )
-      throw std::invalid_argument( "Invalid column access index" );
+   if( matrix_.columns() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
 }
 //*************************************************************************************************
 
@@ -778,11 +779,13 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseCo
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Column sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Column sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -830,14 +833,16 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const DenseVec
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -883,14 +888,16 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator=( const SparseVe
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -947,13 +954,15 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const DenseVe
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1001,13 +1010,15 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator+=( const SparseV
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1057,13 +1068,15 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const DenseVe
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1112,13 +1125,15 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator-=( const SparseV
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -1164,13 +1179,15 @@ inline SparseColumn<MT,SO,SF>& SparseColumn<MT,SO,SF>::operator*=( const Vector<
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2495,8 +2512,9 @@ inline SparseColumn<MT,false,false>::SparseColumn( MT& matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
-   if( matrix_.columns() <= index )
-      throw std::invalid_argument( "Invalid column access index" );
+   if( matrix_.columns() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2687,11 +2705,13 @@ inline SparseColumn<MT,false,false>&
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Column sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Column sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2732,13 +2752,15 @@ inline SparseColumn<MT,false,false>&
 {
    using blaze::assign;
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const typename VT::CompositeType tmp( ~rhs );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2784,13 +2806,15 @@ inline SparseColumn<MT,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2836,13 +2860,15 @@ inline SparseColumn<MT,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -2887,13 +2913,15 @@ inline SparseColumn<MT,false,false>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -3871,8 +3899,9 @@ inline SparseColumn<MT,false,true>::SparseColumn( MT& matrix, size_t index )
    : matrix_( matrix )  // The sparse matrix containing the column
    , col_   ( index  )  // The index of the column in the matrix
 {
-   if( matrix_.columns() <= index )
-      throw std::invalid_argument( "Invalid column access index" );
+   if( matrix_.columns() <= index ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4062,11 +4091,13 @@ inline SparseColumn<MT,false,true>& SparseColumn<MT,false,true>::operator=( cons
    if( this == &rhs || ( &matrix_ == &rhs.matrix_ && col_ == rhs.col_ ) )
       return *this;
 
-   if( size() != rhs.size() )
-      throw std::invalid_argument( "Column sizes do not match" );
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Column sizes do not match" );
+   }
 
-   if( !tryAssign( matrix_, rhs, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, rhs, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4115,14 +4146,16 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4169,14 +4202,16 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( typename VT::ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( typename VT::ResultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    typedef typename If< IsRestricted<MT>, typename VT::CompositeType, const VT& >::Type  Right;
    Right right( ~rhs );
 
-   if( !tryAssign( matrix_, right, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, right, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4234,13 +4269,15 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4289,13 +4326,15 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4346,13 +4385,15 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4402,13 +4443,15 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
@@ -4455,13 +4498,15 @@ inline SparseColumn<MT,false,true>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
 
-   if( size() != (~rhs).size() )
-      throw std::invalid_argument( "Vector sizes do not match" );
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
 
    const MultType tmp( *this * (~rhs) );
 
-   if( !tryAssign( matrix_, tmp, 0UL, col_ ) )
-      throw std::invalid_argument( "Invalid assignment to restricted matrix" );
+   if( !tryAssign( matrix_, tmp, 0UL, col_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
