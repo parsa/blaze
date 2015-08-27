@@ -565,8 +565,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    typedef typename MT2::ConstIterator  RhsIterator;
 
-   const size_t M( (~rhs).rows()    );
-   const size_t N( (~rhs).columns() );
+   const size_t M( (~rhs).rows() );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
@@ -615,7 +614,6 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    typedef typename MT2::ConstIterator  RhsIterator;
 
-   const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
    for( size_t j=0UL; j<N; ++j ) {
@@ -1082,6 +1080,18 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef typename AddTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
 {
    typedef LowerMatrix< typename AddTrait<MT1,MT2>::Type >  Type;
@@ -1228,6 +1238,18 @@ struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 
 template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
+{
+   typedef typename SubTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
    typedef typename SubTrait<MT1,MT2>::Type  Type;
 };
@@ -1429,6 +1451,18 @@ struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 
 template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
 struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
+{
+   typedef typename MultTrait<MT1,MT2>::Type  Type;
+};
+
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
+struct MultTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
    typedef typename MultTrait<MT1,MT2>::Type  Type;
 };
