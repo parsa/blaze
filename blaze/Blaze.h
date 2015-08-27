@@ -6663,17 +6663,22 @@ namespace blaze {}
 // kind. In order to customize the error reporing mechanism all that needs to be done is to
 // define the macro prior to including any \a Blaze header file. This will cause the \b Blaze
 // specific mechanism to be overridden. The following example demonstrates this by replacing
-// throwing an exceptions by an abort:
+// exceptions by a call to a \a log() function and a direct call to abort:
 
    \code
-   #define BLAZE_THROW( EXCEPTION ) abort();
+   #define BLAZE_THROW( EXCEPTION ) \
+      log( "..." ); \
+      abort()
 
    #include <blaze/Blaze.h>
    \endcode
 
-// Doing this will trigger an abort instead of throwing an exception whenever an error (such as
-// an invalid argument) is detected. Note that it is recommended to define the macro such that a
-// subsequent semicolon is required!
+// Doing this will trigger a call to \a log() and an abort instead of throwing an exception
+// whenever an error (such as an invalid argument) is detected.
+//
+// \note It is possible to execute several statements instead of executing a single statement to
+// throw an exception. Also note that it is recommended to define the macro such that a subsequent
+// semicolon is required!
 //
 // \warning This macro is provided with the intention to assist in adapting \b Blaze to special
 // conditions and environments. However, the customization of the error reporting mechanism via
