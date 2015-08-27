@@ -48,8 +48,6 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -287,9 +285,10 @@ inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>&
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
+        , bool NF       // Numeric flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
                        const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT2 );
@@ -341,9 +340,10 @@ inline bool tryAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
+        , bool NF       // Numeric flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    return tryAssign( lhs, ~rhs, row, column );
@@ -372,9 +372,10 @@ inline bool tryAddAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
 template< typename MT1  // Type of the adapted matrix
         , bool SO1      // Storage order of the adapted matrix
         , bool DF       // Density flag
+        , bool NF       // Numeric flag
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF>& lhs,
+inline bool trySubAssign( const SymmetricMatrix<MT1,SO1,DF,NF>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
    return tryAssign( lhs, ~rhs, row, column );
