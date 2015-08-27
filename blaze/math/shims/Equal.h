@@ -56,6 +56,29 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Generic equality check.
+// \ingroup math_shims
+//
+// \param a First value/object.
+// \param b Second value/object.
+// \return \a true if the two values/objects are equal, \a false if not.
+//
+// The equal shim represents an abstract interface for testing two values/objects for equality.
+// In case the two values/objects are equal, the function returns \a true, otherwise it returns
+// \a false. Per default, the comparison of the two values/objects uses the equality operator
+// operator==(). For built-in floating point data types a special comparison is selected that
+// takes the limited machine accuracy into account.
+*/
+template< typename T1    // Type of the left-hand side value/object
+        , typename T2 >  // Type of the right-hand side value/object
+inline bool equal( const T1& a, const T2& b )
+{
+   return a == b;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Equality check for two single precision floating point values.
 // \ingroup math_shims
@@ -354,29 +377,6 @@ inline bool equal( complex<T1> a, complex<T2> b )
    return equal( a.real(), b.real() ) && equal( a.imag(), b.imag() );
 }
 /*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Generic equality check.
-// \ingroup math_shims
-//
-// \param a First value/object.
-// \param b Second value/object.
-// \return \a true if the two values/objects are equal, \a false if not.
-//
-// The equal shim represents an abstract interface for testing two values/objects for equality.
-// In case the two values/objects are equal, the function returns \a true, otherwise it returns
-// \a false. Per default, the comparison of the two values/objects uses the equality operator
-// operator==(). For built-in floating point data types a special comparison is selected that
-// takes the limited machine accuracy into account.
-*/
-template< typename T1    // Type of the left-hand side value/object
-        , typename T2 >  // Type of the right-hand side value/object
-inline bool equal( const T1& a, const T2& b )
-{
-   return a == b;
-}
 //*************************************************************************************************
 
 } // namespace blaze
