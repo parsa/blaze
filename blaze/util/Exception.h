@@ -71,7 +71,7 @@
 // In order to customize the error reporing mechanism all that needs to be done is to define
 // the macro prior to including any \a Blaze header file. This will cause the \b Blaze specific
 // mechanism to be overridden. The following example demonstrates this by replacing exceptions
-// by a call to a log() function and a direct call to abort:
+// by a call to a \a log() function and a direct call to abort:
 
    \code
    #define BLAZE_THROW( EXCEPTION ) \
