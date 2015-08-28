@@ -406,7 +406,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse StrictlyUpperMatrix specialization.
+/*!\brief Macro for the execution of the sparse StrictlyUpperMatrix test.
 */
 #define RUN_STRICTLYUPPERMATRIX_SPARSE_TEST \
    blazetest::mathtest::strictlyuppermatrix::runTest()

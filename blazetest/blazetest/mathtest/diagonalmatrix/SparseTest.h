@@ -406,7 +406,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse DiagonalMatrix specialization.
+/*!\brief Macro for the execution of the sparse DiagonalMatrix test.
 */
 #define RUN_DIAGONALMATRIX_SPARSE_TEST \
    blazetest::mathtest::diagonalmatrix::runTest()

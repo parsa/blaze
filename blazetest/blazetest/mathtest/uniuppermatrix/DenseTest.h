@@ -365,7 +365,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense UniUpperMatrix specialization.
+/*!\brief Macro for the execution of the dense UniUpperMatrix test.
 */
 #define RUN_UNIUPPERMATRIX_DENSE_TEST \
    blazetest::mathtest::uniuppermatrix::runTest()

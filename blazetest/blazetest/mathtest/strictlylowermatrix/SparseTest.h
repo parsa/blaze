@@ -407,7 +407,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the sparse StrictlyLowerMatrix specialization.
+/*!\brief Macro for the execution of the sparse StrictlyLowerMatrix test.
 */
 #define RUN_STRICTLYLOWERMATRIX_SPARSE_TEST \
    blazetest::mathtest::strictlylowermatrix::runTest()

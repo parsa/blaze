@@ -366,7 +366,7 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the dense UpperMatrix specialization.
+/*!\brief Macro for the execution of the dense UpperMatrix test.
 */
 #define RUN_UPPERMATRIX_DENSE_TEST \
    blazetest::mathtest::uppermatrix::runTest()
