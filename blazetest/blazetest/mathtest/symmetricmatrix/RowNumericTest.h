@@ -171,7 +171,7 @@ void RowNumericTest::testAssignment()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector assignment test 1";
+      test_ = "Dense vector assignment test";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
       vec[0] = 2;
@@ -220,7 +220,7 @@ void RowNumericTest::testAssignment()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector assignment test 1";
+      test_ = "Dense vector assignment test";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
       vec[0] = 2;
@@ -286,7 +286,7 @@ void RowNumericTest::testAddAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector addition assignment test 1";
+      test_ = "Dense vector addition assignment test";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
       vec[0] = 6;
@@ -335,7 +335,7 @@ void RowNumericTest::testAddAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector addition assignment test 1";
+      test_ = "Dense vector addition assignment test";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
       vec[0] = 6;
@@ -401,7 +401,7 @@ void RowNumericTest::testSubAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector subtraction assignment test 1";
+      test_ = "Dense vector subtraction assignment test";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
       vec[0] = -6;
@@ -450,7 +450,7 @@ void RowNumericTest::testSubAssign()
    // ( -4  2  0 )  =>  ( 2  8  4 )
    // (  7  0  3 )      ( 7  4  3 )
    {
-      test_ = "Dense vector subtraction assignment test 1";
+      test_ = "Dense vector subtraction assignment test";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
       vec[0] = -6;
@@ -516,7 +516,7 @@ void RowNumericTest::testMultAssign()
    // ( -4  2  0 )  =>  ( 8  6  0 )
    // (  7  0  3 )      ( 7  0  3 )
    {
-      test_ = "Dense vector multiplication assignment test 1";
+      test_ = "Dense vector multiplication assignment test";
 
       blaze::DynamicVector<int,blaze::rowVector> vec( 3UL );
       vec[0] = -2;
@@ -565,7 +565,7 @@ void RowNumericTest::testMultAssign()
    // ( -4  2  0 )  =>  ( 8  6  0 )
    // (  7  0  3 )      ( 7  0  3 )
    {
-      test_ = "Dense vector multiplication assignment test 1";
+      test_ = "Dense vector multiplication assignment test";
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 3UL );
       vec[0] = -2;
