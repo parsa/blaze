@@ -138,6 +138,10 @@ class SymmetricMatrix<MT,SO,false,true>
    class SymmetricValue
    {
     private:
+      //**Type definitions*************************************************************************
+      typedef typename MT::Iterator  IteratorType;  //!< Type of the underlying sparse matrix iterators.
+      //*******************************************************************************************
+
       //**struct BuiltinType***********************************************************************
       /*!\brief Auxiliary struct to determine the value type of the represented complex element.
       */
@@ -165,12 +169,14 @@ class SymmetricMatrix<MT,SO,false,true>
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SymmetricValue class.
       //
-      // \param v1 Reference to the first represented value.
-      // \param v2 Reference to the second represented value.
+      // \param pos The initial position of the iterator.
+      // \param matrix The sparse matrix containing the iterator.
+      // \param index The row/column index of the iterator.
       */
-      inline SymmetricValue( ElementType& v1, ElementType& v2 )
-         : v1_( &v1 )  // The first represented value.
-         , v2_( &v2 )  // The second represented value.
+      inline SymmetricValue( IteratorType pos, MT* matrix, size_t index )
+         : pos_   ( pos    )  // Iterator to the current sparse symmetric matrix element
+         , matrix_( matrix )  // The sparse matrix containing the iterator
+         , index_ ( index  )  // The row/column index of the iterator
       {}
       //*******************************************************************************************
 
@@ -181,9 +187,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       inline SymmetricValue& operator=( const SymmetricValue& sv ) {
-         *v1_ = *sv.v1_;
-         if( v1_ != v2_ )
-            v2_ = *sv.v2_;
+         pos_->value() = sv.pos_->value();
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -195,9 +200,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       template< typename T > inline SymmetricValue& operator=( const T& v ) {
-         *v1_ = v;
-         if( v1_ != v2_ )
-            *v2_ = v;
+         pos_->value() = v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -209,9 +213,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       template< typename T > inline SymmetricValue& operator+=( const T& v ) {
-         *v1_ += v;
-         if( v1_ != v2_ )
-            *v2_ += v;
+         pos_->value() += v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -223,9 +226,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       template< typename T > inline SymmetricValue& operator-=( const T& v ) {
-         *v1_ -= v;
-         if( v1_ != v2_ )
-            *v2_ -= v;
+         pos_->value() -= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -237,9 +239,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       template< typename T > inline SymmetricValue& operator*=( const T& v ) {
-         *v1_ *= v;
-         if( v1_ != v2_ )
-            *v2_ *= v;
+         pos_->value() *= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -251,9 +252,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric value.
       */
       template< typename T > inline SymmetricValue& operator/=( const T& v ) {
-         *v1_ /= v;
-         if( v1_ != v2_ )
-            *v2_ /= v;
+         pos_->value() /= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -264,7 +264,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Copy of the represented value.
       */
       inline operator ElementType() const {
-         return *v1_;
+         return pos_->value();
       }
       //*******************************************************************************************
 
@@ -277,7 +277,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // of its real part.
       */
       inline ValueType real() const {
-         return v1_->real();
+         return pos_->value().real();
       }
       //*******************************************************************************************
 
@@ -291,9 +291,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // real part.
       */
       inline void real( ValueType value ) const {
-         v1_->real( value );
-         if( v1_ != v2_ )
-            v2_->real( value );
+         pos_->value().real() = value;
+         sync();
       }
       //*******************************************************************************************
 
@@ -306,7 +305,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // imaginary part.
       */
       inline ValueType imag() const {
-         return v1_->imag();
+         return pos_->value.imag();
       }
       //*******************************************************************************************
 
@@ -320,16 +319,29 @@ class SymmetricMatrix<MT,SO,false,true>
       // imaginary part.
       */
       inline void imag( ValueType value ) const {
-         v1_->imag( value );
-         if( v1_ != v2_ )
-            v2_->imag( value );
+         pos_->value().imag( value );
+         sync();
       }
       //*******************************************************************************************
 
     private:
+      //*******************************************************************************************
+      /*!\brief Synchronization of the current sparse element to the paired element.
+      //
+      // \return void
+      */
+      inline void sync() {
+         if( pos_->index() == index_ || isDefault( pos_->value() ) ) return;
+         const size_t row   ( ( SO )?( index_ ):( pos_->index() ) );
+         const size_t column( ( SO )?( pos_->index() ):( index_ ) );
+         matrix_->set( row, column, pos_->value() );
+      }
+      //*******************************************************************************************
+
       //**Member variables*************************************************************************
-      ElementType* v1_;  //!< The first represented value.
-      ElementType* v2_;  //!< The second represented value.
+      IteratorType pos_;     //!< Iterator to the current sparse symmetric matrix element.
+      MT*          matrix_;  //!< The sparse matrix containing the iterator.
+      size_t       index_;   //!< The row/column index of the iterator.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -356,13 +368,17 @@ class SymmetricMatrix<MT,SO,false,true>
       //**Constructor******************************************************************************
       /*!\brief Constructor for the SymmetricElement class.
       //
-      // \param e1 Iterator to the first represented sparse element.
-      // \param e2 Iterator to the second represented sparse element.
+      // \param pos The initial position of the iterator.
+      // \param matrix The sparse matrix containing the iterator.
+      // \param index The row/column index of the iterator.
       */
-      inline SymmetricElement( IteratorType e1, IteratorType e2 )
-         : e1_( e1 )  // The first represented sparse element
-         , e2_( e2 )  // The second represented sparse element
-      {}
+      inline SymmetricElement( IteratorType pos, MT* matrix, size_t index )
+         : pos_   ( pos    )  // Iterator to the current sparse symmetric matrix element
+         , matrix_( matrix )  // The sparse matrix containing the iterator
+         , index_ ( index  )  // The row/column index of the iterator
+      {
+         BLAZE_INTERNAL_ASSERT( isSynced(), "Missing matrix element detected" );
+      }
       //*******************************************************************************************
 
       //**Assignment operator**********************************************************************
@@ -372,9 +388,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric element.
       */
       template< typename T > inline SymmetricElement& operator=( const T& v ) {
-         *e1_ = v;
-         if( e1_ != e2_ )
-            *e2_ = v;
+         *pos_ = v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -386,9 +401,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric element.
       */
       template< typename T > inline SymmetricElement& operator+=( const T& v ) {
-         *e1_ += v;
-         if( e1_ != e2_ )
-            *e2_ += v;
+         *pos_ += v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -400,9 +414,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric element.
       */
       template< typename T > inline SymmetricElement& operator-=( const T& v ) {
-         *e1_ -= v;
-         if( e1_ != e2_ )
-            *e2_ -= v;
+         *pos_ -= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -414,9 +427,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric element.
       */
       template< typename T > inline SymmetricElement& operator*=( const T& v ) {
-         *e1_ *= v;
-         if( e1_ != e2_ )
-            *e2_ *= v;
+         *pos_ *= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -428,9 +440,8 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the assigned symmetric element.
       */
       template< typename T > inline SymmetricElement& operator/=( const T& v ) {
-         *e1_ /= v;
-         if( e1_ != e2_ )
-            *e2_ /= v;
+         *pos_ /= v;
+         sync();
          return *this;
       }
       //*******************************************************************************************
@@ -451,7 +462,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return The current value of the symmetric element.
       */
       inline Reference value() const {
-         return Reference( e1_->value(), e2_->value() );
+         return Reference( pos_, matrix_, index_ );
       }
       //*******************************************************************************************
 
@@ -461,14 +472,42 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return The current index of the symmetric element.
       */
       inline IndexType index() const {
-         return e1_->index();
+         return pos_->index();
       }
       //*******************************************************************************************
 
     private:
+      //*******************************************************************************************
+      /*!\brief Synchronization of the current sparse element to the paired element.
+      //
+      // \return void
+      */
+      inline void sync() {
+         if( pos_->index() == index_ || isDefault( pos_->value() ) ) return;
+         const size_t row   ( ( SO )?( index_ ):( pos_->index() ) );
+         const size_t column( ( SO )?( pos_->index() ):( index_ ) );
+         matrix_->set( row, column, pos_->value() );
+      }
+      //*******************************************************************************************
+
+      //*******************************************************************************************
+      /*!\brief Checking if the current sparse element is in sync.
+      //
+      // \return \a true if the current sparse element is in sync, \a false if not.
+      */
+      inline bool isSynced() const {
+         const IteratorType pos2( ( SO )?( matrix_->find( index_, pos_->index() ) )
+                                        :( matrix_->find( pos_->index(), index_ ) ) );
+         const IteratorType end( matrix_->end( pos_->index() ) );
+         return ( isDefault( pos_->value() ) && ( pos2 == end || isDefault( pos2->value() ) ) ) ||
+                ( pos2 != end && pos_->value() == pos2->value() );
+      }
+      //*******************************************************************************************
+
       //**Member variables*************************************************************************
-      IteratorType e1_;  //!< The first represented sparse element.
-      IteratorType e2_;  //!< The second represented sparse element.
+      IteratorType pos_;     //!< Iterator to the current sparse symmetric matrix element.
+      MT*          matrix_;  //!< The sparse matrix containing the iterator.
+      size_t       index_;   //!< The row/column index of the iterator.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -549,10 +588,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Reference to the current sparse matrix element.
       */
       inline ReferenceType operator*() const {
-         const IteratorType pos2( SO ? matrix_->find( index_, pos_->index() )
-                                     : matrix_->find( pos_->index(), index_ ) );
-         BLAZE_INTERNAL_ASSERT( pos2 != matrix_->end( pos_->index() ), "Missing matrix element detected" );
-         return ReferenceType( pos_, pos2 );
+         return ReferenceType( pos_, matrix_, index_ );
       }
       //*******************************************************************************************
 
@@ -562,10 +598,7 @@ class SymmetricMatrix<MT,SO,false,true>
       // \return Pointer to the current sparse matrix element.
       */
       inline PointerType operator->() const {
-         const IteratorType pos2( SO ? matrix_->find( index_, pos_->index() )
-                                     : matrix_->find( pos_->index(), index_ ) );
-         BLAZE_INTERNAL_ASSERT( pos2 != matrix_->end( pos_->index() ), "Missing matrix element detected" );
-         return PointerType( pos_, pos2 );
+         return PointerType( pos_, matrix_, index_ );
       }
       //*******************************************************************************************
 
