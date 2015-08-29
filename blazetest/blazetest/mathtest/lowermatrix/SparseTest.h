@@ -44,7 +44,9 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/Upper.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/SameType.h>
@@ -162,6 +164,12 @@ class SparseTest
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RLT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORLT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TRLT );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE( LT   );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE( OLT  );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE( TLT  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE( RLT  );
+   BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE( ORLT );
+   BLAZE_CONSTRAINT_MUST_BE_UPPER_MATRIX_TYPE( TRLT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, OLT::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, TLT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT, ORLT::OppositeType );
