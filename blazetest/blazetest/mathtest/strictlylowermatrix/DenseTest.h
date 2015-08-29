@@ -44,6 +44,8 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/StrictlyLower.h>
+#include <blaze/math/constraints/StrictlyUpper.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/StrictlyLowerMatrix.h>
@@ -153,6 +155,12 @@ class DenseTest
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRLT );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( LT   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OLT  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( TLT  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RLT  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORLT );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( TRLT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, OLT::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, TLT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT, ORLT::OppositeType );
