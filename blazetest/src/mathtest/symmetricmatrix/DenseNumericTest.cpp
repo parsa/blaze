@@ -799,7 +799,7 @@ void DenseNumericTest::testAssignment()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -807,6 +807,7 @@ void DenseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym;
       sym = mat;
@@ -832,7 +833,7 @@ void DenseNumericTest::testAssignment()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -840,6 +841,7 @@ void DenseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym;
       sym = mat;
@@ -1230,7 +1232,7 @@ void DenseNumericTest::testAssignment()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1238,6 +1240,7 @@ void DenseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym;
       sym = mat;
@@ -1263,7 +1266,7 @@ void DenseNumericTest::testAssignment()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1271,6 +1274,7 @@ void DenseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym;
       sym = mat;
@@ -1655,12 +1659,13 @@ void DenseNumericTest::testAddAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -1696,12 +1701,13 @@ void DenseNumericTest::testAddAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -2105,12 +2111,13 @@ void DenseNumericTest::testAddAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -2146,12 +2153,13 @@ void DenseNumericTest::testAddAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -2568,12 +2576,13 @@ void DenseNumericTest::testSubAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -2609,12 +2618,13 @@ void DenseNumericTest::testSubAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -3018,12 +3028,13 @@ void DenseNumericTest::testSubAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -3059,12 +3070,13 @@ void DenseNumericTest::testSubAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -3477,10 +3489,11 @@ void DenseNumericTest::testMultAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -3516,10 +3529,11 @@ void DenseNumericTest::testMultAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -3919,10 +3933,11 @@ void DenseNumericTest::testMultAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -3958,10 +3973,11 @@ void DenseNumericTest::testMultAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;

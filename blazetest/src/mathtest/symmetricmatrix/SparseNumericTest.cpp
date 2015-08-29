@@ -736,7 +736,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -744,13 +744,14 @@ void SparseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 8UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -769,7 +770,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -777,13 +778,14 @@ void SparseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 8UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1167,7 +1169,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1175,13 +1177,14 @@ void SparseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 8UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1200,7 +1203,7 @@ void SparseNumericTest::testAssignment()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 7UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 8UL );
       mat(0,0) =  1;
       mat(0,1) = -4;
       mat(0,2) =  7;
@@ -1208,13 +1211,14 @@ void SparseNumericTest::testAssignment()
       mat(1,1) =  2;
       mat(2,0) =  7;
       mat(2,2) =  3;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym;
       sym = mat;
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 8UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -4 || sym(0,2) != 7 ||
           sym(1,0) != -4 || sym(1,1) !=  2 || sym(1,2) != 0 ||
@@ -1592,12 +1596,13 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -1610,10 +1615,10 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 1UL, 3UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
@@ -1633,12 +1638,13 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -1651,11 +1657,11 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
           sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
@@ -2042,12 +2048,13 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -2060,10 +2067,10 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 1UL, 3UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
@@ -2083,12 +2090,13 @@ void SparseNumericTest::testAddAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix addition assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -2101,11 +2109,11 @@ void SparseNumericTest::testAddAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -6 || sym(0,2) != 13 ||
           sym(1,0) != -6 || sym(1,1) !=  5 || sym(1,2) !=  0 ||
@@ -2505,12 +2513,13 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -2523,10 +2532,10 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 1UL, 3UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
@@ -2546,12 +2555,13 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -2564,11 +2574,11 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
           sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
@@ -2955,12 +2965,13 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -2973,10 +2984,10 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
-      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 1UL, 3UL );
       checkNonZeros( sym, 2UL, 2UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
@@ -2996,12 +3007,13 @@ void SparseNumericTest::testSubAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix subtraction assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
       mat(0,1) = -2;
       mat(0,2) =  6;
       mat(1,0) = -2;
       mat(1,1) =  3;
       mat(2,0) =  6;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -3014,11 +3026,11 @@ void SparseNumericTest::testSubAssign()
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );
-      checkCapacity( sym, 7UL );
-      checkNonZeros( sym, 7UL );
+      checkCapacity( sym, 8UL );
+      checkNonZeros( sym, 8UL );
       checkNonZeros( sym, 0UL, 3UL );
       checkNonZeros( sym, 1UL, 2UL );
-      checkNonZeros( sym, 2UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
 
       if( sym(0,0) !=  1 || sym(0,1) != -2 || sym(0,2) != 1 ||
           sym(1,0) != -2 || sym(1,1) != -1 || sym(1,2) != 0 ||
@@ -3414,10 +3426,11 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Row-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -3453,10 +3466,11 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Row-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -3856,10 +3870,11 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Column-major/row-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -3895,10 +3910,11 @@ void SparseNumericTest::testMultAssign()
    {
       test_ = "Column-major/column-major SymmetricMatrix sparse matrix multiplication assignment (symmetric)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
       mat(0,0) = 2;
       mat(1,1) = 2;
       mat(2,2) = 2;
+      mat.insert( 1UL, 2UL, 0 );
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -4851,6 +4867,198 @@ void SparseNumericTest::testFunctionCall()
       }
    }
 
+   {
+      // Testing assignment to non-synced elements
+      {
+         test_ = "Row-major SymmetricMatrix::operator() (assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         sym(1,2) = 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment to non-synced elements
+      {
+         test_ = "Row-major SymmetricMatrix::operator() (addition assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         sym(1,2) += 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment to non-synced elements
+      {
+         test_ = "Row-major SymmetricMatrix::operator() (subtraction assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         sym(1,2) -= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment to non-synced elements
+      {
+         test_ = "Row-major SymmetricMatrix::operator() (multiplication assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         sym(1,2) *= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment to non-synced elements
+      {
+         test_ = "Row-major SymmetricMatrix::operator() (division assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         sym(1,2) /= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
@@ -5020,6 +5228,198 @@ void SparseNumericTest::testFunctionCall()
              << "   Result:\n" << sym << "\n"
              << "   Expected result:\n(  0 -2 -6 )\n( -2  1  5 )\n( -6  5  0 )\n";
          throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      // Testing assignment to non-synced elements
+      {
+         test_ = "Column-major SymmetricMatrix::operator() (assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         sym(1,2) = 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment to non-synced elements
+      {
+         test_ = "Column-major SymmetricMatrix::operator() (addition assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         sym(1,2) += 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment to non-synced elements
+      {
+         test_ = "Column-major SymmetricMatrix::operator() (subtraction assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         sym(1,2) -= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment to non-synced elements
+      {
+         test_ = "Column-major SymmetricMatrix::operator() (multiplication assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         sym(1,2) *= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment to non-synced elements
+      {
+         test_ = "Column-major SymmetricMatrix::operator() (division assignment to non-synced element)";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         sym(1,2) /= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 5UL );
+         checkNonZeros( sym, 5UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
@@ -5271,6 +5671,210 @@ void SparseNumericTest::testIterator()
       }
    }
 
+   {
+      typedef ST::Iterator  Iterator;
+
+      // Testing assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major assignment via Iterator to non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 1UL );
+         ++it;
+         it->value() = 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major addition assignment via Iterator to non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 1UL );
+         ++it;
+         it->value() += 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major subtraction assignment via Iterator to non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 1UL );
+         ++it;
+         it->value() -= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment via Iterator to non-synced elements
+      {
+         test_ = "Row-major multiplication assignment via Iterator to non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 1UL );
+         ++it;
+         it->value() *= 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 6UL );
+         checkNonZeros( sym, 6UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major division assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         ST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 1UL );
+         ++it;
+         it->value() /= 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 6UL );
+         checkNonZeros( sym, 6UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 2UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
@@ -5501,6 +6105,210 @@ void SparseNumericTest::testIterator()
                 << " Details:\n"
                 << "   Result:\n" << sym << "\n"
                 << "   Expected result:\n( 0 1 0 )\n( 1 0 7 )\n( 0 7 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      typedef OST::Iterator  Iterator;
+
+      // Testing assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 2UL );
+         ++it;
+         it->value() = 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing addition assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major addition assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 2UL );
+         ++it;
+         it->value() += 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing subtraction assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major subtraction assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 2UL );
+         ++it;
+         it->value() -= -9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 7UL );
+         checkNonZeros( sym, 7UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 2UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 9 ||
+             sym(2,0) != 7 || sym(2,1) != 9 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  9 )\n( 7  9  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing multiplication assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major multiplication assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 2UL );
+         ++it;
+         it->value() *= 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 6UL );
+         checkNonZeros( sym, 6UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing division assignment to via Iterator non-synced elements
+      {
+         test_ = "Row-major division assignment to via Iterator non-synced elements";
+
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 6UL );
+         mat(0,0) = 1;
+         mat(0,2) = 7;
+         mat(1,1) = 2;
+         mat(2,0) = 7;
+         mat(2,2) = 3;
+         mat.insert( 1UL, 2UL, 0 );
+
+         OST sym;
+         sym = mat;
+
+         Iterator it = sym.begin( 2UL );
+         ++it;
+         it->value() /= 9;
+
+         checkRows    ( sym, 3UL );
+         checkColumns ( sym, 3UL );
+         checkCapacity( sym, 6UL );
+         checkNonZeros( sym, 6UL );
+         checkNonZeros( sym, 0UL, 2UL );
+         checkNonZeros( sym, 1UL, 1UL );
+         checkNonZeros( sym, 2UL, 3UL );
+
+         if( sym(0,0) != 1 || sym(0,1) != 0 || sym(0,2) != 7 ||
+             sym(1,0) != 0 || sym(1,1) != 2 || sym(1,2) != 0 ||
+             sym(2,0) != 7 || sym(2,1) != 0 || sym(2,2) != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to non-synced element failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n"
+                << "   Expected result:\n( 1  0  7 )\n( 0  2  0 )\n( 7  0  3 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
