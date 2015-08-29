@@ -3483,6 +3483,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to write the diagonal element (2,2)
+         try {
+            upper(2,2) = upper(1,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to write the lower element (1,0)
          try {
             upper(1,0) = upper(1,2);
@@ -3490,6 +3503,19 @@ void SparseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the diagonal element (1,1)
+         try {
+            upper(1,1) += 6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n";
             throw std::runtime_error( oss.str() );
@@ -3509,6 +3535,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to subtract from the diagonal element (1,1)
+         try {
+            upper(1,1) -= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to subtract from the lower element (1,0)
          try {
             upper(1,0) -= 4;
@@ -3522,6 +3561,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to multiply the lower element (1,1)
+         try {
+            upper(1,1) *= -6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to multiply the lower element (2,1)
          try {
             upper(2,1) *= -3;
@@ -3529,6 +3581,19 @@ void SparseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the diagonal element (1,1)
+         try {
+            upper(1,1) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n";
             throw std::runtime_error( oss.str() );
@@ -3731,6 +3796,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to write the diagonal element (2,2)
+         try {
+            upper(2,2) = upper(1,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to write the lower element (1,0)
          try {
             upper(1,0) = upper(1,2);
@@ -3738,6 +3816,19 @@ void SparseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the diagonal element (1,1)
+         try {
+            upper(1,1) += 6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n";
             throw std::runtime_error( oss.str() );
@@ -3757,6 +3848,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to subtract from the diagonal element (1,1)
+         try {
+            upper(1,1) -= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to subtract from the lower element (1,0)
          try {
             upper(1,0) -= 4;
@@ -3770,6 +3874,19 @@ void SparseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to multiply the lower element (1,1)
+         try {
+            upper(1,1) *= -6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to multiply the lower element (2,1)
          try {
             upper(2,1) *= -3;
@@ -3777,6 +3894,19 @@ void SparseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment to lower matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << upper << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the diagonal element (1,1)
+         try {
+            upper(1,1) /= 2;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << upper << "\n";
             throw std::runtime_error( oss.str() );
