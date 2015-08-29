@@ -45,6 +45,7 @@
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -174,6 +175,12 @@ class SparseNonNumericTest
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RST  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORST );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TRST );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( TST  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( TRST );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, OST::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, TST::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST, ORST::OppositeType );
