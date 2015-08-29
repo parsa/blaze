@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -152,6 +153,12 @@ class DenseTest
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RDT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORDT );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRDT );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( DT   );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( ODT  );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( TDT  );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( RDT  );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( ORDT );
+   BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE( TRDT );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DT, ODT::OppositeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DT, TDT::TransposeType );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RDT, ORDT::OppositeType );
