@@ -3845,6 +3845,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to write the diagonal element (2,2)
+         try {
+            lower(2,2) = lower(1,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to write the upper element (0,1)
          try {
             lower(0,1) = lower(2,1);
@@ -3852,6 +3865,19 @@ void DenseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the diagonal element (1,1)
+         try {
+            lower(1,1) += 6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << lower << "\n";
             throw std::runtime_error( oss.str() );
@@ -3871,6 +3897,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to subtract from the diagonal element (1,1)
+         try {
+            lower(1,1) -= 8;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to subtract from the upper element (0,1)
          try {
             lower(0,1) -= 4;
@@ -3884,6 +3923,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to multiply the diagonal element (1,1)
+         try {
+            lower(1,1) *= -6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to multiply the upper element (1,2)
          try {
             lower(1,2) *= -3;
@@ -3891,6 +3943,19 @@ void DenseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the diagonal element (1,1)
+         try {
+            lower(1,1) /= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << lower << "\n";
             throw std::runtime_error( oss.str() );
@@ -4093,6 +4158,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to write the diagonal element (2,2)
+         try {
+            lower(2,2) = lower(1,1);
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to write the upper element (0,1)
          try {
             lower(0,1) = lower(2,1);
@@ -4100,6 +4178,19 @@ void DenseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to add to the diagonal element (1,1)
+         try {
+            lower(1,1) += 6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Addition assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << lower << "\n";
             throw std::runtime_error( oss.str() );
@@ -4119,6 +4210,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to subtract from the diagonal element (1,1)
+         try {
+            lower(1,1) -= 8;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subtraction assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to subtract from the upper element (0,1)
          try {
             lower(0,1) -= 4;
@@ -4132,6 +4236,19 @@ void DenseTest::testFunctionCall()
          }
          catch( std::invalid_argument& ) {}
 
+         // Trying to multiply the diagonal element (1,1)
+         try {
+            lower(1,1) *= -6;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Multiplication assignment to diagonal matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
          // Trying to multiply the upper element (1,2)
          try {
             lower(1,2) *= -3;
@@ -4139,6 +4256,19 @@ void DenseTest::testFunctionCall()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment to upper matrix element succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << lower << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+
+         // Trying to divide the diagonal element (1,1)
+         try {
+            lower(1,1) /= 4;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Division assignment to diagonal matrix element succeeded\n"
                 << " Details:\n"
                 << "   Result:\n" << lower << "\n";
             throw std::runtime_error( oss.str() );
