@@ -58,6 +58,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/IsVolatile.h>
@@ -87,10 +88,17 @@ template< typename T >  // Type of the absolute value operand
 struct AbsExprTrait
 {
  private:
-   //**struct ScalarAbs****************************************************************************
+   //**struct Builtin******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    template< typename ST >
-   struct ScalarAbs { typedef T  Type; };
+   struct Builtin { typedef ST  Type; };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**struct Complex******************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   template< typename CT >
+   struct Complex { typedef typename CT::value_type  Type; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -125,7 +133,10 @@ struct AbsExprTrait
                                                              >::Type
                                                 >::Type
                                    , typename If< IsNumeric<T>
-                                                , ScalarAbs<T>
+                                                , typename If< IsComplex<T>
+                                                             , Complex<T>
+                                                             , Builtin<T>
+                                                             >::Type
                                                 , Failure
                                                 >::Type
                                    >::Type
