@@ -42,7 +42,7 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 //*************************************************************************************************
@@ -66,18 +66,17 @@ namespace blaze {
 /*!\brief Platform independent implementation of the C99 \a isnan function.
 // \ingroup math_shims
 //
-// \param a Floating point value to be checked.
-// \return Non-zero value if \a a is a not a number (NaN).
+// \param a Value to be checked.
+// \return \a true if \a a is not a number (NaN), \a false otherwise.
 //
-// This function provides a platform independent check for NaN values since some compilers
-// don't support the \a isnan function (although is is part of the latest C standard library).
-//
-// \note: Since NaN values are only defined for floating point types, this \a isnan can only
-// be used for floating point types. The attempt to use this function for an integral data
-// type results in a compile time error.
+// This function provides a platform independent check for NaN values. In contrast to the \a isnan
+// function from the C standard, which is only supporting all floating point types, this function
+// can be used for all numeric data types (i.e. all integral, floating point, and complex data
+// types). The function returns \a true in case the given value is not a number (NaN). In all
+// other cases the function returns \a false.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE typename EnableIf< IsFloatingPoint<T>, bool >::Type isnan( T a )
+BLAZE_ALWAYS_INLINE typename EnableIf< IsNumeric<T>, bool >::Type isnan( T a )
 {
    return a != a;
 }
