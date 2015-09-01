@@ -72,11 +72,21 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
 {
  public:
    //**Type definitions****************************************************************************
+   typedef typename MT::ResultType      ResultType;      //!< Result type for expression template evaluations.
+   typedef typename MT::OppositeType    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
+   typedef typename MT::TransposeType   TransposeType;   //!< Transpose type for expression template evaluations.
    typedef typename MT::ElementType     ElementType;     //!< Type of the sparse matrix elements.
+   typedef typename MT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef typename MT::CompositeType   CompositeType;   //!< Data type for composite expression templates.
    typedef typename MT::Reference       Reference;       //!< Reference to a non-constant matrix value.
    typedef typename MT::ConstReference  ConstReference;  //!< Reference to a constant matrix value.
    typedef typename MT::Iterator        Iterator;        //!< Iterator over non-constant elements.
    typedef typename MT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   enum { smpAssignable = MT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
