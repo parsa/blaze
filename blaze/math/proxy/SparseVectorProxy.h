@@ -72,11 +72,20 @@ class SparseVectorProxy : public SparseVector< PT, IsRowVector<VT>::value >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef typename VT::ElementType     ElementType;      //!< Type of the sparse vector elements.
-   typedef typename VT::Reference       Reference;        //!< Reference to a non-constant vector value.
-   typedef typename VT::ConstReference  ConstReference;   //!< Reference to a constant vector value.
-   typedef typename VT::Iterator        Iterator;         //!< Iterator over non-constant elements.
-   typedef typename VT::ConstIterator   ConstIterator;    //!< Iterator over constant elements.
+   typedef typename VT::ResultType      ResultType;      //!< Result type for expression template evaluations.
+   typedef typename VT::TransposeType   TransposeType;   //!< Transpose type for expression template evaluations.
+   typedef typename VT::ElementType     ElementType;     //!< Type of the sparse vector elements.
+   typedef typename VT::ReturnType      ReturnType;      //!< Return type for expression template evaluations.
+   typedef typename VT::CompositeType   CompositeType;   //!< Data type for composite expression templates.
+   typedef typename VT::Reference       Reference;       //!< Reference to a non-constant vector value.
+   typedef typename VT::ConstReference  ConstReference;  //!< Reference to a constant vector value.
+   typedef typename VT::Iterator        Iterator;        //!< Iterator over non-constant elements.
+   typedef typename VT::ConstIterator   ConstIterator;   //!< Iterator over constant elements.
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation flag for SMP assignments.
+   enum { smpAssignable = VT::smpAssignable };
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
