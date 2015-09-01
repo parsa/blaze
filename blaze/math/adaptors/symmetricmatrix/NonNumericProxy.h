@@ -50,9 +50,18 @@
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsReal.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/ConjExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
+#include <blaze/math/traits/ImagExprTrait.h>
+#include <blaze/math/traits/RealExprTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -494,7 +503,7 @@ inline std::ostream& operator<<( std::ostream& os, const NonNumericProxy<MT>& pr
 
 //*************************************************************************************************
 /*!\brief Equality comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -510,7 +519,7 @@ inline bool operator==( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<M
 
 //*************************************************************************************************
 /*!\brief Equality comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -526,7 +535,7 @@ inline bool operator==( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Equality comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -542,7 +551,7 @@ inline bool operator==( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Inequality comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -558,7 +567,7 @@ inline bool operator!=( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<M
 
 //*************************************************************************************************
 /*!\brief Inequality comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -574,7 +583,7 @@ inline bool operator!=( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Inquality comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -590,7 +599,7 @@ inline bool operator!=( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -606,7 +615,7 @@ inline bool operator<( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<MT
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -622,7 +631,7 @@ inline bool operator<( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-than comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -638,7 +647,7 @@ inline bool operator<( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -654,7 +663,7 @@ inline bool operator>( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<MT
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -670,7 +679,7 @@ inline bool operator>( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-than comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -686,7 +695,7 @@ inline bool operator>( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -702,7 +711,7 @@ inline bool operator<=( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<M
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -718,7 +727,7 @@ inline bool operator<=( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Less-or-equal-than comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -734,7 +743,7 @@ inline bool operator<=( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between two NonNumericProxy objects.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -750,7 +759,7 @@ inline bool operator>=( const NonNumericProxy<MT1>& lhs, const NonNumericProxy<M
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between a NonNumericProxy object and an object of different type.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side NonNumericProxy object.
 // \param rhs The right-hand side object of other type.
@@ -766,7 +775,7 @@ inline bool operator>=( const NonNumericProxy<MT>& lhs, const T& rhs )
 
 //*************************************************************************************************
 /*!\brief Greater-or-equal-than comparison between an object of different type and a NonNumericProxy object.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param lhs The left-hand side object of other type.
 // \param rhs The right-hand side NonNumericProxy object.
@@ -782,7 +791,7 @@ inline bool operator>=( const T& lhs, const NonNumericProxy<MT>& rhs )
 
 //*************************************************************************************************
 /*!\brief Global output operator for the NonNumericProxy class template.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param os Reference to the output stream.
 // \param proxy Reference to a constant proxy object.
@@ -808,20 +817,186 @@ inline std::ostream& operator<<( std::ostream& os, const NonNumericProxy<MT>& pr
 /*!\name NonNumericProxy global functions */
 //@{
 template< typename MT >
-BLAZE_ALWAYS_INLINE void reset( const NonNumericProxy<MT>& proxy );
+inline typename TransExprTrait< typename MT::ElementType >::Type
+   trans( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
-BLAZE_ALWAYS_INLINE void clear( const NonNumericProxy<MT>& proxy );
+inline typename AbsExprTrait< typename MT::ElementType >::Type
+   abs( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
-BLAZE_ALWAYS_INLINE bool isDefault( const NonNumericProxy<MT>& proxy );
+inline typename ConjExprTrait< typename MT::ElementType >::Type
+   conj( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline typename CTransExprTrait< typename MT::ElementType >::Type
+   ctrans( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline typename RealExprTrait< typename MT::ElementType >::Type
+   real( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline typename ImagExprTrait< typename MT::ElementType >::Type
+   imag( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline void reset( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline void clear( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline bool isDefault( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline bool isReal( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline bool isZero( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline bool isOne( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
+inline bool isnan( const NonNumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*!\brief Computing the transpose of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The transpose of the represented element.
+//
+// This function returns an expression representing the transpose of the element represented by
+// the access proxy.
+*/
+template< typename MT >
+inline typename TransExprTrait< typename MT::ElementType >::Type
+   trans( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::trans;
+
+   return trans( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the absolute value of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The absolute value of the represented element.
+//
+// This function computes the absolute value of the element represented by the access proxy. In
+// case the access proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the absolute values of the elements of the vector/matrix.
+*/
+template< typename MT >
+inline typename AbsExprTrait< typename MT::ElementType >::Type
+   abs( const NonNumericProxy<MT>& proxy )
+{
+   using std::abs;
+
+   return abs( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the access proxy.
+// In case the access proxy represents a vector- or matrix-like data structure the function
+// returns an expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename MT >
+inline typename ConjExprTrait< typename MT::ElementType >::Type
+   conj( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the conjugate transpose of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The conjugate transpose of the represented element.
+//
+// This function returns an expression representing the conjugate transpose of the element
+// represented by the access proxy.
+*/
+template< typename MT >
+inline typename CTransExprTrait< typename MT::ElementType >::Type
+   ctrans( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::ctrans;
+
+   return ctrans( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the real part of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The real part of the represented element.
+//
+// This function returns the real part of the element represented by the access proxy. In case
+// the access proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the real part of each each element of the vector/matrix.
+*/
+template< typename MT >
+inline typename RealExprTrait< typename MT::ElementType >::Type
+   real( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::real;
+
+   return real( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the imaginary part of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return The imaginary part of the represented element.
+//
+// This function returns the imaginary part of the element represented by the access proxy. In
+// case the access proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the real part of each each element of the vector/matrix.
+*/
+template< typename MT >
+inline typename ImagExprTrait< typename MT::ElementType >::Type
+   imag( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::imag;
+
+   return imag( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Resetting the represented element to the default initial values.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -832,7 +1007,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( const NonNumericProxy<MT>& proxy );
 // values.
 */
 template< typename MT >
-BLAZE_ALWAYS_INLINE void reset( const NonNumericProxy<MT>& proxy )
+inline void reset( const NonNumericProxy<MT>& proxy )
 {
    using blaze::reset;
 
@@ -843,7 +1018,7 @@ BLAZE_ALWAYS_INLINE void reset( const NonNumericProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Clearing the represented element.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -853,7 +1028,7 @@ BLAZE_ALWAYS_INLINE void reset( const NonNumericProxy<MT>& proxy )
 // clear() function, this function clears the vector/matrix to its default initial state.
 */
 template< typename MT >
-BLAZE_ALWAYS_INLINE void clear( const NonNumericProxy<MT>& proxy )
+inline void clear( const NonNumericProxy<MT>& proxy )
 {
    using blaze::clear;
 
@@ -864,7 +1039,7 @@ BLAZE_ALWAYS_INLINE void clear( const NonNumericProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is in default state.
-// \ingroup math
+// \ingroup symmetric_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the represented element is in default state, \a false otherwise.
@@ -873,11 +1048,93 @@ BLAZE_ALWAYS_INLINE void clear( const NonNumericProxy<MT>& proxy )
 // In case it is in default state, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-BLAZE_ALWAYS_INLINE bool isDefault( const NonNumericProxy<MT>& proxy )
+inline bool isDefault( const NonNumericProxy<MT>& proxy )
 {
    using blaze::isDefault;
 
    return isDefault( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the matrix element represents a real number.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return \a true in case the matrix element represents a real number, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the a
+// real number. In case the element is of built-in type, the function returns \a true. In case
+// the element is of complex type, the function returns \a true if the imaginary part is equal
+// to 0. Otherwise it returns \a false.
+*/
+template< typename MT >
+inline bool isReal( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::isReal;
+
+   return isReal( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 0.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is 0, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the numeric
+// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT >
+inline bool isZero( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::isZero;
+
+   return isZero( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 1.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is 1, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the numeric
+// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT >
+inline bool isOne( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::isOne;
+
+   return isOne( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is not a number.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is in not a number, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy is not a number (NaN).
+// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT >
+inline bool isnan( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::isnan;
+
+   return isnan( proxy.get() );
 }
 //*************************************************************************************************
 
