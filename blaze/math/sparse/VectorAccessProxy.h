@@ -45,8 +45,19 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsReal.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/ConjExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
+#include <blaze/math/traits/ImagExprTrait.h>
+#include <blaze/math/traits/RealExprTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -72,7 +83,7 @@ namespace blaze {
    blaze::CompressedVector<double> a( 5 );
 
    // Standard usage of the subscript operator to initialize a vector element.
-   // Only a single vector matrix element is accessed!
+   // Only a single sparse vector element is accessed!
    a[0] = 1.0;
 
    // Initialization of a vector element via another vector element.
@@ -776,6 +787,30 @@ inline std::ostream& operator<<( std::ostream& os, const VectorAccessProxy<VT>& 
 /*!\name VectorAccessProxy global functions */
 //@{
 template< typename VT >
+inline typename TransExprTrait< typename VT::ElementType >::Type
+   trans( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline typename AbsExprTrait< typename VT::ElementType >::Type
+   abs( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline typename ConjExprTrait< typename VT::ElementType >::Type
+   conj( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline typename CTransExprTrait< typename VT::ElementType >::Type
+   ctrans( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline typename RealExprTrait< typename VT::ElementType >::Type
+   real( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline typename ImagExprTrait< typename VT::ElementType >::Type
+   imag( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
 inline void reset( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
@@ -783,6 +818,18 @@ inline void clear( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
 inline bool isDefault( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline bool isReal( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline bool isZero( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline bool isOne( const VectorAccessProxy<VT>& proxy );
+
+template< typename VT >
+inline bool isnan( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
 inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) /* throw() */;
@@ -793,6 +840,136 @@ inline void swap( const VectorAccessProxy<VT>& a, T& b ) /* throw() */;
 template< typename T, typename VT >
 inline void swap( T& a, const VectorAccessProxy<VT>& v ) /* throw() */;
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The transpose of the represented element.
+//
+// This function returns an expression representing the transpose of the element represented by
+// the access proxy.
+*/
+template< typename VT >
+inline typename TransExprTrait< typename VT::ElementType >::Type
+   trans( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::trans;
+
+   return trans( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the absolute value of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The absolute value of the represented element.
+//
+// This function computes the absolute value of the element represented by the access proxy. In
+// case the access proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the absolute values of the elements of the vector/matrix.
+*/
+template< typename VT >
+inline typename AbsExprTrait< typename VT::ElementType >::Type
+   abs( const VectorAccessProxy<VT>& proxy )
+{
+   using std::abs;
+
+   return abs( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the access proxy.
+// In case the access proxy represents a vector- or matrix-like data structure the function
+// returns an expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename VT >
+inline typename ConjExprTrait< typename VT::ElementType >::Type
+   conj( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the conjugate transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The conjugate transpose of the represented element.
+//
+// This function returns an expression representing the conjugate transpose of the element
+// represented by the access proxy.
+*/
+template< typename VT >
+inline typename CTransExprTrait< typename VT::ElementType >::Type
+   ctrans( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::ctrans;
+
+   return ctrans( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the real part of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The real part of the represented element.
+//
+// This function returns the real part of the element represented by the access proxy. In case
+// the access proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the real part of each each element of the vector/matrix.
+*/
+template< typename VT >
+inline typename RealExprTrait< typename VT::ElementType >::Type
+   real( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::real;
+
+   return real( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the imaginary part of the represented element.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return The imaginary part of the represented element.
+//
+// This function returns the imaginary part of the element represented by the access proxy. In
+// case the access proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the real part of each each element of the vector/matrix.
+*/
+template< typename VT >
+inline typename ImagExprTrait< typename VT::ElementType >::Type
+   imag( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::imag;
+
+   return imag( proxy.get() );
+}
 //*************************************************************************************************
 
 
@@ -846,6 +1023,88 @@ inline bool isDefault( const VectorAccessProxy<VT>& proxy )
    using blaze::isDefault;
 
    return isDefault( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the vector element represents a real number.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return \a true in case the vector element represents a real number, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the a
+// real number. In case the element is of built-in type, the function returns \a true. In case
+// the element is of complex type, the function returns \a true if the imaginary part is equal
+// to 0. Otherwise it returns \a false.
+*/
+template< typename VT >
+inline bool isReal( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::isReal;
+
+   return isReal( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 0.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is 0, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the numeric
+// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT >
+inline bool isZero( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::isZero;
+
+   return isZero( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 1.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is 1, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy represents the numeric
+// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT >
+inline bool isOne( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::isOne;
+
+   return isOne( proxy.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is not a number.
+// \ingroup math
+//
+// \param proxy The given access proxy.
+// \return \a true in case the represented element is in not a number, \a false otherwise.
+//
+// This function checks whether the element represented by the access proxy is not a number (NaN).
+// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT >
+inline bool isnan( const VectorAccessProxy<VT>& proxy )
+{
+   using blaze::isnan;
+
+   return isnan( proxy.get() );
 }
 //*************************************************************************************************
 
