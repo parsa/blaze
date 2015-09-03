@@ -4315,6 +4315,34 @@ void DenseTest::testIterator()
       LT lower( 3UL );
       lower(2,0) = 3;
 
+      // Testing the Iterator default constructor
+      {
+         test_ = "Row-major Iterator default constructor";
+
+         Iterator it = Iterator();
+
+         if( it != Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Row-major ConstIterator default constructor";
+
+         ConstIterator it = ConstIterator();
+
+         if( it != ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Testing conversion from Iterator to ConstIterator
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
@@ -4761,6 +4789,34 @@ void DenseTest::testIterator()
 
       OLT lower( 3UL );
       lower(2,0) = 3;
+
+      // Testing the Iterator default constructor
+      {
+         test_ = "Column-major Iterator default constructor";
+
+         Iterator it = Iterator();
+
+         if( it != Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Column-major ConstIterator default constructor";
+
+         ConstIterator it = ConstIterator();
+
+         if( it != ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       // Testing conversion from Iterator to ConstIterator
       {
