@@ -6201,6 +6201,34 @@ void DenseTest::testIterator()
       diag(1,1) = -2;
       diag(2,2) =  3;
 
+      // Testing the Iterator default constructor
+      {
+         test_ = "Row-major Iterator default constructor";
+
+         Iterator it = Iterator();
+
+         if( it != Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Row-major ConstIterator default constructor";
+
+         ConstIterator it = ConstIterator();
+
+         if( it != ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Testing conversion from Iterator to ConstIterator
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
@@ -6640,9 +6668,37 @@ void DenseTest::testIterator()
       diag(1,1) = -2;
       diag(2,2) =  3;
 
+      // Testing the Iterator default constructor
+      {
+         test_ = "Column-major Iterator default constructor";
+
+         Iterator it = Iterator();
+
+         if( it != Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "Column-major ConstIterator default constructor";
+
+         ConstIterator it = ConstIterator();
+
+         if( it != ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // Testing conversion from Iterator to ConstIterator
       {
-         test_ = "Row-major Iterator/ConstIterator conversion";
+         test_ = "Column-major Iterator/ConstIterator conversion";
 
          ConstIterator it( begin( diag, 1UL ) );
 
@@ -6656,7 +6712,7 @@ void DenseTest::testIterator()
 
       // Counting the number of elements in 0th row via Iterator
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction";
 
          const size_t number( end( diag, 0UL ) - begin( diag, 0UL ) );
 
@@ -6673,7 +6729,7 @@ void DenseTest::testIterator()
 
       // Counting the number of elements in 1st row via ConstIterator
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Column-major ConstIterator subtraction";
 
          const size_t number( cend( diag, 1UL ) - cbegin( diag, 1UL ) );
 
@@ -6690,7 +6746,7 @@ void DenseTest::testIterator()
 
       // Testing read-only access via ConstIterator
       {
-         test_ = "Row-major read-only access via ConstIterator";
+         test_ = "Column-major read-only access via ConstIterator";
 
          ConstIterator it ( cbegin( diag, 2UL ) );
          ConstIterator end( cend( diag, 2UL ) );
@@ -6786,7 +6842,7 @@ void DenseTest::testIterator()
 
       // Testing assignment to diagonal elements via Iterator
       {
-         test_ = "Row-major assignment to diagonal elements via Iterator";
+         test_ = "Column-major assignment to diagonal elements via Iterator";
 
          const Iterator it = begin( diag, 0UL );
          *it = 4;
@@ -6806,7 +6862,7 @@ void DenseTest::testIterator()
 
       // Testing assignment to lower elements via Iterator
       {
-         test_ = "Row-major assignment to lower elements via Iterator";
+         test_ = "Column-major assignment to lower elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 1UL );
@@ -6824,7 +6880,7 @@ void DenseTest::testIterator()
 
       // Testing assignment to upper elements via Iterator
       {
-         test_ = "Row-major assignment to upper elements via Iterator";
+         test_ = "Column-major assignment to upper elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 0UL ) + 1UL;
@@ -6842,7 +6898,7 @@ void DenseTest::testIterator()
 
       // Testing addition assignment to diagonal elements via Iterator
       {
-         test_ = "Row-major addition assignment to diagonal elements via Iterator";
+         test_ = "Column-major addition assignment to diagonal elements via Iterator";
 
          const Iterator it = begin( diag, 1UL ) + 1UL;
          *it += 3;
@@ -6862,7 +6918,7 @@ void DenseTest::testIterator()
 
       // Testing addition assignment to lower elements via Iterator
       {
-         test_ = "Row-major addition assignment to lower elements via Iterator";
+         test_ = "Column-major addition assignment to lower elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 2UL );
@@ -6880,7 +6936,7 @@ void DenseTest::testIterator()
 
       // Testing addition assignment to upper elements via Iterator
       {
-         test_ = "Row-major addition assignment to upper elements via Iterator";
+         test_ = "Column-major addition assignment to upper elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 0UL ) + 2UL;
@@ -6898,7 +6954,7 @@ void DenseTest::testIterator()
 
       // Testing subtraction assignment to diagonal elements via Iterator
       {
-         test_ = "Row-major subtraction assignment to diagonal elements via Iterator";
+         test_ = "Column-major subtraction assignment to diagonal elements via Iterator";
 
          const Iterator it = begin( diag, 2UL ) + 2UL;
          *it -= 4;
@@ -6918,7 +6974,7 @@ void DenseTest::testIterator()
 
       // Testing subtraction assignment to lower elements via Iterator
       {
-         test_ = "Row-major subtraction assignment to lower elements via Iterator";
+         test_ = "Column-major subtraction assignment to lower elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 2UL ) + 1UL;
@@ -6936,7 +6992,7 @@ void DenseTest::testIterator()
 
       // Testing subtraction assignment to upper elements via Iterator
       {
-         test_ = "Row-major subtraction assignment to upper elements via Iterator";
+         test_ = "Column-major subtraction assignment to upper elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 1UL ) + 2UL;
@@ -6954,7 +7010,7 @@ void DenseTest::testIterator()
 
       // Testing multiplication assignment to diagonal elements via Iterator
       {
-         test_ = "Row-major multiplication assignment to diagonal elements via Iterator";
+         test_ = "Column-major multiplication assignment to diagonal elements via Iterator";
 
          const Iterator it = begin( diag, 0UL );
          *it *= 2;
@@ -6974,7 +7030,7 @@ void DenseTest::testIterator()
 
       // Testing multiplication assignment to lower elements via Iterator
       {
-         test_ = "Row-major multiplication assignment to lower elements via Iterator";
+         test_ = "Column-major multiplication assignment to lower elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 1UL );
@@ -6992,7 +7048,7 @@ void DenseTest::testIterator()
 
       // Testing multiplication assignment to upper elements via Iterator
       {
-         test_ = "Row-major multiplication assignment to upper elements via Iterator";
+         test_ = "Column-major multiplication assignment to upper elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 0UL ) + 1UL;
@@ -7010,7 +7066,7 @@ void DenseTest::testIterator()
 
       // Testing division assignment to diagonal elements via Iterator
       {
-         test_ = "Row-major division assignment to diagonal elements via Iterator";
+         test_ = "Column-major division assignment to diagonal elements via Iterator";
 
          const Iterator it = begin( diag, 0UL );
          *it /= 4;
@@ -7030,7 +7086,7 @@ void DenseTest::testIterator()
 
       // Testing division assignment to lower elements via Iterator
       {
-         test_ = "Row-major division assignment to lower elements via Iterator";
+         test_ = "Column-major division assignment to lower elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 2UL );
@@ -7048,7 +7104,7 @@ void DenseTest::testIterator()
 
       // Testing division assignment to upper elements via Iterator
       {
-         test_ = "Row-major division assignment to upper elements via Iterator";
+         test_ = "Column-major division assignment to upper elements via Iterator";
 
          try {
             const Iterator it = begin( diag, 0UL ) + 2UL;
