@@ -1167,6 +1167,34 @@ void AlignedTest::testIterator()
 
    initialize();
 
+   // Testing the Iterator default constructor
+   {
+      test_ = "Iterator default constructor";
+
+      ASVT::Iterator it = ASVT::Iterator();
+
+      if( it != ASVT::Iterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Testing the ConstIterator default constructor
+   {
+      test_ = "ConstIterator default constructor";
+
+      ASVT::ConstIterator it = ASVT::ConstIterator();
+
+      if( it != ASVT::ConstIterator() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed iterator default constructor\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    // Testing conversion from Iterator to ConstIterator
    {
       test_ = "Iterator/ConstIterator conversion";
