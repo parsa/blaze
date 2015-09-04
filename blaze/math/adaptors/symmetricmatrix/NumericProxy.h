@@ -982,16 +982,16 @@ template< typename MT >
 inline bool isDefault( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isReal( const MatrixAccessProxy<MT>& proxy );
+inline bool isReal( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isZero( const MatrixAccessProxy<MT>& proxy );
+inline bool isZero( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isOne( const MatrixAccessProxy<MT>& proxy );
+inline bool isOne( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const MatrixAccessProxy<MT>& proxy );
+inline bool isnan( const NumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 
