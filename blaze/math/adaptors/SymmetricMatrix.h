@@ -61,12 +61,14 @@
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/Unused.h>
 #include <blaze/util/valuetraits/IsTrue.h>
 
