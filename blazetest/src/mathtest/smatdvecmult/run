@@ -42,6 +42,11 @@ EXE=$PATH_SMATDVECMULT/DCaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then e
 EXE=$PATH_SMATDVECMULT/DCbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATDVECMULT/DCbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_SMATDVECMULT/HCaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/HCaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/HCbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATDVECMULT/HCbVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_SMATDVECMULT/LCaVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATDVECMULT/LCaVDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATDVECMULT/LCbVDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

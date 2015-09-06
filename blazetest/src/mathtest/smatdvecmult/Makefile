@@ -50,12 +50,13 @@ default: MCaV3a MCaV3b MCbV3a MCbV3b \
          MCaVHa MCaVHb MCbVHa MCbVHb \
          MCaVDa MCaVDb MCbVDa MCbVDb \
          SCaVDa SCaVDb SCbVDa SCbVDb \
+         HCaVDa HCaVDb HCbVDa HCbVDb \
          LCaVDa LCaVDb LCbVDa LCbVDb \
          UCaVDa UCaVDb UCbVDa UCbVDb \
          DCaVDa DCaVDb DCbVDa DCbVDb \
          AliasingTest
 all: $(BIN)
-essential: MCaV3a MCaVHa MCaVDa SCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
+essential: MCaV3a MCaVHa MCaVDa SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
 single: MCaVDa
 
 
@@ -67,6 +68,15 @@ DCaVDb: DCaVDb.o
 DCbVDa: DCbVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCbVDb: DCbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+HCaVDa: HCaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCaVDb: HCaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCbVDa: HCbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCbVDb: HCbVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 LCaVDa: LCaVDa.o
