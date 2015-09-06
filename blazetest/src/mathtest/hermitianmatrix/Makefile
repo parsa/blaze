@@ -62,6 +62,8 @@ SparseComplexTest: SparseComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseRealTest: SparseRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SubmatrixComplexTest: SubmatrixComplexTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SubmatrixRealTest: SubmatrixRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
