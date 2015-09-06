@@ -42,6 +42,7 @@
 
 #include <blazetest/mathtest/creator/Complex.h>
 #include <blazetest/mathtest/creator/CompressedDiagonal.h>
+#include <blazetest/mathtest/creator/CompressedHermitian.h>
 #include <blazetest/mathtest/creator/CompressedLower.h>
 #include <blazetest/mathtest/creator/CompressedMatrix.h>
 #include <blazetest/mathtest/creator/CompressedStrictlyLower.h>
