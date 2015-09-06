@@ -52,6 +52,7 @@
 #include <blaze/math/Epsilon.h>
 #include <blaze/math/Functions.h>
 #include <blaze/math/Infinity.h>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>
 #include <blaze/math/LowerMatrix.h>
