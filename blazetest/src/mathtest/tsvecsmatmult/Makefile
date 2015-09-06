@@ -48,12 +48,13 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: VCaMCa VCaMCb VCbMCa VCbMCb \
          VCaSCa VCaSCb VCbSCa VCbSCb \
+         VCaHCa VCaHCb VCbHCa VCbHCb \
          VCaLCa VCaLCb VCbLCa VCbLCb \
          VCaUCa VCaUCb VCbUCa VCbUCb \
          VCaDCa VCaDCb VCbDCa VCbDCb \
          AliasingTest
 all: $(BIN)
-essential: VCaMCa VCaSCa VCaLCa VCaUCa VCaDCa AliasingTest
+essential: VCaMCa VCaSCa VCaHCa VCaLCa VCaUCa VCaDCa AliasingTest
 single: VCaMCa
 
 
@@ -61,6 +62,10 @@ single: VCaMCa
 VCaDCa: VCaDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaDCb: VCaDCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaHCa: VCaHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaHCb: VCaHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaLCa: VCaLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -82,6 +87,10 @@ VCaUCb: VCaUCb.o
 VCbDCa: VCbDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbDCb: VCbDCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbHCa: VCbHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbHCb: VCbHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbLCa: VCbLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
