@@ -1,5 +1,6 @@
 *.d
 *.o
+ColumnRealTest
 DenseComplexTest
 DenseRealTest
 RowComplexTest

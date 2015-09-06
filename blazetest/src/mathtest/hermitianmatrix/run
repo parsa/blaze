@@ -45,3 +45,4 @@ EXE=$PATH_HERMITIANMATRIX/SubmatrixRealTest;    if [ -x $EXE ]; then $EXE; if [ 
 EXE=$PATH_HERMITIANMATRIX/SubmatrixComplexTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/RowRealTest;          if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/RowComplexTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/ColumnRealTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
