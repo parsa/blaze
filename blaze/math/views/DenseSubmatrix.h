@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -1645,7 +1646,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -1753,7 +1755,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -2246,7 +2249,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline bool DenseSubmatrix<MT,AF,SO>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
@@ -4265,7 +4268,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -4373,7 +4377,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -4850,7 +4855,7 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::sca
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,unaligned,true>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
@@ -6517,7 +6522,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -6625,7 +6631,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -7119,7 +7126,7 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::scale
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,false>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
@@ -8752,7 +8759,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -8860,7 +8868,8 @@ inline typename DisableIf< And< IsRestricted<MT>, RequiresEvaluation<MT2> >
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
 
-   if( ( IsSymmetric<MT>::value && hasOverlap() ) || (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+       (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -9337,7 +9346,7 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::scale( 
 template< typename MT >  // Type of the dense matrix
 inline bool DenseSubmatrix<MT,aligned,true>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
