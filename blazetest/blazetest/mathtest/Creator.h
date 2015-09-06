@@ -63,6 +63,7 @@
 #include <blazetest/mathtest/creator/DynamicUpper.h>
 #include <blazetest/mathtest/creator/DynamicVector.h>
 #include <blazetest/mathtest/creator/HybridDiagonal.h>
+#include <blazetest/mathtest/creator/HybridHermitian.h>
 #include <blazetest/mathtest/creator/HybridLower.h>
 #include <blazetest/mathtest/creator/HybridMatrix.h>
 #include <blazetest/mathtest/creator/HybridStrictlyLower.h>
