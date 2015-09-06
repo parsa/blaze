@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatsmatmult/SUDaSCa.cpp
-//  \brief Source file for the SUDaSCa dense matrix/sparse matrix multiplication math test
+//  \file src/mathtest/dmatsmatmult/HDbUCb.cpp
+//  \brief Source file for the HDbUCb dense matrix/sparse matrix multiplication math test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -41,8 +41,8 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/StrictlyUpperMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/HermitianMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatsmatmult/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -57,34 +57,34 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SUDaSCa'..." << std::endl;
+   std::cout << "   Running 'HDbUCb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<TypeA> >  SUDa;
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeA> >   SCa;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeB> >  HDb;
+      typedef blaze::UpperMatrix< blaze::CompressedMatrix<TypeB> >   UCb;
 
       // Creator type definitions
-      typedef blazetest::Creator<SUDa>  CSUDa;
-      typedef blazetest::Creator<SCa>   CSCa;
+      typedef blazetest::Creator<HDb>  CHDb;
+      typedef blazetest::Creator<UCb>  CUCb;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_DMATSMATMULT_OPERATION_TEST( CSUDa( i ), CSCa( i, j ) );
+         for( size_t j=0UL; j<=UCb::maxNonZeros( i ); ++j ) {
+            RUN_DMATSMATMULT_OPERATION_TEST( CHDb( i ), CUCb( i, j ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa(  31UL ), CSCa(  31UL,  7UL ) );
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa(  67UL ), CSCa(  67UL,  7UL ) );
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa( 127UL ), CSCa( 127UL, 13UL ) );
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa(  32UL ), CSCa(  32UL,  8UL ) );
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa(  64UL ), CSCa(  64UL,  8UL ) );
-      RUN_DMATSMATMULT_OPERATION_TEST( CSUDa( 128UL ), CSCa( 128UL, 16UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb(  31UL ), CUCb(  31UL,  7UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb(  67UL ), CUCb(  67UL,  7UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb( 127UL ), CUCb( 127UL, 13UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb(  32UL ), CUCb(  32UL,  8UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb(  64UL ), CUCb(  64UL,  8UL ) );
+      RUN_DMATSMATMULT_OPERATION_TEST( CHDb( 128UL ), CUCb( 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/sparse matrix multiplication:\n"
