@@ -4,4 +4,5 @@ DenseComplexTest
 DenseRealTest
 SparseComplexTest
 SparseRealTest
+SubmatrixRealTest
 
