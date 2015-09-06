@@ -58,6 +58,8 @@ DenseComplexTest: DenseComplexTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseRealTest: DenseRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseRealTest: SparseRealTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
