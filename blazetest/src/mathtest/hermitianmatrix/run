@@ -40,3 +40,4 @@ echo " Running HermitianMatrix tests..."
 EXE=$PATH_HERMITIANMATRIX/DenseRealTest;        if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/DenseComplexTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_HERMITIANMATRIX/SparseRealTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_HERMITIANMATRIX/SparseComplexTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
