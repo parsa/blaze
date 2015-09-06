@@ -2,6 +2,7 @@
 *.o
 DenseComplexTest
 DenseRealTest
+RowRealTest
 SparseComplexTest
 SparseRealTest
 SubmatrixComplexTest
