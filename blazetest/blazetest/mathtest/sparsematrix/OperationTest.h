@@ -65,6 +65,11 @@ namespace sparsematrix {
 */
 class OperationTest
 {
+ private:
+   //**Type definitions****************************************************************************
+   typedef blaze::complex<int>  cplx;  //!< Complex element type.
+   //**********************************************************************************************
+
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */

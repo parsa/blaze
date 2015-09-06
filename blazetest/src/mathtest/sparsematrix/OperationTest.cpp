@@ -42,6 +42,7 @@
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DiagonalMatrix.h>
+#include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/StrictlyLowerMatrix.h>
 #include <blaze/math/StrictlyUpperMatrix.h>
@@ -581,6 +582,135 @@ void OperationTest::testIsSymmetric()
          checkNonZeros( mat, 2UL, 2UL );
 
          if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isSymmetric() (Hermitian matrix)";
+
+      // Default Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // General Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSymmetric evaluation\n"
@@ -1268,6 +1398,135 @@ void OperationTest::testIsSymmetric()
 
 
    //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isSymmetric() (Hermitian matrix)";
+
+      // Default Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // General Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isSymmetric( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSymmetric evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major lower matrix tests
    //=====================================================================================
 
@@ -1717,9 +1976,6 @@ void OperationTest::testIsSymmetric()
 */
 void OperationTest::testIsHermitian()
 {
-   using blaze::complex;
-
-
    //=====================================================================================
    // Row-major general matrix tests
    //=====================================================================================
@@ -1729,7 +1985,7 @@ void OperationTest::testIsHermitian()
 
       // Non-square matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 2UL, 3UL );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 3UL );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -1749,7 +2005,7 @@ void OperationTest::testIsHermitian()
 
       // Default initialized matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1770,8 +2026,8 @@ void OperationTest::testIsHermitian()
 
       // Non-real diagonal element
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
-         mat(1,1).imag( 1.0 );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL, 1UL );
+         mat(1,1).imag( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1792,11 +2048,11 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (additional element in the lower part)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).real( 4.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,0).real( 4 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1817,11 +2073,11 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (additional element in the upper part)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).real( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL, 4UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1842,12 +2098,12 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (invalid pair of elements)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).imag( 4.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL, 5UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,0).imag( 4 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1868,12 +2124,12 @@ void OperationTest::testIsHermitian()
 
       // Hermitian matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
-         mat(0,0).real(  1.0 );
-         mat(0,2).imag(  4.0 );
-         mat(1,1).real(  2.0 );
-         mat(2,0).imag( -4.0 );
-         mat(2,2).real(  3.0 );
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 3UL, 7UL );
+         mat(0,0).real(  1 );
+         mat(0,2).imag(  4 );
+         mat(1,1).real(  2 );
+         mat(2,0).imag( -4 );
+         mat(2,2).real(  3 );
          mat.insert( 0UL, 1UL, 0 );
          mat.insert( 1UL, 0UL, 0 );
 
@@ -1905,7 +2161,7 @@ void OperationTest::testIsHermitian()
 
       // Default symmetric matrix
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1926,10 +2182,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal symmetric matrix
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -1975,11 +2231,11 @@ void OperationTest::testIsHermitian()
 
       // Symmetric matrix (complex data type)
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2001,6 +2257,135 @@ void OperationTest::testIsHermitian()
 
 
    //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isHermitian() (Hermitian matrix)";
+
+      // Default Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // General Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major lower matrix tests
    //=====================================================================================
 
@@ -2009,7 +2394,7 @@ void OperationTest::testIsHermitian()
 
       // Default lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2030,10 +2415,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2054,12 +2439,12 @@ void OperationTest::testIsHermitian()
 
       // Lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,0).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).imag( 5.0 );
-         mat(2,2).real( 3.0 );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,0).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,0).imag( 5 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2089,7 +2474,7 @@ void OperationTest::testIsHermitian()
 
       // Default unilower matrix
       {
-         blaze::UniLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2110,9 +2495,9 @@ void OperationTest::testIsHermitian()
 
       // Unilower matrix
       {
-         blaze::UniLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(1,0).imag( 4.0 );
-         mat(2,0).imag( 5.0 );
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(1,0).imag( 4 );
+         mat(2,0).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2142,7 +2527,7 @@ void OperationTest::testIsHermitian()
 
       // Default strictly lower matrix
       {
-         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2163,9 +2548,9 @@ void OperationTest::testIsHermitian()
 
       // Strictly lower matrix
       {
-         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(1,0).imag( 4.0 );
-         mat(2,0).imag( 5.0 );
+         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(1,0).imag( 4 );
+         mat(2,0).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2195,7 +2580,7 @@ void OperationTest::testIsHermitian()
 
       // Default upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2216,10 +2601,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2240,12 +2625,12 @@ void OperationTest::testIsHermitian()
 
       // Upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(1,2).imag( 5.0 );
-         mat(2,2).real( 1.0 );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(1,2).imag( 5 );
+         mat(2,2).real( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2275,7 +2660,7 @@ void OperationTest::testIsHermitian()
 
       // Default uniupper matrix
       {
-         blaze::UniUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2296,9 +2681,9 @@ void OperationTest::testIsHermitian()
 
       // Uniupper matrix
       {
-         blaze::UniUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,2).imag( 4.0 );
-         mat(1,2).imag( 5.0 );
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+         mat(1,2).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2328,7 +2713,7 @@ void OperationTest::testIsHermitian()
 
       // Default strictly upper matrix
       {
-         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2349,9 +2734,9 @@ void OperationTest::testIsHermitian()
 
       // Strictly upper matrix
       {
-         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,2) = 4;
-         mat(1,2) = 5;
+         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+         mat(1,2).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2381,7 +2766,7 @@ void OperationTest::testIsHermitian()
 
       // Default diagonal matrix
       {
-         blaze::DiagonalMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2402,10 +2787,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal matrix
       {
-         blaze::DiagonalMatrix< blaze::CompressedMatrix<complex<double>,blaze::rowMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2435,7 +2820,7 @@ void OperationTest::testIsHermitian()
 
       // Non-square matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 2UL, 3UL );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 2UL, 3UL );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -2455,7 +2840,7 @@ void OperationTest::testIsHermitian()
 
       // Default initialized matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2476,8 +2861,8 @@ void OperationTest::testIsHermitian()
 
       // Non-real diagonal element
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
-         mat(1,1).imag( 1.0 );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL, 1UL );
+         mat(1,1).imag( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2498,11 +2883,11 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (additional element in the lower part)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).real( 4.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,0).real( 4 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2523,11 +2908,11 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (additional element in the upper part)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).real( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL, 4UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2548,12 +2933,12 @@ void OperationTest::testIsHermitian()
 
       // Non-Hermitian matrix (invalid pair of elements)
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).imag( 4.0 );
-         mat(2,2).real( 3.0 );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,0).imag( 4 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2574,12 +2959,12 @@ void OperationTest::testIsHermitian()
 
       // Hermitian matrix
       {
-         blaze::CompressedMatrix<complex<double>,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
-         mat(0,0).real(  1.0 );
-         mat(0,2).imag(  4.0 );
-         mat(1,1).real(  2.0 );
-         mat(2,0).imag( -4.0 );
-         mat(2,2).real(  3.0 );
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 3UL, 3UL, 5UL );
+         mat(0,0).real(  1 );
+         mat(0,2).imag(  4 );
+         mat(1,1).real(  2 );
+         mat(2,0).imag( -4 );
+         mat(2,2).real(  3 );
          mat.insert( 0UL, 1UL, 0 );
          mat.insert( 1UL, 0UL, 0 );
 
@@ -2611,7 +2996,7 @@ void OperationTest::testIsHermitian()
 
       // Default symmetric matrix
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2632,10 +3017,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal symmetric matrix (non-real element)
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).imag( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).imag( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2681,11 +3066,11 @@ void OperationTest::testIsHermitian()
 
       // Symmetric matrix (complex data type)
       {
-         blaze::SymmetricMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2707,6 +3092,135 @@ void OperationTest::testIsHermitian()
 
 
    //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isHermitian() (Hermitian matrix)";
+
+      // Default Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (built-in data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat( 3UL );
+         mat(0,0) = 1;
+         mat(0,2) = 4;
+         mat(1,1) = 2;
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Default Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Symmetric Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).real( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // General Hermitian matrix (complex data type)
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isHermitian( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isHermitian evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major lower matrix tests
    //=====================================================================================
 
@@ -2715,7 +3229,7 @@ void OperationTest::testIsHermitian()
 
       // Default lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2736,10 +3250,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2760,12 +3274,12 @@ void OperationTest::testIsHermitian()
 
       // Lower matrix
       {
-         blaze::LowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,0).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,0).imag( 5.0 );
-         mat(2,2).real( 3.0 );
+         blaze::LowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,0).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,0).imag( 5 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2795,7 +3309,7 @@ void OperationTest::testIsHermitian()
 
       // Default unilower matrix
       {
-         blaze::UniLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2816,9 +3330,9 @@ void OperationTest::testIsHermitian()
 
       // Unilower matrix
       {
-         blaze::UniLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(1,0).imag( 4.0 );
-         mat(2,0).imag( 5.0 );
+         blaze::UniLowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(1,0).imag( 4 );
+         mat(2,0).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2848,7 +3362,7 @@ void OperationTest::testIsHermitian()
 
       // Default strictly lower matrix
       {
-         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2869,9 +3383,9 @@ void OperationTest::testIsHermitian()
 
       // Strictly lower matrix
       {
-         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(1,0).imag( 4.0 );
-         mat(2,0).imag( 5.0 );
+         blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(1,0).imag( 4 );
+         mat(2,0).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2901,7 +3415,7 @@ void OperationTest::testIsHermitian()
 
       // Default upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2922,10 +3436,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2946,12 +3460,12 @@ void OperationTest::testIsHermitian()
 
       // Upper matrix
       {
-         blaze::UpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(0,2).imag( 4.0 );
-         mat(1,1).real( 2.0 );
-         mat(1,2).imag( 5.0 );
-         mat(2,2).real( 1.0 );
+         blaze::UpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(1,2).imag( 5 );
+         mat(2,2).real( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -2981,7 +3495,7 @@ void OperationTest::testIsHermitian()
 
       // Default uniupper matrix
       {
-         blaze::UniUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3002,9 +3516,9 @@ void OperationTest::testIsHermitian()
 
       // Uniupper matrix
       {
-         blaze::UniUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,2).imag( 4.0 );
-         mat(1,2).imag( 5.0 );
+         blaze::UniUpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+         mat(1,2).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3034,7 +3548,7 @@ void OperationTest::testIsHermitian()
 
       // Default strictly upper matrix
       {
-         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3055,9 +3569,9 @@ void OperationTest::testIsHermitian()
 
       // Strictly upper matrix
       {
-         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,2) = 4;
-         mat(1,2) = 5;
+         blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+         mat(1,2).imag( 5 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3087,7 +3601,7 @@ void OperationTest::testIsHermitian()
 
       // Default diagonal matrix
       {
-         blaze::DiagonalMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3108,10 +3622,10 @@ void OperationTest::testIsHermitian()
 
       // Diagonal matrix
       {
-         blaze::DiagonalMatrix< blaze::CompressedMatrix<complex<double>,blaze::columnMajor> > mat( 3UL );
-         mat(0,0).real( 1.0 );
-         mat(1,1).real( 2.0 );
-         mat(2,2).real( 3.0 );
+         blaze::DiagonalMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -3461,6 +3975,59 @@ void OperationTest::testIsUniform()
          checkNonZeros( mat, 0UL, 3UL );
          checkNonZeros( mat, 1UL, 3UL );
          checkNonZeros( mat, 2UL, 3UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniform() (Hermitian matrix)";
+
+      // Uniform Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
 
          if( isUniform( mat ) != false ) {
             std::ostringstream oss;
@@ -4208,6 +4775,59 @@ void OperationTest::testIsUniform()
 
 
    //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniform() (Hermitian matrix)";
+
+      // Uniform Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniform( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-uniform Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,2).imag( 4 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 2UL );
+         checkNonZeros( mat, 2UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniform( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major lower matrix tests
    //=====================================================================================
 
@@ -4816,6 +5436,87 @@ void OperationTest::testIsLower()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -5466,6 +6167,87 @@ void OperationTest::testIsLower()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -6206,6 +6988,112 @@ void OperationTest::testIsUniLower()
          mat(0,2) = 2;
          mat(1,1) = 1;
          mat(2,2) = 1;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 2 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -7085,6 +7973,112 @@ void OperationTest::testIsUniLower()
 
 
    //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::SymmetricMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 2 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major lower matrix tests
    //=====================================================================================
 
@@ -7898,6 +8892,87 @@ void OperationTest::testIsStrictlyLower()
 
 
    //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major lower matrix tests
    //=====================================================================================
 
@@ -8595,6 +9670,87 @@ void OperationTest::testIsStrictlyLower()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyLower() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyLower( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyLower( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyLower evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -9328,6 +10484,87 @@ void OperationTest::testIsUpper()
 
 
    //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major lower matrix tests
    //=====================================================================================
 
@@ -9956,6 +11193,87 @@ void OperationTest::testIsUpper()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -10696,6 +12014,112 @@ void OperationTest::testIsUniUpper()
          mat(0,2) = 2;
          mat(1,1) = 1;
          mat(2,2) = 1;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isUniUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 2 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -11575,6 +12999,112 @@ void OperationTest::testIsUniUpper()
 
 
    //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isUniUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 2 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isUniUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major lower matrix tests
    //=====================================================================================
 
@@ -12388,6 +13918,87 @@ void OperationTest::testIsStrictlyUpper()
 
 
    //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isStrictlyUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major lower matrix tests
    //=====================================================================================
 
@@ -13085,6 +14696,87 @@ void OperationTest::testIsStrictlyUpper()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isStrictlyUpper() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isStrictlyUpper( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isStrictlyUpper( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isStrictlyUpper evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -13815,6 +15507,87 @@ void OperationTest::testIsDiagonal()
 
 
    //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isDiagonal() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major lower matrix tests
    //=====================================================================================
 
@@ -14441,6 +16214,87 @@ void OperationTest::testIsDiagonal()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isDiagonal( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isDiagonal() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isDiagonal( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDiagonal evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -15175,6 +17029,112 @@ void OperationTest::testIsIdentity()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isIdentity() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
@@ -15972,6 +17932,112 @@ void OperationTest::testIsIdentity()
          mat(0,2) = 4;
          mat(1,1) = 2;
          mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major Hermitian matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isIdentity() (Hermitian matrix)";
+
+      // Default Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Identity Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 1 );
+         mat(2,2).real( 1 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Diagonal Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isIdentity( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Hermitian matrix
+      {
+         blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> > mat( 3UL );
+         mat(0,0).real( 1 );
+         mat(0,2).imag( 4 );
+         mat(1,1).real( 2 );
+         mat(2,2).real( 3 );
 
          checkRows    ( mat, 3UL );
          checkColumns ( mat, 3UL );
