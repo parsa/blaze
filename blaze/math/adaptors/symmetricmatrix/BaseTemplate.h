@@ -114,6 +114,44 @@ namespace blaze {
 // will also be a column-major matrix.
 //
 //
+// \n \section symmetricmatrix_vs_hermitianmatrix Symmetric Matrices vs. Hermitian Matrices
+//
+// The blaze::SymmetricMatrix adaptor and the blaze::HermitianMatrix adaptor share several traits.
+// However, there are a couple of differences, both from a mathematical point of view as well as
+// from an implementation point of view.
+//
+// From a mathematical point of view, a matrix is called symmetric when it is equal to its
+// transpose (\f$ A = A^T \f$) and it is called Hermitian when it is equal to its conjugate
+// transpose (\f$ A = \overline{A^T} \f$). For matrices of real values, however, these two
+// conditions coincide, which means that symmetric matrices of real values are also Hermitian
+// and Hermitian matrices of real values are also symmetric.
+//
+// From an implementation point of view, \b Blaze restricts Hermitian matrices to numeric data
+// types (i.e. all integral types except \a bool, floating point and complex types), whereas
+// symmetric matrices can also be block structured (i.e. can have vector or matrix elements).
+// For built-in element types, the HermitianMatrix adaptor behaves exactly like the according
+// SymmetricMatrix implementation. For complex element types, however, the Hermitian property
+// is enforced (see also \ref Hermitianmatrix_hermitian).
+
+	\code
+	using blaze::DynamicMatrix;
+	using blaze::DynamicVector;
+	using blaze::HermitianMatrix;
+	using blaze::SymmetricMatrix;
+
+	// The following two matrices provide an identical experience (including performance)
+	SymmetricMatrix< DynamicMatrix<double> > A;  // Both Hermitian and symmetric
+	HermitianMatrix< DynamicMatrix<double> > B;  // Both Hermitian and symmetric
+
+	// The following two matrices will behave differently
+	SymmetricMatrix< DynamicMatrix< complex<double> > > C;  // Only symmetric
+	HermitianMatrix< DynamicMatrix< complex<double> > > D;  // Only Hermitian
+
+	// Block-structured Hermitian matrices are not allowed
+	SymmetricMatrix< DynamicMatrix< DynamicVector<double> > > E;  // Block-structured symmetric matrix
+	HermitianMatrix< DynamicMatrix< DynamicVector<double> > > F;  // Compilation error!
+	\endcode
+
 // \n \section symmetricmatrix_special_properties Special Properties of Symmetric Matrices
 //
 // A symmetric matrix is used exactly like a matrix of the underlying, adapted matrix type \a MT.
@@ -200,7 +238,7 @@ namespace blaze {
    SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-symmetric dense matrix
-   StaticMatrix<double,3UL,3UL> D(  3.0,  8.0, -2.0,
+   StaticMatrix<double,3UL,3UL> D(  3.0,  7.0, -2.0,
                                     8.0,  0.0, -1.0,
                                    -2.0, -1.0,  4.0 );
 
@@ -224,7 +262,7 @@ namespace blaze {
    //       ( 0 1 3 )
    //   A = ( 1 2 0 )
    //       ( 3 0 0 )
-
+   //
    SymmetricMatrix< CompressedMatrix<double,rowMajor> > A( 3 );
 
    A.reserve( 5 );         // Reserving enough space for 5 non-zero elements
@@ -335,10 +373,10 @@ namespace blaze {
 
 // \n \section symmetricmatrix_arithmetic_operations Arithmetic Operations
 //
-// A SymmetricMatrix matrix can participate in numerical operations in any way any other dense
-// or sparse matrix can participate. It can also be combined with any other dense or sparse vector
-// or matrix. The following code example gives an impression of the use of SymmetricMatrix within
-// arithmetic operations:
+// A SymmetricMatrix can participate in numerical operations in any way any other dense or sparse
+// matrix can participate. It can also be combined with any other dense or sparse vector or matrix.
+// The following code example gives an impression of the use of SymmetricMatrix within arithmetic
+// operations:
 
    \code
    using blaze::SymmetricMatrix;
@@ -355,8 +393,8 @@ namespace blaze {
    SymmetricMatrix< DynamicMatrix<double,rowMajor> > C( 3 );
    SymmetricMatrix< CompressedMatrix<double,rowMajor> > D( 3 );
 
-   SymmetricMatrix< HybridMatrix<float,3UL,3UL,rowMajor> > E;
-   SymmetricMatrix< StaticMatrix<float,3UL,3UL,columnMajor> > F;
+   SymmetricMatrix< HybridMatrix<double,3UL,3UL,rowMajor> > E;
+   SymmetricMatrix< StaticMatrix<double,3UL,3UL,columnMajor> > F;
 
    E = A + B;     // Matrix addition and assignment to a row-major symmetric matrix
    F = C - D;     // Matrix subtraction and assignment to a column-major symmetric matrix
@@ -448,6 +486,7 @@ namespace blaze {
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::CompressedVector;
+   using blaze::SymmetricMatrix;
    using blaze::rowMajor;
    using blaze::columnVector;
 
