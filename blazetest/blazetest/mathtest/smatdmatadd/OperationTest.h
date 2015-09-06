@@ -69,7 +69,7 @@
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/MatchAdaptor.h>
-#include <blazetest/mathtest/MatchSymmetric.h>
+#include <blazetest/mathtest/MatchSymmetry.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -129,7 +129,7 @@ class OperationTest
    typedef blaze::DynamicMatrix<ET2,false>  RT2;  //!< Reference type 2
 
    //! Reference result type
-   typedef typename MatchSymmetric< DRE, typename blaze::AddTrait<RT1,RT2>::Type >::Type  RRE;
+   typedef typename MatchSymmetry< DRE, typename blaze::AddTrait<RT1,RT2>::Type >::Type  RRE;
 
    //! Type of the matrix/matrix addition expression
    typedef typename blaze::AddExprTrait<MT1,MT2>::Type  MatMatAddExprType;

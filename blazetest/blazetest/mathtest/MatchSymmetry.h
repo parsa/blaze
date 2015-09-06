@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/MatchSymmetric.h
-//  \brief Header file for the MatchSymmetric type trait
+//  \file blazetest/mathtest/MatchSymmetry.h
+//  \brief Header file for the MatchSymmetry type trait
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_MATCHSYMMETRIC_H_
-#define _BLAZETEST_MATHTEST_MATCHSYMMETRIC_H_
+#ifndef _BLAZETEST_MATHTEST_MATCHSYMMETRY_H_
+#define _BLAZETEST_MATHTEST_MATCHSYMMETRY_H_
 
 
 //*************************************************************************************************
@@ -61,15 +61,17 @@ namespace blazetest {
 //*************************************************************************************************
 /*!\brief Matches the symmetry property of two matrix types.
 //
-// The MatchSymmetric type trait matches the symmetry property of the first matrix type \a T1 to
-// the second matrix type \a T2: In case \a T1 is a SymmetricMatrix, the resulting type \a Type
-// will be a SymmetricMatrix of \a T2. Otherwise \a Type is set to \a T2. Note that this type trait
-// only works for matrix types. The attempt to instantiate it with non-matrix types results in a
-// compile time error.
+// The MatchSymmetry type trait matches the symmetry property of the first matrix type \a T1 to
+// the second matrix type \a T2: In case \a T1 is a diagonal matrix, the resulting type \a Type
+// will be a DiagonalMatrix of \a T2. In case \a T1 is a symmetric matrix or a Hermitian matrix
+// with real element types, the resulting type \a Type will be a SymmetricMatrix of \a T2. In
+// case \a T1 is a Hermitian matrix, the resulting type \a Type will be a HermitianMatrix of
+// \a T2. Else \a Type is set to \a T2. Note that this type trait only works for matrix types.
+// The attempt to instantiate it with non-matrix types results in a compile time error.
 */
 template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
-struct MatchSymmetric
+struct MatchSymmetry
 {
  private:
    //**********************************************************************************************
