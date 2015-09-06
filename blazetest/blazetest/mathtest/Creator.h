@@ -53,6 +53,7 @@
 #include <blazetest/mathtest/creator/CompressedVector.h>
 #include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/mathtest/creator/DynamicDiagonal.h>
+#include <blazetest/mathtest/creator/DynamicHermitian.h>
 #include <blazetest/mathtest/creator/DynamicLower.h>
 #include <blazetest/mathtest/creator/DynamicMatrix.h>
 #include <blazetest/mathtest/creator/DynamicStrictlyLower.h>
