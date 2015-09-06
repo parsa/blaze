@@ -50,12 +50,13 @@ default: V3aMCa V3aMCb V3bMCa V3bMCb \
          VHaMCa VHaMCb VHbMCa VHbMCb \
          VDaMCa VDaMCb VDbMCa VDbMCb \
          VDaSCa VDaSCb VDbSCa VDbSCb \
+         VDaHCa VDaHCb VDbHCa VDbHCb \
          VDaLCa VDaLCb VDbLCa VDbLCb \
          VDaUCa VDaUCb VDbUCa VDbUCb \
          VDaDCa VDaDCb VDbDCa VDbDCb \
          AliasingTest
 all: $(BIN)
-essential: V3aMCa VHaMCa VDaMCa VDaSCa VDaLCa VDaUCa VDaDCa AliasingTest
+essential: V3aMCa VHaMCa VDaMCa VDaSCa VDaHCa VDaLCa VDaUCa VDaDCa AliasingTest
 single: VDaMCa
 
 
@@ -109,6 +110,10 @@ VDaDCa: VDaDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaDCb: VDaDCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaHCa: VDaHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaHCb: VDaHCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaLCa: VDaLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaLCb: VDaLCb.o
@@ -128,6 +133,10 @@ VDaUCb: VDaUCb.o
 VDbDCa: VDbDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbDCb: VDbDCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbHCa: VDbHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbHCb: VDbHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbLCa: VDbLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
