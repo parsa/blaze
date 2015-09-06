@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -2122,7 +2123,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline bool SparseSubmatrix<MT,AF,SO>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
@@ -2494,7 +2495,7 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO2>& rhs )
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( i, j, (~rhs)(i,j) );
          else
             append( i, j, (~rhs)(i,j), true );
@@ -2529,7 +2530,7 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,false>& rh
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( i, element->index(), element->value() );
          else
             append( i, element->index(), element->value(), true );
@@ -2579,7 +2580,7 @@ inline void SparseSubmatrix<MT,AF,SO>::assign( const SparseMatrix<MT2,true>& rhs
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<n_; ++j ) {
       for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( element->index(), j, element->value() );
          else
             append( element->index(), j, element->value(), true );
@@ -4374,7 +4375,7 @@ template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
 inline bool SparseSubmatrix<MT,AF,true>::hasOverlap() const
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value, "Unsymmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
    if( ( row_ + m_ <= column_ ) || ( column_ + n_ <= row_ ) )
       return false;
@@ -4758,7 +4759,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const DenseMatrix<MT2,SO>& rhs 
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( i, j, (~rhs)(i,j) );
          else
             append( i, j, (~rhs)(i,j), true );
@@ -4794,7 +4795,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,true>& r
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       for( typename MT2::ConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( element->index(), j, element->value() );
          else
             append( element->index(), j, element->value(), true );
@@ -4845,7 +4846,7 @@ inline void SparseSubmatrix<MT,AF,true>::assign( const SparseMatrix<MT2,false>& 
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<m_; ++i ) {
       for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         if( IsSymmetric<MT>::value )
+         if( IsSymmetric<MT>::value || IsHermitian<MT>::value )
             set( i, element->index(), element->value() );
          else
             append( i, element->index(), element->value(), true );
