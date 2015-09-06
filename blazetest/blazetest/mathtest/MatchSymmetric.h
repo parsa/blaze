@@ -42,11 +42,11 @@
 
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 
 
 namespace blazetest {
@@ -71,12 +71,25 @@ template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
 struct MatchSymmetric
 {
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   typedef typename blaze::RemoveAdaptor<T2>::Type  Tmp;
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   typedef typename blaze::If< blaze::And< blaze::IsSymmetric<T1>, blaze::Not< blaze::IsDiagonal<T1> > >
-                             , blaze::SymmetricMatrix< typename blaze::RemoveAdaptor<T2>::Type >
-                             , T2
+   typedef typename blaze::If< blaze::IsDiagonal<T1>
+                             , blaze::DiagonalMatrix<Tmp>
+                             , typename blaze::If< blaze::IsSymmetric<T1>
+                                                 , blaze::SymmetricMatrix<Tmp>
+                                                 , typename blaze::If< blaze::IsHermitian<T1>
+                                                                     , blaze::HermitianMatrix<Tmp>
+                                                                     , T2
+                                                                     >::Type
+                                                 >::Type
                              >::Type  Type;
    /*! \endcond */
    //**********************************************************************************************
