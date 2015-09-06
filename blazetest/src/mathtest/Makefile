@@ -39,7 +39,7 @@ all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-     symmetricmatrix \
+     symmetricmatrix hermitianmatrix \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
      diagonalmatrix \
@@ -67,7 +67,7 @@ noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-      symmetricmatrix \
+      symmetricmatrix hermitianmatrix \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix \
@@ -157,6 +157,11 @@ symmetricmatrix:
 	@echo
 	@echo "Building the SymmetricMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./symmetricmatrix $(MAKECMDGOALS)
+
+hermitianmatrix:
+	@echo
+	@echo "Building the HermitianMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./hermitianmatrix $(MAKECMDGOALS)
 
 lowermatrix:
 	@echo
@@ -482,6 +487,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
+	@$(MAKE) --no-print-directory -C ./hermitianmatrix clean
 	@$(MAKE) --no-print-directory -C ./lowermatrix clean
 	@$(MAKE) --no-print-directory -C ./unilowermatrix clean
 	@$(MAKE) --no-print-directory -C ./strictlylowermatrix clean
@@ -552,7 +558,7 @@ clean:
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
-        symmetricmatrix \
+        symmetricmatrix hermitianmatrix \
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
         diagonalmatrix \
