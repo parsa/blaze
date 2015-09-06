@@ -55,6 +55,8 @@ V16bM16x8a
 V16bM16x8b
 VDaDDa
 VDaDDb
+VDaHDa
+VDaHDb
 VDaLDa
 VDaLDb
 VDaM2x2a
@@ -85,6 +87,8 @@ VDaUDa
 VDaUDb
 VDbDDa
 VDbDDb
+VDbHDa
+VDbHDb
 VDbLDa
 VDbLDb
 VDbM2x2a

@@ -98,6 +98,8 @@ EXE=$PATH_TDVECDMATMULT/V16bM16x8b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; t
 
 EXE=$PATH_TDVECDMATMULT/VDaDDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDaDDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TDVECDMATMULT/VDaHDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TDVECDMATMULT/VDaHDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDaLDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDaLDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDaM2x2a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
@@ -128,6 +130,8 @@ EXE=$PATH_TDVECDMATMULT/VDaUDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; th
 EXE=$PATH_TDVECDMATMULT/VDaUDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDbDDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDbDDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TDVECDMATMULT/VDbHDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_TDVECDMATMULT/VDbHDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDbLDa;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDbLDb;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_TDVECDMATMULT/VDbM2x2a;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
