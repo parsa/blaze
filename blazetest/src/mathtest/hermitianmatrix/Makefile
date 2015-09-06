@@ -54,6 +54,8 @@ noop: $(BIN)
 
 
 # Build rules
+ColumnComplexTest: ColumnComplexTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ColumnRealTest: ColumnRealTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseComplexTest: DenseComplexTest.o
