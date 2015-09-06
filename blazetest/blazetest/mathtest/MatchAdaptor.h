@@ -42,8 +42,13 @@
 
 #include <blaze/math/adaptors/Forward.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
@@ -62,10 +67,10 @@ namespace blazetest {
 /*!\brief Matches the adaptor of two matrix types.
 //
 // The MatchAdaptor type trait uses the same matrix adapter on the given type \a T2 as is used
-// on the type \a T1: In case \a T1 has an adaptor (SymmetricMatrix, LowerMatrix, UpperMatrix,
-// DiagonalMatrix, ...) the same adaptor is added to \a T2. Note that this type trait only works
-// for matrix types. The attempt to instantiate it with non-matrix types results in a compile
-// time error.
+// on the type \a T1: In case \a T1 has an adaptor (SymmetricMatrix, HermitianMatrix, LowerMatrix,
+// UpperMatrix, DiagonalMatrix, ...) the same adaptor is added to \a T2. Note that this type trait
+// only works for matrix types. The attempt to instantiate it with non-matrix types results in a
+// compile time error.
 */
 template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
@@ -84,13 +89,28 @@ struct MatchAdaptor
    typedef typename blaze::If< blaze::IsLower<T1>
                              , typename blaze::If< blaze::IsUpper<T1>
                                                  , blaze::DiagonalMatrix<Tmp>
-                                                 , blaze::LowerMatrix<Tmp>
+                                                 , typename blaze::If< blaze::IsStrictlyLower<T1>
+                                                                     , blaze::StrictlyLowerMatrix<Tmp>
+                                                                     , typename blaze::If< blaze::IsUniLower<T1>
+                                                                                         , blaze::UniLowerMatrix<Tmp>
+                                                                                         , blaze::LowerMatrix<Tmp>
+                                                                                         >::Type
+                                                                     >::Type
                                                  >::Type
                              , typename blaze::If< blaze::IsUpper<T1>
-                                                 , blaze::UpperMatrix<Tmp>
+                                                 , typename blaze::If< blaze::IsStrictlyUpper<T1>
+                                                                     , blaze::StrictlyUpperMatrix<Tmp>
+                                                                     , typename blaze::If< blaze::IsUniUpper<T1>
+                                                                                         , blaze::UniUpperMatrix<Tmp>
+                                                                                         , blaze::UpperMatrix<Tmp>
+                                                                                         >::Type
+                                                                     >::Type
                                                  , typename blaze::If< blaze::IsSymmetric<T1>
                                                                      , blaze::SymmetricMatrix<Tmp>
-                                                                     , T2
+                                                                     , typename blaze::If< blaze::IsHermitian<T1>
+                                                                                         , blaze::HermitianMatrix<Tmp>
+                                                                                         , T2
+                                                                                         >::Type
                                                                      >::Type
                                                  >::Type
                              >::Type  Type;
