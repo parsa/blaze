@@ -431,11 +431,8 @@ struct Columns< SymmetricMatrix<MT,SO,DF,NF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -451,11 +448,8 @@ struct IsSquare< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -489,11 +483,8 @@ struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -509,11 +500,8 @@ struct IsAdaptor< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsRestricted< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsRestricted< SymmetricMatrix<MT,SO,DF,NF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -529,11 +517,8 @@ struct IsRestricted< SymmetricMatrix<MT,SO,DF,NF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool NF >
-struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -549,11 +534,8 @@ struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public IsResizable<MT>::Type
-{
-   enum { value = IsResizable<MT>::value };
-   typedef typename IsResizable<MT>::Type  Type;
-};
+struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> > : public IsTrue< IsResizable<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
