@@ -851,11 +851,8 @@ struct Columns< UpperMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< UpperMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsSquare< UpperMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -871,11 +868,8 @@ struct IsSquare< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsUpper< UpperMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsUpper< UpperMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -891,11 +885,8 @@ struct IsUpper< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< UpperMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsAdaptor< UpperMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -911,11 +902,8 @@ struct IsAdaptor< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< UpperMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsRestricted< UpperMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -931,11 +919,8 @@ struct IsRestricted< UpperMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -951,11 +936,8 @@ struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< UpperMatrix<MT,SO,DF> > : public IsResizable<MT>::Type
-{
-   enum { value = IsResizable<MT>::value };
-   typedef typename IsResizable<MT>::Type  Type;
-};
+struct IsResizable< UpperMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
