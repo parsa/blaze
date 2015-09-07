@@ -581,11 +581,8 @@ struct Columns< HermitianMatrix<MT,SO,DF> > : public Columns<MT>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsSquare< HermitianMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsSquare< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -619,11 +616,8 @@ struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -639,11 +633,8 @@ struct IsHermitian< HermitianMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -659,11 +650,8 @@ struct IsAdaptor< HermitianMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -679,11 +667,8 @@ struct IsRestricted< HermitianMatrix<MT,SO,DF> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -699,11 +684,8 @@ struct HasConstDataAccess< HermitianMatrix<MT,SO,true> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct IsResizable< HermitianMatrix<MT,SO,DF> > : public IsResizable<MT>::Type
-{
-   enum { value = IsResizable<MT>::value };
-   typedef typename IsResizable<MT>::Type  Type;
-};
+struct IsResizable< HermitianMatrix<MT,SO,DF> > : public IsTrue< IsResizable<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
