@@ -955,7 +955,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t          row() const;
                               inline size_t          rows() const;
+                              inline size_t          column() const;
                               inline size_t          columns() const;
                               inline size_t          spacing() const;
                               inline size_t          capacity() const;
@@ -1940,6 +1942,21 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,AF,SO> >::Type&
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns the index of the first row of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline size_t DenseSubmatrix<MT,AF,SO>::row() const
+{
+   return row_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the number of rows of the dense submatrix.
 //
 // \return The number of rows of the dense submatrix.
@@ -1950,6 +1967,21 @@ template< typename MT  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,AF,SO>::rows() const
 {
    return m_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first column of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline size_t DenseSubmatrix<MT,AF,SO>::column() const
+{
+   return column_;
 }
 //*************************************************************************************************
 
@@ -3611,7 +3643,9 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t          row() const;
                               inline size_t          rows() const;
+                              inline size_t          column() const;
                               inline size_t          columns() const;
                               inline size_t          spacing() const;
                               inline size_t          capacity() const;
@@ -4565,6 +4599,21 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,unaligned,true> >:
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first row of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,unaligned,true>::row() const
+{
+   return row_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the dense submatrix.
 //
 // \return The number of rows of the dense submatrix.
@@ -4573,6 +4622,21 @@ template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,unaligned,true>::rows() const
 {
    return m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first column of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,unaligned,true>::column() const
+{
+   return column_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5857,7 +5921,9 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t          row() const;
                               inline size_t          rows() const;
+                              inline size_t          column() const;
                               inline size_t          columns() const;
                               inline size_t          spacing() const;
                               inline size_t          capacity() const;
@@ -6819,6 +6885,21 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,false> >::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first row of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,aligned,false>::row() const
+{
+   return row_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the dense submatrix.
 //
 // \return The number of rows of the dense submatrix.
@@ -6827,6 +6908,21 @@ template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,aligned,false>::rows() const
 {
    return m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first column of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,aligned,false>::column() const
+{
+   return column_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8125,7 +8221,9 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t          row() const;
                               inline size_t          rows() const;
+                              inline size_t          column() const;
                               inline size_t          columns() const;
                               inline size_t          spacing() const;
                               inline size_t          capacity() const;
@@ -9056,6 +9154,21 @@ inline typename EnableIf< IsNumeric<Other>, DenseSubmatrix<MT,aligned,true> >::T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first row of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,aligned,true>::row() const
+{
+   return row_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the dense submatrix.
 //
 // \return The number of rows of the dense submatrix.
@@ -9064,6 +9177,21 @@ template< typename MT >  // Type of the dense matrix
 inline size_t DenseSubmatrix<MT,aligned,true>::rows() const
 {
    return m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first column of the submatrix in the underlying dense matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t DenseSubmatrix<MT,aligned,true>::column() const
+{
+   return column_;
 }
 /*! \endcond */
 //*************************************************************************************************
