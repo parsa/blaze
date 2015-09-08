@@ -668,6 +668,13 @@ class DiagonalMatrix<MT,SO,true>
    //@}
    //**********************************************************************************************
 
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -704,9 +711,6 @@ class DiagonalMatrix<MT,SO,true>
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2 >
    friend bool isDefault( const DiagonalMatrix<MT2,SO2,DF2>& m );
-
-   template< typename MT2, bool SO2, bool DF2 >
-   friend bool isIntact( const DiagonalMatrix<MT2,SO2,DF2>& m );
 
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( DiagonalMatrix<MT2,SO2,DF2>& m );
@@ -780,6 +784,7 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const A1& a1 )
    : matrix_( construct( a1, typename IsResizable<MT>::Type() ) )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -820,6 +825,7 @@ inline DiagonalMatrix<MT,SO,true>::DiagonalMatrix( const DiagonalMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1127,6 +1133,9 @@ inline DiagonalMatrix<MT,SO,true>&
 {
    matrix_ = rhs.matrix_;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1158,6 +1167,9 @@ inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ = ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1202,6 +1214,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
       move( matrix_, tmp );
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1233,6 +1248,9 @@ inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ += ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1277,6 +1295,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
       matrix_ += tmp;
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1308,6 +1329,9 @@ inline typename DisableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ -= ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1352,6 +1376,9 @@ inline typename EnableIf< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >::Typ
       matrix_ -= tmp;
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1388,6 +1415,9 @@ inline DiagonalMatrix<MT,SO,true>&
    }
 
    move( matrix_, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1778,6 +1808,36 @@ inline void DiagonalMatrix<MT,SO,true>::swap( DiagonalMatrix& m ) /* throw() */
    using std::swap;
 
    swap( matrix_, m.matrix_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the diagonal matrix are intact.
+//
+// \return \a true in case the diagonal matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the diagonal matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline bool DiagonalMatrix<MT,SO,true>::isIntact() const
+{
+   using blaze::isIntact;
+
+   return ( isIntact( matrix_ ) && isDiagonal( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************

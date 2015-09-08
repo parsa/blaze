@@ -224,7 +224,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 inline bool isIntact( const DiagonalMatrix<MT,SO,DF>& m )
 {
-   return ( isIntact( m.matrix_ ) && isDiagonal( m.matrix_ ) );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
