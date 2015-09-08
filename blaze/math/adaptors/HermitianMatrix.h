@@ -217,7 +217,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 inline bool isIntact( const HermitianMatrix<MT,SO,DF>& m )
 {
-   return ( isIntact( m.matrix_ ) && isHermitian( m.matrix_ ) );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
