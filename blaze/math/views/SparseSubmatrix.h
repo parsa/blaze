@@ -5089,6 +5089,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isUniUpper( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isSame( const SparseSubmatrix<MT,AF,SO>& a, const SparseMatrix<MT,SO>& b );
 
 template< typename MT, bool AF, bool SO >
@@ -5380,13 +5383,13 @@ inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& dm )
+inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsUniLower<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
+   if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
-   else return isUniLower( static_cast<const BaseType&>( dm ) );
+   else return isUniLower( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
@@ -5395,7 +5398,7 @@ inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& dm )
 /*!\brief Checks if the given sparse submatrix is a strictly lower triangular matrix.
 // \ingroup sparse_submatrix
 //
-// \param dm The sparse submatrix to be checked.
+// \param sm The sparse submatrix to be checked.
 // \return \a true if the submatrix is a strictly lower triangular matrix, \a false if not.
 //
 // This function checks if the given sparse submatrix is a strictly lower triangular matrix. The
@@ -5425,13 +5428,13 @@ inline bool isUniLower( const SparseSubmatrix<MT,AF,SO>& dm )
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline bool isStrictlyLower( const SparseSubmatrix<MT,AF,SO>& dm )
+inline bool isStrictlyLower( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsStrictlyLower<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
+   if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
-   else return isStrictlyLower( static_cast<const BaseType&>( dm ) );
+   else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
@@ -5478,6 +5481,51 @@ inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm )
    if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUpper( static_cast<const BaseType&>( sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse submatrix is an upper unitriangular matrix.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be checked.
+// \return \a true if the submatrix is an upper unitriangular matrix, \a false if not.
+//
+// This function checks if the given sparse submatrix is an upper triangular matrix. The matrix
+// is considered to be upper triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1      & u_{0,1} & u_{0,2} & \cdots & u_{0,N} \\
+                        0      & 1       & u_{1,2} & \cdots & u_{1,N} \\
+                        0      & 0       & 1       & \cdots & u_{2,N} \\
+                        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+                        0      & 0       & 0       & \cdots & 1       \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isUniUpper( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isUniUpper( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+      return true;
+   else return isUniUpper( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
