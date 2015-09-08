@@ -230,7 +230,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 inline bool isIntact( const UniUpperMatrix<MT,SO,DF>& m )
 {
-   return ( isIntact( m.matrix_ ) && isUniUpper( m.matrix_ ) );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
