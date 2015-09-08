@@ -1118,15 +1118,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -3799,15 +3790,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -6059,15 +6041,6 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
@@ -8361,15 +8334,6 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    friend bool isIntact( const DenseSubmatrix<MT2,AF2,SO2>& dm );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const DenseSubmatrix<MT2,AF2,SO2>& dm );
-
-   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const DenseSubmatrix<MT2,AF2,SO2>& a, const DenseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -10352,6 +10316,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isHermitian( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
@@ -10530,9 +10497,45 @@ inline bool isSymmetric( const DenseSubmatrix<MT,AF,SO>& dm )
 {
    typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsSymmetric<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
+   if( IsSymmetric<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
       return true;
    else return isSymmetric( static_cast<const BaseType&>( dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense submatrix is Hermitian.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be checked.
+// \return \a true if the submatrix is Hermitian, \a false if not.
+//
+// This function checks if the given dense submatrix is Hermitian. The submatrix is considered
+// to be Hermitian if it is a square matrix whose transpose is equal to its conjugate transpose
+// (\f$ A = \overline{A^T} \f$). The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::DenseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isHermitian( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isHermitian( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsHermitian<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
+      return true;
+   else return isHermitian( static_cast<const BaseType&>( dm ) );
 }
 //*************************************************************************************************
 
@@ -10576,7 +10579,7 @@ inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm )
 {
    typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsLower<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
+   if( IsLower<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
       return true;
    else return isLower( static_cast<const BaseType&>( dm ) );
 }
@@ -10622,7 +10625,7 @@ inline bool isUpper( const DenseSubmatrix<MT,AF,SO>& dm )
 {
    typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsUpper<MT>::value && dm.row_ == dm.column_ && dm.m_ == dm.n_ )
+   if( IsUpper<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
       return true;
    else return isUpper( static_cast<const BaseType&>( dm ) );
 }
