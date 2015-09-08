@@ -769,6 +769,13 @@ class UniLowerMatrix<MT,SO,false>
    //@}
    //**********************************************************************************************
 
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -795,9 +802,6 @@ class UniLowerMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2 >
-   friend bool isIntact( const UniLowerMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( UniLowerMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -949,6 +953,7 @@ inline UniLowerMatrix<MT,SO,false>::UniLowerMatrix( const UniLowerMatrix& m )
    : matrix_( m.matrix_ )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -979,6 +984,7 @@ inline UniLowerMatrix<MT,SO,false>::UniLowerMatrix( const Matrix<MT2,SO2>& m )
       resetUpper();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1207,6 +1213,9 @@ inline UniLowerMatrix<MT,SO,false>&
 {
    matrix_ = rhs.matrix_;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1241,6 +1250,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::T
 
    if( !IsUniLower<MT2>::value )
       resetUpper();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1288,6 +1300,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    if( !IsUniLower<MT2>::value )
       resetUpper();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1323,6 +1338,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::T
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1371,6 +1389,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1406,6 +1427,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::T
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1454,6 +1478,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >::Ty
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1493,6 +1520,9 @@ inline UniLowerMatrix<MT,SO,false>&
 
    if( !IsUniLower<MT2>::value )
       resetUpper();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -2316,6 +2346,36 @@ template< typename MT  // Type of the adapted sparse matrix
 inline void UniLowerMatrix<MT,SO,false>::finalize( size_t i )
 {
    matrix_.trim( i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the unilower matrix are intact.
+//
+// \return \a true in case the unilower matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the unilower matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline bool UniLowerMatrix<MT,SO,false>::isIntact() const
+{
+   using blaze::isIntact;
+
+   return ( isIntact( matrix_ ) && isUniLower( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************

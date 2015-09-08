@@ -668,6 +668,13 @@ class UniLowerMatrix<MT,SO,true>
    //@}
    //**********************************************************************************************
 
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -702,9 +709,6 @@ class UniLowerMatrix<MT,SO,true>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2 >
-   friend bool isIntact( const UniLowerMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( UniLowerMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -781,6 +785,7 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( const A1& a1 )
    : matrix_( construct( a1, typename IsResizable<MT>::Type() ) )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -833,6 +838,7 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( const UniLowerMatrix& m )
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1142,6 +1148,9 @@ inline UniLowerMatrix<MT,SO,true>&
 {
    matrix_ = rhs.matrix_;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1173,6 +1182,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ = ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1217,6 +1229,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Typ
       move( matrix_, tmp );
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1249,6 +1264,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ += ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1294,6 +1312,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Typ
       matrix_ += tmp;
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1326,6 +1347,9 @@ inline typename DisableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Ty
    }
 
    matrix_ -= ~rhs;
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1371,6 +1395,9 @@ inline typename EnableIf< IsComputation<MT2>, UniLowerMatrix<MT,SO,true>& >::Typ
       matrix_ -= tmp;
    }
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -1407,6 +1434,9 @@ inline UniLowerMatrix<MT,SO,true>&
    }
 
    move( matrix_, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1807,6 +1837,36 @@ template< typename MT  // Type of the adapted dense matrix
 inline size_t UniLowerMatrix<MT,SO,true>::maxNonZeros( size_t n )
 {
    return ( ( n + 1UL ) * n ) / 2UL;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the unilower matrix are intact.
+//
+// \return \a true in case the unilower matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the unilower matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline bool UniLowerMatrix<MT,SO,true>::isIntact() const
+{
+   using blaze::isIntact;
+
+   return ( isIntact( matrix_ ) && isUniLower( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
