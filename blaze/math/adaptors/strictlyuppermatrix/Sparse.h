@@ -262,6 +262,13 @@ class StrictlyUpperMatrix<MT,SO,false>
    //@}
    //**********************************************************************************************
 
+   //**Debugging functions*************************************************************************
+   /*!\name Debugging functions */
+   //@{
+   inline bool isIntact() const;
+   //@}
+   //**********************************************************************************************
+
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -288,9 +295,6 @@ class StrictlyUpperMatrix<MT,SO,false>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool SO2, bool DF2 >
-   friend bool isIntact( const StrictlyUpperMatrix<MT2,SO2,DF2>& m );
-
    template< typename MT2, bool SO2, bool DF2 >
    friend MT2& derestrict( StrictlyUpperMatrix<MT2,SO2,DF2>& m );
    //**********************************************************************************************
@@ -421,6 +425,7 @@ inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( const StrictlyUppe
    : matrix_( m.matrix_ )  // The adapted sparse matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -453,6 +458,7 @@ inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( const Matrix<MT2,S
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -681,6 +687,9 @@ inline StrictlyUpperMatrix<MT,SO,false>&
 {
    matrix_ = rhs.matrix_;
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -716,6 +725,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>&
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -763,6 +775,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>& 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -798,6 +813,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>&
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -845,6 +863,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>& 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -880,6 +901,9 @@ inline typename DisableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>&
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -927,6 +951,9 @@ inline typename EnableIf< IsComputation<MT2>, StrictlyUpperMatrix<MT,SO,false>& 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
 
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
    return *this;
 }
 /*! \endcond */
@@ -966,6 +993,9 @@ inline StrictlyUpperMatrix<MT,SO,false>&
 
    if( !IsStrictlyUpper<MT2>::value )
       resetLower();
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1847,6 +1877,36 @@ template< typename MT  // Type of the adapted sparse matrix
 inline void StrictlyUpperMatrix<MT,SO,false>::finalize( size_t i )
 {
    matrix_.finalize( i );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the strictly upper matrix are intact.
+//
+// \return \a true in case the strictly upper matrix's invariants are intact, \a false otherwise.
+//
+// This function checks whether the invariants of the strictly upper matrix are intact, i.e. if
+// its state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline bool StrictlyUpperMatrix<MT,SO,false>::isIntact() const
+{
+   using blaze::isIntact;
+
+   return ( isIntact( matrix_ ) && isStrictlyUpper( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************
