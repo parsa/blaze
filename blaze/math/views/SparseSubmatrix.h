@@ -872,7 +872,9 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t           row() const;
                               inline size_t           rows() const;
+                              inline size_t           column() const;
                               inline size_t           columns() const;
                               inline size_t           capacity() const;
                               inline size_t           capacity( size_t i ) const;
@@ -1653,6 +1655,21 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,SO> >::Type&
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Returns the index of the first row of the submatrix in the underlying sparse matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline size_t SparseSubmatrix<MT,AF,SO>::row() const
+{
+   return row_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the number of rows of the sparse submatrix.
 //
 // \return The number of rows of the sparse submatrix.
@@ -1663,6 +1680,21 @@ template< typename MT  // Type of the sparse matrix
 inline size_t SparseSubmatrix<MT,AF,SO>::rows() const
 {
    return m_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first column of the submatrix in the underlying sparse matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline size_t SparseSubmatrix<MT,AF,SO>::column() const
+{
+   return column_;
 }
 //*************************************************************************************************
 
@@ -3148,7 +3180,9 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
+                              inline size_t           row() const;
                               inline size_t           rows() const;
+                              inline size_t           column() const;
                               inline size_t           columns() const;
                               inline size_t           capacity() const;
                               inline size_t           capacity( size_t i ) const;
@@ -3913,6 +3947,22 @@ inline typename EnableIf< IsNumeric<Other>, SparseSubmatrix<MT,AF,true> >::Type&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first row of the submatrix in the underlying sparse matrix.
+//
+// \return The index of the first row.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline size_t SparseSubmatrix<MT,AF,true>::row() const
+{
+   return row_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the sparse submatrix.
 //
 // \return The number of rows of the sparse submatrix.
@@ -3922,6 +3972,22 @@ template< typename MT  // Type of the sparse matrix
 inline size_t SparseSubmatrix<MT,AF,true>::rows() const
 {
    return m_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the first column of the submatrix in the underlying sparse matrix.
+//
+// \return The index of the first column.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline size_t SparseSubmatrix<MT,AF,true>::column() const
+{
+   return column_;
 }
 /*! \endcond */
 //*************************************************************************************************
