@@ -963,15 +963,6 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -3270,15 +3261,6 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    friend bool isIntact( const SparseSubmatrix<MT2,AF2,SO2>& sm );
 
    template< typename MT2, bool AF2, bool SO2 >
-   friend bool isSymmetric( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isLower( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
-   friend bool isUpper( const SparseSubmatrix<MT2,AF2,SO2>& sm );
-
-   template< typename MT2, bool AF2, bool SO2 >
    friend bool isSame( const SparseSubmatrix<MT2,AF2,SO2>& a, const SparseMatrix<MT2,SO2>& b );
 
    template< typename MT2, bool AF2, bool SO2 >
@@ -5092,6 +5074,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isHermitian( const SparseSubmatrix<MT,AF,SO>& sm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm );
 
 template< typename MT, bool AF, bool SO >
@@ -5266,9 +5251,45 @@ inline bool isSymmetric( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsSymmetric<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
+   if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isSymmetric( static_cast<const BaseType&>( sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse submatrix is Hermitian.
+// \ingroup sparse_submatrix
+//
+// \param sm The sparse submatrix to be checked.
+// \return \a true if the submatrix is Hermitian, \a false if not.
+//
+// This function checks if the given sparse submatrix is Hermitian. The submatrix is considered
+// to be Hermitian if it is a square matrix whose transpose is equal to its conjugate transpose
+// (\f$ A = \overline{A^T} \f$). The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::SparseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isHermitian( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isHermitian( const SparseSubmatrix<MT,AF,SO>& sm )
+{
+   typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+      return true;
+   else return isHermitian( static_cast<const BaseType&>( sm ) );
 }
 //*************************************************************************************************
 
@@ -5312,7 +5333,7 @@ inline bool isLower( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsLower<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
+   if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isLower( static_cast<const BaseType&>( sm ) );
 }
@@ -5358,7 +5379,7 @@ inline bool isUpper( const SparseSubmatrix<MT,AF,SO>& sm )
 {
    typedef SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >  BaseType;
 
-   if( IsUpper<MT>::value && sm.row_ == sm.column_ && sm.m_ == sm.n_ )
+   if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUpper( static_cast<const BaseType&>( sm ) );
 }
