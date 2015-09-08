@@ -10322,6 +10322,9 @@ template< typename MT, bool AF, bool SO >
 inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
+inline bool isUniLower( const DenseSubmatrix<MT,AF,SO>& dm );
+
+template< typename MT, bool AF, bool SO >
 inline bool isUpper( const DenseSubmatrix<MT,AF,SO>& dm );
 
 template< typename MT, bool AF, bool SO >
@@ -10582,6 +10585,51 @@ inline bool isLower( const DenseSubmatrix<MT,AF,SO>& dm )
    if( IsLower<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
       return true;
    else return isLower( static_cast<const BaseType&>( dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense submatrix is a lower unitriangular matrix.
+// \ingroup dense_submatrix
+//
+// \param dm The dense submatrix to be checked.
+// \return \a true if the submatrix is a lower unitriangular matrix, \a false if not.
+//
+// This function checks if the given dense submatrix is a lower unitriangular matrix. The matrix
+// is considered to be lower triangular if it is a square matrix of the form
+
+                        \f[\left(\begin{array}{*{5}{c}}
+                        1       & 0       & 0       & \cdots & 0      \\
+                        l_{1,0} & 1       & 0       & \cdots & 0      \\
+                        l_{2,0} & l_{2,1} & 1       & \cdots & 0      \\
+                        \vdots  & \vdots  & \vdots  & \ddots & \vdots \\
+                        l_{N,0} & l_{N,1} & l_{N,2} & \cdots & 1      \\
+                        \end{array}\right).\f]
+
+// The following code example demonstrates the use of the function:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  Matrix;
+
+   Matrix A( 32UL, 16UL );
+   // ... Initialization
+
+   blaze::DenseSubmatrix<Matrix> sm( A, 8UL, 8UL, 16UL, 16UL );
+
+   if( isUniLower( sm ) ) { ... }
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline bool isUniLower( const DenseSubmatrix<MT,AF,SO>& dm )
+{
+   typedef DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >  BaseType;
+
+   if( IsUniLower<MT>::value && dm.row() == dm.column() && dm.rows() == dm.columns() )
+      return true;
+   else return isUniLower( static_cast<const BaseType&>( dm ) );
 }
 //*************************************************************************************************
 
