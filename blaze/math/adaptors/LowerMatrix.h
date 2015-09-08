@@ -217,7 +217,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 inline bool isIntact( const LowerMatrix<MT,SO,DF>& m )
 {
-   return ( isIntact( m.matrix_ ) && isLower( m.matrix_ ) );
+   return m.isIntact();
 }
 //*************************************************************************************************
 
