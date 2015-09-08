@@ -557,15 +557,13 @@ class SymmetricMatrix<MT,SO,true,false>
    //@}
    //**********************************************************************************************
 
- private:
-   //**Utility functions***************************************************************************
+   //**Debugging functions*************************************************************************
    /*!\name Utility functions */
    //@{
-   inline bool isLowerOrUpper() const;
+   inline bool isIntact() const;
    //@}
    //**********************************************************************************************
 
- public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -601,9 +599,6 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2, bool NF2 >
    friend bool isDefault( const SymmetricMatrix<MT2,SO2,DF2,NF2>& m );
-
-   template< typename MT2, bool SO2 >
-   friend bool isIntact( const SymmetricMatrix<MT2,SO2,true,false>& m );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -681,7 +676,7 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const SymmetricMatrix
    : matrix_( m.matrix_ )  // The adapted dense matrix
 {
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -724,7 +719,7 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO>&
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -767,7 +762,7 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,!SO>
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1073,7 +1068,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
    assign( rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1119,7 +1114,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1171,7 +1166,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    assign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1231,7 +1226,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>
    addAssign( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1277,7 +1272,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    addAssign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1337,7 +1332,7 @@ inline typename DisableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>
    subAssign( ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1383,7 +1378,7 @@ inline typename EnableIf< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>&
    subAssign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1456,7 +1451,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
    assign( tmp );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isLowerOrUpper()   , "Broken invariant detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
    return *this;
 }
@@ -1972,22 +1967,31 @@ inline void SymmetricMatrix<MT,SO,true,false>::swap( SymmetricMatrix& m ) /* thr
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  DEBUGGING FUNCTIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether the adapted matrix is a lower or upper triangular matrix.
+/*!\brief Returns whether the invariants of the symmetric matrix are intact.
 //
-// \return \a true in case the matrix is a lower or upper matrix, \a false if not.
+// \return \a true in case the symmetric matrix's invariants are intact, \a false otherwise.
 //
-// This function checks whether the adapted matrix adheres to the structural invariant to be
-// a lower or upper triangular matrix. In case the adapted matrix type \a MT is a row-major
-// matrix type, the matrix is required to be a lower triangular matrix, in case \a MT is a
-// column-major matrix type, the matrix is required to be an upper triangular matrix.
+// This function checks whether the invariants of the symmetric matrix are intact, i.e. if its
+// state is valid. In case the invariants are intact, the function returns \a true, else it
+// will return \a false.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline bool SymmetricMatrix<MT,SO,true,false>::isLowerOrUpper() const
+inline bool SymmetricMatrix<MT,SO,true,false>::isIntact() const
 {
-   return ( SO ) ? ( isUpper( matrix_ ) ) : ( isLower( matrix_ ) );
+   using blaze::isIntact;
+
+   return isIntact( matrix_ ) && ( SO ? isUpper( matrix_ ) : isLower( matrix_ ) );
 }
 /*! \endcond */
 //*************************************************************************************************

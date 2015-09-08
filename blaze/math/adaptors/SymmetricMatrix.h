@@ -221,30 +221,8 @@ template< typename MT  // Type of the adapted matrix
         , bool NF >    // Numeric flag
 inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m )
 {
-   return ( isIntact( m.matrix_ ) && isSymmetric( m.matrix_ ) );
+   return m.isIntact();
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the invariants of a dense non-numeric symmetric matrix are intact.
-// \ingroup symmetric_matrix
-//
-// \param m The dense non-numeric symmetric matrix to be tested.
-// \return \a true in case the given matrix's invariants are intact, \a false otherwise.
-//
-// This function checks whether the invariants of the dense symmetric matrix with non-numeric
-// elements are intact, i.e. if its state is valid. In case the invariants are intact, the
-// function returns \a true, else it will return \a false.
-*/
-template< typename MT  // Type of the adapted matrix
-        , bool SO >    // Storage order of the adapted matrix
-inline bool isIntact( const SymmetricMatrix<MT,SO,true,false>& m )
-{
-   return ( isIntact( m.matrix_ ) && m.isLowerOrUpper() );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
