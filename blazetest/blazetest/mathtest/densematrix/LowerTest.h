@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densematrix/OperationTest.h
-//  \brief Header file for the DenseMatrix functionality operation test
+//  \file blazetest/mathtest/densematrix/LowerTest.h
+//  \brief Header file for the lower DenseMatrix operation test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSEMATRIX_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_DENSEMATRIX_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DENSEMATRIX_LOWERTEST_H_
+#define _BLAZETEST_MATHTEST_DENSEMATRIX_LOWERTEST_H_
 
 
 //*************************************************************************************************
@@ -58,12 +58,13 @@ namespace densematrix {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the DenseMatrix functionality.
+/*!\brief Auxiliary class for tests of the DenseMatrix functionality.
 //
 // This class represents a test suite for the DenseMatrix functionality contained in the
-// <em><blaze/math/dense/DenseMatrix.h></em> header file.
+// <em><blaze/math/dense/DenseMatrix.h></em> header file. It performs a series of runtime
+// tests with lower triangular matrices.
 */
-class OperationTest
+class LowerTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -74,7 +75,7 @@ class OperationTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest();
+   explicit LowerTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -87,8 +88,6 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testIsNan();
-   void testIsSquare();
    void testIsSymmetric();
    void testIsHermitian();
    void testIsUniform();
@@ -100,8 +99,6 @@ class OperationTest
    void testIsStrictlyUpper();
    void testIsDiagonal();
    void testIsIdentity();
-   void testMinimum();
-   void testMaximum();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
@@ -151,7 +148,7 @@ class OperationTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void OperationTest::checkRows( const Type& matrix, size_t expectedRows ) const
+void LowerTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
    if( matrix.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -179,7 +176,7 @@ void OperationTest::checkRows( const Type& matrix, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void OperationTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+void LowerTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
    if( matrix.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -207,7 +204,7 @@ void OperationTest::checkColumns( const Type& matrix, size_t expectedColumns ) c
 // thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void OperationTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
+void LowerTest::checkCapacity( const Type& matrix, size_t minCapacity ) const
 {
    if( matrix.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -235,7 +232,7 @@ void OperationTest::checkCapacity( const Type& matrix, size_t minCapacity ) cons
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void OperationTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
+void LowerTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -274,7 +271,7 @@ void OperationTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros )
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense matrix
-void OperationTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+void LowerTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
    if( matrix.nonZeros( index ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -316,7 +313,7 @@ void OperationTest::checkNonZeros( const Type& matrix, size_t index, size_t expe
 */
 void runTest()
 {
-   OperationTest();
+   LowerTest();
 }
 //*************************************************************************************************
 
@@ -331,9 +328,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DenseMatrix operation test.
+/*!\brief Macro for the execution of the lower DenseMatrix operation test.
 */
-#define RUN_DENSEMATRIX_OPERATION_TEST \
+#define RUN_DENSEMATRIX_LOWER_TEST \
    blazetest::mathtest::densematrix::runTest()
 /*! \endcond */
 //*************************************************************************************************

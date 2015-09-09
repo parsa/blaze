@@ -37,4 +37,13 @@ PATH_DENSEMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseMatrix functionality tests..."
 
-EXE=$PATH_DENSEMATRIX/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/GeneralTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/SymmetricTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/HermitianTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/LowerTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/UniLowerTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/StrictlyLowerTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/UpperTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/UniUpperTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/StrictlyUpperTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEMATRIX/DiagonalTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
