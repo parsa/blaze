@@ -54,7 +54,25 @@ noop: $(BIN)
 
 
 # Build rules
-OperationTest: OperationTest.o
+DiagonalTest: DiagonalTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+GeneralTest: GeneralTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HermitianTest: HermitianTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LowerTest: LowerTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+StrictlyLowerTest: StrictlyLowerTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+StrictlyUpperTest: StrictlyUpperTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SymmetricTest: SymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UniLowerTest: UniLowerTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UniUpperTest: UniUpperTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UpperTest: UpperTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

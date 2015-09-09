@@ -37,4 +37,13 @@ PATH_SPARSEMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SparseMatrix functionality tests..."
 
-EXE=$PATH_SPARSEMATRIX/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/GeneralTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/SymmetricTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/HermitianTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/LowerTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/UniLowerTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/StrictlyLowerTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/UpperTest;         if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/UniUpperTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/StrictlyUpperTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/DiagonalTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
