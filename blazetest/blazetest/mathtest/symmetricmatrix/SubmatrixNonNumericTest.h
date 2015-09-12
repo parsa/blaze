@@ -664,6 +664,286 @@ void SubmatrixNonNumericTest::testAssignment()
       }
    }
 
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( 22 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Dense matrix assignment test 5";
+
+      {
+         blaze::DynamicMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 15 );
+         tmp(1,0) = vec( 22 );
+         tmp(1,1) = vec( 17 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(1,0) = vec( 22 );
+         tmp(1,1) = vec( 17 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 15 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) ( 13 ) ( 22 ) ( 11 ) ( 19 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Dense matrix assignment test 6";
+
+      {
+         blaze::DynamicMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 15 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 22 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(2,0) = vec( 22 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 15 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( 13 ) ( 14 ) ( 22 ) ( 19 ) )
+   {
+      test_ = "Dense matrix assignment test 7";
+
+      {
+         blaze::DynamicMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 22 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 22 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 13 ) ( 14 ) ( 22 ) ( 19 ) ( 14 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Dense matrix assignment test 8";
+
+      {
+         blaze::DynamicMatrix<VT,blaze::rowMajor> tmp( 3UL, 4UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 22 );
+         tmp(1,3) = vec( 19 );
+         tmp(2,0) = vec( 19 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(2,3) = vec( 14 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<VT,blaze::rowMajor> tmp( 4UL, 3UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(0,2) = vec( 19 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(3,0) = vec( 22 );
+         tmp(3,1) = vec( 19 );
+         tmp(3,2) = vec( 14 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
 
    //=====================================================================================
    // Sparse matrix assignment
@@ -1164,6 +1444,286 @@ void SubmatrixNonNumericTest::testAssignment()
                                         "( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( ( 12 ) ( 18 ) ( 14 ) ( 15 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( 22 ) ( 17 ) ( 11 ) ( 19 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 14 ) ( 11 ) (  3 ) (  1 ) (    ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 15 ) ( 19 ) (  1 ) (  5 ) (  7 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Sparse matrix assignment test 5";
+
+      {
+         blaze::CompressedMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 15 );
+         tmp(1,0) = vec( 22 );
+         tmp(1,1) = vec( 17 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(1,0) = vec( 22 );
+         tmp(1,1) = vec( 17 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 15 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 12 ) ( 13 ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) ( 12 ) ( 18 ) ( 14 ) ( 15 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) ( 13 ) ( 22 ) ( 11 ) ( 19 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 15 ) ( 19 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Sparse matrix assignment test 6";
+
+      {
+         blaze::CompressedMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 15 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 22 );
+         tmp(1,2) = vec( 11 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(2,0) = vec( 22 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 15 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( (  7 ) (    ) (  3 ) (  1 ) ( 12 ) ( 13 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( -2 ) (    ) (  1 ) (  5 ) ( 18 ) ( 14 ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( (  5 ) ( -1 ) ( 12 ) ( 18 ) ( 14 ) ( 11 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( 13 ) ( 14 ) ( 22 ) ( 19 ) )
+   {
+      test_ = "Sparse matrix assignment test 7";
+
+      {
+         blaze::CompressedMatrix<VT,blaze::rowMajor> tmp( 2UL, 4UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 22 );
+         tmp(1,3) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<VT,blaze::columnMajor> tmp( 4UL, 2UL, 8UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(3,0) = vec( 22 );
+         tmp(3,1) = vec( 19 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( (  1 ) ( -4 ) (  7 ) ( -2 ) (  5 ) (    ) )      ( (  1 ) ( -4 ) ( 12 ) ( 13 ) ( 19 ) (    ) )
+   // ( ( -4 ) (  2 ) (    ) (    ) ( -1 ) (  8 ) )      ( ( -4 ) (  2 ) ( 18 ) ( 14 ) ( 11 ) (  8 ) )
+   // ( (  7 ) (    ) (  3 ) (  1 ) (    ) ( -2 ) )  =>  ( ( 12 ) ( 18 ) ( 14 ) ( 11 ) ( 12 ) ( -2 ) )
+   // ( ( -2 ) (    ) (  1 ) (  5 ) (  7 ) (    ) )      ( ( 13 ) ( 14 ) ( 22 ) ( 19 ) ( 14 ) (    ) )
+   // ( (  5 ) ( -1 ) (    ) (  7 ) (  1 ) ( -4 ) )      ( ( 19 ) ( 11 ) ( 12 ) ( 14 ) (  1 ) ( -4 ) )
+   // ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )      ( (    ) (  8 ) ( -2 ) (    ) ( -4 ) (  7 ) )
+   {
+      test_ = "Sparse matrix assignment test 8";
+
+      {
+         blaze::CompressedMatrix<VT,blaze::rowMajor> tmp( 3UL, 4UL, 12UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 18 );
+         tmp(0,2) = vec( 14 );
+         tmp(0,3) = vec( 11 );
+         tmp(1,0) = vec( 13 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 22 );
+         tmp(1,3) = vec( 19 );
+         tmp(2,0) = vec( 19 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(2,3) = vec( 14 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<VT,blaze::rowMajor> tmp( 4UL, 3UL, 12UL );
+         tmp(0,0) = vec( 12 );
+         tmp(0,1) = vec( 13 );
+         tmp(0,2) = vec( 19 );
+         tmp(1,0) = vec( 18 );
+         tmp(1,1) = vec( 14 );
+         tmp(1,2) = vec( 11 );
+         tmp(2,0) = vec( 14 );
+         tmp(2,1) = vec( 11 );
+         tmp(2,2) = vec( 12 );
+         tmp(3,0) = vec( 22 );
+         tmp(3,1) = vec( 19 );
+         tmp(3,2) = vec( 14 );
+
+         ST sym;
+         init( sym );
+
+         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = tmp;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sym << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
    }
 }
