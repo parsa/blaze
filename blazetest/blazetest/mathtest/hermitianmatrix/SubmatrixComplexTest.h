@@ -665,6 +665,846 @@ void SubmatrixComplexTest::testAssignment()
       }
    }
 
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 5";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(22, 1);
+         mat(1,1) = cplx(17, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(22, 1);
+         mat(1,1) = cplx(17, 0);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 6";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(22,-2);
+         mat(1,2) = cplx(11, 0);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(22,-2);
+         mat(2,1) = cplx(11, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Dense matrix assignment test 7";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11, 1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(22,-1);
+         mat(1,3) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(22,-1);
+         mat(3,1) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 8";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(22, 1);
+         mat(1,3) = cplx(19, 0);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(22, 1);
+         mat(3,1) = cplx(19, 0);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 9";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(17, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(17, 0);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 10";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 2);
+         mat(1,2) = cplx(11, 0);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Dense matrix assignment test 11";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11, 1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(11, 1);
+         mat(3,1) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 12";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19, 0);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(11,-1);
+         mat(3,1) = cplx(19, 0);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 13";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(18, 1);
+         mat(1,1) = cplx(17, 1);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(18, 1);
+         mat(1,1) = cplx(17, 1);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 14";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14,-2);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(14,-2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Dense matrix assignment test 15";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(11,-1);
+         mat(3,1) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix assignment test 16";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(11, 1);
+         mat(3,1) = cplx(19, 1);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
 
    //=====================================================================================
    // Sparse matrix assignment
@@ -1165,6 +2005,846 @@ void SubmatrixComplexTest::testAssignment()
                                         "( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 5";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(22, 1);
+         mat(1,1) = cplx(17, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(22, 1);
+         mat(1,1) = cplx(17, 0);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 6";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(22,-2);
+         mat(1,2) = cplx(11, 0);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(22,-2);
+         mat(2,1) = cplx(11, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Sparse matrix assignment test 7";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11, 1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(22,-1);
+         mat(1,3) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(22,-1);
+         mat(3,1) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 8";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(22, 1);
+         mat(1,3) = cplx(19, 0);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(22, 1);
+         mat(3,1) = cplx(19, 0);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 9";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(17, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(17, 0);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 10";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 2);
+         mat(1,2) = cplx(11, 0);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Sparse matrix assignment test 11";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11, 1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(11, 1);
+         mat(3,1) = cplx(19, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 12";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19, 0);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(11,-1);
+         mat(3,1) = cplx(19, 0);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 13";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(0,2) = cplx(14,-2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(18, 1);
+         mat(1,1) = cplx(17, 1);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 0);
+         mat(0,1) = cplx(18,-1);
+         mat(1,0) = cplx(18, 1);
+         mat(1,1) = cplx(17, 1);
+         mat(2,0) = cplx(14, 2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 14";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 0);
+         mat(0,2) = cplx(14, 2);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14,-2);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18, 0);
+         mat(1,1) = cplx(14, 2);
+         mat(2,0) = cplx(14,-2);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(19,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Sparse matrix assignment test 15";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(18, 1);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(18,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(11,-1);
+         mat(3,1) = cplx(19, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix assignment test 16";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(14, 0);
+         mat(0,3) = cplx(11,-1);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11, 1);
+         mat(1,3) = cplx(19, 1);
+         mat(2,0) = cplx(19, 3);
+         mat(2,1) = cplx(11, 2);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx(14,-4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(13, 2);
+         mat(0,2) = cplx(19,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(11,-2);
+         mat(2,0) = cplx(14, 0);
+         mat(2,1) = cplx(11,-1);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(11, 1);
+         mat(3,1) = cplx(19, 1);
+         mat(3,2) = cplx(14, 4);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm = mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
    }
 }
@@ -1688,6 +3368,846 @@ void SubmatrixComplexTest::testAddAssign()
       }
    }
 
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 5";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(26, 0);
+         mat(1,1) = cplx(15, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(11,0);
+         mat(0,1) = cplx(22,0);
+         mat(1,0) = cplx(26,0);
+         mat(1,1) = cplx(15,0);
+         mat(2,0) = cplx( 7,5);
+         mat(2,1) = cplx(11,1);
+         mat(3,0) = cplx(17,4);
+         mat(3,1) = cplx(19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 6";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(21,-1);
+         mat(1,2) = cplx( 6, 0);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(21,-1);
+         mat(2,1) = cplx( 6, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 7";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(26,-1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(26,-1);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 8";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(21, 2);
+         mat(1,3) = cplx(14, 0);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(21, 2);
+         mat(3,1) = cplx(14, 0);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 9";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(22,-2);
+         mat(1,1) = cplx(15, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(1,0) = cplx(22,-2);
+         mat(1,1) = cplx(15, 0);
+         mat(2,0) = cplx( 7, 5);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(17, 4);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 10";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(13,-3);
+         mat(1,2) = cplx( 6, 0);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(13,-3);
+         mat(2,1) = cplx( 6, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 11";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(15, 1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(15, 1);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 12";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(10, 0);
+         mat(1,3) = cplx(14, 0);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(10, 0);
+         mat(3,1) = cplx(14, 0);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 13";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(22, 0);
+         mat(1,1) = cplx(15, 1);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(11,0);
+         mat(0,1) = cplx(22,0);
+         mat(1,0) = cplx(22,0);
+         mat(1,1) = cplx(15,1);
+         mat(2,0) = cplx( 7,5);
+         mat(2,1) = cplx(11,1);
+         mat(3,0) = cplx(17,4);
+         mat(3,1) = cplx(19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 14";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(13,-1);
+         mat(1,2) = cplx( 6, 1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(13,-1);
+         mat(2,1) = cplx( 6, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Dense matrix addition assignment test 15";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(15,-1);
+         mat(1,3) = cplx(12, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(15,-1);
+         mat(3,1) = cplx(12, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix addition assignment test 16";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(10, 2);
+         mat(1,3) = cplx(14, 1);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 1);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(10, 2);
+         mat(3,1) = cplx(14, 1);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
 
    //=====================================================================================
    // Sparse matrix addition assignment
@@ -2188,6 +4708,846 @@ void SubmatrixComplexTest::testAddAssign()
                                         "( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 5";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(26, 0);
+         mat(1,1) = cplx(15, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(11,0);
+         mat(0,1) = cplx(22,0);
+         mat(1,0) = cplx(26,0);
+         mat(1,1) = cplx(15,0);
+         mat(2,0) = cplx( 7,5);
+         mat(2,1) = cplx(11,1);
+         mat(3,0) = cplx(17,4);
+         mat(3,1) = cplx(19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 6";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(21,-1);
+         mat(1,2) = cplx( 6, 0);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(21,-1);
+         mat(2,1) = cplx( 6, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 7";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(26,-1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(26,-1);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 8";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(21, 2);
+         mat(1,3) = cplx(14, 0);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(21, 2);
+         mat(3,1) = cplx(14, 0);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 9";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 12UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(22,-2);
+         mat(1,1) = cplx(15, 0);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(1,0) = cplx(22,-2);
+         mat(1,1) = cplx(15, 0);
+         mat(2,0) = cplx( 7, 5);
+         mat(2,1) = cplx(11, 1);
+         mat(3,0) = cplx(17, 4);
+         mat(3,1) = cplx(19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 10";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(13,-3);
+         mat(1,2) = cplx( 6, 0);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(13,-3);
+         mat(2,1) = cplx( 6, 0);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 11";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(15, 1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(15, 1);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 12";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(10, 0);
+         mat(1,3) = cplx(14, 0);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(10, 0);
+         mat(3,1) = cplx(14, 0);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 13";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(11, 0);
+         mat(0,1) = cplx(22, 0);
+         mat(0,2) = cplx( 7,-5);
+         mat(0,3) = cplx(17,-4);
+         mat(1,0) = cplx(22, 0);
+         mat(1,1) = cplx(15, 1);
+         mat(1,2) = cplx(11,-1);
+         mat(1,3) = cplx(19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(11,0);
+         mat(0,1) = cplx(22,0);
+         mat(1,0) = cplx(22,0);
+         mat(1,1) = cplx(15,1);
+         mat(2,0) = cplx( 7,5);
+         mat(2,1) = cplx(11,1);
+         mat(3,0) = cplx(17,4);
+         mat(3,1) = cplx(19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 14";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(15, 0);
+         mat(0,2) = cplx(13, 1);
+         mat(0,3) = cplx(15,-3);
+         mat(1,0) = cplx(13,-2);
+         mat(1,1) = cplx(13,-1);
+         mat(1,2) = cplx( 6, 1);
+         mat(1,3) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(13, 2);
+         mat(1,0) = cplx(15, 0);
+         mat(1,1) = cplx(13, 1);
+         mat(2,0) = cplx(13,-1);
+         mat(2,1) = cplx( 6, 1);
+         mat(3,0) = cplx(15, 3);
+         mat(3,1) = cplx(12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Sparse matrix addition assignment test 15";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(12,-1);
+         mat(0,1) = cplx(11, 2);
+         mat(0,2) = cplx(13, 0);
+         mat(0,3) = cplx(15, 1);
+         mat(1,0) = cplx(15,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(15,-1);
+         mat(1,3) = cplx(12, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(12, 1);
+         mat(0,1) = cplx(15, 2);
+         mat(1,0) = cplx(11,-2);
+         mat(1,1) = cplx(14, 0);
+         mat(2,0) = cplx(13, 0);
+         mat(2,1) = cplx(15, 1);
+         mat(3,0) = cplx(15,-1);
+         mat(3,1) = cplx(12, 1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix addition assignment test 16";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( 5, 4);
+         mat(0,1) = cplx(18,-3);
+         mat(0,2) = cplx(11, 0);
+         mat(0,3) = cplx(10,-2);
+         mat(1,0) = cplx(15,-1);
+         mat(1,1) = cplx(14, 0);
+         mat(1,2) = cplx(10, 2);
+         mat(1,3) = cplx(14, 1);
+         mat(2,0) = cplx(14, 3);
+         mat(2,1) = cplx(12, 4);
+         mat(2,2) = cplx(12, 1);
+         mat(2,3) = cplx( 7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( 5,-4);
+         mat(0,1) = cplx(15, 1);
+         mat(0,2) = cplx(14,-3);
+         mat(1,0) = cplx(18, 3);
+         mat(1,1) = cplx(14, 1);
+         mat(1,2) = cplx(12,-4);
+         mat(2,0) = cplx(11, 0);
+         mat(2,1) = cplx(10,-2);
+         mat(2,2) = cplx(12,-1);
+         mat(3,0) = cplx(10, 2);
+         mat(3,1) = cplx(14, 1);
+         mat(3,2) = cplx( 7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm += mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
    }
 }
@@ -2711,6 +6071,846 @@ void SubmatrixComplexTest::testSubAssign()
       }
    }
 
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 5";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-11,0);
+         mat(0,1) = cplx(-22,0);
+         mat(0,2) = cplx( -7,5);
+         mat(0,3) = cplx(-17,4);
+         mat(1,0) = cplx(-26,0);
+         mat(1,1) = cplx(-15,0);
+         mat(1,2) = cplx(-11,1);
+         mat(1,3) = cplx(-19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-26, 0);
+         mat(1,1) = cplx(-15, 0);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 6";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-21, 1);
+         mat(1,2) = cplx( -6, 0);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-21, 1);
+         mat(2,1) = cplx( -6, 0);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 7";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-26, 1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-26, 1);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 8";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-21,-2);
+         mat(1,3) = cplx(-14, 0);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-21,-2);
+         mat(3,1) = cplx(-14, 0);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 9";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-11,0);
+         mat(0,1) = cplx(-22,0);
+         mat(0,2) = cplx( -7,5);
+         mat(0,3) = cplx(-17,4);
+         mat(1,0) = cplx(-22,2);
+         mat(1,1) = cplx(-15,0);
+         mat(1,2) = cplx(-11,1);
+         mat(1,3) = cplx(-19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-22, 2);
+         mat(1,1) = cplx(-15, 0);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 10";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-13, 3);
+         mat(1,2) = cplx( -6, 0);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-13, 3);
+         mat(2,1) = cplx( -6, 0);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 11";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-15,-1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-15,-1);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 12";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-10, 0);
+         mat(1,3) = cplx(-14, 0);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-10, 0);
+         mat(3,1) = cplx(-14, 0);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 13";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(0,2) = cplx( -7, 5);
+         mat(0,3) = cplx(-17, 4);
+         mat(1,0) = cplx(-22, 0);
+         mat(1,1) = cplx(-15,-1);
+         mat(1,2) = cplx(-11, 1);
+         mat(1,3) = cplx(-19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-22, 0);
+         mat(1,1) = cplx(-15,-1);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 14";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-13, 1);
+         mat(1,2) = cplx( -6,-1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-13, 1);
+         mat(2,1) = cplx( -6,-1);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Dense matrix subtraction assignment test 15";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-15, 1);
+         mat(1,3) = cplx(-12,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-15, 1);
+         mat(3,1) = cplx(-12,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Dense matrix subtraction assignment test 16";
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-10,-2);
+         mat(1,3) = cplx(-14,-1);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14,-1);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-10,-2);
+         mat(3,1) = cplx(-14,-1);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
 
    //=====================================================================================
    // Sparse matrix subtraction assignment
@@ -3211,6 +7411,846 @@ void SubmatrixComplexTest::testSubAssign()
                                         "( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (22,1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 5";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-11,0);
+         mat(0,1) = cplx(-22,0);
+         mat(0,2) = cplx( -7,5);
+         mat(0,3) = cplx(-17,4);
+         mat(1,0) = cplx(-26,0);
+         mat(1,1) = cplx(-15,0);
+         mat(1,2) = cplx(-11,1);
+         mat(1,3) = cplx(-19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-26, 0);
+         mat(1,1) = cplx(-15, 0);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (22,-2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 6";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-21, 1);
+         mat(1,2) = cplx( -6, 0);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-21, 1);
+         mat(2,1) = cplx( -6, 0);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (22,-1) (19, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 7";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-26, 1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-26, 1);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (22, 1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 8";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-21,-2);
+         mat(1,3) = cplx(-14, 0);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-21,-2);
+         mat(3,1) = cplx(-14, 0);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12, 0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,-1) (17, 0) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14, 2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15, 3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 9";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-11,0);
+         mat(0,1) = cplx(-22,0);
+         mat(0,2) = cplx( -7,5);
+         mat(0,3) = cplx(-17,4);
+         mat(1,0) = cplx(-22,2);
+         mat(1,1) = cplx(-15,0);
+         mat(1,2) = cplx(-11,1);
+         mat(1,3) = cplx(-19,2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-22, 2);
+         mat(1,1) = cplx(-15, 0);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7,3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12,1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18,0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,2) (11, 0) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15,3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2,0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 10";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-13, 3);
+         mat(1,2) = cplx( -6, 0);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-13, 3);
+         mat(2,1) = cplx( -6, 0);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11, 1) (19, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 11";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-15,-1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-15,-1);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11,-1) (19, 0) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 12";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-10, 0);
+         mat(1,3) = cplx(-14, 0);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-10, 0);
+         mat(3,1) = cplx(-14, 0);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( (12,0) (18,-1) (14,-2) (15,-3) ( 5,0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (18,1) (17, 1) (11,-1) (19,-2) (-1,2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (14,2) (11, 1) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (15,3) (19, 2) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5,0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0,0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 13";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(0,2) = cplx( -7, 5);
+         mat(0,3) = cplx(-17, 4);
+         mat(1,0) = cplx(-22, 0);
+         mat(1,1) = cplx(-15,-1);
+         mat(1,2) = cplx(-11, 1);
+         mat(1,3) = cplx(-19, 2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-11, 0);
+         mat(0,1) = cplx(-22, 0);
+         mat(1,0) = cplx(-22, 0);
+         mat(1,1) = cplx(-15,-1);
+         mat(2,0) = cplx( -7,-5);
+         mat(2,1) = cplx(-11,-1);
+         mat(3,0) = cplx(-17,-4);
+         mat(3,1) = cplx(-19,-2);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (12, 1) (13, 2) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) (12,-1) (18, 0) (14, 2) (15,-3) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) (13,-2) (14,-2) (11, 1) (19, 1) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (15, 3) (19,-1) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 14";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-15, 0);
+         mat(0,2) = cplx(-13,-1);
+         mat(0,3) = cplx(-15, 3);
+         mat(1,0) = cplx(-13, 2);
+         mat(1,1) = cplx(-13, 1);
+         mat(1,2) = cplx( -6,-1);
+         mat(1,3) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-13,-2);
+         mat(1,0) = cplx(-15, 0);
+         mat(1,1) = cplx(-13,-1);
+         mat(2,0) = cplx(-13, 1);
+         mat(2,1) = cplx( -6,-1);
+         mat(3,0) = cplx(-15,-3);
+         mat(3,1) = cplx(-12, 0);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) ( 7, 3) (-2,1) ( 5, 0) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) ( 0, 0) ( 0,0) (-1, 2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1,1) (12, 1) (13, 2) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (-2,-1) ( 0, 0) ( 1,-1) ( 5,0) (18,-1) (14, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( ( 5, 0) (-1,-2) (12,-1) (18,1) (14, 0) (11, 1) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (13,-2) (14,0) (11,-1) (19, 1) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 15";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 2UL, 4UL, 8UL );
+         mat(0,0) = cplx(-12, 1);
+         mat(0,1) = cplx(-11,-2);
+         mat(0,2) = cplx(-13, 0);
+         mat(0,3) = cplx(-15,-1);
+         mat(1,0) = cplx(-15, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-15, 1);
+         mat(1,3) = cplx(-12,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 2UL, 8UL );
+         mat(0,0) = cplx(-12,-1);
+         mat(0,1) = cplx(-15,-2);
+         mat(1,0) = cplx(-11, 2);
+         mat(1,1) = cplx(-14, 0);
+         mat(2,0) = cplx(-13, 0);
+         mat(2,1) = cplx(-15,-1);
+         mat(3,0) = cplx(-15, 1);
+         mat(3,1) = cplx(-12,-1);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+   }
+
+   // ( ( 1, 0) (-4,-1) ( 7, 3) (-2, 1) ( 5,0) ( 0, 0) )      ( ( 1, 0) (-4,-1) (12,-1) (13, 2) (19,-3) ( 0, 0) )
+   // ( (-4, 1) ( 2, 0) ( 0, 0) ( 0, 0) (-1,2) ( 8,-2) )      ( (-4, 1) ( 2, 0) (18, 3) (14, 0) (11,-2) ( 8,-2) )
+   // ( ( 7,-3) ( 0, 0) ( 3, 0) ( 1, 1) ( 0,0) (-2, 0) )  =>  ( (12, 1) (18,-3) (14, 0) (11,-1) (12,-1) (-2, 0) )
+   // ( (-2,-1) ( 0, 0) ( 1,-1) ( 5, 0) ( 7,1) ( 0, 0) )      ( (13,-2) (14, 0) (11, 1) (19, 1) (14, 4) ( 0, 0) )
+   // ( ( 5, 0) (-1,-2) ( 0, 0) ( 7,-1) ( 1,0) (-4, 0) )      ( (19, 3) (11, 2) (12, 1) (14,-4) ( 1, 0) (-4, 0) )
+   // ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4,0) ( 7, 0) )      ( ( 0, 0) ( 8, 2) (-2, 0) ( 0, 0) (-4, 0) ( 7, 0) )
+   {
+      test_ = "Sparse matrix subtraction assignment test 16";
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::rowMajor> mat( 3UL, 4UL, 12UL );
+         mat(0,0) = cplx( -5,-4);
+         mat(0,1) = cplx(-18, 3);
+         mat(0,2) = cplx(-11, 0);
+         mat(0,3) = cplx(-10, 2);
+         mat(1,0) = cplx(-15, 1);
+         mat(1,1) = cplx(-14, 0);
+         mat(1,2) = cplx(-10,-2);
+         mat(1,3) = cplx(-14,-1);
+         mat(2,0) = cplx(-14,-3);
+         mat(2,1) = cplx(-12,-4);
+         mat(2,2) = cplx(-12,-1);
+         mat(2,3) = cplx( -7, 3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
+      }
+
+      {
+         blaze::CompressedMatrix<cplx,blaze::columnMajor> mat( 4UL, 3UL, 12UL );
+         mat(0,0) = cplx( -5, 4);
+         mat(0,1) = cplx(-15,-1);
+         mat(0,2) = cplx(-14, 3);
+         mat(1,0) = cplx(-18,-3);
+         mat(1,1) = cplx(-14,-1);
+         mat(1,2) = cplx(-12, 4);
+         mat(2,0) = cplx(-11, 0);
+         mat(2,1) = cplx(-10, 2);
+         mat(2,2) = cplx(-12, 1);
+         mat(3,0) = cplx(-10,-2);
+         mat(3,1) = cplx(-14,-1);
+         mat(3,2) = cplx( -7,-3);
+
+         HT herm;
+         init( herm );
+
+         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+
+         try {
+            sm -= mat;
+
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment of invalid matrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << herm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
    }
 }
