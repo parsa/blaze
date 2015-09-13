@@ -127,7 +127,7 @@ namespace blaze {
 // symmetric matrices can also be block structured (i.e. can have vector or matrix elements).
 // For built-in element types, the HermitianMatrix adaptor behaves exactly like the according
 // SymmetricMatrix implementation. For complex element types, however, the Hermitian property
-// is enforced (see also \ref Hermitianmatrix_hermitian).
+// is enforced (see also \ref hermitianmatrix_hermitian).
 
 	\code
 	using blaze::DynamicMatrix;
@@ -154,11 +154,11 @@ namespace blaze {
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
 // some important exceptions resulting from the Hermitian symmetry constraint:
 //
-//  -# <b>\ref Hermitianmatrix_square</b>
-//  -# <b>\ref Hermitianmatrix_hermitian</b>
-//  -# <b>\ref Hermitianmatrix_initialization</b>
+//  -# <b>\ref hermitianmatrix_square</b>
+//  -# <b>\ref hermitianmatrix_hermitian</b>
+//  -# <b>\ref hermitianmatrix_initialization</b>
 //
-// \n \subsection Hermitianmatrix_square Hermitian Matrices Must Always be Square!
+// \n \subsection hermitianmatrix_square Hermitian Matrices Must Always be Square!
 //
 // In case a resizable matrix is used (as for instance blaze::HybridMatrix, blaze::DynamicMatrix,
 // or blaze::CompressedMatrix), this means that the according constructors, the \c resize() and

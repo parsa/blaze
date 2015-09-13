@@ -124,17 +124,21 @@ class HermitianValue
    //**********************************************************************************************
 
    //**struct BuiltinType**************************************************************************
+   /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
    struct BuiltinType { typedef INVALID_TYPE  Type; };
+   /*! \endcond */
    //**********************************************************************************************
 
    //**struct ComplexType**************************************************************************
+   /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
    */
    template< typename T >
    struct ComplexType { typedef typename T::value_type  Type; };
+   /*! \endcond */
    //**********************************************************************************************
 
  public:

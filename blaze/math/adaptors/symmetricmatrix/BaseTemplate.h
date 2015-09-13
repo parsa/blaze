@@ -131,7 +131,7 @@ namespace blaze {
 // symmetric matrices can also be block structured (i.e. can have vector or matrix elements).
 // For built-in element types, the HermitianMatrix adaptor behaves exactly like the according
 // SymmetricMatrix implementation. For complex element types, however, the Hermitian property
-// is enforced (see also \ref Hermitianmatrix_hermitian).
+// is enforced (see also \ref hermitianmatrix_hermitian).
 
 	\code
 	using blaze::DynamicMatrix;
