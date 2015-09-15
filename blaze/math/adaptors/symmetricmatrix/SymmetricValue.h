@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/symmetricmatrix/NumericProxy.h
-//  \brief Header file for the NumericProxy class
+//  \file blaze/math/adaptors/symmetricmatrix/SymmetricValue.h
+//  \brief Header file for the SymmetricValue class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
-#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_NUMERICPROXY_H_
+#ifndef _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SYMMETRICVALUE_H_
+#define _BLAZE_MATH_ADAPTORS_SYMMETRICMATRIX_SYMMETRICVALUE_H_
 
 
 //*************************************************************************************************
@@ -43,7 +43,7 @@
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/proxy/Proxy.h>
@@ -54,6 +54,7 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -74,28 +75,46 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Access proxy for symmetric, square matrices with numeric element types.
+/*!\brief Representation of two synchronized values within a sparse symmetric matrix.
 // \ingroup symmetric_matrix
 //
-// The NumericProxy provides controlled access to the elements of a non-const symmetric matrix
-// with numeric element type (e.g. integral values, floating point values, and complex values).
-// It guarantees that a modification of element \f$ a_{ij} \f$ of the accessed matrix is also
-// applied to element \f$ a_{ji} \f$. The following example illustrates this by means of a
-// \f$ 3 \times 3 \f$ dense symmetric matrix:
+// The SymmetricValue class represents two synchronized values within a sparse symmetric matrix.
+// It guarantees that a modification of value \f$ a_{ij} \f$ via iterator is also applied to the
+// value \f$ a_{ji} \f$. The following example illustrates this by means of a \f$ 3 \times 3 \f$
+// sparse symmetric matrix:
 
    \code
-   // Creating a 3x3 symmetric dense matrix
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<int> > A( 3UL );
+   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<int> >  Symmetric;
 
-   A(0,2) = -2;  //        (  0 0 -2 )
-   A(1,1) =  3;  // => A = (  0 3  5 )
-   A(1,2) =  5;  //        ( -2 5  0 )
+   // Creating a 3x3 symmetric sparse matrix
+   //
+   // (  0 0 -2 )
+   // (  0 3  5 )
+   // ( -2 5  0 )
+   //
+   Symmetric A( 3UL );
+   A(0,2) = -2;
+   A(1,1) =  3;
+   A(1,2) =  5;
+
+   // Modification of the values at position (2,0) and (0,2)
+   //
+   // ( 0 0 4 )
+   // ( 0 3 5 )
+   // ( 4 5 0 )
+   //
+   Symmetric::Iterator it = A.begin( 2UL );
+   it->value() = 4;
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class NumericProxy : public Proxy< NumericProxy<MT> >
+class SymmetricValue : public Proxy< SymmetricValue<MT> >
 {
  private:
+   //**Type definitions****************************************************************************
+   typedef typename MT::Iterator  IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   //**********************************************************************************************
+
    //**struct BuiltinType**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
@@ -116,47 +135,32 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
 
  public:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType     RepresentedType;  //!< Type of the represented matrix element.
-   typedef typename MT::Reference       Reference;        //!< Reference to the represented element.
-   typedef typename MT::ConstReference  ConstReference;   //!< Reference-to-const to the represented element.
-   typedef NumericProxy*                Pointer;          //!< Pointer to the represented element.
-   typedef const NumericProxy*          ConstPointer;     //!< Pointer-to-const to the represented element.
+   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
    typedef typename If< IsComplex<RepresentedType>
                       , ComplexType<RepresentedType>
                       , BuiltinType<RepresentedType> >::Type::Type  ValueType;
+
+   typedef ValueType  value_type;  //!< Value type of the represented complex element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline NumericProxy( MT& matrix, size_t row, size_t column );
-            inline NumericProxy( const NumericProxy& np );
+   inline SymmetricValue( IteratorType pos, MT* matrix, size_t index );
    //@}
-   //**********************************************************************************************
-
-   //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline NumericProxy& operator= ( const NumericProxy& sp );
-   template< typename T > inline NumericProxy& operator= ( const T& value );
-   template< typename T > inline NumericProxy& operator+=( const T& value );
-   template< typename T > inline NumericProxy& operator-=( const T& value );
-   template< typename T > inline NumericProxy& operator*=( const T& value );
-   template< typename T > inline NumericProxy& operator/=( const T& value );
-   //@}
-   //**********************************************************************************************
-
-   //**Access operators****************************************************************************
-   /*!\name Access operators */
-   //@{
-   inline Pointer      operator->();
-   inline ConstPointer operator->() const;
+                          inline SymmetricValue& operator= ( const SymmetricValue& sv );
+   template< typename T > inline SymmetricValue& operator= ( const T& value );
+   template< typename T > inline SymmetricValue& operator+=( const T& value );
+   template< typename T > inline SymmetricValue& operator-=( const T& value );
+   template< typename T > inline SymmetricValue& operator*=( const T& value );
+   template< typename T > inline SymmetricValue& operator/=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -166,14 +170,14 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    inline void reset() const;
    inline void clear() const;
 
-   inline ConstReference get() const;
+   inline RepresentedType get() const;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ConstReference() const;
+   inline operator RepresentedType() const;
    //@}
    //**********************************************************************************************
 
@@ -188,18 +192,22 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    //**********************************************************************************************
 
  private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
    //@{
-   MT&    matrix_;  //!< Reference to the adapted matrix.
-   size_t row_;     //!< Row index of the accessed matrix element.
-   size_t column_;  //!< Column index of the accessed matrix element.
+   inline void sync() const;
    //@}
+   //**********************************************************************************************
+
+   //**Member variables****************************************************************************
+   IteratorType pos_;     //!< Iterator to the current sparse symmetric matrix element.
+   MT*          matrix_;  //!< The sparse matrix containing the iterator.
+   size_t       index_;   //!< The row/column index of the iterator.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE              ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
@@ -209,7 +217,7 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( RepresentedType );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -225,31 +233,17 @@ class NumericProxy : public Proxy< NumericProxy<MT> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization constructor for a NumericProxy.
+/*!\brief Constructor for the SymmetricValue class.
 //
-// \param matrix Reference to the adapted matrix.
-// \param row The row-index of the accessed matrix element.
-// \param column The column-index of the accessed matrix element.
+// \param pos The initial position of the iterator.
+// \param matrix The sparse matrix containing the iterator.
+// \param index The row/column index of the iterator.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::NumericProxy( MT& matrix, size_t row, size_t column )
-   : matrix_( matrix )  // Reference to the adapted matrix
-   , row_   ( row    )  // Row index of the accessed matrix element
-   , column_( column )  // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for NumericProxy.
-//
-// \param np Numeric proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::NumericProxy( const NumericProxy& np )
-   : matrix_( np.matrix_ )  // Reference to the adapted matrix
-   , row_   ( np.row_    )  // Row index of the accessed matrix element
-   , column_( np.column_ )  // Column index of the accessed matrix element
+inline SymmetricValue<MT>::SymmetricValue( IteratorType pos, MT* matrix, size_t index )
+   : pos_   ( pos    )  // Iterator to the current sparse symmetric matrix element
+   , matrix_( matrix )  // The sparse matrix containing the iterator
+   , index_ ( index  )  // The row/column index of the iterator
 {}
 //*************************************************************************************************
 
@@ -263,147 +257,103 @@ inline NumericProxy<MT>::NumericProxy( const NumericProxy& np )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for NumericProxy.
+/*!\brief Copy assignment operator for SymmetricValue.
 //
-// \param np Numeric proxy to be copied.
-// \return Reference to the assigned proxy.
+// \param sv The symmetric value to be copied.
+// \return Reference to the assigned symmetric value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>& NumericProxy<MT>::operator=( const NumericProxy& np )
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator=( const SymmetricValue& sv )
 {
-   matrix_(row_,column_) = np.matrix_(np.row_,np.column_);
-   matrix_(column_,row_) = np.matrix_(np.row_,np.column_);
-
+   pos_->value() = sv.pos_->value();
+   sync();
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Assignment to the accessed matrix element.
+/*!\brief Assignment to the symmetric value.
 //
-// \param value The new value of the matrix element.
-// \return Reference to the assigned proxy.
-*/
-template< typename MT >  // Type of the adapted matrix
-template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator=( const T& value )
-{
-   matrix_(row_,column_) = value;
-   if( row_ != column_ )
-      matrix_(column_,row_) = value;
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Addition assignment to the accessed matrix element.
-//
-// \param value The right-hand side value to be added to the matrix element.
-// \return Reference to the assigned proxy.
+// \param value The new value of the symmetric value.
+// \return Reference to the assigned symmetric value.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator+=( const T& value )
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator=( const T& value )
 {
-   matrix_(row_,column_) += value;
-   if( row_ != column_ )
-      matrix_(column_,row_) += value;
-
+   pos_->value() = value;
+   sync();
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Subtraction assignment to the accessed matrix element.
+/*!\brief Addition assignment to the symmetric value.
 //
-// \param value The right-hand side value to be subtracted from the matrix element.
-// \return Reference to the assigned proxy.
+// \param value The right-hand side value to be added to the symmetric value.
+// \return Reference to the assigned symmetric value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator-=( const T& value )
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator+=( const T& value )
 {
-   matrix_(row_,column_) -= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) -= value;
-
+   pos_->value() += value;
+   sync();
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment to the accessed matrix element.
+/*!\brief Subtraction assignment to the symmetric value.
+//
+// \param value The right-hand side value to be subtracted from the symmetric value.
+// \return Reference to the assigned symmetric value.
+*/
+template< typename MT >  // Type of the adapted matrix
+template< typename T >   // Type of the right-hand side value
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator-=( const T& value )
+{
+   pos_->value() -= value;
+   sync();
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment to the symmetric value.
 //
 // \param value The right-hand side value for the multiplication.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned symmetric value.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator*=( const T& value )
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator*=( const T& value )
 {
-   matrix_(row_,column_) *= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) *= value;
-
+   pos_->value() *= value;
+   sync();
    return *this;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Division assignment to the accessed matrix element.
+/*!\brief Division assignment to the symmetric value.
 //
 // \param value The right-hand side value for the division.
-// \return Reference to the assigned proxy.
+// \return Reference to the assigned symmetric value.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline NumericProxy<MT>& NumericProxy<MT>::operator/=( const T& value )
+inline SymmetricValue<MT>& SymmetricValue<MT>::operator/=( const T& value )
 {
-   matrix_(row_,column_) /= value;
-   if( row_ != column_ )
-      matrix_(column_,row_) /= value;
-
+   pos_->value() /= value;
+   sync();
    return *this;
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ACCESS OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::Pointer NumericProxy<MT>::operator->()
-{
-   return this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Direct access to the represented matrix element.
-//
-// \return Pointer to the represented matrix element.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() const
-{
-   return this;
 }
 //*************************************************************************************************
 
@@ -417,52 +367,85 @@ inline typename NumericProxy<MT>::ConstPointer NumericProxy<MT>::operator->() co
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
+/*!\brief Reset the symmetric value to its default initial value.
 //
 // \return void
 //
-// This function resets the element represented by the proxy to its default initial value.
+// This function resets the symmetric value to its default initial value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::reset() const
+inline void SymmetricValue<MT>::reset() const
 {
    using blaze::reset;
 
-   reset( matrix_(row_,column_) );
-   if( row_ != column_ )
-      reset( matrix_(column_,row_) );
+   reset( pos_->value() );
+
+   if( pos_->index() != index_ )
+   {
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+      const IteratorType pos2( matrix_->find( row, column ) );
+
+      reset( pos2->value() );
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
+/*!\brief Clearing the symmetric value.
 //
 // \return void
 //
-// This function clears the element represented by the proxy to its default initial state.
+// This function clears the symmetric value to its default initial state.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::clear() const
+inline void SymmetricValue<MT>::clear() const
 {
    using blaze::clear;
 
-   clear( matrix_(row_,column_) );
-   if( row_ != column_ )
-      clear( matrix_(column_,row_) );
+   clear( pos_->value() );
+
+   if( pos_->index() != index_ )
+   {
+      const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+      const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+      const IteratorType pos2( matrix_->find( row, column ) );
+
+      clear( pos2->value() );
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returning the value of the accessed matrix element.
+/*!\brief Access to the represented value.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const
+inline typename SymmetricValue<MT>::RepresentedType SymmetricValue<MT>::get() const
 {
-   return const_cast<const MT&>( matrix_ )(row_,column_);
+   return pos_->value();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Synchronization of the current sparse element to the according paired element.
+//
+// \return void
+*/
+template< typename MT >  // Type of the adapted matrix
+inline void SymmetricValue<MT>::sync() const
+{
+   if( pos_->index() == index_ || isDefault( pos_->value() ) )
+      return;
+
+   const size_t row   ( ( IsRowMajorMatrix<MT>::value )?( pos_->index() ):( index_ ) );
+   const size_t column( ( IsRowMajorMatrix<MT>::value )?( index_ ):( pos_->index() ) );
+
+   matrix_->set( row, column, pos_->value() );
 }
 //*************************************************************************************************
 
@@ -476,14 +459,14 @@ inline typename NumericProxy<MT>::ConstReference NumericProxy<MT>::get() const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Conversion to the accessed matrix element.
+/*!\brief Conversion to the represented value.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline NumericProxy<MT>::operator ConstReference() const
+inline SymmetricValue<MT>::operator RepresentedType() const
 {
-   return get();
+   return pos_->value();
 }
 //*************************************************************************************************
 
@@ -501,13 +484,13 @@ inline NumericProxy<MT>::operator ConstReference() const
 //
 // \return The current real part of the represented complex number.
 //
-// In case the proxy represents a complex number, this function returns the current value of its
-// real part.
+// In case the value represents a complex number, this function returns the current value
+// of its real part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::real() const
+inline typename SymmetricValue<MT>::ValueType SymmetricValue<MT>::real() const
 {
-   return matrix_(row_,column_).real();
+   return pos_->value().real();
 }
 //*************************************************************************************************
 
@@ -518,14 +501,14 @@ inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::real() const
 // \param value The new value for the real part.
 // \return void
 //
-// In case the proxy represents a complex number, this function sets a new value to its real part.
+// In case the value represents a complex number, this function sets a new value to its
+// real part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::real( ValueType value ) const
+inline void SymmetricValue<MT>::real( ValueType value ) const
 {
-   matrix_(row_,column_).real( value );
-   if( row_ != column_ )
-      matrix_(column_,row_).real( value );
+   pos_->value().real() = value;
+   sync();
 }
 //*************************************************************************************************
 
@@ -535,13 +518,13 @@ inline void NumericProxy<MT>::real( ValueType value ) const
 //
 // \return The current imaginary part of the represented complex number.
 //
-// In case the proxy represents a complex number, this function returns the current value of its
+// In case the value represents a complex number, this function returns the current value of its
 // imaginary part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::imag() const
+inline typename SymmetricValue<MT>::ValueType SymmetricValue<MT>::imag() const
 {
-   return matrix_(row_,column_).imag();
+   return pos_->value.imag();
 }
 //*************************************************************************************************
 
@@ -552,15 +535,14 @@ inline typename NumericProxy<MT>::ValueType NumericProxy<MT>::imag() const
 // \param value The new value for the imaginary part.
 // \return void
 //
-// In case the proxy represents a complex number, this function sets a new value to its imaginary
-// part.
+// In case the proxy represents a complex number, this function sets a new value to its
+// imaginary part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void NumericProxy<MT>::imag( ValueType value ) const
+inline void SymmetricValue<MT>::imag( ValueType value ) const
 {
-   matrix_(row_,column_).imag( value );
-   if( row_ != column_ )
-      matrix_(column_,row_).imag( value );
+   pos_->value().imag( value );
+   sync();
 }
 //*************************************************************************************************
 
@@ -574,166 +556,164 @@ inline void NumericProxy<MT>::imag( ValueType value ) const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name NumericProxy global functions */
+/*!\name SymmetricValue global functions */
 //@{
 template< typename MT >
-inline void reset( const NumericProxy<MT>& proxy );
+inline void reset( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline void clear( const NumericProxy<MT>& proxy );
+inline void clear( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isDefault( const NumericProxy<MT>& proxy );
+inline bool isDefault( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isReal( const NumericProxy<MT>& proxy );
+inline bool isReal( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isZero( const NumericProxy<MT>& proxy );
+inline bool isZero( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isOne( const NumericProxy<MT>& proxy );
+inline bool isOne( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const NumericProxy<MT>& proxy );
+inline bool isnan( const SymmetricValue<MT>& value );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
+/*!\brief Resetting the symmetric value to the default initial values.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
+// \param value The given symmetric value.
 // \return void
 //
-// This function resets the element represented by the numeric proxy to its default initial
-// value.
+// This function resets the symmetric value to its default initial value.
 */
 template< typename MT >
-inline void reset( const NumericProxy<MT>& proxy )
+inline void reset( const SymmetricValue<MT>& value )
 {
-   proxy.reset();
+   value.reset();
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
+/*!\brief Clearing the symmetric value.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
+// \param value The given symmetric value.
 // \return void
 //
-// This function clears the element represented by the numeric proxy to its default initial
-// state.
+// This function clears the symmetric value to its default initial state.
 */
 template< typename MT >
-inline void clear( const NumericProxy<MT>& proxy )
+inline void clear( const SymmetricValue<MT>& value )
 {
-   proxy.clear();
+   value.clear();
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
+/*!\brief Returns whether the symmetric value is in default state.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy
-// \return \a true in case the represented element is in default state, \a false otherwise.
+// \param value The given symmetric value.
+// \return \a true in case the symmetric value is in default state, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the symmetric value is in default state. In case it is in
+// default state, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isDefault( const NumericProxy<MT>& proxy )
+inline bool isDefault( const SymmetricValue<MT>& value )
 {
    using blaze::isDefault;
 
-   return isDefault( proxy.get() );
+   return isDefault( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the matrix element represents a real number.
+/*!\brief Returns whether the symmetric value represents a real number.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the matrix element represents a real number, \a false otherwise.
+// \param value The given symmetric value.
+// \return \a true in case the symmetric value represents a real number, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the a
-// real number. In case the element is of built-in type, the function returns \a true. In case
-// the element is of complex type, the function returns \a true if the imaginary part is equal
-// to 0. Otherwise it returns \a false.
+// This function checks whether the symmetric value represents the a real number. In case the
+// value is of built-in type, the function returns \a true. In case the element is of complex
+// type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
+// \a false.
 */
 template< typename MT >
-inline bool isReal( const NumericProxy<MT>& proxy )
+inline bool isReal( const SymmetricValue<MT>& value )
 {
    using blaze::isReal;
 
-   return isReal( proxy.get() );
+   return isReal( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is 0.
+/*!\brief Returns whether the symmetric value is 0.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 0, \a false otherwise.
+// \param value The given symmetric value.
+// \return \a true in case the symmetric value is 0, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the symmetric value represents the numeric value 0. In case it
+// is 0, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isZero( const NumericProxy<MT>& proxy )
+inline bool isZero( const SymmetricValue<MT>& value )
 {
    using blaze::isZero;
 
-   return isZero( proxy.get() );
+   return isZero( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
+/*!\brief Returns whether the symmetric value is 1.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
+// \param value The given symmetric value.
+// \return \a true in case the symmetric value is 1, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the symmetric value represents the numeric value 1. In case it
+// is 1, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isOne( const NumericProxy<MT>& proxy )
+inline bool isOne( const SymmetricValue<MT>& value )
 {
    using blaze::isOne;
 
-   return isOne( proxy.get() );
+   return isOne( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is not a number.
+/*!\brief Returns whether the symmetric value is not a number.
 // \ingroup symmetric_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in not a number, \a false otherwise.
+// \param value The given symmetric value.
+// \return \a true in case the symmetric value is in not a number, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy is not a number (NaN).
-// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the symmetric value is not a number (NaN). In case it is not a
+// number, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isnan( const NumericProxy<MT>& proxy )
+inline bool isnan( const SymmetricValue<MT>& value )
 {
    using blaze::isnan;
 
-   return isnan( proxy.get() );
+   return isnan( value.get() );
 }
 //*************************************************************************************************
 
