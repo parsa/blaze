@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/adaptors/uniuppermatrix/UniUpperProxy.h
-//  \brief Header file for the UniUpperProxy class
+//  \file blaze/math/adaptors/uniuppermatrix/UniUpperValue.h
+//  \brief Header file for the UniUpperValue class
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_ADAPTORS_UNIUPPERMATRIX_UPPERPROXY_H_
-#define _BLAZE_MATH_ADAPTORS_UNIUPPERMATRIX_UPPERPROXY_H_
+#ifndef _BLAZE_MATH_ADAPTORS_UNIUPPERMATRIX_UNIUPPERVALUE_H_
+#define _BLAZE_MATH_ADAPTORS_UNIUPPERMATRIX_UNIUPPERVALUE_H_
 
 
 //*************************************************************************************************
@@ -43,7 +43,7 @@
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
-#include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/proxy/Proxy.h>
@@ -54,6 +54,7 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -75,35 +76,34 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Access proxy for upper unitriangular matrices.
+/*!\brief Representation of a value within a sparse upper unitriangular matrix.
 // \ingroup uniupper_matrix
 //
-// The UniUpperProxy provides controlled access to the elements of a non-const upper unitriangular
-// matrix. It guarantees that the uniupper matrix invariant is not violated, i.e. that elements
-// in the lower part of the matrix remain 0 and the diagonal elements remain 1. The following
-// example illustrates this by means of a \f$ 3 \times 3 \f$ dense upper unitriangular matrix:
+// The UniUpperValue class represents a single value within a sparse upper unitriangular matrix.
+// It guarantees that the uniupper matrix invariant is not violated, i.e. that elements in the
+// upper part of the matrix remain 0 and the diagonal elements remain 1. The following example
+// illustrates this by means of a \f$ 3 \times 3 \f$ sparse upper unitriangular matrix:
 
    \code
-   // Creating a 3x3 upper unitriangular dense matrix
-   blaze::UniUpperMatrix< blaze::DynamicMatrix<int> > A( 3UL );
+   typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<int> >  UniUpper;
+
+   // Creating a 3x3 upper unitriangular sparse matrix
+   UniUpper A( 3UL );
 
    A(0,1) = -2;  //        ( 1 -2  3 )
    A(0,2) =  3;  // => A = ( 0  1  5 )
    A(1,2) =  5;  //        ( 0  0  1 )
 
-   A(1,1) =  4;  // Invalid assignment to diagonal matrix element; results in an exception!
-   A(2,0) =  7;  // Invalid assignment to lower matrix element; results in an exception!
+   UniUpper::Iterator it = A.begin( 1UL );
+   it->value() = 9;  // Invalid assignment to diagonal matrix element; results in an exception!
+   ++it;
+   it->value() = 4;  // Modification of matrix element (1,2)
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
+class UniUpperValue : public Proxy< UniUpperValue<MT> >
 {
  private:
-   //**Type definitions****************************************************************************
-   //! Reference type of the underlying matrix type.
-   typedef typename MT::Reference  ReferenceType;
-   //**********************************************************************************************
-
    //**struct BuiltinType**************************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary struct to determine the value type of the represented complex element.
@@ -124,8 +124,7 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of the represented matrix element.
-   typedef typename MT::ElementType  RepresentedType;
+   typedef typename MT::ElementType  RepresentedType;   //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
    typedef typename If< IsComplex<RepresentedType>
@@ -138,24 +137,19 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniUpperProxy( MT& matrix, size_t row, size_t column );
-            inline UniUpperProxy( const UniUpperProxy& uup );
+   inline UniUpperValue( RepresentedType& value, bool diagonal );
    //@}
-   //**********************************************************************************************
-
-   //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline const UniUpperProxy& operator= ( const UniUpperProxy& uup ) const;
-   template< typename T > inline const UniUpperProxy& operator= ( const T& value ) const;
-   template< typename T > inline const UniUpperProxy& operator+=( const T& value ) const;
-   template< typename T > inline const UniUpperProxy& operator-=( const T& value ) const;
-   template< typename T > inline const UniUpperProxy& operator*=( const T& value ) const;
-   template< typename T > inline const UniUpperProxy& operator/=( const T& value ) const;
+                          inline UniUpperValue& operator= ( const UniUpperValue& uuv );
+   template< typename T > inline UniUpperValue& operator= ( const T& value );
+   template< typename T > inline UniUpperValue& operator+=( const T& value );
+   template< typename T > inline UniUpperValue& operator-=( const T& value );
+   template< typename T > inline UniUpperValue& operator*=( const T& value );
+   template< typename T > inline UniUpperValue& operator/=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -165,7 +159,7 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
    inline void reset() const;
    inline void clear() const;
 
-   inline RepresentedType get()          const;
+   inline RepresentedType get() const;
    inline bool            isRestricted() const;
    //@}
    //**********************************************************************************************
@@ -189,17 +183,13 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
 
  private:
    //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   ReferenceType value_;  //!< Reference to the accessed matrix element.
-   size_t row_;           //!< Row index of the accessed matrix element.
-   size_t column_;        //!< Column index of the accessed matrix element.
-   //@}
+   RepresentedType* value_;     //!< The represented value.
+   bool             diagonal_;  //!< \a true in case the element is on the diagonal, \a false if not.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE              ( MT );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
@@ -225,31 +215,15 @@ class UniUpperProxy : public Proxy< UniUpperProxy<MT> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Initialization constructor for a UniUpperProxy.
+/*!\brief Constructor for the UniUpperValue class.
 //
-// \param matrix Reference to the adapted matrix.
-// \param row The row-index of the accessed matrix element.
-// \param column The column-index of the accessed matrix element.
+// \param value Reference to the represented value.
+// \param diagonal \a true in case the element is on the diagonal, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UniUpperProxy<MT>::UniUpperProxy( MT& matrix, size_t row, size_t column )
-   : value_ ( matrix( row, column ) )  // Reference to the accessed matrix element
-   , row_   ( row    )                 // Row index of the accessed matrix element
-   , column_( column )                 // Column index of the accessed matrix element
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief The copy constructor for UniUpperProxy.
-//
-// \param uup Proxy to be copied.
-*/
-template< typename MT >  // Type of the adapted matrix
-inline UniUpperProxy<MT>::UniUpperProxy( const UniUpperProxy& uup )
-   : value_ ( uup.value_  )  // Reference to the accessed matrix element
-   , row_   ( uup.row_    )  // Row index of the accessed matrix element
-   , column_( uup.column_ )  // Column index of the accessed matrix element
+inline UniUpperValue<MT>::UniUpperValue( RepresentedType& value, bool diagonal )
+   : value_   ( &value   )  // The represented value.
+   , diagonal_( diagonal )  // true in case the element is on the diagonal, false if not
 {}
 //*************************************************************************************************
 
@@ -263,23 +237,20 @@ inline UniUpperProxy<MT>::UniUpperProxy( const UniUpperProxy& uup )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for UniUpperProxy.
+/*!\brief Copy assignment operator for UniUpperValue.
 //
-// \param uup Proxy to be copied.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \param uuv The uniupper value to be copied.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator=( const UniUpperProxy& uup ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator=( const UniUpperValue& uuv )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ = uup.value_;
+   *value_ = *uuv.value;
 
    return *this;
 }
@@ -287,24 +258,21 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator=( const UniUpperProx
 
 
 //*************************************************************************************************
-/*!\brief Assignment to the accessed matrix element.
+/*!\brief Assignment to the uniupper value.
 //
-// \param value The new value of the matrix element.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \param value The new value of the uniupper value.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator=( const T& value ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator=( const T& value )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ = value;
+   *value_ = value;
 
    return *this;
 }
@@ -312,24 +280,21 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator=( const T& value ) c
 
 
 //*************************************************************************************************
-/*!\brief Addition assignment to the accessed matrix element.
+/*!\brief Addition assignment to the uniupper value.
 //
-// \param value The right-hand side value to be added to the matrix element.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \param value The right-hand side value to be added to the uniupper value.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator+=( const T& value ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator+=( const T& value )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ += value;
+   *value_ += value;
 
    return *this;
 }
@@ -337,24 +302,21 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator+=( const T& value ) 
 
 
 //*************************************************************************************************
-/*!\brief Subtraction assignment to the accessed matrix element.
+/*!\brief Subtraction assignment to the uniupper value.
 //
-// \param value The right-hand side value to be subtracted from the matrix element.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \param value The right-hand side value to be subtracted from the uniupper value.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator-=( const T& value ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator-=( const T& value )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ -= value;
+   *value_ -= value;
 
    return *this;
 }
@@ -362,24 +324,21 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator-=( const T& value ) 
 
 
 //*************************************************************************************************
-/*!\brief Multiplication assignment to the accessed matrix element.
+/*!\brief Multiplication assignment to the uniupper value.
 //
 // \param value The right-hand side value for the multiplication.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator*=( const T& value ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator*=( const T& value )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ *= value;
+   *value_ *= value;
 
    return *this;
 }
@@ -387,24 +346,21 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator*=( const T& value ) 
 
 
 //*************************************************************************************************
-/*!\brief Division assignment to the accessed matrix element.
+/*!\brief Division assignment to the uniupper value.
 //
 // \param value The right-hand side value for the division.
-// \return Reference to the assigned proxy.
-// \exception std::invalid_argument Invalid assignment to diagonal or lower matrix element.
-//
-// In case the proxy represents an element on the diagonal or in the lower part of the matrix,
-// a \a std::invalid_argument exception is thrown.
+// \return Reference to the assigned uniupper value.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator/=( const T& value ) const
+inline UniUpperValue<MT>& UniUpperValue<MT>::operator/=( const T& value )
 {
-   if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal or lower matrix element" );
+   if( diagonal_ ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   value_ /= value;
+   *value_ /= value;
 
    return *this;
 }
@@ -420,63 +376,63 @@ inline const UniUpperProxy<MT>& UniUpperProxy<MT>::operator/=( const T& value ) 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reset the represented element to its default initial value.
+/*!\brief Reset the uniupper value to its default initial value.
 //
 // \return void
 //
-// This function resets the element represented by the proxy to its default initial value.
+// This function resets the uniupper value to its default initial value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::reset() const
+inline void UniUpperValue<MT>::reset() const
 {
    using blaze::reset;
 
-   if( row_ < column_ )
-      reset( value_ );
+   if( !diagonal_ )
+      reset( *value_ );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
+/*!\brief Clearing the uniupper value.
 //
 // \return void
 //
-// This function clears the element represented by the proxy to its default initial state.
+// This function clears the uniupper value to its default initial state.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::clear() const
+inline void UniUpperValue<MT>::clear() const
 {
    using blaze::clear;
 
-   if( row_ < column_ )
-      clear( value_ );
+   if( !diagonal_ )
+      clear( *value_ );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returning the value of the accessed matrix element.
+/*!\brief Access to the represented value.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UniUpperProxy<MT>::RepresentedType UniUpperProxy<MT>::get() const
+inline typename UniUpperValue<MT>::RepresentedType UniUpperValue<MT>::get() const
 {
-   return value_;
+   return *value_;
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the proxy represents a restricted matrix element..
+/*!\brief Returns whether the value represents a restricted matrix element..
 //
 // \return \a true in case access to the matrix element is restricted, \a false if not.
 */
 template< typename MT >  // Type of the adapted matrix
-inline bool UniUpperProxy<MT>::isRestricted() const
+inline bool UniUpperValue<MT>::isRestricted() const
 {
-   return column_ <= row_;
+   return diagonal_;
 }
 //*************************************************************************************************
 
@@ -490,14 +446,14 @@ inline bool UniUpperProxy<MT>::isRestricted() const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Conversion to the accessed matrix element.
+/*!\brief Conversion to the represented value.
 //
-// \return Direct/raw reference to the accessed matrix element.
+// \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline UniUpperProxy<MT>::operator RepresentedType() const
+inline UniUpperValue<MT>::operator RepresentedType() const
 {
-   return get();
+   return *value_;
 }
 //*************************************************************************************************
 
@@ -519,7 +475,7 @@ inline UniUpperProxy<MT>::operator RepresentedType() const
 // real part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UniUpperProxy<MT>::ValueType UniUpperProxy<MT>::real() const
+inline typename UniUpperValue<MT>::ValueType UniUpperValue<MT>::real() const
 {
    return value_.real();
 }
@@ -531,17 +487,15 @@ inline typename UniUpperProxy<MT>::ValueType UniUpperProxy<MT>::real() const
 //
 // \param value The new value for the real part.
 // \return void
-// \exception std::invalid_argument Invalid setting for diagonal or lower matrix element.
+// \exception std::invalid_argument Invalid setting for diagonal matrix element.
 //
 // In case the proxy represents a complex number, this function sets a new value to its real part.
-// In case the represented value is a diagonal element or an element in the lower part of the
-// matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::real( ValueType value ) const
+inline void UniUpperValue<MT>::real( ValueType value ) const
 {
    if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal or lower matrix element" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
    value_.real( value );
@@ -558,7 +512,7 @@ inline void UniUpperProxy<MT>::real( ValueType value ) const
 // imaginary part.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename UniUpperProxy<MT>::ValueType UniUpperProxy<MT>::imag() const
+inline typename UniUpperValue<MT>::ValueType UniUpperValue<MT>::imag() const
 {
    return value_.imag();
 }
@@ -570,17 +524,17 @@ inline typename UniUpperProxy<MT>::ValueType UniUpperProxy<MT>::imag() const
 //
 // \param value The new value for the imaginary part.
 // \return void
-// \exception std::invalid_argument Invalid setting for diagonal or lower matrix element.
+// \exception std::invalid_argument Invalid setting for diagonal matrix element.
 //
 // In case the proxy represents a complex number, this function sets a new value to its imaginary
-// part. In case the represented value is a diagonal element or an element in the lower part of
-// the matrix, a \a std::invalid_argument exception is thrown.
+// part. In case the proxy represents a diagonal element and the given value is not zero, a
+// \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the adapted matrix
-inline void UniUpperProxy<MT>::imag( ValueType value ) const
+inline void UniUpperValue<MT>::imag( ValueType value ) const
 {
    if( isRestricted() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal or lower matrix element" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
    value_.imag( value );
@@ -597,166 +551,164 @@ inline void UniUpperProxy<MT>::imag( ValueType value ) const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name UniUpperProxy global functions */
+/*!\name UniUpperValue global functions */
 //@{
 template< typename MT >
-inline void reset( const UniUpperProxy<MT>& proxy );
+inline void reset( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline void clear( const UniUpperProxy<MT>& proxy );
+inline void clear( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isDefault( const UniUpperProxy<MT>& proxy );
+inline bool isDefault( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isReal( const UniUpperProxy<MT>& proxy );
+inline bool isReal( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isZero( const UniUpperProxy<MT>& proxy );
+inline bool isZero( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isOne( const UniUpperProxy<MT>& proxy );
+inline bool isOne( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const UniUpperProxy<MT>& proxy );
+inline bool isnan( const UniUpperValue<MT>& value );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Resetting the represented element to the default initial values.
+/*!\brief Resetting the uniupper value to the default initial values.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
+// \param value The given uniupper value.
 // \return void
 //
-// This function resets the element represented by the access proxy to its default initial
-// value.
+// This function resets the uniupper value to its default initial value.
 */
 template< typename MT >
-inline void reset( const UniUpperProxy<MT>& proxy )
+inline void reset( const UniUpperValue<MT>& value )
 {
-   proxy.reset();
+   value.reset();
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Clearing the represented element.
+/*!\brief Clearing the uniupper value.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
+// \param value The given uniupper value.
 // \return void
 //
-// This function clears the element represented by the access proxy to its default initial
-// state.
+// This function clears the uniupper value to its default initial state.
 */
 template< typename MT >
-inline void clear( const UniUpperProxy<MT>& proxy )
+inline void clear( const UniUpperValue<MT>& value )
 {
-   proxy.clear();
+   value.clear();
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is in default state.
+/*!\brief Returns whether the uniupper value is in default state.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy
-// \return \a true in case the represented element is in default state, \a false otherwise.
+// \param value The given uniupper value.
+// \return \a true in case the uniupper value is in default state, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy is in default state.
-// In case it is in default state, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the uniupper value is in default state. In case it is in
+// default state, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isDefault( const UniUpperProxy<MT>& proxy )
+inline bool isDefault( const UniUpperValue<MT>& value )
 {
    using blaze::isDefault;
 
-   return isDefault( proxy.get() );
+   return isDefault( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the matrix element represents a real number.
+/*!\brief Returns whether the uniupper value represents a real number.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the matrix element represents a real number, \a false otherwise.
+// \param value The given uniupper value.
+// \return \a true in case the uniupper value represents a real number, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the a
-// real number. In case the element is of built-in type, the function returns \a true. In case
-// the element is of complex type, the function returns \a true if the imaginary part is equal
-// to 0. Otherwise it returns \a false.
+// This function checks whether the uniupper value represents the a real number. In case the
+// value is of built-in type, the function returns \a true. In case the element is of complex
+// type, the function returns \a true if the imaginary part is equal to 0. Otherwise it returns
+// \a false.
 */
 template< typename MT >
-inline bool isReal( const UniUpperProxy<MT>& proxy )
+inline bool isReal( const UniUpperValue<MT>& value )
 {
    using blaze::isReal;
 
-   return isReal( proxy.get() );
+   return isReal( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is 0.
+/*!\brief Returns whether the uniupper value is 0.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 0, \a false otherwise.
+// \param value The given uniupper value.
+// \return \a true in case the uniupper value is 0, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the uniupper value represents the numeric value 0. In case it
+// is 0, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isZero( const UniUpperProxy<MT>& proxy )
+inline bool isZero( const UniUpperValue<MT>& value )
 {
    using blaze::isZero;
 
-   return isZero( proxy.get() );
+   return isZero( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is 1.
+/*!\brief Returns whether the uniupper value is 1.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is 1, \a false otherwise.
+// \param value The given uniupper value.
+// \return \a true in case the uniupper value is 1, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy represents the numeric
-// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the uniupper value represents the numeric value 1. In case it
+// is 1, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isOne( const UniUpperProxy<MT>& proxy )
+inline bool isOne( const UniUpperValue<MT>& value )
 {
    using blaze::isOne;
 
-   return isOne( proxy.get() );
+   return isOne( value.get() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the represented element is not a number.
+/*!\brief Returns whether the uniupper value is not a number.
 // \ingroup uniupper_matrix
 //
-// \param proxy The given access proxy.
-// \return \a true in case the represented element is in not a number, \a false otherwise.
+// \param value The given uniupper value.
+// \return \a true in case the uniupper value is in not a number, \a false otherwise.
 //
-// This function checks whether the element represented by the access proxy is not a number (NaN).
-// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+// This function checks whether the uniupper value is not a number (NaN). In case it is not a
+// number, the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT >
-inline bool isnan( const UniUpperProxy<MT>& proxy )
+inline bool isnan( const UniUpperValue<MT>& value )
 {
    using blaze::isnan;
 
-   return isnan( proxy.get() );
+   return isnan( value.get() );
 }
 //*************************************************************************************************
 
