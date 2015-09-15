@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_PROXY_DEFAULTPROXY_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -55,7 +62,56 @@ namespace blaze {
 template< typename PT    // Type of the proxy
         , typename RT >  // Type of the represented element
 class DefaultProxy
-{};
+{
+ public:
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
+   //@{
+   BLAZE_ALWAYS_INLINE PT&       operator~();
+   BLAZE_ALWAYS_INLINE const PT& operator~() const;
+   //@}
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONVERSION OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Conversion operator for non-constant proxies.
+//
+// \return Reference to the actual type of the proxy.
+//
+// This function provides a type-safe downcast to the actual type of the proxy.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE PT& DefaultProxy<PT,CT>::operator~()
+{
+   return *static_cast<PT*>( this );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conversion operator for constant proxies.
+//
+// \return Reference to the actual type of the proxy.
+//
+// This function provides a type-safe downcast to the actual type of the proxy.
+*/
+template< typename PT    // Type of the proxy
+        , typename CT >  // Type of the complex number
+BLAZE_ALWAYS_INLINE const PT& DefaultProxy<PT,CT>::operator~() const
+{
+   return *static_cast<const PT*>( this );
+}
 //*************************************************************************************************
 
 } // namespace blaze
