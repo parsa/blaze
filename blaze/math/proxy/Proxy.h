@@ -46,10 +46,25 @@
 #include <blaze/math/proxy/DenseVectorProxy.h>
 #include <blaze/math/proxy/SparseMatrixProxy.h>
 #include <blaze/math/proxy/SparseVectorProxy.h>
+#include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Imaginary.h>
+#include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsOne.h>
+#include <blaze/math/shims/IsReal.h>
+#include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/Real.h>
+#include <blaze/math/traits/AbsExprTrait.h>
+#include <blaze/math/traits/ConjExprTrait.h>
+#include <blaze/math/traits/CTransExprTrait.h>
+#include <blaze/math/traits/ImagExprTrait.h>
+#include <blaze/math/traits/RealExprTrait.h>
+#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsProxy.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
@@ -94,8 +109,8 @@ namespace blaze {
 // Depending on this type the proxy selects the additional interface to provide to the deriving
 // class.
 */
-template< typename PT    // Type of the proxy
-        , typename RT >  // Type of the represented element
+template< typename PT           // Type of the proxy
+        , typename RT = void >  // Type of the represented element
 class Proxy : public If< IsVector<RT>
                        , typename If< IsDenseVector<RT>
                                     , DenseVectorProxy<PT,RT>
@@ -113,6 +128,667 @@ class Proxy : public If< IsVector<RT>
                                     >::Type
                        >::Type
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Proxy operators */
+//@{
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator==( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator==( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator!=( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator!=( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<=( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<=( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>=( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
+
+template< typename PT, typename RT >
+inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if both referenced values are equal, \a false if they are not.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() == (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the referenced value and the other object are equal, \a false if they are not.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator==( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() == rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the other object and the referenced value are equal, \a false if they are not.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator==( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs == (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inequality comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if both referenced values are not equal, \a false if they are.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() != (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inequality comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the referenced value and the other object are not equal, \a false if they are.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator!=( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() != rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inquality comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the other object and the referenced value are not equal, \a false if they are.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator!=( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs != (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side referenced value is smaller, \a false if not.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() < (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is smaller, \a false if not.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() < rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-than comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side other object is smaller, \a false if not.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs < rhs.get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side referenced value is greater, \a false if not.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() > (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is greater, \a false if not.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() > rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-than comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side other object is greater, \a false if not.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs > (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() <= (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<=( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() <= rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Less-or-equal-than comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side other object is smaller or equal, \a false if not.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator<=( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs <= (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   return ( (~lhs).get() >= (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
+*/
+template< typename PT, typename RT, typename T >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>=( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   return ( (~lhs).get() >= rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Greater-or-equal-than comparison between an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return \a true if the left-hand side other object is greater or equal, \a false if not.
+*/
+template< typename T, typename PT, typename RT >
+inline typename DisableIf< IsProxy<T>, bool >::Type
+   operator>=( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   return ( lhs >= (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Global output operator for the Proxy class template.
+// \ingroup math
+//
+// \param os Reference to the output stream.
+// \param proxy Reference to a constant proxy object.
+// \return Reference to the output stream.
+*/
+template< typename PT, typename RT >
+inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
+{
+   return os << (~proxy).get();
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Proxy global functions */
+//@{
+template< typename PT, typename RT >
+inline typename TransExprTrait< typename PT::RepresentedType >::Type
+   trans( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline typename AbsExprTrait< typename PT::RepresentedType >::Type
+   abs( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline typename ConjExprTrait< typename PT::RepresentedType >::Type
+   conj( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline typename CTransExprTrait< typename PT::RepresentedType >::Type
+   ctrans( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline typename RealExprTrait< typename PT::RepresentedType >::Type
+   real( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline typename ImagExprTrait< typename PT::RepresentedType >::Type
+   imag( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline bool isReal( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline bool isZero( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline bool isOne( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline bool isnan( const Proxy<PT,RT>& proxy );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The transpose of the represented element.
+//
+// This function returns an expression representing the transpose of the element represented by
+// the proxy.
+*/
+template< typename PT, typename RT >
+inline typename TransExprTrait< typename PT::RepresentedType >::Typ
+    trans( const Proxy<PT,RT>& proxy )
+{
+   using blaze::trans;
+
+   return trans( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the absolute value of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The absolute value of the represented element.
+//
+// This function computes the absolute value of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the absolute values of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline typename AbsExprTrait< typename PT::RepresentedType >::Type
+   abs( const Proxy<PT,RT>& proxy )
+{
+   using std::abs;
+
+   return abs( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline typename ConjExprTrait< typename PT::RepresentedType >::Type
+   conj( const Proxy<PT,RT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the conjugate transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The conjugate transpose of the represented element.
+//
+// This function returns an expression representing the conjugate transpose of the element
+// represented by the proxy.
+*/
+template< typename PT, typename RT >
+inline typename CTransExprTrait< typename PT::RepresentedType >::Type
+   ctrans( const Proxy<PT,RT>& proxy )
+{
+   using blaze::ctrans;
+
+   return ctrans( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the real part of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The real part of the represented element.
+//
+// This function returns the real part of the element represented by the proxy. In case the
+// proxy represents a vector- or matrix-like data structure the function returns an expression
+// representing the real part of each each element of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline typename RealExprTrait< typename PT::RepresentedType >::Type
+   real( const Proxy<PT,RT>& proxy )
+{
+   using blaze::real;
+
+   return real( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the imaginary part of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The imaginary part of the represented element.
+//
+// This function returns the imaginary part of the element represented by the proxy. In case the
+// proxy represents a vector- or matrix-like data structure the function returns an expression
+// representing the real part of each each element of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline typename ImagExprTrait< typename PT::RepresentedType >::Type
+   imag( const Proxy<PT,RT>& proxy )
+{
+   using blaze::imag;
+
+   return imag( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the element represents a real number.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the element represents a real number, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy represents the a real
+// number. In case the element is of built-in type, the function returns \a true. In case
+// the element is of complex type, the function returns \a true if the imaginary part is
+// equal to 0. Otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isReal( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isReal;
+
+   return isReal( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 0.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is 0, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy represents the numeric
+// value 0. In case it is 0, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isZero( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isZero;
+
+   return isZero( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is 1.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is 1, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy represents the numeric
+// value 1. In case it is 1, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isOne( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isOne;
+
+   return isOne( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns whether the represented element is not a number.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return \a true in case the represented element is in not a number, \a false otherwise.
+//
+// This function checks whether the element represented by the proxy is not a number (NaN).
+// In case it is not a number, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename PT, typename RT >
+inline bool isnan( const Proxy<PT,RT>& proxy )
+{
+   using blaze::isnan;
+
+   return isnan( (~proxy).get() );
+}
 //*************************************************************************************************
 
 } // namespace blaze
