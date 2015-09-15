@@ -40,25 +40,20 @@
 // Includes
 //*************************************************************************************************
 
-#include <ostream>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
-#include <blaze/math/traits/AbsExprTrait.h>
-#include <blaze/math/traits/ConjExprTrait.h>
-#include <blaze/math/traits/ImagExprTrait.h>
-#include <blaze/math/traits/RealExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -87,7 +82,7 @@ namespace blaze {
 // The HermitianValue class represents two synchronized values within a sparse Hermitian matrix.
 // It guarantees that a modification of value \f$ a_{ij} \f$ via iterator is also applied to the
 // value \f$ a_{ji} \f$. The following example illustrates this by means of a \f$ 3 \times 3 \f$
-// dense Hermitian matrix:
+// sparse Hermitian matrix:
 
    \code
    typedef std::complex<double>  cplx;
@@ -104,7 +99,7 @@ namespace blaze {
    A(1,1) = cplx( 3,0);
    A(1,2) = cplx( 5,2);
 
-   // Modification of the value at position (2,0) and (0,2)
+   // Modification of the values at position (2,0) and (0,2)
    //
    // ( (0,0) (0, 0) (4,-3) )
    // ( (0,0) (3, 0) (5, 2) )
@@ -115,12 +110,11 @@ namespace blaze {
    \endcode
 */
 template< typename MT >  // Type of the adapted matrix
-class HermitianValue
+class HermitianValue : public Proxy< HermitianValue<MT> >
 {
  private:
    //**Type definitions****************************************************************************
-   typedef typename MT::ElementType  ElementType;   //!< Type of the represented matrix element.
-   typedef typename MT::Iterator     IteratorType;  //!< Type of the underlying sparse matrix iterators.
+   typedef typename MT::Iterator  IteratorType;  //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
    //**struct BuiltinType**************************************************************************
@@ -143,10 +137,12 @@ class HermitianValue
 
  public:
    //**Type definitions****************************************************************************
+   typedef typename MT::ElementType  RepresentedType;  //!< Type of the represented matrix element.
+
    //! Value type of the represented complex element.
-   typedef typename If< IsComplex<ElementType>
-                      , ComplexType<ElementType>
-                      , BuiltinType<ElementType> >::Type::Type  ValueType;
+   typedef typename If< IsComplex<RepresentedType>
+                      , ComplexType<RepresentedType>
+                      , BuiltinType<RepresentedType> >::Type::Type  ValueType;
 
    typedef ValueType  value_type;  //!< Value type of the represented complex element.
    //**********************************************************************************************
@@ -161,12 +157,12 @@ class HermitianValue
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                          inline HermitianValue& operator= ( const HermitianValue& sv );
-   template< typename T > inline HermitianValue& operator= ( const T& v );
-   template< typename T > inline HermitianValue& operator+=( const T& v );
-   template< typename T > inline HermitianValue& operator-=( const T& v );
-   template< typename T > inline HermitianValue& operator*=( const T& v );
-   template< typename T > inline HermitianValue& operator/=( const T& v );
+                          inline HermitianValue& operator= ( const HermitianValue& hv );
+   template< typename T > inline HermitianValue& operator= ( const T& value );
+   template< typename T > inline HermitianValue& operator+=( const T& value );
+   template< typename T > inline HermitianValue& operator-=( const T& value );
+   template< typename T > inline HermitianValue& operator*=( const T& value );
+   template< typename T > inline HermitianValue& operator/=( const T& value );
    //@}
    //**********************************************************************************************
 
@@ -176,14 +172,14 @@ class HermitianValue
    inline void reset() const;
    inline void clear() const;
 
-   inline ElementType get() const;
+   inline RepresentedType get() const;
    //@}
    //**********************************************************************************************
 
    //**Conversion operator*************************************************************************
    /*!\name Conversion operator */
    //@{
-   inline operator ElementType() const;
+   inline operator RepresentedType() const;
    //@}
    //**********************************************************************************************
 
@@ -223,7 +219,7 @@ class HermitianValue
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( RepresentedType );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -265,20 +261,20 @@ inline HermitianValue<MT>::HermitianValue( IteratorType pos, MT* matrix, size_t 
 //*************************************************************************************************
 /*!\brief Copy assignment operator for HermitianValue.
 //
-// \param sv The Hermitian value to be copied.
+// \param hv The Hermitian value to be copied.
 // \return Reference to the assigned Hermitian value.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
-inline HermitianValue<MT>& HermitianValue<MT>::operator=( const HermitianValue& sv )
+inline HermitianValue<MT>& HermitianValue<MT>::operator=( const HermitianValue& hv )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( sv.pos_->value() ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( hv.pos_->value() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   pos_->value() = sv.pos_->value();
+   pos_->value() = hv.pos_->value();
    sync();
    return *this;
 }
@@ -298,7 +294,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -322,7 +318,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator+=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -346,7 +342,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator-=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -370,7 +366,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator*=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -394,7 +390,7 @@ inline HermitianValue<MT>& HermitianValue<MT>::operator/=( const T& value )
 {
    const bool isDiagonal( pos_->index() == index );
 
-   if( IsComplex<ElementType>::value && isDiagonal && !isReal( value ) ) {
+   if( IsComplex<RepresentedType>::value && isDiagonal && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -425,9 +421,6 @@ inline void HermitianValue<MT>::reset() const
 {
    using blaze::reset;
 
-   if( isDefault( pos_->value() ) )
-      return;
-
    reset( pos_->value() );
 
    if( pos_->index() != index_ )
@@ -454,9 +447,6 @@ inline void HermitianValue<MT>::clear() const
 {
    using blaze::clear;
 
-   if( isDefault( pos_->value() ) )
-      return;
-
    clear( pos_->value() );
 
    if( pos_->index() != index_ )
@@ -477,7 +467,7 @@ inline void HermitianValue<MT>::clear() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline typename HermitianValue<MT>::ElementType HermitianValue<MT>::get() const
+inline typename HermitianValue<MT>::RepresentedType HermitianValue<MT>::get() const
 {
    return pos_->value();
 }
@@ -517,7 +507,7 @@ inline void HermitianValue<MT>::sync() const
 // \return Copy of the represented value.
 */
 template< typename MT >  // Type of the adapted matrix
-inline HermitianValue<MT>::operator ElementType() const
+inline HermitianValue<MT>::operator RepresentedType() const
 {
    return pos_->value();
 }
@@ -604,381 +594,6 @@ inline void HermitianValue<MT>::imag( ValueType value ) const
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name HermitianValue operators */
-//@{
-template< typename MT1, typename MT2 >
-inline bool operator==( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator==( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator==( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT1, typename MT2 >
-inline bool operator!=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator!=( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator!=( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT1, typename MT2 >
-inline bool operator<( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator<( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator<( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT1, typename MT2 >
-inline bool operator>( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator>( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator>( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT1, typename MT2 >
-inline bool operator<=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator<=( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator<=( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT1, typename MT2 >
-inline bool operator>=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs );
-
-template< typename MT, typename T >
-inline bool operator>=( const HermitianValue<MT>& lhs, const T& rhs );
-
-template< typename T, typename MT >
-inline bool operator>=( const T& lhs, const HermitianValue<MT>& rhs );
-
-template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const HermitianValue<MT>& value );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if both referenced values are equal, \a false if they are not.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator==( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() == rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the referenced value and the other object are equal, \a false if they are not.
-*/
-template< typename MT, typename T >
-inline bool operator==( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the other object and the referenced value are equal, \a false if they are not.
-*/
-template< typename T, typename MT >
-inline bool operator==( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs == rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if both referenced values are not equal, \a false if they are.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator!=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() != rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the referenced value and the other object are not equal, \a false if they are.
-*/
-template< typename MT, typename T >
-inline bool operator!=( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() != rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inquality comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the other object and the referenced value are not equal, \a false if they are.
-*/
-template< typename T, typename MT >
-inline bool operator!=( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs != rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-than comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side referenced value is smaller, \a false if not.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator<( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() < rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-than comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the left-hand side referenced value is smaller, \a false if not.
-*/
-template< typename MT, typename T >
-inline bool operator<( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() < rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-than comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side other object is smaller, \a false if not.
-*/
-template< typename T, typename MT >
-inline bool operator<( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs < rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-than comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side referenced value is greater, \a false if not.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator>( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() > rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-than comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the left-hand side referenced value is greater, \a false if not.
-*/
-template< typename MT, typename T >
-inline bool operator>( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() > rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-than comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side other object is greater, \a false if not.
-*/
-template< typename T, typename MT >
-inline bool operator>( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs > rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator<=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() <= rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the left-hand side referenced value is smaller or equal, \a false if not.
-*/
-template< typename MT, typename T >
-inline bool operator<=( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() <= rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Less-or-equal-than comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side other object is smaller or equal, \a false if not.
-*/
-template< typename T, typename MT >
-inline bool operator<=( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs <= rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between two HermitianValue objects.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
-*/
-template< typename MT1, typename MT2 >
-inline bool operator>=( const HermitianValue<MT1>& lhs, const HermitianValue<MT2>& rhs )
-{
-   return ( lhs.get() >= rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between a HermitianValue object and an object of different type.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side HermitianValue object.
-// \param rhs The right-hand side object of other type.
-// \return \a true if the left-hand side referenced value is greater or equal, \a false if not.
-*/
-template< typename MT, typename T >
-inline bool operator>=( const HermitianValue<MT>& lhs, const T& rhs )
-{
-   return ( lhs.get() >= rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Greater-or-equal-than comparison between an object of different type and a HermitianValue object.
-// \ingroup hermitian_matrix
-//
-// \param lhs The left-hand side object of other type.
-// \param rhs The right-hand side HermitianValue object.
-// \return \a true if the left-hand side other object is greater or equal, \a false if not.
-*/
-template< typename T, typename MT >
-inline bool operator>=( const T& lhs, const HermitianValue<MT>& rhs )
-{
-   return ( lhs >= rhs.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for Hermitian values.
-// \ingroup hermitian_matrix
-//
-// \param os Reference to the output stream.
-// \param value Reference to a constant Hermitian value object.
-// \return Reference to the output stream.
-*/
-template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const HermitianValue<MT>& value )
-{
-   return os << value.get();
-}
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
@@ -986,22 +601,6 @@ inline std::ostream& operator<<( std::ostream& os, const HermitianValue<MT>& val
 //*************************************************************************************************
 /*!\name HermitianValue global functions */
 //@{
-template< typename MT >
-inline typename AbsExprTrait< typename MT::ElementType >::Type
-   abs( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline typename ConjExprTrait< typename MT::ElementType >::Type
-   conj( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline typename RealExprTrait< typename MT::ElementType >::Type
-   real( const HermitianValue<MT>& value );
-
-template< typename MT >
-inline typename ImagExprTrait< typename MT::ElementType >::Type
-   imag( const HermitianValue<MT>& value );
-
 template< typename MT >
 inline void reset( const HermitianValue<MT>& value );
 
@@ -1023,94 +622,6 @@ inline bool isOne( const HermitianValue<MT>& value );
 template< typename MT >
 inline bool isnan( const HermitianValue<MT>& value );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the absolute value of the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return The absolute value of the Hermitian value.
-//
-// This function computes the absolute value of the given Hermitian value. In case the value
-// represents a vector- or matrix-like data structure the function returns an expression
-// representing the absolute values of the elements of the vector/matrix.
-*/
-template< typename MT >
-inline typename AbsExprTrait< typename MT::ElementType >::Type
-   abs( const HermitianValue<MT>& value )
-{
-   using std::abs;
-
-   return abs( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return The complex conjugate of the Hermitian value.
-//
-// This function computes the complex conjugate of the given Hermitian value. In case the
-// value represents a vector- or matrix-like data structure the function returns an expression
-// representing the complex conjugate of the vector/matrix.
-*/
-template< typename MT >
-inline typename ConjExprTrait< typename MT::ElementType >::Type
-   conj( const HermitianValue<MT>& value )
-{
-   using blaze::conj;
-
-   return conj( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the real part of the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return The real part of the Hermitian value.
-//
-// This function returns the real part of the given Hermitian value. In case the value represents
-// a vector- or matrix-like data structure the function returns an expression representing the
-// real part of each each element of the vector/matrix.
-*/
-template< typename MT >
-inline typename RealExprTrait< typename MT::ElementType >::Type
-   real( const HermitianValue<MT>& value )
-{
-   using blaze::real;
-
-   return real( value.get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the imaginary part of the Hermitian value.
-// \ingroup hermitian_matrix
-//
-// \param value The given Hermitian value.
-// \return The imaginary part of the Hermitian value.
-//
-// This function returns the imaginary part of the given Hermitian value. In case the value
-// represents a vector- or matrix-like data structure the function returns an expression
-// representing the real part of each each element of the vector/matrix.
-*/
-template< typename MT >
-inline typename ImagExprTrait< typename MT::ElementType >::Type
-   imag( const HermitianValue<MT>& value )
-{
-   using blaze::imag;
-
-   return imag( value.get() );
-}
 //*************************************************************************************************
 
 
