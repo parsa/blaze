@@ -685,7 +685,7 @@ inline typename DenseRow<MT,SO,SF>::ConstReference
    DenseRow<MT,SO,SF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
-   return matrix_(row_,index);
+   return const_cast<const MT&>( matrix_ )(row_,index);
 }
 //*************************************************************************************************
 
@@ -2549,7 +2549,7 @@ inline typename DenseRow<MT,false,false>::ConstReference
    DenseRow<MT,false,false>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
-   return matrix_(row_,index);
+   return const_cast<const MT&>( matrix_ )(row_,index);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3890,7 +3890,7 @@ inline typename DenseRow<MT,false,true>::ConstReference
    DenseRow<MT,false,true>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
-   return matrix_(index,row_);
+   return const_cast<const MT&>( matrix_ )(row_,index);
 }
 /*! \endcond */
 //*************************************************************************************************
