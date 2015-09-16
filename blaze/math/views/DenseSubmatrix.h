@@ -43,6 +43,7 @@
 #include <iterator>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
@@ -2651,6 +2652,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2836,6 +2838,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -3010,6 +3013,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5276,6 +5280,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5461,6 +5466,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5635,6 +5641,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -7567,6 +7574,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -7752,6 +7760,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -7926,6 +7935,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -9806,6 +9816,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -9991,6 +10002,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -10165,6 +10177,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
