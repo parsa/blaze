@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -1846,9 +1847,10 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 {
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
       store( v_+i, (~rhs).load(i) );
@@ -1929,9 +1931,10 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    using blaze::load;
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
       store( v_+i, load( v_+i ) + (~rhs).load(i) );
@@ -2012,9 +2015,10 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    using blaze::load;
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
       store( v_+i, load( v_+i ) - (~rhs).load(i) );
@@ -2095,9 +2099,10 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    using blaze::load;
    using blaze::store;
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+
+   BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
       store( v_+i, load( v_+i ) * (~rhs).load(i) );
