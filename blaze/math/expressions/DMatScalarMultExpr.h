@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -1636,6 +1637,23 @@ struct Rows< DMatScalarMultExpr<MT,ST,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
 struct Columns< DMatScalarMultExpr<MT,ST,SO> > : public Rows<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename ST, bool SO >
+struct IsPadded< DMatScalarMultExpr<MT,ST,SO> > : public IsTrue< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
