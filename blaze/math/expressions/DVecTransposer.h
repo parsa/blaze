@@ -46,11 +46,13 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -663,6 +665,24 @@ inline void reset( DVecTransposer<VT,TF>& v )
 {
    v.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsPadded< DVecTransposer<VT,TF> >
+   : public IsTrue< IsPadded<VT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
