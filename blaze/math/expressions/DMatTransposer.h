@@ -46,11 +46,13 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1679,6 +1681,23 @@ inline void reset( DMatTransposer<MT,SO>& m )
 {
    m.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsPadded< DMatTransposer<MT,SO> > : public IsTrue< IsPadded<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
