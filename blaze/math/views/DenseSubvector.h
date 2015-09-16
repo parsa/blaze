@@ -43,6 +43,7 @@
 #include <iterator>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Subvector.h>
@@ -2090,6 +2091,7 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    if( useStreaming && isAligned_ &&
        ( size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
@@ -2197,6 +2199,7 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -2293,6 +2296,7 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -2389,6 +2393,7 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -3813,6 +3818,7 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
    {
@@ -3921,6 +3927,7 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -4020,6 +4027,7 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -4119,6 +4127,7 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
