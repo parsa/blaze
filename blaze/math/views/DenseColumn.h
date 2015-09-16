@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -1614,6 +1615,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1720,6 +1722,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1817,6 +1820,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1914,6 +1918,7 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4831,6 +4836,7 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4937,6 +4943,7 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5034,6 +5041,7 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5131,6 +5139,7 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
