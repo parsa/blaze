@@ -37,8 +37,8 @@ PATH_UNILOWERMATRIX=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running UniLowerMatrix tests..."
 
-EXE=$PATH_UNILOWERMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNILOWERMATRIX/DenseTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_UNILOWERMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNILOWERMATRIX/SparseTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_UNILOWERMATRIX/SubmatrixTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNILOWERMATRIX/RowTest;       if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_UNILOWERMATRIX/ColumnTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
