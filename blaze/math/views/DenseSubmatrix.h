@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -108,6 +109,7 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -11219,11 +11221,8 @@ inline const DenseSubmatrix<MT,AF1,SO>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
-struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public If< IsRestricted<MT>, TrueType, FalseType >::Type
-{
-   enum { value = IsRestricted<MT>::value };
-   typedef typename If< IsRestricted<MT>, TrueType, FalseType >::Type  Type;
-};
+struct IsRestricted< DenseSubmatrix<MT,AF,SO> > : public IsTrue< IsRestricted<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -11259,11 +11258,8 @@ struct DerestrictTrait< DenseSubmatrix<MT,AF,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
-   : public If< HasConstDataAccess<MT>, TrueType, FalseType >::Type
-{
-   enum { value = HasConstDataAccess<MT>::value };
-   typedef typename If< HasConstDataAccess<MT>, TrueType, FalseType >::Type  Type;
-};
+   : public IsTrue< HasConstDataAccess<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -11280,11 +11276,25 @@ struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool AF, bool SO >
 struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
-   : public If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type
-{
-   enum { value = HasMutableDataAccess<MT>::value };
-   typedef typename If< HasMutableDataAccess<MT>, TrueType, FalseType >::Type  Type;
-};
+   : public IsTrue< HasMutableDataAccess<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO >
+struct IsPadded< DenseSubmatrix<MT,AF,SO> > : public IsTrue< IsPadded<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
