@@ -49,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_PADDED CONSTRAINT
+//  MUST_BE_PADDED_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -63,8 +63,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_PADDED_FAILED;
-template<> struct CONSTRAINT_MUST_BE_PADDED_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_PADDED_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_PADDED_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -76,11 +76,11 @@ template<> struct CONSTRAINT_MUST_BE_PADDED_FAILED<true> { enum { value = 1 }; }
 // In case the given data type \a T does not employ or simulate padding (i.e. a special treatment
 // of remainder elements is necessary) a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_PADDED(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_PADDED_FAILED< blaze::IsPadded<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_PADDED_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_PADDED_TYPE_FAILED< blaze::IsPadded<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_PADDED_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -88,7 +88,7 @@ template<> struct CONSTRAINT_MUST_BE_PADDED_FAILED<true> { enum { value = 1 }; }
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_PADDED CONSTRAINT
+//  MUST_NOT_BE_PADDED_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -102,8 +102,8 @@ template<> struct CONSTRAINT_MUST_BE_PADDED_FAILED<true> { enum { value = 1 }; }
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_NOT_BE_PADDED_FAILED;
-template<> struct CONSTRAINT_MUST_NOT_BE_PADDED_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_PADDED_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_PADDED_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -115,11 +115,11 @@ template<> struct CONSTRAINT_MUST_NOT_BE_PADDED_FAILED<true> { enum { value = 1 
 // In case the given data type \a T does employ or simulate padding (i.e. no special treatment
 // of remainder elements is necessary) a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_PADDED(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_PADDED_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_NOT_BE_PADDED_FAILED< !blaze::IsPadded<T>::value >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_PADDED_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_PADDED_TYPE_FAILED< !blaze::IsPadded<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_PADDED_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
