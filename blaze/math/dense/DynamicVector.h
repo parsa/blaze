@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -1610,6 +1611,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
@@ -1716,6 +1718,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -1813,6 +1816,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
@@ -1910,6 +1914,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    const size_t ipos( size_ & size_t(-IT::size*4) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
