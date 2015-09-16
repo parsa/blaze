@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -68,6 +69,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Unused.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -920,6 +922,23 @@ struct IsRestricted< UpperMatrix<MT,SO,DF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct HasConstDataAccess< UpperMatrix<MT,SO,true> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsPadded< UpperMatrix<MT,SO,DF> > : public IsTrue< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
