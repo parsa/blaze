@@ -55,6 +55,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
@@ -65,10 +66,12 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/logging/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Max.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1048,6 +1051,24 @@ inline const DVecDVecMultExpr<T1,T2,TF>
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecDVecMultExpr<VT1,VT2,TF> >
    : public Max< Size<VT1>, Size<VT2> >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct IsPadded< DVecDVecMultExpr<VT1,VT2,TF> >
+   : public IsTrue< And< IsPadded<VT1>, IsPadded<VT2> >::value  >
 {};
 /*! \endcond */
 //*************************************************************************************************
