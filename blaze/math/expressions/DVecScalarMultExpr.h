@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -86,6 +87,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1747,6 +1749,24 @@ inline const typename MultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >::Type
 template< typename VT, typename ST, bool TF >
 struct Size< DVecScalarMultExpr<VT,ST,TF> >
    : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
+   : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
