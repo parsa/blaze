@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
@@ -74,6 +75,7 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -1613,6 +1615,23 @@ struct Rows< DVecTDVecMultExpr<VT1,VT2> > : public Size<VT1>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct Columns< DVecTDVecMultExpr<VT1,VT2> > : public Size<VT2>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct IsPadded< DVecTDVecMultExpr<VT1,VT2> > : public IsTrue< IsPadded<VT2>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
