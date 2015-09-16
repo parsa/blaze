@@ -32,6 +32,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -1797,6 +1798,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    for( size_t i=0UL; i<size_; i+=IT::size ) {
       store( v_+i, (~rhs).load(i) );
@@ -1880,6 +1882,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    for( size_t i=0UL; i<size_; i+=IT::size ) {
       store( v_+i, load( v_+i ) + (~rhs).load(i) );
@@ -1963,6 +1966,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    for( size_t i=0UL; i<size_; i+=IT::size ) {
       store( v_+i, load( v_+i ) - (~rhs).load(i) );
@@ -2046,6 +2050,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    for( size_t i=0UL; i<size_; i+=IT::size ) {
       store( v_+i, load( v_+i ) * (~rhs).load(i) );
