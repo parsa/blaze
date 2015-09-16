@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -70,6 +71,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -966,6 +968,24 @@ inline const DVecAbsExpr<VT,TF>& abs( const DVecAbsExpr<VT,TF>& dv )
 template< typename VT, bool TF >
 struct Size< DVecAbsExpr<VT,TF> >
    : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsPadded< DVecAbsExpr<VT,TF> >
+   : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
