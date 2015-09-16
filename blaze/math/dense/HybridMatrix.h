@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -93,6 +94,7 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/Unused.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blaze {
@@ -5417,11 +5419,8 @@ inline void move( HybridMatrix<Type,M,N,SO>& dst, HybridMatrix<Type,M,N,SO>& src
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -5437,11 +5436,25 @@ struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO >
+struct IsPadded< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -5457,11 +5470,8 @@ struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public TrueType
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsResizable< HybridMatrix<T,M,N,SO> > : public TrueType
-{
-   enum { value = 1 };
-   typedef TrueType  Type;
-};
+struct IsResizable< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
