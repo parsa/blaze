@@ -685,7 +685,7 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
    DenseColumn<MT,SO,SF>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
-   return matrix_(index,col_);
+   return const_cast<const MT&>( matrix_ )(index,col_);
 }
 //*************************************************************************************************
 
@@ -2549,7 +2549,7 @@ inline typename DenseColumn<MT,false,false>::ConstReference
    DenseColumn<MT,false,false>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
-   return matrix_(index,col_);
+   return const_cast<const MT&>( matrix_ )(index,col_);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3901,7 +3901,7 @@ inline typename DenseColumn<MT,false,true>::ConstReference
    DenseColumn<MT,false,true>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
-   return matrix_(col_,index);
+   return const_cast<const MT&>( matrix_ )(index,col_);
 }
 /*! \endcond */
 //*************************************************************************************************
