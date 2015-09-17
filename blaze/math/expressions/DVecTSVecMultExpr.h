@@ -42,6 +42,7 @@
 
 #include <iterator>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -652,6 +653,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -924,6 +928,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1085,6 +1092,9 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
