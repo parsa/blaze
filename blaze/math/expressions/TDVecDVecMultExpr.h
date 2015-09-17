@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -202,6 +203,9 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
    typedef typename T2::ElementType           ET2;
    typedef typename MultTrait<ET1,ET2>::Type  MultType;
    typedef IntrinsicTrait<MultType>           IT;
+
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( typename RemoveReference<Lhs>::Type );
+   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( typename RemoveReference<Rhs>::Type );
 
    if( (~lhs).size() == 0UL ) return MultType();
 
