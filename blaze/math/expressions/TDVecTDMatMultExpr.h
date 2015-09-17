@@ -43,6 +43,7 @@
 #include <blaze/math/blas/Level2.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
@@ -576,6 +577,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -756,6 +760,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -1265,6 +1272,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -1446,6 +1456,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -1931,6 +1944,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -2112,6 +2128,9 @@ class TDVecTDMatMultExpr : public DenseVector< TDVecTDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -3166,6 +3185,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -3347,6 +3369,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -3877,6 +3902,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -4058,6 +4086,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -4548,6 +4579,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
@@ -4729,6 +4763,9 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
+
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
