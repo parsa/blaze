@@ -42,6 +42,7 @@
 
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
+#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -664,6 +665,9 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
+
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -1018,6 +1022,9 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
+
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
 
@@ -1337,6 +1344,9 @@ class SMatDMatMultExpr : public DenseMatrix< SMatDMatMultExpr<MT1,MT2>, false >
    static inline typename EnableIf< UseVectorizedKernel<MT3,MT4,MT5> >::Type
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
+
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename MT4::ConstIterator  ConstIterator;
 
