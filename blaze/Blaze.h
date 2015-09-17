@@ -75,66 +75,62 @@ namespace blaze {}
 // <ul>
 //    <li> \ref configuration_and_installation </li>
 //    <li> \ref getting_started </li>
-//    <li> Tutorial\n
+//    <li> \ref vectors
 //       <ul>
-//          <li> Vectors
+//          <li> \ref vector_types </li>
+//          <li> \ref vector_operations </li>
+//       </ul>
+//    </li>
+//    <li> \ref matrices
+//       <ul>
+//          <li> \ref matrix_types </li>
+//          <li> \ref matrix_operations </li>
+//       </ul>
+//    </li>
+//    <li> \ref adaptors
+//       <ul>
+//          <li> \ref adaptors_symmetric_matrices </li>
+//          <li> \ref adaptors_hermitian_matrices </li>
+//          <li> \ref adaptors_triangular_matrices </li>
+//       </ul>
+//    </li>
+//    <li> \ref views
+//       <ul>
+//          <li> \ref views_subvectors </li>
+//          <li> \ref views_submatrices </li>
+//          <li> \ref views_rows </li>
+//          <li> \ref views_columns </li>
+//       </ul>
+//    </li>
+//    <li> \ref arithmetic_operations
+//       <ul>
+//          <li> \ref addition </li>
+//          <li> \ref subtraction </li>
+//          <li> \ref scalar_multiplication </li>
+//          <li> \ref vector_vector_multiplication
 //             <ul>
-//                <li> \ref vector_types </li>
-//                <li> \ref vector_operations </li>
+//                <li> \ref componentwise_multiplication </li>
+//                <li> \ref inner_product </li>
+//                <li> \ref outer_product </li>
+//                <li> \ref cross_product </li>
 //             </ul>
 //          </li>
-//          <li> Matrices
-//             <ul>
-//                <li> \ref matrix_types </li>
-//                <li> \ref matrix_operations </li>
-//             </ul>
-//          </li>
-//          <li> Adaptors
-//             <ul>
-//                <li> \ref adaptors_symmetric_matrices </li>
-//                <li> \ref adaptors_hermitian_matrices </li>
-//                <li> \ref adaptors_triangular_matrices </li>
-//             </ul>
-//          </li>
-//          <li> Views
-//             <ul>
-//                <li> \ref views_subvectors </li>
-//                <li> \ref views_submatrices </li>
-//                <li> \ref views_rows </li>
-//                <li> \ref views_columns </li>
-//             </ul>
-//          </li>
-//          <li> Arithmetic Operations
-//             <ul>
-//                <li> \ref addition </li>
-//                <li> \ref subtraction </li>
-//                <li> \ref scalar_multiplication </li>
-//                <li> \ref vector_vector_multiplication
-//                   <ul>
-//                      <li> \ref componentwise_multiplication </li>
-//                      <li> \ref inner_product </li>
-//                      <li> \ref outer_product </li>
-//                      <li> \ref cross_product </li>
-//                   </ul>
-//                </li>
-//                <li> \ref matrix_vector_multiplication </li>
-//                <li> \ref matrix_matrix_multiplication </li>
-//             </ul>
-//          </li>
-//          <li> Shared-Memory Parallelization
-//             <ul>
-//                <li> \ref openmp_parallelization </li>
-//                <li> \ref cpp_threads_parallelization </li>
-//                <li> \ref boost_threads_parallelization </li>
-//                <li> \ref serial_execution </li>
-//             </ul>
-//          </li>
-//          <li> Serialization
-//             <ul>
-//                <li> \ref vector_serialization </li>
-//                <li> \ref matrix_serialization </li>
-//             </ul>
-//          </li>
+//          <li> \ref matrix_vector_multiplication </li>
+//          <li> \ref matrix_matrix_multiplication </li>
+//       </ul>
+//    </li>
+//    <li> \ref shared_memory_parallelization
+//       <ul>
+//          <li> \ref openmp_parallelization </li>
+//          <li> \ref cpp_threads_parallelization </li>
+//          <li> \ref boost_threads_parallelization </li>
+//          <li> \ref serial_execution </li>
+//       </ul>
+//    </li>
+//    <li> \ref serialization
+//       <ul>
+//          <li> \ref vector_serialization </li>
+//          <li> \ref matrix_serialization </li>
 //       </ul>
 //    </li>
 //    <li> \ref configuration_files </li>
@@ -147,8 +143,6 @@ namespace blaze {}
 
 //**Configuration and Installation*****************************************************************
 /*!\page configuration_and_installation Configuration and Installation
-//
-// Next: \ref getting_started \n
 //
 // Setting up the \b Blaze library on a particular system is a fairly easy two step process. Since
 // \b Blaze is a template library and therefore mainly consists of header files no compilation is
@@ -469,7 +463,85 @@ namespace blaze {}
 // matrix types, all possible operations on vectors and matrices, and of course all possible
 // mathematical expressions.
 //
-// \n Previous: \ref configuration_and_installation &nbsp; &nbsp; Next: \ref vector_types
+// \n Previous: \ref configuration_and_installation &nbsp; &nbsp; Next: \ref vectors
+*/
+//*************************************************************************************************
+
+
+//**Vectors****************************************************************************************
+/*!\page vectors Vectors
+//
+// \tableofcontents
+//
+//
+// \n \section vectors_general General Concepts
+// <hr>
+//
+// The \b Blaze library currently offers three dense vector types (\ref vector_types_static_vector,
+// \ref vector_types_dynamic_vector and \ref vector_types_hybrid_vector) and one sparse vector type
+// (\ref vector_types_compressed_vector). All vectors can be specified as either column vectors
+// or row vectors:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Setup of the 3-dimensional column vector
+   //
+   //    ( 1 )
+   //    ( 2 )
+   //    ( 3 )
+   //
+   DynamicVector<int,columnVector> a( 3UL );
+   a[0] = 1;
+   a[1] = 2;
+   a[2] = 3;
+
+   // Setup of the 3-dimensional row vector
+   //
+   //    ( 4  5  6 )
+   //
+   DynamicVector<int,rowVector> b( 3UL );
+   b[0] = 4;
+   b[1] = 5;
+   b[2] = 6;
+   \endcode
+
+// Per default, all vectors in \b Blaze are column vectors:
+
+   \code
+   // Instantiation of a 3-dimensional column vector
+   blaze::DynamicVector<int> c( 3UL );
+   \endcode
+
+// \n \section vectors_details Vector Details
+// <hr>
+//
+//  - \ref vector_types
+//  - \ref vector_operations
+//
+//
+// \n \section vectors_examples Examples
+// <hr>
+
+   \code
+   using blaze::StaticVector;
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+   using blaze::rowVector;
+   using blaze::columnVector;
+
+   StaticVector<int,6UL> a;            // Instantiation of a 6-dimensional static column vector
+   CompressedVector<int,rowVector> b;  // Instantiation of a compressed row vector
+   DynamicVector<int,columnVector> c;  // Instantiation of a dynamic column vector
+
+   // ... Resizing and initialization
+
+   c = a + trans( b );
+   \endcode
+
+// \n Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_types
 */
 //*************************************************************************************************
 
@@ -478,25 +550,6 @@ namespace blaze {}
 /*!\page vector_types Vector Types
 //
 // \tableofcontents
-//
-//
-// The \b Blaze library currently offers three dense vector types (\ref vector_types_static_vector,
-// \ref vector_types_dynamic_vector and \ref vector_types_hybrid_vector) and one sparse vector type
-// (\ref vector_types_compressed_vector). All vectors can be specified as either column vectors
-
-                          \f$\left(\begin{array}{*{1}{c}}
-                          1 \\
-                          2 \\
-                          3 \\
-                          \end{array}\right)\f$
-
-// or row vectors
-
-                          \f$\left(\begin{array}{*{3}{c}}
-                          1 & 2 & 3 \\
-                          \end{array}\right).\f$
-
-// Per default, all vectors in \b Blaze are column vectors.
 //
 //
 // \n \section vector_types_static_vector StaticVector
@@ -602,7 +655,7 @@ namespace blaze {}
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
 //
-// \n Previous: \ref getting_started &nbsp; &nbsp; Next: \ref vector_operations
+// \n Previous: \ref vectors &nbsp; &nbsp; Next: \ref vector_operations
 */
 //*************************************************************************************************
 
@@ -1376,7 +1429,85 @@ namespace blaze {}
    swap( v1, v2 );  // Swapping the contents of v1 and v2
    \endcode
 
-// \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrix_types
+// \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
+*/
+//*************************************************************************************************
+
+
+//**Matrices***************************************************************************************
+/*!\page matrices Matrices
+//
+// \tableofcontents
+//
+//
+// \n \section matrices_general General Concepts
+// <hr>
+//
+// The \b Blaze library currently offers three dense matrix types (\ref matrix_types_static_matrix,
+// \ref matrix_types_hybrid_matrix and \ref matrix_types_dynamic_matrix) and one sparse matrix type
+// (\ref matrix_types_compressed_matrix). All matrices can either be stored as row-major matrices
+// or column-major matrices:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Setup of the 2x3 row-major matrix
+   //
+   //    ( 1  2  3 )
+   //    ( 4  5  6 )
+   //
+   DynamicMatrix<int,rowMajor> A( 2UL, 3UL );
+   A(0,0) = 1;   A(0,1) = 2;   A(0,2) = 3;
+   A(1,0) = 4;   A(1,1) = 5;   A(1,2) = 6;
+
+   // Setup of the 3x2 column-major matrix
+   //
+   //    ( 1  4 )
+   //    ( 2  5 )
+   //    ( 3  6 )
+   //
+   DynamicMatrix<int,columnMajor> B( 3UL, 2UL );
+   B(0,0) = 1;   B(0,1) = 4;
+   B(1,0) = 2;   B(1,1) = 5;
+   B(2,0) = 3;   B(2,1) = 6;
+   \endcode
+
+// Per default, all matrices in \b Blaze are row-major matrices:
+
+   \code
+   // Instantiation of a 3x3 row-major matrix
+   blaze::DynamicMatrix<int> C( 3UL, 3UL );
+   \endcode
+
+// \n \section matrices_details Matrix Details
+// <hr>
+//
+//  - \ref matrix_types
+//  - \ref matrix_operations
+//
+//
+// \n \section matrices_examples Examples
+// <hr>
+
+   \code
+   using blaze::StaticMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   StaticMatrix<double,6UL,20UL> A;      // Instantiation of a 6x20 row-major static matrix
+   CompressedMatrix<double,rowMajor> B;  // Instantiation of a row-major compressed matrix
+   DynamicMatrix<double,columnMajor> C;  // Instantiation of a column-major dynamic matrix
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// \n Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_types
 */
 //*************************************************************************************************
 
@@ -1385,12 +1516,6 @@ namespace blaze {}
 /*!\page matrix_types Matrix Types
 //
 // \tableofcontents
-//
-//
-// The \b Blaze library currently offers three dense matrix types (\ref matrix_types_static_matrix,
-// \ref matrix_types_hybrid_matrix and \ref matrix_types_dynamic_matrix) and one sparse matrix type
-// (\ref matrix_types_compressed_matrix). All matrices can either be stored as row-major matrices
-// or column-major matrices. Per default, all matrices in \b Blaze are row-major matrices.
 //
 //
 // \n \section matrix_types_static_matrix StaticMatrix
@@ -1501,7 +1626,7 @@ namespace blaze {}
 //             The default value is blaze::rowMajor.
 //
 //
-// \n Previous: \ref vector_operations &nbsp; &nbsp; Next: \ref matrix_operations
+// \n Previous: \ref matrices &nbsp; &nbsp; Next: \ref matrix_operations
 */
 //*************************************************************************************************
 
@@ -2496,7 +2621,117 @@ namespace blaze {}
    swap( M1, M2 );  // Swapping the contents of M1 and M2
    \endcode
 
-// \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices
+// \n Previous: \ref matrix_types &nbsp; &nbsp; Next: \ref adaptors
+*/
+//*************************************************************************************************
+
+
+//**Adaptors***************************************************************************************
+/*!\page adaptors Adaptors
+//
+// \tableofcontents
+//
+//
+// \section adaptors_general General Concepts
+// <hr>
+//
+// Adaptors act as wrappers around the general \ref matrix_types. They adapt the interface of the
+// matrices such that certain invariants are preserved. Due to this adaptors can provide a compile
+// time guarantee of certain properties, which can be exploited for optimized performance.
+//
+// The \b Blaze library provides a total of 9 different adaptors:
+//
+// <ul>
+//    <li> \ref adaptors_symmetric_matrices </li>
+//    <li> \ref adaptors_hermitian_matrices </li>
+//    <li> \ref adaptors_triangular_matrices
+//       <ul>
+//          <li> \ref adaptors_triangular_matrices "Lower Triangular Matrices"
+//             <ul>
+//                <li> \ref adaptors_triangular_matrices_lowermatrix </li>
+//                <li> \ref adaptors_triangular_matrices_unilowermatrix </li>
+//                <li> \ref adaptors_triangular_matrices_strictlylowermatrix </li>
+//             </ul>
+//          </li>
+//          <li> \ref adaptors_triangular_matrices "Upper Triangular Matrices"
+//             <ul>
+//                <li> \ref adaptors_triangular_matrices_uppermatrix </li>
+//                <li> \ref adaptors_triangular_matrices_uniuppermatrix </li>
+//                <li> \ref adaptors_triangular_matrices_strictlyuppermatrix </li>
+//             </ul>
+//          </li>
+//          <li> \ref adaptors_triangular_matrices "Diagonal Matrices"
+//             <ul>
+//                <li> \ref adaptors_triangular_matrices_diagonalmatrix </li>
+//             </ul>
+//          </li>
+//       </ul>
+//    </li>
+// </ul>
+//
+// In combination with the general matrix types, \b Blaze provides a total of 40 different matrix
+// types that make it possible to exactly adapt the type of matrix to every specific problem.
+//
+//
+// \n \section adaptors_examples Examples
+// <hr>
+//
+// The following code examples give an impression on the use of adaptors. The first example shows
+// the multiplication between two lower matrices:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   LowerMatrix< DynamicMatrix<double,rowMajor> > A;
+   LowerMatrix< DynamicMatrix<double,columnMajor> > B;
+   DynamicMatrix<double,columnMajor> C;
+
+   // ... Resizing and initialization
+
+   C = A * B;
+   \endcode
+
+// When multiplying two matrices, at least one of which is triangular, \b Blaze can exploit the
+// fact that either the lower or upper part of the matrix contains only default elements and
+// restrict the algorithm to the non-zero elements. Thus the adaptor provides a significant
+// performance advantage in comparison to a general matrix multiplication, especially for large
+// matrices.
+//
+// The second example shows the SymmetricMatrix adaptor in a row-major dense matrix/sparse vector
+// multiplication:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A;
+   CompressedVector<double,columnVector> x;
+   DynamicVector<double,columnVector> y;
+
+   // ... Resizing and initialization
+
+   y = A * x;
+   \endcode
+
+// In this example it is not intuitively apparent that using a row-major matrix is not the best
+// possible choice in terms of performance since the computation cannot be vectorized. Choosing
+// a column-major matrix instead, however, would enable a vectorized computation. Therefore
+// \b Blaze exploits the fact that \c A is symmetric, selects the best suited storage order and
+// evaluates the multiplication as
+
+   \code
+   y = trans( A ) * x;
+   \endcode
+
+// which significantly increases the performance.
+//
+// \n Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_symmetric_matrices
 */
 //*************************************************************************************************
 
@@ -2506,6 +2741,9 @@ namespace blaze {}
 //
 // \tableofcontents
 //
+//
+// \n \section adaptors_symmetric_matrices_general Symmetric Matrices
+// <hr>
 //
 // In contrast to general matrices, which have no restriction in their number of rows and columns
 // and whose elements can have any value, symmetric matrices provide the compile time guarantee
@@ -2979,7 +3217,7 @@ namespace blaze {}
    C = A * B;  // Is not guaranteed to result in a symmetric matrix; some runtime overhead
    \endcode
 
-// \n Previous: \ref matrix_operations &nbsp; &nbsp; Next: \ref adaptors_hermitian_matrices
+// \n Previous: \ref adaptors &nbsp; &nbsp; Next: \ref adaptors_hermitian_matrices
 */
 //*************************************************************************************************
 
@@ -2989,6 +3227,9 @@ namespace blaze {}
 //
 // \tableofcontents
 //
+//
+// \n \section adaptors_hermitian_matrices_general Hermitian Matrices
+// <hr>
 //
 // In addition to symmetric matrices, \b Blaze also provides an adaptor for Hermitian matrices.
 // Hermitian matrices provide the compile time guarantee to be square matrices with pair-wise
@@ -3525,6 +3766,9 @@ namespace blaze {}
 //
 // \tableofcontents
 //
+//
+// \n \section adaptors_triangular_matrices_general Triangular Matrices
+// <hr>
 //
 // Triangular matrices come in three flavors: Lower triangular matrices provide the compile time
 // guarantee to be square matrices and that the upper part of the matrix contains only default
@@ -4446,7 +4690,73 @@ namespace blaze {}
    C = A * B;  // Results in a upper matrix; no runtime overhead
    \endcode
 
-// \n Previous: \ref adaptors_hermitian_matrices &nbsp; &nbsp; Next: \ref views_subvectors
+// \n Previous: \ref adaptors_hermitian_matrices &nbsp; &nbsp; Next: \ref views
+*/
+//*************************************************************************************************
+
+
+//**Views******************************************************************************************
+/*!\page views Views
+//
+// \tableofcontents
+//
+//
+// \section views_general General Concepts
+// <hr>
+//
+// Views represents parts of a vector or matrix, such as a subvector, a submatrix, or a specific
+// row or column of a matrix. As such, views act as a reference to a specific part of a vector
+// or matrix. This reference is valid and can be used in every way as any other vector or matrix
+// can be used as long as the referenced vector or matrix is not resized or entirely destroyed.
+// Views also act as alias to the elements of the vector or matrix: Changes made to the elements
+// (e.g. modifying values, inserting or erasing elements) via the view are immediately visible in
+// the vector or matrix and changes made via the vector or matrix are immediately visible in the
+// view.
+//
+// The \b Blaze library provides the following views on vectors and matrices:
+//
+// Vector views:
+//  - \ref views_subvectors
+//
+// Matrix views:
+//  - \ref views_submatrices
+//  - \ref views_rows
+//  - \ref views_columns
+//
+//
+// \n \section views_examples Examples
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StaticVector;
+
+   // Setup of the 3x5 row-major matrix
+   //
+   //  ( 1  0 -2  3  0 )
+   //  ( 0  2  5 -1 -1 )
+   //  ( 1  0  0  2  1 )
+   //
+   DynamicMatrix<int> A( 3UL, 5UL );
+   A(0,0) = 1;   A(0,1) = 0;   A(0,2) = -2;   A(0,3) =  3;   A(0,4) =  0;
+   A(1,0) = 0;   A(1,1) = 2;   A(1,2) =  5;   A(1,3) = -1;   A(1,4) = -1;
+   A(2,0) = 1;   A(2,1) = 0;   A(2,2) =  0;   A(2,3) =  2;   A(2,4) =  1;
+
+   // Setup of the 2-dimensional row vector
+   //
+   //  ( 18 19 )
+   //
+   StaticVector<int,rowVector> vec( 18, 19 );
+
+   // Assigning to the elements (1,2) and (1,3) via a subvector of a row
+   //
+   //  ( 1  0 -2  3  0 )
+   //  ( 0  2 18 19 -1 )
+   //  ( 1  0  0  2  1 )
+   //
+   subvector( row( A, 1UL ), 2UL, 2UL ) = vec;
+   \endcode
+
+// \n Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_subvectors
 */
 //*************************************************************************************************
 
@@ -4869,7 +5179,7 @@ namespace blaze {}
    SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
    \endcode
 
-// \n Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_submatrices
+// \n Previous: \ref views &nbsp; &nbsp; Next: \ref views_submatrices
 */
 //*************************************************************************************************
 
@@ -5997,7 +6307,36 @@ namespace blaze {}
 // Although \b Blaze performs the resulting matrix/vector multiplication as efficiently as possible
 // using a column-major storage order for matrix B would result in a more efficient evaluation.
 //
-// \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref addition
+// \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref arithmetic_operations
+*/
+//*************************************************************************************************
+
+
+//**Arithmetic Operations**************************************************************************
+/*!\page arithmetic_operations Arithmetic Operations
+//
+// \tableofcontents
+//
+//
+// \b Blaze provides the following arithmetic operations for vectors and matrices:
+//
+// <ul>
+//    <li> \ref addition </li>
+//    <li> \ref subtraction </li>
+//    <li> \ref scalar_multiplication </li>
+//    <li> \ref vector_vector_multiplication
+//       <ul>
+//          <li> \ref componentwise_multiplication </li>
+//          <li> \ref inner_product </li>
+//          <li> \ref outer_product </li>
+//          <li> \ref cross_product </li>
+//       </ul>
+//    </li>
+//    <li> \ref matrix_vector_multiplication </li>
+//    <li> \ref matrix_matrix_multiplication </li>
+// </ul>
+//
+// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref addition
 */
 //*************************************************************************************************
 
@@ -6062,7 +6401,7 @@ namespace blaze {}
    M3 = M1 + M2;  // Vectorized addition of two row-major, single precision dense matrices
    \endcode
 
-// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref subtraction
+// \n Previous: \ref arithmetic_operations &nbsp; &nbsp; Next: \ref subtraction
 */
 //*************************************************************************************************
 
@@ -6333,7 +6672,7 @@ namespace blaze {}
 // that the highest performance for a multiplication between a dense matrix and a dense vector can
 // be achieved if both the matrix and the vector have the same scalar element type.
 //
-// \n Previous: \ref outer_product &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication
+// \n Previous: \ref vector_vector_multiplication &nbsp; &nbsp; Next: \ref matrix_matrix_multiplication
 */
 //*************************************************************************************************
 
@@ -6359,7 +6698,30 @@ namespace blaze {}
 // are possible. Note however that the highest performance for a multiplication between two dense
 // matrices can be expected for two matrices with the same scalar element type.
 //
-// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
+// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+*/
+//*************************************************************************************************
+
+
+//**Shared Memory Parallelization******************************************************************
+/*!\page shared_memory_parallelization Shared Memory Parallelization
+//
+// One of the main motivations of the \b Blaze 1.x releases was to achieve maximum performance
+// on a single CPU core for all possible operations. However, today's CPUs are not single core
+// anymore, but provide several (homogeneous or heterogeneous) compute cores. In order to fully
+// exploit the performance potential of a multicore CPU, computations have to be parallelized
+// across all available cores of a CPU. For this purpose, \b Blaze provides three different
+// shared memory parallelization techniques:
+//
+//  - \ref openmp_parallelization
+//  - \ref cpp_threads_parallelization
+//  - \ref boost_threads_parallelization
+//
+// In addition, \b Blaze provides means to enforce the serial execution of specific operations:
+//
+//  - \ref serial_execution
+//
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
 */
 //*************************************************************************************************
 
@@ -6367,18 +6729,13 @@ namespace blaze {}
 //**OpenMP Parallelization*************************************************************************
 /*!\page openmp_parallelization OpenMP Parallelization
 //
-// One of the main motivations of the \b Blaze 1.x releases was to achieve maximum performance
-// on a single CPU core for all possible operations. However, today's CPUs are not single core
-// anymore, but provide several (homogeneous or heterogeneous) compute cores. In order to fully
-// exploit the performance potential of a multicore CPU, computations have to be parallelized
-// across all available cores of a CPU. Therefore, starting with \b Blaze 2.0, the \b Blaze
-// library provides shared memory parallelization with OpenMP.
+// \tableofcontents
 //
 //
 // \n \section openmp_setup OpenMP Setup
 // <hr>
 //
-// To enable OpenMP-based parallelization, all that needs to be done is to explicitly specify
+// To enable the OpenMP-based parallelization, all that needs to be done is to explicitly specify
 // the use of OpenMP on the command line:
 
    \code
@@ -6608,13 +6965,16 @@ namespace blaze {}
 // Please note that the use of the \c BLAZE_SERIAL_SECTION (see also \ref serial_execution) does
 // NOT work in this context!
 //
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref cpp_threads_parallelization
+// \n Previous: \ref shared_memory_parallelization &nbsp; &nbsp; Next: \ref cpp_threads_parallelization
 */
 //*************************************************************************************************
 
 
 //**C++11 Thread Parallelization*******************************************************************
 /*!\page cpp_threads_parallelization C++11 Thread Parallelization
+//
+// \tableofcontents
+//
 //
 // In addition to the OpenMP-based shared memory parallelization, starting with \b Blaze 2.1,
 // \b Blaze also provides a shared memory parallelization based on C++11 threads.
@@ -6719,6 +7079,9 @@ namespace blaze {}
 
 //**Boost Thread Parallelization*******************************************************************
 /*!\page boost_threads_parallelization Boost Thread Parallelization
+//
+// \tableofcontents
+//
 //
 // The third available shared memory parallelization provided with \b Blaze is based on Boost
 // threads.
@@ -6865,22 +7228,35 @@ namespace blaze {}
    #define BLAZE_USE_SHARED_MEMORY_PARALLELIZATION 1
    \endcode
 
-// In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared-memory
+// In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared memory
 // parallelization is deactivated altogether.
 //
-// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref vector_serialization
+// \n Previous: \ref boost_threads_parallelization &nbsp; &nbsp; Next: \ref serialization
 */
 //*************************************************************************************************
 
 
-//**Vector Serialization***************************************************************************
-/*!\page vector_serialization Vector Serialization
+//**Serialization**********************************************************************************
+/*!\page serialization Serialization
 //
 // Sometimes it is necessary to store vector and/or matrices on disk, for instance for storing
 // results or for sharing specific setups with other people. The \b Blaze math serialization
 // module provides the according functionality to create platform independent, portable, binary
 // representations of vectors and matrices that can be used to store the \b Blaze data structures
 // without loss of precision and to reliably transfer them from one machine to another.
+//
+// The following two pages explain how to serialize vectors and matrices:
+//
+//  - \ref vector_serialization
+//  - \ref matrix_serialization
+//
+// \n Previous: \ref serial_execution &nbsp; &nbsp; Next: \ref vector_serialization
+*/
+//*************************************************************************************************
+
+
+//**Vector Serialization***************************************************************************
+/*!\page vector_serialization Vector Serialization
 //
 // The following example demonstrates the (de-)serialization of dense and sparse vectors:
 
@@ -6964,7 +7340,7 @@ namespace blaze {}
 // In case an error is encountered during (de-)serialization, a \a std::runtime_exception is
 // thrown.
 //
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref matrix_serialization
+// \n Previous: \ref serialization &nbsp; &nbsp; Next: \ref matrix_serialization
 */
 //*************************************************************************************************
 
