@@ -2,6 +2,12 @@
 *.o
 ComplexFloat
 ComplexDouble
+ComplexInt
+ComplexLong
+ComplexShort
+ComplexUnsignedInt
+ComplexUnsignedLong
+ComplexUnsignedShort
 Double
 Float
 Int

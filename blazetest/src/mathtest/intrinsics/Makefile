@@ -58,6 +58,18 @@ ComplexFloat: ComplexFloat.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 ComplexDouble: ComplexDouble.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexInt: ComplexInt.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexLong: ComplexLong.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexShort: ComplexShort.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexUnsignedInt: ComplexUnsignedInt.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexUnsignedLong: ComplexUnsignedLong.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ComplexUnsignedShort: ComplexUnsignedShort.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Double: Double.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Float: Float.o
