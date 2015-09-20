@@ -194,6 +194,87 @@ BLAZE_ALWAYS_INLINE double sum( const sse_double_t& a )
 
 
 //*************************************************************************************************
+/*!\brief Returns the sum of all elements in the 8-bit integral complex intrinsic vector.
+// \ingroup intrinsics
+//
+// \param a The vector to be sumed up.
+// \return The sum of all vector elements.
+*/
+BLAZE_ALWAYS_INLINE complex<int8_t> sum( const sse_cint8_t& a )
+{
+#if BLAZE_AVX2_MODE
+   return complex<int8_t>( a[0] + a[1] + a[ 2] + a[ 3] + a[ 4] + a[ 5] + a[ 6] + a[ 7] +
+                           a[8] + a[9] + a[10] + a[11] + a[12] + a[13] + a[14] + a[15] );
+#elif BLAZE_SSE2_MODE
+   return complex<int8_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
+#else
+   return a.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the sum of all elements in the 16-bit integral complex intrinsic vector.
+// \ingroup intrinsics
+//
+// \param a The vector to be sumed up.
+// \return The sum of all vector elements.
+*/
+BLAZE_ALWAYS_INLINE complex<int16_t> sum( const sse_cint16_t& a )
+{
+#if BLAZE_AVX2_MODE
+   return complex<int16_t>( a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6] + a[7] );
+#elif BLAZE_SSE2_MODE
+   return complex<int16_t>( a[0] + a[1] + a[2] + a[3] );
+#else
+   return a.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the sum of all elements in the 32-bit integral complex intrinsic vector.
+// \ingroup intrinsics
+//
+// \param a The vector to be sumed up.
+// \return The sum of all vector elements.
+*/
+BLAZE_ALWAYS_INLINE complex<int32_t> sum( const sse_cint32_t& a )
+{
+#if BLAZE_AVX2_MODE
+   return complex<int32_t>( a[0] + a[1] + a[2] + a[3] );
+#elif BLAZE_SSE2_MODE
+   return complex<int32_t>( a[0] + a[1] );
+#else
+   return a.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the sum of all elements in the 64-bit integral complex intrinsic vector.
+// \ingroup intrinsics
+//
+// \param a The vector to be sumed up.
+// \return The sum of all vector elements.
+*/
+BLAZE_ALWAYS_INLINE complex<int64_t> sum( const sse_cint64_t& a )
+{
+#if BLAZE_AVX2_MODE
+   return complex<int64_t>( a[0] + a[1] );
+#elif BLAZE_SSE2_MODE
+   return a[0];
+#else
+   return a.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns the sum of all elements in the single precision complex intrinsic vector.
 // \ingroup intrinsics
 //
