@@ -186,7 +186,7 @@ struct sse_int64_t {
 };
 #else
 struct sse_int64_t {
-   BLAZE_ALWAYS_INLINE sse_int64_t() : value( 0 ) {}
+   BLAZE_ALWAYS_INLINE sse_int64_t() : value( 0L ) {}
    BLAZE_ALWAYS_INLINE sse_int64_t( int64_t v ) : value( v ) {}
    BLAZE_ALWAYS_INLINE int64_t operator[]( size_t /*i*/ ) const { return value; }
    int64_t value;
@@ -268,6 +268,148 @@ struct sse_double_t {
    BLAZE_ALWAYS_INLINE sse_double_t( double v ) : value( v ) {}
    BLAZE_ALWAYS_INLINE double operator[]( size_t /*i*/ ) const { return value; }
    double value;
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\class blaze::sse_cint8_t
+// \brief Intrinsic type for 8-bit integral complex values.
+// \ingroup intrinsics
+*/
+/*! \cond BLAZE_INTERNAL */
+#if BLAZE_AVX2_MODE
+struct sse_cint8_t {
+   BLAZE_ALWAYS_INLINE sse_cint8_t() : value( _mm256_setzero_si256() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint8_t( __m256i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int8_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int8_t>*>( &value )[i]; }
+   __m256i value;  // Contains 16 8-bit integral complex values
+};
+#elif BLAZE_SSE2_MODE
+struct sse_cint8_t {
+   BLAZE_ALWAYS_INLINE sse_cint8_t() : value( _mm_setzero_si128() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint8_t( __m128i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int8_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int8_t>*>( &value )[i]; }
+   __m128i value;  // Contains 8 8-bit integral complex values
+};
+#else
+struct sse_cint8_t {
+   BLAZE_ALWAYS_INLINE sse_cint8_t() : value( 0, 0 ) {}
+   BLAZE_ALWAYS_INLINE sse_cint8_t( complex<int8_t> v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int8_t> operator[]( size_t /*i*/ ) const { return value; }
+   complex<int8_t> value;
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\class blaze::sse_cint16_t
+// \brief Intrinsic type for 16-bit integral complex values.
+// \ingroup intrinsics
+*/
+/*! \cond BLAZE_INTERNAL */
+#if BLAZE_AVX2_MODE
+struct sse_cint16_t {
+   BLAZE_ALWAYS_INLINE sse_cint16_t() : value( _mm256_setzero_si256() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint16_t( __m256i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int16_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int16_t>*>( &value )[i]; }
+   __m256i value;  // Contains 8 16-bit integral complex values
+};
+#elif BLAZE_SSE2_MODE
+struct sse_cint16_t {
+   BLAZE_ALWAYS_INLINE sse_cint16_t() : value( _mm_setzero_si128() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint16_t( __m128i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int16_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int16_t>*>( &value )[i]; }
+   __m128i value;  // Contains 4 16-bit integral complex values
+};
+#else
+struct sse_cint16_t {
+   BLAZE_ALWAYS_INLINE sse_cint16_t() : value( 0, 0 ) {}
+   BLAZE_ALWAYS_INLINE sse_cint16_t( complex<int16_t> v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int16_t> operator[]( size_t /*i*/ ) const { return value; }
+   complex<int16_t> value;
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\class blaze::sse_cint32_t
+// \brief Intrinsic type for 32-bit integral complex values.
+// \ingroup intrinsics
+*/
+/*! \cond BLAZE_INTERNAL */
+#if BLAZE_MIC_MODE
+struct sse_cint32_t {
+   BLAZE_ALWAYS_INLINE sse_cint32_t() : value( _mm512_setzero_epi32() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint32_t( __m512i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int32_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int32_t>*>( &value )[i]; }
+   __m512i value;  // Contains 8 32-bit integral complex values
+};
+#elif BLAZE_AVX2_MODE
+struct sse_cint32_t {
+   BLAZE_ALWAYS_INLINE sse_cint32_t() : value( _mm256_setzero_si256() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint32_t( __m256i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int32_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int32_t>*>( &value )[i]; }
+   __m256i value;  // Contains 4 32-bit integral complex values
+};
+#elif BLAZE_SSE2_MODE
+struct sse_cint32_t {
+   BLAZE_ALWAYS_INLINE sse_cint32_t() : value( _mm_setzero_si128() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint32_t( __m128i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int32_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int32_t>*>( &value )[i]; }
+   __m128i value;  // Contains 2 32-bit integral complex values
+};
+#else
+struct sse_cint32_t {
+   BLAZE_ALWAYS_INLINE sse_cint32_t() : value( 0, 0 ) {}
+   BLAZE_ALWAYS_INLINE sse_cint32_t( complex<int32_t> v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int32_t> operator[]( size_t /*i*/ ) const { return value; }
+   complex<int32_t> value;
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\class blaze::sse_cint64_t
+// \brief Intrinsic type for 64-bit integral complex values.
+// \ingroup intrinsics
+*/
+/*! \cond BLAZE_INTERNAL */
+#if BLAZE_MIC_MODE
+struct sse_cint64_t {
+   BLAZE_ALWAYS_INLINE sse_cint64_t() : value( _mm512_setzero_epi32() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint64_t( __m512i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int64_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int64_t>*>( &value )[i]; }
+   __m512i value;  // Contains 4 64-bit integral complex values
+};
+#elif BLAZE_AVX2_MODE
+struct sse_cint64_t {
+   BLAZE_ALWAYS_INLINE sse_cint64_t() : value( _mm256_setzero_si256() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint64_t( __m256i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int64_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int64_t>*>( &value )[i]; }
+   __m256i value;  // Contains 2 64-bit integral complex values
+};
+#elif BLAZE_SSE2_MODE
+struct sse_cint64_t {
+   BLAZE_ALWAYS_INLINE sse_cint64_t() : value( _mm_setzero_si128() ) {}
+   BLAZE_ALWAYS_INLINE sse_cint64_t( __m128i v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int64_t> operator[]( size_t i ) const { return reinterpret_cast<const complex<int64_t>*>( &value )[i]; }
+   __m128i value;  // Contains 1 64-bit integral complex values
+};
+#else
+struct sse_cint64_t {
+   BLAZE_ALWAYS_INLINE sse_cint64_t() : value( 0L, 0L ) {}
+   BLAZE_ALWAYS_INLINE sse_cint64_t( complex<int64_t> v ) : value( v ) {}
+   BLAZE_ALWAYS_INLINE complex<int64_t> operator[]( size_t /*i*/ ) const { return value; }
+   complex<int64_t> value;
 };
 #endif
 /*! \endcond */
