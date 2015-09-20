@@ -65,7 +65,7 @@ namespace blaze {
 // This helper structure provides the mapping between the size of an integral data type and the
 // according intrinsic data type.
 */
-template< size_t N >
+template< bool C, size_t N >
 struct IntrinsicTraitHelper;
 /*! \endcond */
 //*************************************************************************************************
@@ -73,12 +73,12 @@ struct IntrinsicTraitHelper;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IntrinsicTraitHelper class template for 1-byte integral data types.
+/*!\brief IntrinsicTraitHelper specialization for 1-byte integral data types.
 // \ingroup intrinsics
 */
 #if BLAZE_AVX2_MODE
 template<>
-struct IntrinsicTraitHelper<1UL>
+struct IntrinsicTraitHelper<false,1UL>
 {
    typedef sse_int8_t  Type;
    enum { size           = 32,
@@ -91,7 +91,7 @@ struct IntrinsicTraitHelper<1UL>
 };
 #else
 template<>
-struct IntrinsicTraitHelper<1UL>
+struct IntrinsicTraitHelper<false,1UL>
 {
    typedef sse_int8_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16 ):( 1 ),
@@ -109,12 +109,12 @@ struct IntrinsicTraitHelper<1UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IntrinsicTraitHelper class template for 2-byte integral data types.
+/*!\brief IntrinsicTraitHelper specialization for 2-byte integral data types.
 // \ingroup intrinsics
 */
 #if BLAZE_AVX2_MODE
 template<>
-struct IntrinsicTraitHelper<2UL>
+struct IntrinsicTraitHelper<false,2UL>
 {
    typedef sse_int16_t  Type;
    enum { size           = 16,
@@ -127,7 +127,7 @@ struct IntrinsicTraitHelper<2UL>
 };
 #else
 template<>
-struct IntrinsicTraitHelper<2UL>
+struct IntrinsicTraitHelper<false,2UL>
 {
    typedef sse_int16_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
@@ -145,12 +145,12 @@ struct IntrinsicTraitHelper<2UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IntrinsicTraitHelper class template for 4-byte integral data types.
+/*!\brief IntrinsicTraitHelper specialization for 4-byte integral data types.
 // \ingroup intrinsics
 */
 #if BLAZE_MIC_MODE
 template<>
-struct IntrinsicTraitHelper<4UL>
+struct IntrinsicTraitHelper<false,4UL>
 {
    typedef sse_int32_t  Type;
    enum { size           = 16,
@@ -163,7 +163,7 @@ struct IntrinsicTraitHelper<4UL>
 };
 #elif BLAZE_AVX2_MODE
 template<>
-struct IntrinsicTraitHelper<4UL>
+struct IntrinsicTraitHelper<false,4UL>
 {
    typedef sse_int32_t  Type;
    enum { size           = 8,
@@ -176,7 +176,7 @@ struct IntrinsicTraitHelper<4UL>
 };
 #else
 template<>
-struct IntrinsicTraitHelper<4UL>
+struct IntrinsicTraitHelper<false,4UL>
 {
    typedef sse_int32_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
@@ -194,25 +194,25 @@ struct IntrinsicTraitHelper<4UL>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IntrinsicTraitHelper class template for 8-byte integral data types.
+/*!\brief IntrinsicTraitHelper specialization for 8-byte integral data types.
 // \ingroup intrinsics
 */
 #if BLAZE_MIC_MODE
 template<>
-struct IntrinsicTraitHelper<8UL>
+struct IntrinsicTraitHelper<false,8UL>
 {
    typedef sse_int64_t  Type;
    enum { size           = 8,
           addition       = 1,
-          subtraction    = 0,
-          multiplication = 0,
+          subtraction    = 1,
+          multiplication = 1,
           division       = 1,
           absoluteValue  = 0,
           conjugate      = 1 };
 };
 #elif BLAZE_AVX2_MODE
 template<>
-struct IntrinsicTraitHelper<8UL>
+struct IntrinsicTraitHelper<false,8UL>
 {
    typedef sse_int64_t  Type;
    enum { size           = 4,
@@ -225,7 +225,7 @@ struct IntrinsicTraitHelper<8UL>
 };
 #else
 template<>
-struct IntrinsicTraitHelper<8UL>
+struct IntrinsicTraitHelper<false,8UL>
 {
    typedef sse_int64_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
@@ -235,6 +235,176 @@ struct IntrinsicTraitHelper<8UL>
           division       = 0,
           absoluteValue  = 0,
           conjugate      = 1 };
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief IntrinsicTraitHelper specialization for 1-byte integral complex data types.
+// \ingroup intrinsics
+*/
+#if BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<true,1UL>
+{
+   typedef sse_cint8_t  Type;
+   enum { size           = 16,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 0 };
+};
+#else
+template<>
+struct IntrinsicTraitHelper<true,1UL>
+{
+   typedef sse_cint8_t  Type;
+   enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = 0,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 0 };
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief IntrinsicTraitHelper specialization for 2-byte integral complex data types.
+// \ingroup intrinsics
+*/
+#if BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<true,2UL>
+{
+   typedef sse_cint16_t  Type;
+   enum { size           = 8,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 1 };
+};
+#else
+template<>
+struct IntrinsicTraitHelper<true,2UL>
+{
+   typedef sse_cint16_t  Type;
+   enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = BLAZE_SSE2_MODE,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = BLAZE_SSE2_MODE };
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief IntrinsicTraitHelper specialization for 4-byte integral complex data types.
+// \ingroup intrinsics
+*/
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitHelper<true,4UL>
+{
+   typedef sse_cint32_t  Type;
+   enum { size           = 8,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 1 };
+};
+#elif BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<true,4UL>
+{
+   typedef sse_cint32_t  Type;
+   enum { size           = 4,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 1,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 1 };
+};
+#else
+template<>
+struct IntrinsicTraitHelper<true,4UL>
+{
+   typedef sse_cint32_t  Type;
+   enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = BLAZE_SSE4_MODE,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = BLAZE_SSE4_MODE };
+};
+#endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief IntrinsicTraitHelper specialization for 8-byte integral complex data types.
+// \ingroup intrinsics
+*/
+#if BLAZE_MIC_MODE
+template<>
+struct IntrinsicTraitHelper<true,8UL>
+{
+   typedef sse_cint64_t  Type;
+   enum { size           = 4,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 0 };
+};
+#elif BLAZE_AVX2_MODE
+template<>
+struct IntrinsicTraitHelper<true,8UL>
+{
+   typedef sse_cint64_t  Type;
+   enum { size           = 2,
+          addition       = 1,
+          subtraction    = 1,
+          multiplication = 0,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 0 };
+};
+#else
+template<>
+struct IntrinsicTraitHelper<true,8UL>
+{
+   typedef sse_cint64_t  Type;
+   enum { size           = 1,
+          addition       = BLAZE_SSE2_MODE,
+          subtraction    = BLAZE_SSE2_MODE,
+          multiplication = 0,
+          division       = 0,
+          absoluteValue  = 0,
+          conjugate      = 0 };
 };
 #endif
 /*! \endcond */
@@ -280,7 +450,7 @@ template<>
 struct IntrinsicTraitBase<char>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(char)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(char)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -306,7 +476,7 @@ template<>
 struct IntrinsicTraitBase<signed char>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(signed char)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(signed char)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -332,7 +502,7 @@ template<>
 struct IntrinsicTraitBase<unsigned char>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(unsigned char)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(unsigned char)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -342,7 +512,7 @@ struct IntrinsicTraitBase<unsigned char>
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
           division       = Helper::division,
-          absoluteValue  = Helper::absoluteValue,
+          absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
 /*! \endcond */
@@ -358,7 +528,7 @@ template<>
 struct IntrinsicTraitBase<wchar_t>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(wchar_t)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(wchar_t)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -384,7 +554,7 @@ template<>
 struct IntrinsicTraitBase<short>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(short)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(short)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -410,7 +580,7 @@ template<>
 struct IntrinsicTraitBase<unsigned short>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(unsigned short)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(unsigned short)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -420,7 +590,7 @@ struct IntrinsicTraitBase<unsigned short>
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
           division       = Helper::division,
-          absoluteValue  = Helper::absoluteValue,
+          absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
 /*! \endcond */
@@ -436,7 +606,7 @@ template<>
 struct IntrinsicTraitBase<int>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(int)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(int)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -462,7 +632,7 @@ template<>
 struct IntrinsicTraitBase<unsigned int>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(unsigned int)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(unsigned int)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -472,7 +642,7 @@ struct IntrinsicTraitBase<unsigned int>
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
           division       = Helper::division,
-          absoluteValue  = Helper::absoluteValue,
+          absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
 /*! \endcond */
@@ -488,7 +658,7 @@ template<>
 struct IntrinsicTraitBase<long>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(long)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(long)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -514,7 +684,7 @@ template<>
 struct IntrinsicTraitBase<unsigned long>
 {
  private:
-   typedef IntrinsicTraitHelper<sizeof(unsigned long)>  Helper;
+   typedef IntrinsicTraitHelper<false,sizeof(unsigned long)>  Helper;
 
  public:
    typedef Helper::Type  Type;
@@ -524,7 +694,7 @@ struct IntrinsicTraitBase<unsigned long>
           subtraction    = Helper::subtraction,
           multiplication = Helper::multiplication,
           division       = Helper::division,
-          absoluteValue  = Helper::absoluteValue,
+          absoluteValue  = 0,
           conjugate      = Helper::conjugate };
 };
 /*! \endcond */
@@ -630,6 +800,286 @@ struct IntrinsicTraitBase<double>
           conjugate      = 1 };
 };
 #endif
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<char>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<char> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<char> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<char> ) == 2UL*sizeof( char ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<signed char>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<signed char> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(signed char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<signed char> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<signed char> ) == 2UL*sizeof( signed char ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned char>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<unsigned char> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(unsigned char)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<unsigned char> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = 0,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<unsigned char> ) == 2UL*sizeof( unsigned char ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<wchar_t>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<wchar_t> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(wchar_t)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<wchar_t> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<wchar_t> ) == 2UL*sizeof( wchar_t ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<short>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<short> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(short)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<short> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<short> ) == 2UL*sizeof( short ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned short>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<unsigned short> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(unsigned short)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<unsigned short> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = 0,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<unsigned short> ) == 2UL*sizeof( unsigned short ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<int>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<int> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(int)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<int> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<int> ) == 2UL*sizeof( int ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned int>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<unsigned int> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(unsigned int)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<unsigned int> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = 0,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<unsigned int> ) == 2UL*sizeof( unsigned int ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<long>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<long> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(long)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<long> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = Helper::absoluteValue,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<long> ) == 2UL*sizeof( long ) );
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IntrinsicTraitBase class template for 'complex<unsigned long>'.
+// \ingroup intrinsics
+*/
+template<>
+struct IntrinsicTraitBase< complex<unsigned long> >
+{
+ private:
+   typedef IntrinsicTraitHelper<true,sizeof(unsigned long)>  Helper;
+
+ public:
+   typedef Helper::Type  Type;
+   enum { size           = Helper::size,
+          alignment      = AlignmentOf< complex<unsigned long> >::value,
+          addition       = Helper::addition,
+          subtraction    = Helper::subtraction,
+          multiplication = Helper::multiplication,
+          division       = Helper::division,
+          absoluteValue  = 0,
+          conjugate      = Helper::conjugate };
+
+   BLAZE_STATIC_ASSERT( sizeof( complex<unsigned long> ) == 2UL*sizeof( unsigned long ) );
+};
 /*! \endcond */
 //*************************************************************************************************
 
