@@ -144,6 +144,57 @@ BLAZE_ALWAYS_INLINE sse_double_t conj( const sse_double_t& a )
 
 
 //*************************************************************************************************
+/*!\fn sse_cint16_t conj( const sse_cint16_t& )
+// \brief Complex conjugate of a vector of 16-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The vector of 16-bit integral complex values.
+// \return The complex conjugate values.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
+{
+   return _mm256_mullo_epi16( a.value, _mm256_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1,
+                                                         -1, 1, -1, 1, -1, 1, -1, 1 ) );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
+{
+   return _mm_mullo_epi16( a.value, _mm_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1 ) );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint32_t conj( const sse_cint32_t& )
+// \brief Complex conjugate of a vector of 32-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The vector of 32-bit integral complex values.
+// \return The complex conjugate values.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+{
+   return _mm512_mullo_epi32( a.value, _mm512_set_epi32( -1, 1, -1, 1, -1, 1, -1, 1,
+                                                         -1, 1, -1, 1, -1, 1, -1, 1 ) );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+{
+   return _mm256_mullo_epi32( a.value, _mm256_set_epi32( -1, 1, -1, 1, -1, 1, -1, 1 ) );
+}
+#elif BLAZE_SSE4_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+{
+   return _mm_mullo_epi32( a.value, _mm_set_epi32( -1, 1, -1, 1 ) );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\fn sse_cfloat_t conj( const sse_cfloat_t& )
 // \brief Complex conjugate of a vector of single precision complex values.
 // \ingroup intrinsics
