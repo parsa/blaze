@@ -201,6 +201,97 @@ BLAZE_ALWAYS_INLINE sse_double_t loadu( const double* address )
 
 
 //*************************************************************************************************
+/*!\brief Loads a vector of 2-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 2-byte integral complex values. In contrast to the according
+// load function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_cint16_t >::Type
+   loadu( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 4-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 4-byte integral complex values. In contrast to the according
+// load function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_cint32_t >::Type
+   loadu( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_MIC_MODE
+   __m512i v1 = _mm512_setzero_epi32();
+   v1 = _mm512_loadunpacklo_epi32( v1, address );
+   v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
+   return v1;
+#elif BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 8-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 8-byte integral complex values. In contrast to the according
+// load function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_cint64_t >::Type
+   loadu( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_MIC_MODE
+   __m512i v1 = _mm512_setzero_epi32();
+   v1 = _mm512_loadunpacklo_epi64( v1, address );
+   v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
+   return v1;
+#elif BLAZE_AVX2_MODE
+   return _mm256_loadu_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Loads a vector of 'complex<float>' values.
 // \ingroup intrinsics
 //
