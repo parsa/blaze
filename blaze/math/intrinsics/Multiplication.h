@@ -105,6 +105,24 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32
 
 
 //*************************************************************************************************
+/*!\fn sse_int64_t operator*( sse_int64_t, sse_int64_t )
+// \brief Multiplication of two vectors of 64-bit integral values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the multiplication.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_int64_t operator*( const sse_int64_t& a, const sse_int64_t& b )
+{
+   return _mm512_mullo_epi64( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\fn sse_float_t operator*( sse_float_t, sse_float_t )
 // \brief Multiplication of two vectors of single precision floating point values.
 // \ingroup intrinsics
@@ -155,6 +173,108 @@ BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_dou
 BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm_mul_pd( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint16_t operator*( sse_cint16_t, sse_cint16_t )
+// \brief Multiplication of two vectors of 16-bit integral values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the multiplication.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cint16_t& b )
+{
+   __m256i x, y, z;
+   const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
+
+   x = _mm256_shufflelo_epi16( a.value, 0xA0 );
+   x = _mm256_shufflehi_epi16( x, 0xA0 );
+   z = _mm256_mullo_epi16( x, b.value );
+   x = _mm256_shufflelo_epi16( a.value, 0xF5 );
+   x = _mm256_shufflehi_epi16( x, 0xF5 );
+   y = _mm256_shufflelo_epi16( b.value, 0xB1 );
+   y = _mm256_shufflehi_epi16( y, 0xB1 );
+   y = _mm256_mullo_epi16( x, y );
+   y = _mm256_mullo_epi16( y, neg );
+   return _mm256_add_epi16( z, y );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cint16_t& b )
+{
+   __m128i x, y, z;
+   const __m128i neg( _mm_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1 ) );
+
+   x = _mm_shufflelo_epi16( a.value, 0xA0 );
+   x = _mm_shufflehi_epi16( x, 0xA0 );
+   z = _mm_mullo_epi16( x, b.value );
+   x = _mm_shufflelo_epi16( a.value, 0xF5 );
+   x = _mm_shufflehi_epi16( x, 0xF5 );
+   y = _mm_shufflelo_epi16( b.value, 0xB1 );
+   y = _mm_shufflehi_epi16( y, 0xB1 );
+   y = _mm_mullo_epi16( x, y );
+   y = _mm_mullo_epi16( y, neg );
+   return _mm_add_epi16( z, y );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint32_t operator*( sse_cint32_t, sse_cint32_t )
+// \brief Multiplication of two vectors of 32-bit integral values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the multiplication.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   __m512i x, y, z;
+   const __m512i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
+
+   x = _mm512_shuffle_epi32( a.value, 0xA0 );
+   z = _mm512_mullo_epi32( x, b.value );
+   x = _mm512_shuffle_epi32( a.value, 0xF5 );
+   y = _mm512_shuffle_epi32( b.value, 0xB1 );
+   y = _mm512_mullo_epi32( x, y );
+   y = _mm512_mullo_epi32( y, neg );
+   return _mm512_add_epi32( z, y );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   __m256i x, y, z;
+   const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
+
+   x = _mm256_shuffle_epi32( a.value, 0xA0 );
+   z = _mm256_mullo_epi32( x, b.value );
+   x = _mm256_shuffle_epi32( a.value, 0xF5 );
+   y = _mm256_shuffle_epi32( b.value, 0xB1 );
+   y = _mm256_mullo_epi32( x, y );
+   y = _mm256_mullo_epi32( y, neg );
+   return _mm256_add_epi32( z, y );
+}
+#elif BLAZE_SSE4_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   __m128i x, y, z;
+   const __m128i neg( _mm_set_epi32( 1, -1, 1, -1 ) );
+
+   x = _mm_shuffle_epi32( a.value, 0xA0 );
+   z = _mm_mullo_epi32( x, b.value );
+   x = _mm_shuffle_epi32( a.value, 0xF5 );
+   y = _mm_shuffle_epi32( b.value, 0xB1 );
+   y = _mm_mullo_epi32( x, y );
+   y = _mm_mullo_epi32( y, neg );
+   return _mm_add_epi32( z, y );
 }
 #endif
 //*************************************************************************************************
