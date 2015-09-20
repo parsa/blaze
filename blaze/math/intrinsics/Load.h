@@ -206,6 +206,97 @@ BLAZE_ALWAYS_INLINE sse_double_t load( const double* address )
 
 
 //*************************************************************************************************
+/*!\brief Loads a vector of 2-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 2-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_cint16_t >::Type
+   load( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 4-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 4-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_cint32_t >::Type
+   load( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_MIC_MODE
+   return _mm512_load_epi32( address );
+#elif BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Loads a vector of 8-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The first integral complex value to be loaded.
+// \return The loaded vector of integral complex values.
+//
+// This function loads a vector of 8-byte integral complex values. The given address must be
+// aligned according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte
+// alignment in case of AVX, and 64-byte alignment in case of MIC.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_cint64_t >::Type
+   load( const complex<T>* address )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
+
+#if BLAZE_MIC_MODE
+   return _mm512_load_epi64( address );
+#elif BLAZE_AVX2_MODE
+   return _mm256_load_si256( reinterpret_cast<const __m256i*>( address ) );
+#elif BLAZE_SSE2_MODE
+   return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
+#else
+   return *address;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Loads a vector of 'complex<float>' values.
 // \ingroup intrinsics
 //
