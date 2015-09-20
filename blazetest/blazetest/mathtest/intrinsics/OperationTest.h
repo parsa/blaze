@@ -40,17 +40,22 @@
 // Includes
 //*************************************************************************************************
 
+#include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/valuetraits/IsTrue.h>
 
 
 namespace blazetest {
@@ -105,17 +110,29 @@ class OperationTest : private blaze::NonCopyable
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testStore    ();
-   void testStream   ();
-   void testStoreu   ( size_t offset );
-   void testReduction();
+   void testStore         ();
+   void testStream        ();
+   void testStoreu        ( size_t offset );
+   void testAddition      ( blaze::TrueType );
+   void testAddition      ( blaze::FalseType );
+   void testSubtraction   ( blaze::TrueType );
+   void testSubtraction   ( blaze::FalseType );
+   void testMultiplication( blaze::TrueType );
+   void testMultiplication( blaze::FalseType );
+   void testDivision      ( blaze::TrueType );
+   void testDivision      ( blaze::FalseType );
+   void testAbsoluteValue ( blaze::TrueType );
+   void testAbsoluteValue ( blaze::FalseType );
+   void testConjugate     ( blaze::TrueType );
+   void testConjugate     ( blaze::FalseType );
+   void testReduction     ();
    //@}
    //**********************************************************************************************
 
    //**Error detection functions*******************************************************************
    /*!\name Error detection functions */
    //@{
-   void compare( const T* a, const T* b ) const;
+   void compare( const T* expected, const T* actual ) const;
    //@}
    //**********************************************************************************************
 
@@ -131,6 +148,8 @@ class OperationTest : private blaze::NonCopyable
    //@{
    T* a_;  //!< The first aligned array of size NN.
    T* b_;  //!< The second aligned array of size NN.
+   T* c_;  //!< The third aligned array of size NN.
+   T* d_;  //!< The fourth aligned array of size NN.
 
    std::string test_;  //!< Label of the currently performed test.
    //@}
@@ -162,6 +181,8 @@ template< typename T >  // Data type of the intrinsic test
 OperationTest<T>::OperationTest()
    : a_    ( blaze::allocate<T>( NN ) )  // The first aligned array of size NN
    , b_    ( blaze::allocate<T>( NN ) )  // The second aligned array of size NN
+   , c_    ( blaze::allocate<T>( NN ) )  // The third aligned array of size NN
+   , d_    ( blaze::allocate<T>( NN ) )  // The fourth aligned array of size NN
    , test_ ()                            // Label of the currently performed test
 {
    testStore();
@@ -171,7 +192,13 @@ OperationTest<T>::OperationTest()
       testStoreu( offset );
    }
 
-   testReduction();
+   testAddition      ( typename blaze::IsTrue< IT::addition       >::Type() );
+   testSubtraction   ( typename blaze::IsTrue< IT::subtraction    >::Type() );
+   testMultiplication( typename blaze::IsTrue< IT::multiplication >::Type() );
+   testDivision      ( typename blaze::IsTrue< IT::division       >::Type() );
+   testAbsoluteValue ( typename blaze::IsTrue< IT::absoluteValue  >::Type() );
+   testConjugate     ( typename blaze::IsTrue< IT::conjugate      >::Type() );
+   testReduction     ();
 }
 //*************************************************************************************************
 
@@ -192,6 +219,8 @@ OperationTest<T>::~OperationTest()
 {
    blaze::deallocate( a_ );
    blaze::deallocate( b_ );
+   blaze::deallocate( c_ );
+   blaze::deallocate( d_ );
 }
 //*************************************************************************************************
 
@@ -290,6 +319,287 @@ void OperationTest<T>::testStoreu( size_t offset )
 
 
 //*************************************************************************************************
+/*!\brief Testing the addition operation.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the addition operation by comparing the results of a vectorized and a
+// scalar addition. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testAddition( blaze::TrueType )
+{
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Addition operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] + b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, load( a_+i ) + load( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the addition operation.
+//
+// \return void
+//
+// This function is called in case the addition operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testAddition( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the subtraction operation.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function tests the subtraction operation by comparing the results of a vectorized and a
+// scalar subtraction. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testSubtraction( blaze::TrueType )
+{
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Subtraction operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] - b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, load( a_+i ) - load( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the subtraction operation.
+//
+// \return void
+//
+// This function is called in case the subtraction operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testSubtraction( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the multiplication operation.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the multiplication operation by comparing the results of a vectorized and
+// a scalar multiplication. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testMultiplication( blaze::TrueType )
+{
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Multiplication operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] * b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, load( a_+i ) * load( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the multiplication operation.
+//
+// \return void
+//
+// This function is called in case the multiplication operation is not available for the given
+// data type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testMultiplication( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the division operation.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function tests the division operation by comparing the results of a vectorized and a
+// scalar division. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testDivision( blaze::TrueType )
+{
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Division operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] / b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, load( a_+i ) / load( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the division operation.
+//
+// \return void
+//
+// This function is called in case the division operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testDivision( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the absolute value operation.
+//
+// \return void
+// \exception std::runtime_error Absolute value error detected.
+//
+// This function tests the absolute value operation by comparing the results of a vectorized and
+// a scalar absolute value. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
+{
+   using std::abs;
+   using blaze::abs;
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Absolute value operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = abs( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, abs( load( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the absolute value operation.
+//
+// \return void
+//
+// This function is called in case the absolute value operation is not available for the given
+// data type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testAbsoluteValue( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the conjugate operation.
+//
+// \return void
+// \exception std::runtime_error Conjugate error detected.
+//
+// This function tests the conjugate operation by comparing the results of a vectorized and a
+// scalar conjugate. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testConjugate( blaze::TrueType )
+{
+   using blaze::conj;
+   using blaze::load;
+   using blaze::store;
+
+   test_ = "Conjugate operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = conj( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=IT::size ) {
+      store( d_+i, conj( load( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the conjugate operation.
+//
+// \return void
+//
+// This function is called in case the conjugate operation is not available for the given data
+// type \a T.
+*/
+template< typename T >  // Data type of the intrinsic test
+void OperationTest<T>::testConjugate( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the reduction operation.
 //
 // \return void
@@ -347,8 +657,8 @@ void OperationTest<T>::testReduction()
 //*************************************************************************************************
 /*!\brief Comparison of the first 256 elements of the two given arrays.
 //
-// \param a The first array to be compared.
-// \param b The second array to be compared.
+// \param expected The array of expected values.
+// \param actual The array of actual values.
 // \return void
 // \exception std::runtime_error Value mismatch detected.
 //
@@ -356,17 +666,17 @@ void OperationTest<T>::testReduction()
 // the two arrays differs, a \a std::runtime_error exception is thrown.
 */
 template< typename T >  // Data type of the intrinsic test
-void OperationTest<T>::compare( const T* a, const T* b ) const
+void OperationTest<T>::compare( const T* expected, const T* actual ) const
 {
    for( size_t i=0UL; i<N; ++i ) {
-      if( a[i] != b[i] ) {
+      if( expected[i] != actual[i] ) {
          std::ostringstream oss;
          oss.precision( 20 );
          oss << " Test : " << test_ << "\n"
              << " Error: Value mismatch detected at index " << i << "\n"
              << " Details:\n"
-             << "   a[" << i << "] = " << a[i] << "\n"
-             << "   b[" << i << "] = " << b[i] << "\n";
+             << "   expected[" << i << "] = " << expected[i] << "\n"
+             << "   actual  [" << i << "] = " << actual[i] << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -398,6 +708,8 @@ void OperationTest<T>::initialize()
    for( size_t i=0UL; i<NN; ++i ) {
       randomize( a_[i] );
       randomize( b_[i] );
+      randomize( c_[i] );
+      randomize( d_[i] );
    }
 }
 //*************************************************************************************************
