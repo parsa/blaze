@@ -109,7 +109,7 @@ BLAZE_ALWAYS_INLINE sse_int16_t operator-( const sse_int16_t& a, const sse_int16
 // \return The result of the subtraction.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_int64_t operator-( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE sse_int32_t operator-( const sse_int32_t& a, const sse_int32_t& b )
 {
    return _mm512_sub_epi32( a.value, b.value );
 }
@@ -136,7 +136,12 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator-( const sse_int32_t& a, const sse_int32
 // \param b The right-hand side operand.
 // \return The result of the subtraction.
 */
-#if BLAZE_AVX2_MODE
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_int64_t operator-( const sse_int64_t& a, const sse_int64_t& b )
+{
+   return _mm512_sub_epi64( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
 BLAZE_ALWAYS_INLINE sse_int64_t operator-( const sse_int64_t& a, const sse_int64_t& b )
 {
    return _mm256_sub_epi64( a.value, b.value );
@@ -201,6 +206,108 @@ BLAZE_ALWAYS_INLINE sse_double_t operator-( const sse_double_t& a, const sse_dou
 BLAZE_ALWAYS_INLINE sse_double_t operator-( const sse_double_t& a, const sse_double_t& b )
 {
    return _mm_sub_pd( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint8_t operator-( sse_cint8_t, sse_cint8_t )
+// \brief Subtraction of two vectors of 8-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the subtraction.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint8_t operator-( const sse_cint8_t& a, const sse_cint8_t& b )
+{
+   return _mm256_sub_epi8( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint8_t operator-( const sse_cint8_t& a, const sse_cint8_t& b )
+{
+   return _mm_sub_epi8( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint16_t operator-( sse_cint16_t, sse_cint16_t )
+// \brief Subtraction of two vectors of 16-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the subtraction.
+*/
+#if BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t operator-( const sse_cint16_t& a, const sse_cint16_t& b )
+{
+   return _mm256_sub_epi16( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint16_t operator-( const sse_cint16_t& a, const sse_cint16_t& b )
+{
+   return _mm_sub_epi16( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint32_t operator-( sse_cint32_t, sse_cint32_t )
+// \brief Subtraction of two vectors of 32-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the subtraction.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator-( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   return _mm512_sub_epi32( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator-( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   return _mm256_sub_epi32( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint32_t operator-( const sse_cint32_t& a, const sse_cint32_t& b )
+{
+   return _mm_sub_epi32( a.value, b.value );
+}
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\fn sse_cint64_t operator-( sse_cint64_t, sse_cint64_t )
+// \brief Subtraction of two vectors of 64-bit integral complex values.
+// \ingroup intrinsics
+//
+// \param a The left-hand side operand.
+// \param b The right-hand side operand.
+// \return The result of the subtraction.
+*/
+#if BLAZE_MIC_MODE
+BLAZE_ALWAYS_INLINE sse_cint64_t operator-( const sse_cint64_t& a, const sse_cint64_t& b )
+{
+   return _mm512_sub_epi64( a.value, b.value );
+}
+#elif BLAZE_AVX2_MODE
+BLAZE_ALWAYS_INLINE sse_cint64_t operator-( const sse_cint64_t& a, const sse_cint64_t& b )
+{
+   return _mm256_sub_epi64( a.value, b.value );
+}
+#elif BLAZE_SSE2_MODE
+BLAZE_ALWAYS_INLINE sse_cint64_t operator-( const sse_cint64_t& a, const sse_cint64_t& b )
+{
+   return _mm_sub_epi64( a.value, b.value );
 }
 #endif
 //*************************************************************************************************
