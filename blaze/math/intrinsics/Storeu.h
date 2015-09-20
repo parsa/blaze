@@ -198,6 +198,96 @@ BLAZE_ALWAYS_INLINE void storeu( double* address, const sse_double_t& value )
 
 
 //*************************************************************************************************
+/*!\brief Unaligned store of a vector of 2-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 2-byte integral complex vector to be stored.
+// \return void
+//
+// This function stores a vector of 2-byte integral complex values. In contrast to the according
+// store function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
+   storeu( complex<T>* address, const sse_cint16_t& value )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of a vector of 4-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 4-byte integral complex vector to be stored.
+// \return void
+//
+// This function stores a vector of 4-byte integral complex values. In contrast to the according
+// store function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
+   storeu( complex<T>* address, const sse_cint32_t& value )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_epi32( address, value.value );
+   _mm512_packstorehi_epi32( address+16UL, value.value );
+#elif BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Unaligned store of a vector of 8-byte integral complex values.
+// \ingroup intrinsics
+//
+// \param address The target address.
+// \param value The 8-byte integral complex vector to be stored.
+// \return void
+//
+// This function stores a vector of 8-byte integral complex values. In contrast to the according
+// store function, the given address is not required to be properly aligned.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
+   storeu( complex<T>* address, const sse_cint64_t& value )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+
+#if BLAZE_MIC_MODE
+   _mm512_packstorelo_epi64( address, value.value );
+   _mm512_packstorehi_epi64( address+8UL, value.value );
+#elif BLAZE_AVX2_MODE
+   _mm256_storeu_si256( reinterpret_cast<__m256i*>( address ), value.value );
+#elif BLAZE_SSE2_MODE
+   _mm_storeu_si128( reinterpret_cast<__m128i*>( address ), value.value );
+#else
+   *address = value.value;
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Unaligned store of a vector of 'complex<float>' values.
 // \ingroup intrinsics
 //
