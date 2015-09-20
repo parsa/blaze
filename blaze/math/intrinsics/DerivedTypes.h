@@ -99,6 +99,54 @@ typedef IntrinsicTrait<long>::Type  sse_long_t;
 typedef IntrinsicTrait<unsigned long>::Type  sse_ulong_t;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<short>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<short> >::Type  sse_cshort_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<unsigned short>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<unsigned short> >::Type  sse_cushort_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<int>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<int> >::Type  sse_cint_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<unsigned int>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<unsigned int> >::Type  sse_cuint_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<long int>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<long> >::Type  sse_clong_t;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief The intrinsic data type for 'complex<unsigned long int>'.
+// \ingroup intrinsics
+*/
+typedef IntrinsicTrait< complex<unsigned long> >::Type  sse_culong_t;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
