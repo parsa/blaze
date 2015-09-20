@@ -176,6 +176,88 @@ BLAZE_ALWAYS_INLINE sse_double_t set( double value )
 
 
 //*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 2-byte integral complex value.
+// \ingroup intrinsics
+//
+// \param value The given 2-byte integral complex value.
+// \return The set vector of 2-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_cint16_t >::Type
+   set( complex<T> value )
+{
+#if BLAZE_AVX2_MODE
+   return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
+                         value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 4-byte integral complex value.
+// \ingroup intrinsics
+//
+// \param value The given 4-byte integral complex value.
+// \return The set vector of 4-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_cint32_t >::Type
+   set( complex<T> value )
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi32( value.imag(), value.real(), value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Sets all values in the vector to the given 8-byte integral complex value.
+// \ingroup intrinsics
+//
+// \param value The given 8-byte integral complex value.
+// \return The set vector of 8-byte integral complex values.
+*/
+template< typename T >  // Type of the integral value
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_cint64_t >::Type
+   set( complex<T> value )
+{
+#if BLAZE_MIC_MODE
+   return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
+                            value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_AVX2_MODE
+   return _mm256_set_epi64( value.imag(), value.real(), value.imag(), value.real() );
+#elif BLAZE_SSE2_MODE
+   return _mm_set_epi64( value.imag(), value.real() );
+#else
+   return value;
+#endif
+   BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Sets all values in the vector to the given 'complex<float>' value.
 // \ingroup intrinsics
 //
