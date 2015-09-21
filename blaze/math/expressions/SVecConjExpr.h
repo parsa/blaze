@@ -815,7 +815,7 @@ inline const SVecConjExpr<VT,TF> conj( const SparseVector<VT,TF>& sv )
 // The following example demonstrates the use of the \a ctrans function:
 
    \code
-   blaze::DynamicVector< complex<double> > a, b;
+   blaze::CompressedVector< complex<double> > a, b;
    // ... Resizing and initialization
    b = ctrans( a );
    \endcode
@@ -853,10 +853,17 @@ inline const typename CTransExprTrait<VT>::Type ctrans( const SparseVector<VT,TF
 // \ingroup sparse_vector
 //
 // \param sv The complex conjugate sparse vector expression.
-// \return The complex conjugate of each single element of \a sv.
+// \return The original sparse vector.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a sparse vector complex conjugate expression.
+// on a sparse vector complex conjugate expression. It returns an expression representing the
+// original sparse vector:
+
+   \code
+   blaze::CompressedVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( conj( a ) );
+   \endcode
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -876,10 +883,17 @@ inline typename SVecConjExpr<VT,TF>::Operand conj( const SVecConjExpr<VT,TF>& sv
 // \ingroup sparse_vector
 //
 // \param sv The conjugate transpose sparse vector expression.
-// \return The conjugate transpose of \a sv.
+// \return The transpose sparse vector.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a sparse vector conjugate transpose expression.
+// on a sparse vector conjugate transpose expression. It returns an expression representing the
+// transpose of the sparse vector:
+
+   \code
+   blaze::CompressedVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( ctrans( a ) );
+   \endcode
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
@@ -927,7 +941,7 @@ struct SVecConjExprTrait< SVecConjExpr<VT,false> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
-                              , VT
+                              , typename SVecConjExpr<VT,false>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -943,7 +957,7 @@ struct TSVecConjExprTrait< SVecConjExpr<VT,true> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
-                              , VT
+                              , typename SVecConjExpr<VT,true>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
