@@ -60,12 +60,12 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TSMatConjExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
-#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -851,7 +851,7 @@ inline const SMatConjExpr<MT,SO> conj( const SparseMatrix<MT,SO>& sm )
 // The following example demonstrates the use of the \a ctrans function:
 
    \code
-   blaze::DynamicMatrix< complex<double> > A, B;
+   blaze::CompressedMatrix< complex<double> > A, B;
    // ... Resizing and initialization
    B = ctrans( A );
    \endcode
@@ -889,10 +889,17 @@ inline const typename CTransExprTrait<MT>::Type ctrans( const SparseMatrix<MT,SO
 // \ingroup sparse_matrix
 //
 // \param sm The complex conjugate sparse matrix expression.
-// \return The complex conjugate of each single element of \a sm.
+// \return The original sparse matrix.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a sparse matrix complex conjugate expression.
+// on a sparse matrix complex conjugate expression. It returns an expression representing the
+// original sparse matrix:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( conj( A ) );
+   \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool TF >    // Transpose flag
@@ -912,10 +919,17 @@ inline typename SMatConjExpr<MT,TF>::Operand conj( const SMatConjExpr<MT,TF>& sm
 // \ingroup sparse_matrix
 //
 // \param dm The conjugate transpose sparse matrix expression.
-// \return The conjugate transpose of \a sm.
+// \return The transpose sparse matrix.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a sparse matrix conjugate transpose expression.
+// on a sparse matrix conjugate transpose expression. It returns an expression representing the
+// transpose of the sparse matrix:
+
+   \code
+   blaze::CompressedMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( ctrans( A ) );
+   \endcode
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
@@ -1115,7 +1129,7 @@ struct SMatConjExprTrait< SMatConjExpr<MT,false> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , MT
+                              , typename SMatConjExpr<MT,false>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1131,7 +1145,7 @@ struct TSMatConjExprTrait< SMatConjExpr<MT,true> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsSparseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , MT
+                              , typename SMatConjExpr<MT,true>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
