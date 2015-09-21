@@ -50,15 +50,19 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ColumnExprTrait.h>
+#include <blaze/math/traits/DMatTransExprTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
+#include <blaze/math/traits/TDMatTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -72,6 +76,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -876,31 +881,6 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    // No special implementation for the SMP multiplication assignment to sparse matrices.
    //**********************************************************************************************
 
-   //**Trans function******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Calculating the transpose of a transpose dense matrix.
-   // \ingroup dense_matrix
-   //
-   // \param dm The dense matrix to be (re-)transposed.
-   // \return The transpose of the transpose matrix.
-   //
-   // This function returns an expression representing the transpose of a transpose dense matrix:
-
-      \code
-      blaze::DynamicMatrix<double,rowMajor> A, B;
-      // ... Resizing and initialization
-      B = trans( trans( A ) );
-      \endcode
-   */
-   friend inline Operand trans( const DMatTransExpr<MT,SO>& dm )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      return dm.dm_;
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
@@ -929,6 +909,9 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
 // This function returns an expression representing the transpose of the given dense matrix:
 
    \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    blaze::DynamicMatrix<double,rowMajor> A;
    blaze::DynamicMatrix<double,columnMajor> B;
    // ... Resizing and initialization
@@ -943,6 +926,46 @@ inline const DMatTransExpr<MT,!SO> trans( const DenseMatrix<MT,SO>& dm )
 
    return DMatTransExpr<MT,!SO>( ~dm );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the transpose of a transpose dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be (re-)transposed.
+// \return The transpose of the transpose matrix.
+//
+// This function implements a performance optimized treatment of the transpose operation on a
+// dense matrix transpose expression. It returns an expression representing the transpose of a
+// transpose dense matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, B;
+   // ... Resizing and initialization
+   B = trans( trans( A ) );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline typename DMatTransExpr<MT,SO>::Operand trans( const DMatTransExpr<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm.operand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1140,6 +1163,38 @@ struct IsStrictlyUpper< DMatTransExpr<MT,SO> > : public IsTrue< IsStrictlyLower<
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DMatTransExprTrait< DMatTransExpr<MT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
+                              , typename DMatTransExpr<MT,false>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct TDMatTransExprTrait< DMatTransExpr<MT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
+                              , typename DMatTransExpr<MT,true>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
