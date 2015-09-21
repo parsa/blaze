@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
@@ -317,7 +318,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAssign {
-      enum { value = vectorizable && VT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT::vectorizable &&
                      IsSame<Type,typename VT::ElementType>::value };
    };
    /*! \endcond */
@@ -328,7 +330,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && VT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT::vectorizable &&
                      IsSame<Type,typename VT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition };
    };
@@ -340,7 +343,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && VT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT::vectorizable &&
                      IsSame<Type,typename VT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction };
    };
@@ -352,7 +356,8 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
    struct VectorizedMultAssign {
-      enum { value = vectorizable && VT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT::vectorizable &&
                      IsSame<Type,typename VT::ElementType>::value &&
                      IntrinsicTrait<Type>::multiplication };
    };
