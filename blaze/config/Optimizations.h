@@ -50,4 +50,20 @@ namespace blaze {
 const bool useStreaming = true;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Configuration switch for optimized kernels.
+// \ingroup config
+//
+// This configuration switch enables/disables all optimized compute kernels of the Blaze library,
+// including all vectorized and data type depending kernels. In case the switch is set to \a true
+// the optimized kernels are used whenever possible. In case the switch is set to \a false all
+// optimized kernels are not used, even if it would be possible.
+//
+// \warning Note that disabling the optimized kernels causes a severe performance limitiation
+// to nearly all operations!
+*/
+const bool useOptimizedKernels = true;
+//*************************************************************************************************
+
 } // namespace blaze
