@@ -980,7 +980,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
    /*! \endcond */
@@ -991,7 +992,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -1003,7 +1005,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
@@ -3661,7 +3664,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
    //**********************************************************************************************
@@ -3670,7 +3674,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -3680,7 +3685,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
@@ -5933,7 +5939,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
    //**********************************************************************************************
@@ -5942,7 +5949,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -5952,7 +5960,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
@@ -8227,7 +8236,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value };
    };
    //**********************************************************************************************
@@ -8236,7 +8246,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -8246,7 +8257,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT2::vectorizable &&
                      IsSame<ElementType,typename MT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };

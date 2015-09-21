@@ -865,7 +865,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value };
    };
    /*! \endcond */
@@ -876,7 +877,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -888,7 +890,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
@@ -900,7 +903,8 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedMultAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::multiplication };
    };
@@ -2588,7 +2592,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value };
    };
    //**********************************************************************************************
@@ -2597,7 +2602,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::addition };
    };
@@ -2607,7 +2613,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::subtraction };
    };
@@ -2617,7 +2624,8 @@ class DenseSubvector<VT,aligned,TF> : public DenseVector< DenseSubvector<VT,alig
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT2 >
    struct VectorizedMultAssign {
-      enum { value = vectorizable && VT2::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && VT2::vectorizable &&
                      IsSame<ElementType,typename VT2::ElementType>::value &&
                      IntrinsicTrait<ElementType>::multiplication };
    };
