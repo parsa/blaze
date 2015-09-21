@@ -58,14 +58,14 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/TDMatConjExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
-#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -973,10 +973,17 @@ inline const typename CTransExprTrait<MT>::Type ctrans( const DenseMatrix<MT,SO>
 // \ingroup dense_matrix
 //
 // \param dm The complex conjugate dense matrix expression.
-// \return The complex conjugate of each single element of \a dm.
+// \return The original dense matrix.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a dense matrix complex conjugate expression.
+// on a dense matrix complex conjugate expression. It returns an expression representing the
+// original dense matrix:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( conj( A ) );
+   \endcode
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -996,10 +1003,17 @@ inline typename DMatConjExpr<MT,SO>::Operand conj( const DMatConjExpr<MT,SO>& dm
 // \ingroup dense_matrix
 //
 // \param dm The conjugate transpose dense matrix expression.
-// \return The conjugate transpose of \a dm.
+// \return The transpose dense matrix.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a dense matrix conjugate transpose expression.
+// on a dense matrix conjugate transpose expression. It returns an expression representing the
+// transpose of the dense matrix:
+
+   \code
+   blaze::DynamicMatrix< complex<double> > A, B;
+   // ... Resizing and initialization
+   B = conj( ctrans( A ) );
+   \endcode
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
@@ -1216,7 +1230,7 @@ struct DMatConjExprTrait< DMatConjExpr<MT,false> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsRowMajorMatrix<MT>::value
-                              , MT
+                              , typename DMatConjExpr<MT,false>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1232,7 +1246,7 @@ struct TDMatConjExprTrait< DMatConjExpr<MT,true> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseMatrix<MT>::value && IsColumnMajorMatrix<MT>::value
-                              , MT
+                              , typename DMatConjExpr<MT,true>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
