@@ -974,10 +974,17 @@ inline const typename CTransExprTrait<VT>::Type ctrans( const DenseVector<VT,TF>
 // \ingroup dense_vector
 //
 // \param dv The complex conjugate dense vector expression.
-// \return The complex conjugate of each single element of \a dv.
+// \return The original dense vector.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a dense vector complex conjugate expression.
+// on a dense vector complex conjugate expression. It returns an expression representing the
+// original dense vector:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( conj( a ) );
+   \endcode
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -997,10 +1004,17 @@ inline typename DVecConjExpr<VT,TF>::Operand conj( const DVecConjExpr<VT,TF>& dv
 // \ingroup dense_vector
 //
 // \param dv The conjugate transpose dense vector expression.
-// \return The conjugate transpose of \a dv.
+// \return The transpose dense vector.
 //
 // This function implements a performance optimized treatment of the complex conjugate operation
-// on a dense vector conjugate transpose expression.
+// on a dense vector conjugate transpose expression. It returns an expression representing the
+// transpose of the dense vector:
+
+   \code
+   blaze::DynamicVector< complex<double> > a, b;
+   // ... Resizing and initialization
+   b = conj( ctrans( a ) );
+   \endcode
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1066,7 +1080,7 @@ struct DVecConjExprTrait< DVecConjExpr<VT,false> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
-                              , VT
+                              , typename DVecConjExpr<VT,false>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
@@ -1082,7 +1096,7 @@ struct TDVecConjExprTrait< DVecConjExpr<VT,true> >
  public:
    //**********************************************************************************************
    typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
-                              , VT
+                              , typename DVecConjExpr<VT,true>::Operand
                               , INVALID_TYPE >::Type  Type;
    //**********************************************************************************************
 };
