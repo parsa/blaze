@@ -50,17 +50,23 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/Intrinsics.h>
+#include <blaze/math/traits/DVecTransExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/TDVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -831,35 +837,6 @@ class DVecTransExpr : public DenseVector< DVecTransExpr<VT,TF>, TF >
    // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**Trans function******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Calculating the transpose of a transpose dense vector.
-   // \ingroup dense_vector
-   //
-   // \param dv The dense vector to be (re-)transposed.
-   // \return The transpose of the transpose vector.
-   //
-   // This function returns an expression representing the transpose of a transpose dense vector:
-
-      \code
-      using blaze::columnVector;
-
-      blaze::DynamicVector<double,columnVector> a, b;
-      // ... Resizing and initialization
-      b = trans( trans( a ) );
-      \endcode
-   */
-   template< typename VT2  // Type of the dense vector
-           , bool TF2 >    // Transpose flag of the dense vector
-   friend inline Operand trans( const DVecTransExpr<VT2,TF2>& dv )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      return dv.dv_;
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( VT );
@@ -912,6 +889,46 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the transpose of a transpose dense vector.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be (re-)transposed.
+// \return The transpose of the transpose vector.
+//
+// This function implements a performance optimized treatment of the transpose operation on a
+// dense vector transpose expression. It returns an expression representing the transpose of a
+// transpose dense vector:
+
+   \code
+   using blaze::columnVector;
+
+   blaze::DynamicVector<double,columnVector> a, b;
+   // ... Resizing and initialization
+   b = trans( trans( a ) );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename DVecConjExpr<VT,TF>::Operand trans( const DVecConjExpr<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -951,6 +968,38 @@ struct IsPadded< DVecTransExpr<VT,TF> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct DVecTransExprTrait< DVecTransExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsRowVector<VT>::value
+                              , typename DVecTransExpr<VT,false>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TDVecTransExprTrait< DVecTransExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsDenseVector<VT>::value && IsColumnVector<VT>::value
+                              , typename DVecTransExpr<VT,true>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
