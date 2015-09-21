@@ -77,7 +77,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
-#include <blaze/system/Streaming.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>

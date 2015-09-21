@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/system/Streaming.h
-//  \brief System settings for streaming (non-temporal stores)
+//  \file blaze/system/Optimizations.h
+//  \brief System settings for performance optimizations
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,16 +32,16 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_SYSTEM_STREAMING_H_
-#define _BLAZE_SYSTEM_STREAMING_H_
+#ifndef _BLAZE_SYSTEM_OPTIMIZATIONS_H_
+#define _BLAZE_SYSTEM_OPTIMIZATIONS_H_
 
 
 //=================================================================================================
 //
-//  STREAMING SETTINGS
+//  OPTIMIZATION SETTINGS
 //
 //=================================================================================================
 
-#include <blaze/config/Streaming.h>
+#include <blaze/config/Optimizations.h>
 
 #endif

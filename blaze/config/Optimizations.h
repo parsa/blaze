@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/config/Streaming.h
-//  \brief Configuration of the streaming (non-temporal store) behavior
+//  \file blaze/config/Optimizations.h
+//  \brief Configuration of performance optimizations
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //

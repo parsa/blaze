@@ -65,8 +65,8 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Restrict.h>
-#include <blaze/system/Streaming.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
