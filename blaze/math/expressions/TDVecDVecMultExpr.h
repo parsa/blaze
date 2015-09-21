@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
@@ -79,7 +80,8 @@ struct TDVecDVecMultExprHelper
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum { value = CT1::vectorizable &&
+   enum { value = useOptimizedKernels &&
+                  CT1::vectorizable &&
                   CT2::vectorizable &&
                   IsSame< typename CT1::ElementType, typename CT2::ElementType>::value &&
                   IntrinsicTrait< typename CT1::ElementType >::addition &&

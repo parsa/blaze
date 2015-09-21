@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -146,7 +147,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = !IsDiagonal<T2>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&

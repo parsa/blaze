@@ -86,6 +86,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -178,7 +179,8 @@ class TSMatTDMatMultExpr : public DenseMatrix< TSMatTDMatMultExpr<MT1,MT2>, true
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !IsDiagonal<T3>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<ET1>::value };
    };

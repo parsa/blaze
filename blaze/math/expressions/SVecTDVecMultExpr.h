@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
@@ -153,7 +154,8 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
        outer product, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = T1::vectorizable && T3::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     T1::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
                      IntrinsicTrait<typename T1::ElementType>::multiplication };

@@ -87,6 +87,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -163,7 +164,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = !IsDiagonal<T2>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable &&
                      IsColumnMajorMatrix<T1>::value &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
@@ -183,7 +185,8 @@ class TDMatTSMatMultExpr : public DenseMatrix< TDMatTSMatMultExpr<MT1,MT2>, true
        it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = useOptimizedKernels &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsDiagonal<T2>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<ET2>::value };

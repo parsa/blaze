@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -147,7 +148,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
-      enum { value = !IsDiagonal<T3>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T3>::value &&
                      T1::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
@@ -165,7 +167,8 @@ class TSVecDMatMultExpr : public DenseVector< TSVecDMatMultExpr<VT,MT>, true >
        will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
-      enum { value = !UseVectorizedKernel<T1,T2,T3>::value &&
+      enum { value = useOptimizedKernels &&
+                     !UseVectorizedKernel<T1,T2,T3>::value &&
                      !IsDiagonal<T3>::value &&
                      !IsResizable<typename T1::ElementType>::value &&
                      !IsResizable<VET>::value };

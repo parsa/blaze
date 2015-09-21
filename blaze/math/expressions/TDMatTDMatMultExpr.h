@@ -89,6 +89,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/BLAS.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -290,7 +291,8 @@ class TDMatTDMatMultExpr : public DenseMatrix< TDMatTDMatMultExpr<MT1,MT2>, true
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
-      enum { value = !IsDiagonal<T2>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
@@ -4440,7 +4442,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2>, ST, true >
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
-      enum { value = !IsDiagonal<T2>::value &&
+      enum { value = useOptimizedKernels &&
+                     !IsDiagonal<T2>::value &&
                      T1::vectorizable && T2::vectorizable && T3::vectorizable &&
                      IsSame<typename T1::ElementType,typename T2::ElementType>::value &&
                      IsSame<typename T1::ElementType,typename T3::ElementType>::value &&
