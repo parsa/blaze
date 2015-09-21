@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/Inline.h>
+#include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/Assert.h>
@@ -353,7 +354,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IsRowMajorMatrix<MT>::value };
    };
@@ -365,7 +367,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsRowMajorMatrix<MT>::value &&
@@ -379,7 +382,8 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsRowMajorMatrix<MT>::value &&
@@ -2839,7 +2843,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IsColumnMajorMatrix<MT>::value };
    };
@@ -2849,7 +2854,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
                      IsColumnMajorMatrix<MT>::value &&
@@ -2861,7 +2867,8 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      IsColumnMajorMatrix<MT>::value &&

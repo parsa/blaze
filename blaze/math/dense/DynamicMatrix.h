@@ -328,7 +328,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value };
    };
    /*! \endcond */
@@ -339,7 +340,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
                      !IsDiagonal<MT>::value };
@@ -352,7 +354,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      !IsDiagonal<MT>::value };
@@ -2637,7 +2640,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value };
    };
    //**********************************************************************************************
@@ -2646,7 +2650,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedAddAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::addition &&
                      !IsDiagonal<MT>::value };
@@ -2657,7 +2662,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
    struct VectorizedSubAssign {
-      enum { value = vectorizable && MT::vectorizable &&
+      enum { value = useOptimizedKernels &&
+                     vectorizable && MT::vectorizable &&
                      IsSame<Type,typename MT::ElementType>::value &&
                      IntrinsicTrait<Type>::subtraction &&
                      !IsDiagonal<MT>::value };
