@@ -50,13 +50,19 @@
 #include <blaze/math/expressions/SVecTransposer.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/traits/SVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/traits/TSVecTransExprTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/SelectType.h>
 #include <blaze/util/Types.h>
@@ -717,35 +723,6 @@ class SVecTransExpr : public SparseVector< SVecTransExpr<VT,TF>, TF >
    // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**Trans function******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Calculating the transpose of a transpose sparse vector.
-   // \ingroup sparse_vector
-   //
-   // \param sv The sparse vector to be (re-)transposed.
-   // \return The transpose of the transpose vector.
-   //
-   // This function returns an expression representing the transpose of a transpose sparse vector:
-
-      \code
-      using blaze::columnVector;
-
-      blaze::CompressedVector<double,columnVector> a, b;
-      // ... Resizing and initialization
-      b = trans( trans( a ) );
-      \endcode
-   */
-   template< typename VT2  // Type of the sparse vector
-           , bool TF2 >    // Transpose flag of the sparse vector
-   friend inline Operand trans( const SVecTransExpr<VT2,TF2>& sv )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      return sv.sv_;
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
@@ -797,6 +774,46 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 
 //=================================================================================================
 //
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the transpose of a transpose sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be (re-)transposed.
+// \return The transpose of the transpose vector.
+//
+// This function implements a performance optimized treatment of the transpose operation on a
+// sparse vector transpose expression. It returns an expression representing the transpose of a
+// transpose sparse vector:
+
+   \code
+   using blaze::columnVector;
+
+   blaze::CompressedVector<double,columnVector> a, b;
+   // ... Resizing and initialization
+   b = trans( trans( a ) );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline typename SVecConjExpr<VT,TF>::Operand trans( const SVecConjExpr<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
@@ -818,6 +835,38 @@ struct Size< SVecTransExpr<VT,TF> >
 //  EXPRESSION TRAIT SPECIALIZATIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct SVecTransExprTrait< SVecTransExpr<VT,false> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsRowVector<VT>::value
+                              , typename SVecTransExpr<VT,false>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT >
+struct TSVecTransExprTrait< SVecTransExpr<VT,true> >
+{
+ public:
+   //**********************************************************************************************
+   typedef typename SelectType< IsSparseVector<VT>::value && IsColumnVector<VT>::value
+                              , typename SVecTransExpr<VT,true>::Operand
+                              , INVALID_TYPE >::Type  Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
