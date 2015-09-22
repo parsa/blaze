@@ -56,6 +56,7 @@
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
@@ -243,8 +244,11 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , tdres_()            // The dense vector for the result of the transpose vector cross product
    , tsres_()            // The sparse vector for the result of the transpose vector cross product
    , trefres_()          // The transpose reference result
-   , test_()             // Label of the currently performed test.
+   , test_()             // Label of the currently performed test
+   , error_()            // Description of the current error type
 {
+   typedef typename blaze::NumericElementType<DET>::Type  Scalar;
+
    if( lhs_.size() != 3UL ) {
       throw std::runtime_error( "Invalid size of left-hand side operand" );
    }
@@ -262,7 +266,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testScaledOperation( 2UL );
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
-   testScaledOperation( DET( 2 ) );
+   testScaledOperation( Scalar( 2 ) );
    testTransposeOperation();
    testAbsOperation();
    testConjOperation();

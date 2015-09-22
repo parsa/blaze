@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/BaseElementType.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -339,6 +340,8 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    , test_()             // Label of the currently performed test
    , error_()            // Description of the current error type
 {
+   typedef typename blaze::NumericElementType<SET>::Type  Scalar;
+
    testInitialStatus();
    testAssignment();
    testElementAccess();
@@ -348,7 +351,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 2UL );
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
-   testScaledOperation( SET( 2 ) );
+   testScaledOperation( Scalar( 2 ) );
    testTransposeOperation();
    testAbsOperation();
    testConjOperation();
