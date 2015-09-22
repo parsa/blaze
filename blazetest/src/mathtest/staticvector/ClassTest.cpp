@@ -69,18 +69,29 @@ namespace staticvector {
 */
 ClassTest::ClassTest()
 {
-   testAlignment< char            >( "char"            );
-   testAlignment< signed char     >( "signed char"     );
-   testAlignment< unsigned char   >( "unsigned char"   );
-   testAlignment< wchar_t         >( "wchar_t"         );
-   testAlignment< short           >( "short"           );
-   testAlignment< unsigned short  >( "unsigned short"  );
-   testAlignment< int             >( "int"             );
-   testAlignment< unsigned int    >( "unsigned int"    );
-   testAlignment< float           >( "float"           );
-   testAlignment< double          >( "double"          );
-   testAlignment< complex<float>  >( "complex<float>"  );
-   testAlignment< complex<double> >( "complex<double>" );
+   testAlignment< char           >( "char"           );
+   testAlignment< signed char    >( "signed char"    );
+   testAlignment< unsigned char  >( "unsigned char"  );
+   testAlignment< wchar_t        >( "wchar_t"        );
+   testAlignment< short          >( "short"          );
+   testAlignment< unsigned short >( "unsigned short" );
+   testAlignment< int            >( "int"            );
+   testAlignment< unsigned int   >( "unsigned int"   );
+   testAlignment< long           >( "long"           );
+   testAlignment< unsigned long  >( "unsigned long"  );
+   testAlignment< float          >( "float"          );
+   testAlignment< double         >( "double"         );
+
+   testAlignment< complex<char>           >( "complex<char>"           );
+   testAlignment< complex<signed char>    >( "complex<signed char>"    );
+   testAlignment< complex<unsigned char>  >( "complex<unsigned char>"  );
+   testAlignment< complex<wchar_t>        >( "complex<wchar_t>"        );
+   testAlignment< complex<short>          >( "complex<short>"          );
+   testAlignment< complex<unsigned short> >( "complex<unsigned short>" );
+   testAlignment< complex<int>            >( "complex<int>"            );
+   testAlignment< complex<unsigned int>   >( "complex<unsigned int>"   );
+   testAlignment< complex<float>          >( "complex<float>"          );
+   testAlignment< complex<double>         >( "complex<double>"         );
 
    testConstructors();
    testAssignment();
