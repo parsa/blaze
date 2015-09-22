@@ -83,6 +83,12 @@ namespace blaze {
    // Estimating the index of a specific type in the type list
    const int index3 = blaze::IndexOf< Floats, double >::value;    // Value evaluates to 1
    const int index4 = blaze::IndexOf< Floats, int    >::value;    // Value evaluates to -1
+
+   // Erasing the first occurrence of float from the type list
+   typedef blaze::Erase< Floats, float >::Result  NoFloat;
+
+   // Removing all duplicates from the type list
+   typedef blaze::Unique< Floats >::Result  NoDuplicates;
    \endcode
 */
 /*!\brief Implementation of a type list.
@@ -448,6 +454,22 @@ struct TypeAt< TypeList<Head,Tail>, 0 >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the TypeAt class for the terminating NullType.
+// \ingroup typelist
+*/
+template< size_t Index >  // Type list access index
+struct TypeAt< NullType, Index >
+{
+   //**Member enumeration**************************************************************************
+   typedef NullType  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the TypeAt class for a general index.
 // \ingroup typelist
 */
@@ -740,8 +762,8 @@ struct IndexOf< TypeList<Head,Tail>, Type >
 // class:
 
    \code
-   typedef BLAZE_TYPELIST_3( float, double )        Temp;    // Defining a temporary type list
-   typedef blaze::Append<Temp,long double>::Result  Floats;  // Type list contained all floating point data types
+   typedef BLAZE_TYPELIST_2( float, double )       Tmp;     // Defining a temporary type list
+   typedef blaze::Append<Tmp,long double>::Result  Floats;  // Type list contains all floating point data types
    \endcode
 */
 template< typename TList   // Type of the type list
@@ -811,6 +833,234 @@ struct Append< TypeList<Head,Tail>, Type >
 {
    //**Type definitions****************************************************************************
    typedef TypeList< Head, typename Append<Tail,Type>::Result >  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ERASING FROM TYPE LISTS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\class blaze::Erase
+// \brief Erasing the first occurrence of a type from a type list.
+// \ingroup typelist
+//
+// The Erase class can be used to erase the first occurrence of data type \a Type from a type
+// list \a TList. In order to erase the first occurrence of a data type, the Erase class has to
+// be instantiated for a particular type list and another type. The following example gives an
+// impression of the use of the Erase class:
+
+   \code
+   // Defining a temporary type list containing the type int twice
+   typedef BLAZE_TYPELIST_4( float, int, double, int )  Tmp;
+
+   // Erasing the first occurrence of int from the type list
+   typedef blaze::Erase<Tmp,int>::Result  SingleInt;
+   \endcode
+*/
+template< typename TList   // Type of the type list
+        , typename Type >  // The type to be erased from the type list
+struct Erase;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Erase class for the terminating NullType.
+// \ingroup typelist
+*/
+template< typename Type >  // The type to be erased from the type list
+struct Erase< NullType, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef NullType  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Erase class for erasing the first occurrence of T.
+// \ingroup typelist
+*/
+template< typename Type    // The type to be erased from the type list
+        , typename Tail >  // Type of the tail of the type list
+struct Erase< TypeList<Type,Tail>, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef Tail  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Erase class for a general type list.
+// \ingroup typelist
+*/
+template< typename Head    // Type of the head of the type list
+        , typename Tail    // Type of the tail of the type list
+        , typename Type >  // The type to be erased from the type list
+struct Erase< TypeList<Head,Tail>, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef TypeList<Head,typename Erase<Tail,Type>::Result>  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\class blaze::EraseAll
+// \brief Erasing all occurrences of a type from a type list.
+// \ingroup typelist
+//
+// The EraseAll class can be used to erase all occurrences of data type \a Type from a type list
+// \a TList. In order to erase all occurrences of a data type, the EraseAll class has to be
+// instantiated for a particular type list and another type. The following example gives an
+// impression of the use of the EraseAll class:
+
+   \code
+   // Defining a temporary type list containing the type int twice
+   typedef BLAZE_TYPELIST_4( float, int, double, int )  Tmp;
+
+   // Erasing the all occurrences of int from the type list
+   typedef blaze::EraseAll<Tmp,int>::Result  NoInt;
+   \endcode
+*/
+template< typename TList   // Type of the type list
+        , typename Type >  // The type to be erased from the type list
+struct EraseAll;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the EraseAll class for the terminating NullType.
+// \ingroup typelist
+*/
+template< typename Type >  // The type to be erased from the type list
+struct EraseAll< NullType, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef NullType  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the EraseAll class for erasing an occurrence of T.
+// \ingroup typelist
+*/
+template< typename Type    // The type to be erased from the type list
+        , typename Tail >  // Type of the tail of the type list
+struct EraseAll< TypeList<Type,Tail>, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef typename EraseAll<Tail,Type>::Result  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the EraseAll class for a general type list.
+// \ingroup typelist
+*/
+template< typename Head    // Type of the head of the type list
+        , typename Tail    // Type of the tail of the type list
+        , typename Type >  // The type to be erased from the type list
+struct EraseAll< TypeList<Head,Tail>, Type >
+{
+   //**Type definitions****************************************************************************
+   typedef TypeList<Head,typename EraseAll<Tail,Type>::Result>  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REMOVING DUPLICATES FROM TYPE LISTS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\class blaze::Unique
+// \brief Erasing all duplicates from a type list.
+// \ingroup typelist
+//
+// The Unique class can be used to erase all duplicates from a type list \a TList. In order to
+// erase all duplicates, the Unique class has to be instantiated for a particular type list.
+// The following example gives an impression of the use of the Unique class:
+
+   \code
+   // Defining a temporary type list containing the types int and float twice
+   typedef BLAZE_TYPELIST_5( float, int, double, int, float )  Tmp;
+
+   // Removing all duplicates from the type list
+   typedef blaze::Unique<Tmp>::Result  NoDuplicates;
+   \endcode
+*/
+template< typename TList >  // Type of the type list
+struct Unique;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Unique class for the terminating NullType.
+// \ingroup typelist
+*/
+template<>
+struct Unique< NullType >
+{
+   //**Type definitions****************************************************************************
+   typedef NullType  Result;  //!< The resulting data type.
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Unique class for a general type list.
+// \ingroup typelist
+*/
+template< typename Head    // Type of the head of the type list
+        , typename Tail >  // Type of the tail of the type list
+struct Unique< TypeList<Head,Tail> >
+{
+ private:
+   //**Type definitions****************************************************************************
+   typedef typename Unique<Tail>::Result     TL1;
+   typedef typename Erase<TL1,Head>::Result  TL2;
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   typedef TypeList<Head,TL2>  Result;  //!< The resulting data type.
    //**********************************************************************************************
 };
 /*! \endcond */
