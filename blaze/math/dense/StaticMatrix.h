@@ -1798,7 +1798,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 
    if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
-      swap( tmp );
+      assign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
@@ -4715,7 +4715,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 
    if( (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
-      swap( tmp );
+      assign( *this, tmp );
    }
    else {
       if( IsSparseMatrix<MT>::value )
