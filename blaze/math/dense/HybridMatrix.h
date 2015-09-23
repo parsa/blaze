@@ -1217,7 +1217,8 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 
    if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
-      swap( tmp );
+      resize( tmp.rows(), tmp.columns() );
+      assign( *this, tmp );
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
@@ -3687,7 +3688,8 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 
    if( (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
-      swap( tmp );
+      resize( tmp.rows(), tmp.columns() );
+      assign( *this, tmp );
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
