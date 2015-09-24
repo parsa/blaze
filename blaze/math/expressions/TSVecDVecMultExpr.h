@@ -40,9 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/traits/MultTrait.h>

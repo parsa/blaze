@@ -41,11 +41,12 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/ColumnVector.h>
+#include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>

@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/Forward.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/CrossExpr.h>

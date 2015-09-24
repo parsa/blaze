@@ -42,10 +42,10 @@
 
 #include <vector>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/dense/DynamicVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>

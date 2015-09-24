@@ -44,9 +44,9 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
+#include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Symmetric.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>

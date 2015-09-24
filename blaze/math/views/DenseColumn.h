@@ -42,6 +42,7 @@
 
 #include <iterator>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -50,7 +51,6 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/Column.h>
 #include <blaze/math/expressions/DenseVector.h>

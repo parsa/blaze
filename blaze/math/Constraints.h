@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Columns.h>
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConjExpr.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
@@ -85,6 +86,7 @@
 #include <blaze/math/constraints/Row.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Rows.h>
+#include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SerialExpr.h>
 #include <blaze/math/constraints/Size.h>
 #include <blaze/math/constraints/SMPAssignable.h>

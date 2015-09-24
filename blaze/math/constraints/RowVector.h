@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/TransposeFlag.h
-//  \brief Constraint on the data type
+//  \file blaze/math/constraints/RowVector.h
+//  \brief Constraint on the transpose flag of vector types
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_CONSTRAINTS_TRANSPOSEFLAG_H_
-#define _BLAZE_MATH_CONSTRAINTS_TRANSPOSEFLAG_H_
+#ifndef _BLAZE_MATH_CONSTRAINTS_ROWVECTOR_H_
+#define _BLAZE_MATH_CONSTRAINTS_ROWVECTOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
-#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -51,7 +49,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG CONSTRAINT
+//  MUST_BE_ROW_VECTOR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -65,8 +63,8 @@ namespace blaze {
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED;
-template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -75,17 +73,14 @@ template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { e
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data type \a T is not a dense or sparse vector type and in case the
-// transpose flag of the given dense or sparse vector type \a T is not set to \a TF, a
-// compilation error is created.
+// In case the given data type \a T is not a row dense or sparse vector type (i.e. a vector type
+// whose transposition flag is set to blaze::rowVector) a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG(T,TF) \
+#define BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED< \
-            blaze::IsVector<T>::value && \
-            blaze::IsRowVector<T>::value == TF >::value > \
-      BLAZE_JOIN( CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE_FAILED< blaze::IsRowVector<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 
@@ -93,7 +88,7 @@ template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { e
 
 //=================================================================================================
 //
-//  VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG CONSTRAINT
+//  MUST_NOT_BE_ROW_VECTOR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -107,8 +102,8 @@ template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { e
 // or the specialization is selected. If the undefined basic template is selected, a compilation
 // error is created.
 */
-template< bool > struct CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED;
-template<> struct CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED<true> { enum { value = 1 }; };
+template< bool > struct CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE_FAILED;
+template<> struct CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE_FAILED<true> { enum { value = 1 }; };
 /*! \endcond */
 //*************************************************************************************************
 
@@ -117,17 +112,14 @@ template<> struct CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED<true> 
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case either of the two given data types \a T1 or \a T2 is not a vector type and in case
-// the transpose flags of both vector types don't match, a compilation error is created.
+// In case the given data type \a T is a row dense or sparse vector type (i.e. a vector type
+// whose transposition flag is set to blaze::rowVector) a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG(T1,T2) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE(T) \
    typedef \
       blaze::CONSTRAINT_TEST< \
-         blaze::CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED< \
-            blaze::IsVector<T1>::value && \
-            blaze::IsVector<T2>::value && \
-            static_cast<int>( blaze::IsColumnVector<T1>::value ) == static_cast<int>( blaze::IsColumnVector<T2>::value ) >::value > \
-      BLAZE_JOIN( CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
+         blaze::CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE_FAILED< !blaze::IsRowVector<T>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_MUST_NOT_BE_ROW_VECTOR_TYPE_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
