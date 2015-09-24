@@ -40,9 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>

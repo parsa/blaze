@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/AddExpr.h>
 #include <blaze/math/constraints/Column.h>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Columns.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConjExpr.h>
@@ -82,6 +83,7 @@
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Restricted.h>
 #include <blaze/math/constraints/Row.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Rows.h>
 #include <blaze/math/constraints/SerialExpr.h>
 #include <blaze/math/constraints/Size.h>
