@@ -40,9 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -84,7 +83,7 @@ template<> struct CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER_FAILED<true> { en
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER_FAILED< \
             blaze::IsMatrix<T>::value && \
-            blaze::IsColumnMajorMatrix<T>::value == SO >::value > \
+            blaze::StorageOrder<T>::value == SO >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
@@ -126,7 +125,7 @@ template<> struct CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER_FAILED<true> 
          blaze::CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER_FAILED< \
             blaze::IsMatrix<T1>::value && \
             blaze::IsMatrix<T2>::value && \
-            static_cast<int>( blaze::IsRowMajorMatrix<T1>::value ) == static_cast<int>( blaze::IsRowMajorMatrix<T2>::value ) >::value > \
+            blaze::StorageOrder<T1>::value == blaze::StorageOrder<T2>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
@@ -168,7 +167,7 @@ template<> struct CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER_FAILED<t
          blaze::CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER_FAILED< \
             blaze::IsMatrix<T1>::value && \
             blaze::IsMatrix<T2>::value && \
-            static_cast<int>( blaze::IsRowMajorMatrix<T1>::value ) != static_cast<int>( blaze::IsRowMajorMatrix<T2>::value ) >::value > \
+            blaze::StorageOrder<T1>::value != blaze::StorageOrder<T2>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
