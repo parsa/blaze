@@ -40,9 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnVector.h>
-#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/Suffix.h>
 
@@ -84,7 +83,7 @@ template<> struct CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED<true> { e
       blaze::CONSTRAINT_TEST< \
          blaze::CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_FAILED< \
             blaze::IsVector<T>::value && \
-            blaze::IsRowVector<T>::value == TF >::value > \
+            blaze::TransposeFlag<T>::value == TF >::value > \
       BLAZE_JOIN( CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
@@ -126,8 +125,50 @@ template<> struct CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED<true> 
          blaze::CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_FAILED< \
             blaze::IsVector<T1>::value && \
             blaze::IsVector<T2>::value && \
-            static_cast<int>( blaze::IsColumnVector<T1>::value ) == static_cast<int>( blaze::IsColumnVector<T2>::value ) >::value > \
+            blaze::TransposeFlag<T1>::value == blaze::TransposeFlag<T2>::value >::value > \
       BLAZE_JOIN( CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compile time constraint.
+// \ingroup math_constraints
+//
+// Helper template class for the compile time constraint enforcement. Based on the compile time
+// constant expression used for the template instantiation, either the undefined basic template
+// or the specialization is selected. If the undefined basic template is selected, a compilation
+// error is created.
+*/
+template< bool > struct CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG_FAILED;
+template<> struct CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG_FAILED<true> { enum { value = 1 }; };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case either of the two given data types \a T1 or \a T2 is not a vector type and in case
+// the transpose flags of both vector types does match, a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG(T1,T2) \
+   typedef \
+      blaze::CONSTRAINT_TEST< \
+         blaze::CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG_FAILED< \
+            blaze::IsVector<T1>::value && \
+            blaze::IsVector<T2>::value && \
+            blaze::TransposeFlag<T1>::value != blaze::TransposeFlag<T2>::value >::value > \
+      BLAZE_JOIN( CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG_TYPEDEF, __LINE__ )
 //*************************************************************************************************
 
 } // namespace blaze
