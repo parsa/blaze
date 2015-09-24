@@ -694,7 +694,7 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-// The blaze::CompressedVector is a right choice for all kinds of sparse vectors:
+// The blaze::CompressedVector is the right choice for all kinds of sparse vectors:
 
    \code
    // Definition of a 3-dimensional integral column vector
@@ -1596,7 +1596,20 @@ namespace blaze {}
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
 //
-//
+// The blaze::StaticMatrix is particularly suited for small to medium matrices whose dimensions
+// are known at compile time:
+
+   \code
+   // Definition of a 3x4 integral row-major matrix
+   blaze::StaticMatrix<int,3UL,4UL> A;
+
+   // Definition of a 4x6 single precision row-major matrix
+   blaze::StaticMatrix<float,4UL,6UL,blaze::rowMajor> B;
+
+   // Definition of a 6x4 double precision column-major matrix
+   blaze::StaticMatrix<double,6UL,4UL,blaze::columnMajor> C;
+   \endcode
+
 // \n \section matrix_types_dynamic_matrix DynamicMatrix
 // <hr>
 //
@@ -1621,7 +1634,20 @@ namespace blaze {}
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
 //
-//
+// The blaze::DynamicMatrix is the best choice for medium to large matrices. The number of rows
+// and columns can be modified at runtime:
+
+   \code
+   // Definition of a 3x4 integral row-major matrix
+   blaze::DynamicMatrix<int> A( 3UL, 4UL );
+
+   // Definition of a 4x6 single precision row-major matrix
+   blaze::DynamicMatrix<float,blaze::rowMajor> B( 4UL, 6UL );
+
+   // Definition of a double precision column-major matrix with 0 rows and columns
+   blaze::DynamicMatrix<double,blaze::columnMajor> C;
+   \endcode
+
 // \n \section matrix_types_hybrid_matrix HybridMatrix
 // <hr>
 //
@@ -1652,7 +1678,21 @@ namespace blaze {}
 //  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //          The default value is blaze::rowMajor.
 //
-//
+// The blaze::HybridMatrix is a suitable choice for small to medium matrices, whose dimensions
+// are not known at compile time or not fixed at runtime, but whose maximum dimensions are known
+// at compile time:
+
+   \code
+   // Definition of a 3x4 integral row-major matrix with maximum dimensions of 6x8
+   blaze::HybridMatrix<int,6UL,8UL> A( 3UL, 4UL );
+
+   // Definition of a 4x6 single precision row-major matrix with maximum dimensions of 12x16
+   blaze::HybridMatrix<float,12UL,16UL,blaze::rowMajor> B( 4UL, 6UL );
+
+   // Definition of a 0x0 double precision column-major matrix and maximum dimensions of 6x6
+   blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor> C;
+   \endcode
+
 // \n \section matrix_types_compressed_matrix CompressedMatrix
 // <hr>
 //
@@ -1677,7 +1717,19 @@ namespace blaze {}
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
 //
-//
+// The blaze::CompressedMatrix is the right choice for all kinds of sparse matrices:
+
+   \code
+   // Definition of a 3x4 integral row-major matrix
+   blaze::CompressedMatrix<int> A( 3UL, 4UL );
+
+   // Definition of a 4x6 single precision row-major matrix
+   blaze::CompressedMatrix<float,blaze::rowMajor> B( 4UL, 6UL );
+
+   // Definition of a double precision column-major matrix with 0 rows and columns
+   blaze::CompressedMatrix<double,blaze::columnMajor> C;
+   \endcode
+
 // \n Previous: \ref matrices &nbsp; &nbsp; Next: \ref matrix_operations
 */
 //*************************************************************************************************
