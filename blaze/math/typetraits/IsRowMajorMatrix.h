@@ -92,12 +92,18 @@ struct IsRowMajorMatrixHelper
 // \a value is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   blaze::IsRowMajorMatrix< StaticMatrix<float,3U,3U,false> >::value   // Evaluates to 1
-   blaze::IsRowMajorMatrix< const DynamicMatrix<double,false> >::Type  // Results in TrueType
-   blaze::IsRowMajorMatrix< volatile CompressedMatrix<int,false> >     // Is derived from TrueType
-   blaze::IsRowMajorMatrix< StaticMatrix<float,3U,3U,true> >::value    // Evaluates to 0
-   blaze::IsRowMajorMatrix< const DynamicMatrix<double,true> >::Type   // Results in FalseType
-   blaze::IsRowMajorMatrix< volatile CompressedMatrix<int,true> >      // Is derived from FalseType
+   using blaze::StaticMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::IsRowMajorMatrix< StaticMatrix<float,3U,3U,rowMajor> >::value      // Evaluates to 1
+   blaze::IsRowMajorMatrix< const DynamicMatrix<double,rowMajor> >::Type     // Results in TrueType
+   blaze::IsRowMajorMatrix< volatile CompressedMatrix<int,rowMajor> >        // Is derived from TrueType
+   blaze::IsRowMajorMatrix< StaticMatrix<float,3U,3U,columnMajor> >::value   // Evaluates to 0
+   blaze::IsRowMajorMatrix< const DynamicMatrix<double,columnMajor> >::Type  // Results in FalseType
+   blaze::IsRowMajorMatrix< volatile CompressedMatrix<int,columnMajor> >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
