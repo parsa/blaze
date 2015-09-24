@@ -577,7 +577,20 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-//
+// The blaze::StaticVector is particularly suited for small to medium vectors whose size is known
+// at compile time:
+
+   \code
+   // Definition of a 3-dimensional integral column vector
+   blaze::StaticVector<int,3UL> a;
+
+   // Definition of a 4-dimensional single precision column vector
+   blaze::StaticVector<float,4UL,blaze::columnVector> b;
+
+   // Definition of a 6-dimensional double precision row vector
+   blaze::StaticVector<double,6UL,blaze::rowVector> c;
+   \endcode
+
 // \n \section vector_types_dynamic_vector DynamicVector
 // <hr>
 //
@@ -601,7 +614,20 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-//
+// The blaze::DynamicVector is the best choice for medium to large vectors. Its size can be
+// modified at runtime:
+
+   \code
+   // Definition of a 3-dimensional integral column vector
+   blaze::DynamicVector<int> a( 3UL );
+
+   // Definition of a 4-dimensional single precision column vector
+   blaze::DynamicVector<float,blaze::columnVector> b( 4UL );
+
+   // Definition of a double precision row vector with size 0
+   blaze::DynamicVector<double,blaze::rowVector> c;
+   \endcode
+
 // \n \section vector_types_hybrid_vector HybridVector
 // <hr>
 //
@@ -629,7 +655,21 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-//
+// The blaze::HybridVector is a suitable choice for small to medium vectors, whose size is not
+// known at compile time or not fixed at runtime, but whose maximum size is known at compile
+// time:
+
+   \code
+   // Definition of a 3-dimensional integral column vector with a maximum size of 6
+   blaze::HybridVector<int,6UL> a( 3UL );
+
+   // Definition of a 4-dimensional single precision column vector with a maximum size of 16
+   blaze::HybridVector<float,16UL,blaze::columnVector> b( 4UL );
+
+   // Definition of a double precision row vector with size 0 and a maximum size of 6
+   blaze::HybridVector<double,6UL,blaze::rowVector> c;
+   \endcode
+
 // \n \section vector_types_compressed_vector CompressedVector
 // <hr>
 //
@@ -654,7 +694,19 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-//
+// The blaze::CompressedVector is a right choice for all kinds of sparse vectors:
+
+   \code
+   // Definition of a 3-dimensional integral column vector
+   blaze::CompressedVector<int> a( 3UL );
+
+   // Definition of a 4-dimensional single precision column vector with capacity for 3 non-zero elements
+   blaze::CompressedVector<float,blaze::columnVector> b( 4UL, 3UL );
+
+   // Definition of a double precision row vector with size 0
+   blaze::CompressedVector<double,blaze::rowVector> c;
+   \endcode
+
 // \n Previous: \ref vectors &nbsp; &nbsp; Next: \ref vector_operations
 */
 //*************************************************************************************************
