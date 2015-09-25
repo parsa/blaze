@@ -48,12 +48,14 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
@@ -435,6 +437,10 @@ inline NonNumericProxy<MT>::operator RawReference() const
 /*!\name NonNumericProxy global functions */
 //@{
 template< typename MT >
+inline typename ConjExprTrait< typename NonNumericProxy<MT>::RepresentedType >::Type
+   conj( const NonNumericProxy<MT>& proxy );
+
+template< typename MT >
 inline void reset( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
@@ -455,6 +461,28 @@ inline bool isOne( const NonNumericProxy<MT>& proxy );
 template< typename MT >
 inline bool isnan( const NonNumericProxy<MT>& proxy );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup symmetric_matrix
+//
+// \param proxy The given proxy instance.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the access proxy.
+// In case the proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename MT >
+inline typename ConjExprTrait< typename NonNumericProxy<MT>::RepresentedType >::Type
+   conj( const NonNumericProxy<MT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( (~proxy).get() );
+}
 //*************************************************************************************************
 
 
