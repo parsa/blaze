@@ -477,7 +477,7 @@ inline UniUpperValue<MT>::operator RepresentedType() const
 template< typename MT >  // Type of the adapted matrix
 inline typename UniUpperValue<MT>::ValueType UniUpperValue<MT>::real() const
 {
-   return value_.real();
+   return value_->real();
 }
 //*************************************************************************************************
 
@@ -498,7 +498,7 @@ inline void UniUpperValue<MT>::real( ValueType value ) const
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
-   value_.real( value );
+   value_->real( value );
 }
 //*************************************************************************************************
 
@@ -514,7 +514,7 @@ inline void UniUpperValue<MT>::real( ValueType value ) const
 template< typename MT >  // Type of the adapted matrix
 inline typename UniUpperValue<MT>::ValueType UniUpperValue<MT>::imag() const
 {
-   return value_.imag();
+   return value_->imag();
 }
 //*************************************************************************************************
 
@@ -537,7 +537,7 @@ inline void UniUpperValue<MT>::imag( ValueType value ) const
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
-   value_.imag( value );
+   value_->imag( value );
 }
 //*************************************************************************************************
 
