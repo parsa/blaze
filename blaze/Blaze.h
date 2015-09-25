@@ -577,8 +577,8 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-// The blaze::StaticVector is particularly suited for small to medium vectors whose size is known
-// at compile time:
+// The blaze::StaticVector is perfectly suited for small to medium vectors whose size is known at
+// compile time:
 
    \code
    // Definition of a 3-dimensional integral column vector
@@ -614,8 +614,8 @@ namespace blaze {}
 //  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
 //             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
 //
-// The blaze::DynamicVector is the best choice for medium to large vectors. Its size can be
-// modified at runtime:
+// The blaze::DynamicVector is the default choice for all kinds of dense vectors and the best
+// choice for medium to large vectors. Its size can be modified at runtime:
 
    \code
    // Definition of a 3-dimensional integral column vector
@@ -1596,8 +1596,8 @@ namespace blaze {}
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
 //
-// The blaze::StaticMatrix is particularly suited for small to medium matrices whose dimensions
-// are known at compile time:
+// The blaze::StaticMatrix is perfectly suited for small to medium matrices whose dimensions are
+// known at compile time:
 
    \code
    // Definition of a 3x4 integral row-major matrix
@@ -1634,8 +1634,8 @@ namespace blaze {}
 //  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
 //             The default value is blaze::rowMajor.
 //
-// The blaze::DynamicMatrix is the best choice for medium to large matrices. The number of rows
-// and columns can be modified at runtime:
+// The blaze::DynamicMatrix is the default choice for all kinds of dense matrices and the best
+// choice for medium to large matrices. The number of rows and columns can be modified at runtime:
 
    \code
    // Definition of a 3x4 integral row-major matrix
