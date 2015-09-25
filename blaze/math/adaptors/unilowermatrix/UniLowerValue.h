@@ -477,7 +477,7 @@ inline UniLowerValue<MT>::operator RepresentedType() const
 template< typename MT >  // Type of the adapted matrix
 inline typename UniLowerValue<MT>::ValueType UniLowerValue<MT>::real() const
 {
-   return value_.real();
+   return value_->real();
 }
 //*************************************************************************************************
 
@@ -498,7 +498,7 @@ inline void UniLowerValue<MT>::real( ValueType value ) const
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
-   value_.real( value );
+   value_->real( value );
 }
 //*************************************************************************************************
 
@@ -514,7 +514,7 @@ inline void UniLowerValue<MT>::real( ValueType value ) const
 template< typename MT >  // Type of the adapted matrix
 inline typename UniLowerValue<MT>::ValueType UniLowerValue<MT>::imag() const
 {
-   return value_.imag();
+   return value_->imag();
 }
 //*************************************************************************************************
 
@@ -537,7 +537,7 @@ inline void UniLowerValue<MT>::imag( ValueType value ) const
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setting for diagonal matrix element" );
    }
 
-   value_.imag( value );
+   value_->imag( value );
 }
 //*************************************************************************************************
 
