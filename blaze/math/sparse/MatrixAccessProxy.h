@@ -44,12 +44,14 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/proxy/Proxy.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -65,7 +67,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Access proxy for sparse, \f$ M \times N \f$ matrices.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // The MatrixAccessProxy provides safe access to the elements of a non-const sparse matrices.\n
 // The proxied access to the elements of a sparse matrix is necessary since it may be possible
@@ -416,6 +418,10 @@ inline MatrixAccessProxy<MT>::operator RawReference() const
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< typename MT >
+inline typename ConjExprTrait< typename MatrixAccessProxy<MT>::RepresentedType >::Type
+   conj( const MatrixAccessProxy<MT>& proxy );
+
+template< typename MT >
 inline void reset( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
@@ -449,8 +455,30 @@ inline void swap( T& a, const MatrixAccessProxy<MT>& v ) /* throw() */;
 
 
 //*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup sparse_matrix
+//
+// \param proxy The given proxy instance.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the access proxy.
+// In case the proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename MT >
+inline typename ConjExprTrait< typename MatrixAccessProxy<MT>::RepresentedType >::Type
+   conj( const MatrixAccessProxy<MT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Resetting the represented element to the default initial values.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -472,7 +500,7 @@ inline void reset( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Clearing the represented element.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return void
@@ -493,7 +521,7 @@ inline void clear( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is in default state.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the represented element is in default state, \a false otherwise.
@@ -513,7 +541,7 @@ inline bool isDefault( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the matrix element represents a real number.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the matrix element represents a real number, \a false otherwise.
@@ -535,7 +563,7 @@ inline bool isReal( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is 0.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the represented element is 0, \a false otherwise.
@@ -555,7 +583,7 @@ inline bool isZero( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is 1.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the represented element is 1, \a false otherwise.
@@ -575,7 +603,7 @@ inline bool isOne( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Returns whether the represented element is not a number.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param proxy The given access proxy.
 // \return \a true in case the represented element is in not a number, \a false otherwise.
@@ -595,7 +623,7 @@ inline bool isnan( const MatrixAccessProxy<MT>& proxy )
 
 //*************************************************************************************************
 /*!\brief Swapping the contents of two access proxies.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param a The first access proxy to be swapped.
 // \param b The second access proxy to be swapped.
@@ -614,7 +642,7 @@ inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b
 
 //*************************************************************************************************
 /*!\brief Swapping the contents of an access proxy with another element.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param a The access proxy to be swapped.
 // \param b The other element to be swapped.
@@ -633,7 +661,7 @@ inline void swap( const MatrixAccessProxy<MT>& a, T& b ) /* throw() */
 
 //*************************************************************************************************
 /*!\brief Swapping the contents of an access proxy with another element.
-// \ingroup math
+// \ingroup sparse_matrix
 //
 // \param a The other element to be swapped.
 // \param b The access proxy to be swapped.
