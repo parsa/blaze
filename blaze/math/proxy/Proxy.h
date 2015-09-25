@@ -46,7 +46,6 @@
 #include <blaze/math/proxy/DenseVectorProxy.h>
 #include <blaze/math/proxy/SparseMatrixProxy.h>
 #include <blaze/math/proxy/SparseVectorProxy.h>
-#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Imaginary.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
@@ -54,7 +53,6 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/traits/AbsExprTrait.h>
-#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/ImagExprTrait.h>
 #include <blaze/math/traits/RealExprTrait.h>
@@ -550,10 +548,6 @@ inline typename AbsExprTrait< typename PT::RepresentedType >::Type
    abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline typename ConjExprTrait< typename PT::RepresentedType >::Type
-   conj( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
 inline typename CTransExprTrait< typename PT::RepresentedType >::Type
    ctrans( const Proxy<PT,RT>& proxy );
 
@@ -619,28 +613,6 @@ inline typename AbsExprTrait< typename PT::RepresentedType >::Type
    using std::abs;
 
    return abs( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the complex conjugate of the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The complex conjugate of the represented element.
-//
-// This function computes the complex conjugate of the element represented by the proxy. In
-// case the proxy represents a vector- or matrix-like data structure the function returns an
-// expression representing the complex conjugate of the vector/matrix.
-*/
-template< typename PT, typename RT >
-inline typename ConjExprTrait< typename PT::RepresentedType >::Type
-   conj( const Proxy<PT,RT>& proxy )
-{
-   using blaze::conj;
-
-   return conj( (~proxy).get() );
 }
 //*************************************************************************************************
 
