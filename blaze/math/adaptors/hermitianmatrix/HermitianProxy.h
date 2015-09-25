@@ -55,6 +55,7 @@
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/traits/ConjExprTrait.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -648,6 +649,10 @@ inline void HermitianProxy<MT>::imag( ValueType value ) const
 /*!\name HermitianProxy global functions */
 //@{
 template< typename MT >
+inline typename ConjExprTrait< typename HermitianProxy<MT>::RepresentedType >::Type
+   conj( const HermitianProxy<MT>& proxy );
+
+template< typename MT >
 inline void reset( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
@@ -672,13 +677,35 @@ inline bool isnan( const HermitianProxy<MT>& proxy );
 
 
 //*************************************************************************************************
+/*!\brief Computing the complex conjugate of the represented element.
+// \ingroup hermitian_matrix
+//
+// \param proxy The given proxy instance.
+// \return The complex conjugate of the represented element.
+//
+// This function computes the complex conjugate of the element represented by the access proxy.
+// In case the proxy represents a vector- or matrix-like data structure the function returns an
+// expression representing the complex conjugate of the vector/matrix.
+*/
+template< typename MT >
+inline typename ConjExprTrait< typename HermitianProxy<MT>::RepresentedType >::Type
+   conj( const HermitianProxy<MT>& proxy )
+{
+   using blaze::conj;
+
+   return conj( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Resetting the represented element to the default initial values.
 // \ingroup hermitian_matrix
 //
 // \param proxy The given access proxy.
 // \return void
 //
-// This function resets the element represented by the Hermitian proxy to its default initial
+// This function resets the element represented by the access proxy to its default initial
 // value.
 */
 template< typename MT >
@@ -696,7 +723,7 @@ inline void reset( const HermitianProxy<MT>& proxy )
 // \param proxy The given access proxy.
 // \return void
 //
-// This function clears the element represented by the Hermitian proxy to its default initial
+// This function clears the element represented by the access proxy to its default initial
 // state.
 */
 template< typename MT >
