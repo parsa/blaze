@@ -133,11 +133,11 @@ class HermitianElement : private SparseElement
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   template< typename T > inline HermitianElement& operator= ( const T& value );
-   template< typename T > inline HermitianElement& operator+=( const T& value );
-   template< typename T > inline HermitianElement& operator-=( const T& value );
-   template< typename T > inline HermitianElement& operator*=( const T& value );
-   template< typename T > inline HermitianElement& operator/=( const T& value );
+   template< typename T > inline HermitianElement& operator= ( const T& v );
+   template< typename T > inline HermitianElement& operator+=( const T& v );
+   template< typename T > inline HermitianElement& operator-=( const T& v );
+   template< typename T > inline HermitianElement& operator*=( const T& v );
+   template< typename T > inline HermitianElement& operator/=( const T& v );
    //@}
    //**********************************************************************************************
 
@@ -227,19 +227,19 @@ inline HermitianElement<MT>::HermitianElement( IteratorType pos, MT* matrix, siz
 //*************************************************************************************************
 /*!\brief Assignment to the Hermitian element.
 //
-// \param value The new value of the Hermitian element.
+// \param v The new value of the Hermitian element.
 // \return Reference to the assigned Hermitian element.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline HermitianElement<MT>& HermitianElement<MT>::operator=( const T& value )
+inline HermitianElement<MT>& HermitianElement<MT>::operator=( const T& v )
 {
-   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( value ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   *pos_ = value;
+   *pos_ = v;
    sync();
 
    return *this;
@@ -250,19 +250,19 @@ inline HermitianElement<MT>& HermitianElement<MT>::operator=( const T& value )
 //*************************************************************************************************
 /*!\brief Addition assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the addition.
+// \param v The right-hand side value for the addition.
 // \return Reference to the assigned Hermitian element.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline HermitianElement<MT>& HermitianElement<MT>::operator+=( const T& value )
+inline HermitianElement<MT>& HermitianElement<MT>::operator+=( const T& v )
 {
-   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( value ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   *pos_ += value;
+   *pos_ += v;
    sync();
    return *this;
 }
@@ -272,19 +272,19 @@ inline HermitianElement<MT>& HermitianElement<MT>::operator+=( const T& value )
 //*************************************************************************************************
 /*!\brief Subtraction assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the subtraction.
+// \param v The right-hand side value for the subtraction.
 // \return Reference to the assigned Hermitian element.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline HermitianElement<MT>& HermitianElement<MT>::operator-=( const T& value )
+inline HermitianElement<MT>& HermitianElement<MT>::operator-=( const T& v )
 {
-   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( value ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   *pos_ -= value;
+   *pos_ -= v;
    sync();
    return *this;
 }
@@ -294,19 +294,19 @@ inline HermitianElement<MT>& HermitianElement<MT>::operator-=( const T& value )
 //*************************************************************************************************
 /*!\brief Multiplication assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the multiplication.
+// \param v The right-hand side value for the multiplication.
 // \return Reference to the assigned Hermitian element.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline HermitianElement<MT>& HermitianElement<MT>::operator*=( const T& value )
+inline HermitianElement<MT>& HermitianElement<MT>::operator*=( const T& v )
 {
-   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( value ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   *pos_ *= value;
+   *pos_ *= v;
    sync();
    return *this;
 }
@@ -316,19 +316,19 @@ inline HermitianElement<MT>& HermitianElement<MT>::operator*=( const T& value )
 //*************************************************************************************************
 /*!\brief Division assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the division.
+// \param v The right-hand side value for the division.
 // \return Reference to the assigned Hermitian element.
 // \exception std::invalid_argument Invalid assignment to diagonal matrix element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline HermitianElement<MT>& HermitianElement<MT>::operator/=( const T& value )
+inline HermitianElement<MT>& HermitianElement<MT>::operator/=( const T& v )
 {
-   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( value ) ) {
+   if( IsComplex<ElementType>::value && pos_->index() == index_ && !isReal( v ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
-   *pos_ /= value;
+   *pos_ /= v;
    sync();
    return *this;
 }
