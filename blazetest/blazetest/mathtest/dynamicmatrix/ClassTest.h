@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/system/Types.h>
@@ -255,7 +256,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Static array alignment test (row-major)\n"
-                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in row " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -278,7 +279,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Static array alignment test (column-major)\n"
-                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -306,7 +307,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Dynamic array alignment test (row-major)\n"
-                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in row " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -329,7 +330,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Dynamic array alignment test (column-major)\n"
-                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
