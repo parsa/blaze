@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/system/Types.h>
@@ -188,6 +189,9 @@ void ClassTest::testAlignment( const std::string& type )
    typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::rowMajor>     RowMajorMatrixType;
    typedef blaze::StaticMatrix<Type,7UL,5UL,blaze::columnMajor>  ColumnMajorMatrixType;
 
+   typedef blaze::AlignedAllocator<RowMajorMatrixType>     RowMajorAllocatorType;
+   typedef blaze::AlignedAllocator<ColumnMajorMatrixType>  ColumnMajorAllocatorType;
+
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 
 
@@ -251,7 +255,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Static array alignment test (row-major)\n"
-                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in row " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -273,7 +277,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Static array alignment test (column-major)\n"
-                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -290,7 +294,7 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const boost::container::vector<RowMajorMatrixType> mats( 7UL );
+      const boost::container::vector<RowMajorMatrixType,RowMajorAllocatorType> mats( 7UL );
 
       for( size_t i=0UL; i<mats.size(); ++i ) {
          for( size_t j=0UL; j<mats[i].rows(); ++j )
@@ -300,7 +304,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Dynamic array alignment test (row-major)\n"
-                   << " Error: Invalid alignment in row " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in row " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
@@ -312,7 +316,7 @@ void ClassTest::testAlignment( const std::string& type )
    }
 
    {
-      const boost::container::vector<ColumnMajorMatrixType> mats( 7UL );
+      const boost::container::vector<ColumnMajorMatrixType,ColumnMajorAllocatorType> mats( 7UL );
 
       for( size_t i=0UL; i<mats.size(); ++i ) {
          for( size_t j=0UL; j<mats[i].columns(); ++j )
@@ -322,7 +326,7 @@ void ClassTest::testAlignment( const std::string& type )
             if( deviation != 0UL ) {
                std::ostringstream oss;
                oss << " Test: Dynamic array alignment test (column-major)\n"
-                   << " Error: Invalid alignment in column " << j << " detected\n"
+                   << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
                    << " Details:\n"
                    << "   Element type      : " << type << "\n"
                    << "   Expected alignment: " << alignment << "\n"
