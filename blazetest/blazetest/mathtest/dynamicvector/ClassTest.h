@@ -47,6 +47,7 @@
 #include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/system/Types.h>
@@ -213,7 +214,7 @@ void ClassTest::testAlignment( const std::string& type )
          if( deviation != 0UL ) {
             std::ostringstream oss;
             oss << " Test: Static array alignment test\n"
-                << " Error: Invalid alignment detected\n"
+                << " Error: Invalid alignment at index " << i << " detected\n"
                 << " Details:\n"
                 << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
@@ -239,7 +240,7 @@ void ClassTest::testAlignment( const std::string& type )
          if( deviation != 0UL ) {
             std::ostringstream oss;
             oss << " Test: Dynamic array alignment test\n"
-                << " Error: Invalid alignment detected\n"
+                << " Error: Invalid alignment at index " << i << " detected\n"
                 << " Details:\n"
                 << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
