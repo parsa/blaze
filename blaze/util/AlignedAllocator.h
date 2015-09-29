@@ -42,6 +42,7 @@
 
 #include <blaze/util/Memory.h>
 #include <blaze/util/Null.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/Unused.h>
 
 
@@ -242,7 +243,15 @@ inline typename AlignedAllocator<Type>::Pointer
    AlignedAllocator<Type>::allocate( size_t numObjects, const void* localityHint )
 {
    UNUSED_PARAMETER( localityHint );
-   return blaze::allocate<Type>( numObjects );
+
+   const size_t alignment( AlignmentOf<Type>::value );
+
+   if( alignment >= 8UL ) {
+      return reinterpret_cast<Type*>( allocate_backend( numObjects*sizeof(Type), alignment ) );
+   }
+   else {
+      return static_cast<Pointer>( operator new[]( numObjects * sizeof( Type ) ) );
+   }
 }
 //*************************************************************************************************
 
@@ -262,7 +271,18 @@ template< typename Type >
 inline void AlignedAllocator<Type>::deallocate( Pointer ptr, size_t numObjects )
 {
    UNUSED_PARAMETER( numObjects );
-   blaze::deallocate( ptr );
+
+   if( ptr == NULL )
+      return;
+
+   const size_t alignment( AlignmentOf<Type>::value );
+
+   if( alignment >= 8UL ) {
+      deallocate_backend( ptr );
+   }
+   else {
+      operator delete[]( ptr );
+   }
 }
 //*************************************************************************************************
 
