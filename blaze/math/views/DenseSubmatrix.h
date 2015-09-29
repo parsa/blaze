@@ -893,7 +893,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -1194,8 +1194,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 /*!\brief The constructor for DenseSubmatrix.
 //
 // \param matrix The dense matrix containing the submatrix.
-// \param row The index of the first row of the submatrix in the given dense matrix.
-// \param column The index of the first column of the submatrix in the given dense matrix.
+// \param rindex The index of the first row of the submatrix in the given dense matrix.
+// \param cindex The index of the first column of the submatrix in the given dense matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
@@ -1206,18 +1206,18 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_   ( matrix       )  // The dense matrix containing the submatrix
-   , row_      ( row          )  // The first row of the submatrix
-   , column_   ( column       )  // The first column of the submatrix
+   , row_      ( rindex       )  // The first row of the submatrix
+   , column_   ( cindex       )  // The first column of the submatrix
    , m_        ( m            )  // The number of rows of the submatrix
    , n_        ( n            )  // The number of columns of the submatrix
    , rest_     ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
    , final_    ( n - rest_    )  // The final index for unaligned intrinsic operations
-   , isAligned_( ( column % IT::size == 0UL ) &&
-                 ( column + n == matrix.columns() || n % IT::size == 0UL ) )
+   , isAligned_( ( cindex % IT::size == 0UL ) &&
+                 ( cindex + n == matrix.columns() || n % IT::size == 0UL ) )
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+   if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 }
@@ -3578,7 +3578,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3871,8 +3871,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 /*!\brief The constructor for DenseSubmatrix.
 //
 // \param matrix The dense matrix containing the submatrix.
-// \param row The index of the first row of the submatrix in the given dense matrix.
-// \param column The index of the first column of the submatrix in the given dense matrix.
+// \param rindex The index of the first row of the submatrix in the given dense matrix.
+// \param cindex The index of the first column of the submatrix in the given dense matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
@@ -3881,18 +3881,18 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_   ( matrix       )  // The dense matrix containing the submatrix
-   , row_      ( row          )  // The first row of the submatrix
-   , column_   ( column       )  // The first column of the submatrix
+   , row_      ( rindex       )  // The first row of the submatrix
+   , column_   ( cindex       )  // The first column of the submatrix
    , m_        ( m            )  // The number of rows of the submatrix
    , n_        ( n            )  // The number of columns of the submatrix
    , rest_     ( m % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
    , final_    ( m - rest_    )  // The final index for unaligned intrinsic operations
-   , isAligned_( ( row % IT::size == 0UL ) &&
-                 ( row + m == matrix.rows() || m % IT::size == 0UL ) )
+   , isAligned_( ( rindex % IT::size == 0UL ) &&
+                 ( rindex + m == matrix.rows() || m % IT::size == 0UL ) )
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+   if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 }
@@ -5853,7 +5853,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -6130,8 +6130,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 /*!\brief The constructor for DenseSubmatrix.
 //
 // \param matrix The dense matrix containing the submatrix.
-// \param row The index of the first row of the submatrix in the given dense matrix.
-// \param column The index of the first column of the submatrix in the given dense matrix.
+// \param rindex The index of the first row of the submatrix in the given dense matrix.
+// \param cindex The index of the first column of the submatrix in the given dense matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
@@ -6140,18 +6140,18 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_( matrix )  // The dense matrix containing the submatrix
-   , row_   ( row    )  // The first row of the submatrix
-   , column_( column )  // The first column of the submatrix
+   , row_   ( rindex    )  // The first row of the submatrix
+   , column_( cindex )  // The first column of the submatrix
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+   if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( column % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) ) {
+   if( column_ % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
 }
@@ -8150,7 +8150,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n );
+   explicit inline DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -8427,8 +8427,8 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 /*!\brief The constructor for DenseSubmatrix.
 //
 // \param matrix The dense matrix containing the submatrix.
-// \param row The index of the first row of the submatrix in the given dense matrix.
-// \param column The index of the first column of the submatrix in the given dense matrix.
+// \param rindex The index of the first row of the submatrix in the given dense matrix.
+// \param cindex The index of the first column of the submatrix in the given dense matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
 // \exception std::invalid_argument Invalid submatrix specification.
@@ -8437,18 +8437,18 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT >  // Type of the dense matrix
-inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t row, size_t column, size_t m, size_t n )
+inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : matrix_( matrix )  // The dense matrix containing the submatrix
-   , row_   ( row    )  // The first row of the submatrix
-   , column_( column )  // The first column of the submatrix
+   , row_   ( rindex )  // The first row of the submatrix
+   , column_( cindex )  // The first column of the submatrix
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   if( ( row + m > matrix.rows() ) || ( column + n > matrix.columns() ) ) {
+   if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( row % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) ) {
+   if( row_ % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
 }
