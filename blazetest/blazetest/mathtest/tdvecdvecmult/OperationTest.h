@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/tdvecdvecmult/OperationTEst.h
+//  \file blazetest/mathtest/tdvecdvecmult/OperationTest.h
 //  \brief Header file for the dense vector/dense vector inner product operation test
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
