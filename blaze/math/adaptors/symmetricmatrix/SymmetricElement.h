@@ -128,11 +128,11 @@ class SymmetricElement : private SparseElement
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   template< typename T > inline SymmetricElement& operator= ( const T& value );
-   template< typename T > inline SymmetricElement& operator+=( const T& value );
-   template< typename T > inline SymmetricElement& operator-=( const T& value );
-   template< typename T > inline SymmetricElement& operator*=( const T& value );
-   template< typename T > inline SymmetricElement& operator/=( const T& value );
+   template< typename T > inline SymmetricElement& operator= ( const T& v );
+   template< typename T > inline SymmetricElement& operator+=( const T& v );
+   template< typename T > inline SymmetricElement& operator-=( const T& v );
+   template< typename T > inline SymmetricElement& operator*=( const T& v );
+   template< typename T > inline SymmetricElement& operator/=( const T& v );
    //@}
    //**********************************************************************************************
 
@@ -222,14 +222,14 @@ inline SymmetricElement<MT>::SymmetricElement( IteratorType pos, MT* matrix, siz
 //*************************************************************************************************
 /*!\brief Assignment to the symmetric element.
 //
-// \param value The new value of the symmetric element.
+// \param v The new value of the symmetric element.
 // \return Reference to the assigned Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricElement<MT>& SymmetricElement<MT>::operator=( const T& value )
+inline SymmetricElement<MT>& SymmetricElement<MT>::operator=( const T& v )
 {
-   *pos_ = value;
+   *pos_ = v;
    sync();
    return *this;
 }
@@ -239,14 +239,14 @@ inline SymmetricElement<MT>& SymmetricElement<MT>::operator=( const T& value )
 //*************************************************************************************************
 /*!\brief Addition assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the addition.
+// \param v The right-hand side value for the addition.
 // \return Reference to the assigned Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricElement<MT>& SymmetricElement<MT>::operator+=( const T& value )
+inline SymmetricElement<MT>& SymmetricElement<MT>::operator+=( const T& v )
 {
-   *pos_ += value;
+   *pos_ += v;
    sync();
    return *this;
 }
@@ -256,14 +256,14 @@ inline SymmetricElement<MT>& SymmetricElement<MT>::operator+=( const T& value )
 //*************************************************************************************************
 /*!\brief Subtraction assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the subtraction.
+// \param v The right-hand side value for the subtraction.
 // \return Reference to the assigned Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricElement<MT>& SymmetricElement<MT>::operator-=( const T& value )
+inline SymmetricElement<MT>& SymmetricElement<MT>::operator-=( const T& v )
 {
-   *pos_ -= value;
+   *pos_ -= v;
    sync();
    return *this;
 }
@@ -273,14 +273,14 @@ inline SymmetricElement<MT>& SymmetricElement<MT>::operator-=( const T& value )
 //*************************************************************************************************
 /*!\brief Multiplication assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the multiplication.
+// \param v The right-hand side value for the multiplication.
 // \return Reference to the assigned Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricElement<MT>& SymmetricElement<MT>::operator*=( const T& value )
+inline SymmetricElement<MT>& SymmetricElement<MT>::operator*=( const T& v )
 {
-   *pos_ *= value;
+   *pos_ *= v;
    sync();
    return *this;
 }
@@ -290,14 +290,14 @@ inline SymmetricElement<MT>& SymmetricElement<MT>::operator*=( const T& value )
 //*************************************************************************************************
 /*!\brief Division assignment to the Hermitian element.
 //
-// \param value The right-hand side value for the division.
+// \param v The right-hand side value for the division.
 // \return Reference to the assigned Hermitian element.
 */
 template< typename MT >  // Type of the adapted matrix
 template< typename T >   // Type of the right-hand side value
-inline SymmetricElement<MT>& SymmetricElement<MT>::operator/=( const T& value )
+inline SymmetricElement<MT>& SymmetricElement<MT>::operator/=( const T& v )
 {
-   *pos_ /= value;
+   *pos_ /= v;
    sync();
    return *this;
 }
