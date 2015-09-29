@@ -47,6 +47,7 @@
 #include <boost/container/vector.hpp>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blazetest/system/Types.h>
@@ -169,6 +170,7 @@ template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
    typedef blaze::StaticVector<Type,7UL,blaze::rowVector>  VectorType;
+   typedef blaze::AlignedAllocator<VectorType>             AllocatorType;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 
@@ -209,7 +211,7 @@ void ClassTest::testAlignment( const std::string& type )
          if( deviation != 0UL ) {
             std::ostringstream oss;
             oss << " Test: Static array alignment test\n"
-                << " Error: Invalid alignment detected\n"
+                << " Error: Invalid alignment at index " << i << " detected\n"
                 << " Details:\n"
                 << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
@@ -225,7 +227,7 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const boost::container::vector<VectorType> vecs( 7UL );
+      const boost::container::vector<VectorType,AllocatorType> vecs( 7UL );
 
       for( size_t i=0; i<vecs.size(); ++i )
       {
@@ -234,7 +236,7 @@ void ClassTest::testAlignment( const std::string& type )
          if( deviation != 0UL ) {
             std::ostringstream oss;
             oss << " Test: Dynamic array alignment test\n"
-                << " Error: Invalid alignment detected\n"
+                << " Error: Invalid alignment at index " << i << " detected\n"
                 << " Details:\n"
                 << "   Element type      : " << type << "\n"
                 << "   Expected alignment: " << alignment << "\n"
