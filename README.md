@@ -18,15 +18,19 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-2.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-2.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-2.4.tar.gz)
+[![blaze-2.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-2.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-2.5.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-2.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-2.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-2.4.tar.gz)
+[![blaze-docu-2.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-2.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-2.5.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
 ----
 
 ## News ##
+
+**1.10.2015**: After some month of hard work we finally release **Blaze** 2.5! This version comes with a fair amount of new features, many of them focused on computations with complex numbers: [Hermitian matrices](https://bitbucket.org/blaze-lib/blaze/issues/15/introduce-hermitian-matrices-into-blaze), the [```conj()```](https://bitbucket.org/blaze-lib/blaze/issues/7/provide-support-for-conjugate-complex), [```ctrans()```](https://bitbucket.org/blaze-lib/blaze/issues/8/provide-support-for-conjugate-transpose), [```real()```](https://bitbucket.org/blaze-lib/blaze/issues/17/provide-a-real-function-for-vectors-and), and [```imag()```](https://bitbucket.org/blaze-lib/blaze/issues/18/provide-an-imag-function-for-vectors-and) operations, and the [vectorization of integral complex numbers](https://bitbucket.org/blaze-lib/blaze/issues/21/support-the-vectorization-of-integral).
+
+In addition, we are particularly proud about the performance improvements of several [dense matrix/sparse matrix multiplication](https://bitbucket.org/blaze-lib/blaze/issues/9/improve-the-performance-of-dense-matrix) and [sparse matrix/dense matrix multiplication](https://bitbucket.org/blaze-lib/blaze/issues/11/improve-the-performance-of-sparse-matrix) kernels. Furthermore, to extend the support for special environments, we have enabled the [customization of the error reporting mechanism](https://bitbucket.org/blaze-lib/blaze/issues/19/provide-means-to-adapt-the-error-reporting). Enjoy!
 
 **4.7.2015**: We are proud to announce the release of **Blaze** 2.4! With this release, we say goodbye to the [GoogleCode](http://code.google.com/p/blaze-lib) platform and move to our new home:
 
@@ -35,7 +39,7 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 Since GoogleCode is shutting down, **Blaze** 2.4 will be the last release on [GoogleCode](http://code.google.com/p/blaze-lib). From now on we will focus entirely on our [Bitbucket](http://bitbucket.org/blaze-lib/blaze) repositories. Please update your bookmarks accordingly!
 
-In **Blaze** 2.2 we introduced the first adaptor, `SymmetricMatrix. In **Blaze** 2.3 we continued in this direction and introduced adaptors for lower and upper triangular matrices. Now, **Blaze** 2.4 concludes this line of development with unitriangular, strictly triangular and diagonal matrices. This now enables a total of 36 different matrix types, which provide the unique possibility to adapt the type of matrices exactly to the problem at hand and to achieve maximum performance due to specifically optimized kernels.
+In **Blaze** 2.2 we introduced the first adaptor, {{{SymmetricMatrix}}}. In **Blaze** 2.3 we continued in this direction and introduced adaptors for lower and upper triangular matrices. Now, **Blaze** 2.4 concludes this line of development with unitriangular, strictly triangular and diagonal matrices. This now enables a total of 36 different matrix types, which provide the unique possibility to adapt the type of matrices exactly to the problem at hand and to achieve maximum performance due to specifically optimized kernels.
 
 Additionally, in **Blaze** 2.4 we have removed a couple of hidden, unofficial features that caused trouble due to negligence and lack of proper testing: All solvers, `RotationMatrix` and `Quaternion` are not part of the release anymore. However, we plan to reintroduce both `RotationMatrix` and `Quaternion` in an upcoming release.
 
@@ -69,40 +73,39 @@ One of the main motivations of the **Blaze** 1.x releases was to provide maximum
 
 * [Configuration and Installation](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration and Installation)
 * [Getting Started](https://bitbucket.org/blaze-lib/blaze/wiki/Getting Started)
-* Tutorial
-    * Vectors
-        * [Vector Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types)
-        * [Vector Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations)
-    * Matrices
-        * [Matrix Types](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types)
-        * [Matrix Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations)
-    * Adaptors
-        * [Symmetric Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Symmetric Matrices)
-        * [Triangular Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Triangular Matrices)
-    * Views
-        * [Subvectors](https://bitbucket.org/blaze-lib/blaze/wiki/Subvectors)
-        * [Submatrices](https://bitbucket.org/blaze-lib/blaze/wiki/Submatrices)
-        * [Rows](https://bitbucket.org/blaze-lib/blaze/wiki/Rows)
-        * [Columns](https://bitbucket.org/blaze-lib/blaze/wiki/Columns)
-    * Arithmetic Operations
-        * [Addition](https://bitbucket.org/blaze-lib/blaze/wiki/Addition)
-        * [Subtraction](https://bitbucket.org/blaze-lib/blaze/wiki/Subtraction)
-        * [Scalar Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Scalar Multiplication)
-        * [Vector/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication)
-            * [Componentwise Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!componentwise-multiplication)
-            * [Inner Product / Scalar Product / Dot Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!inner-product-scalar-product-dot-product)
-            * [Outer Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!outer-product)
-            * [Cross Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!cross-product)
-        * [Matrix/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Vector Multiplication)
-        * [Matrix/Matrix Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication)
-    * Shared-Memory Parallelization
-        * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
-        * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
-        * [Boost Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Boost Thread Parallelization)
-        * [Serial Execution](https://bitbucket.org/blaze-lib/blaze/wiki/Serial Execution)
-    * Serialization
-        * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
-        * [Matrix Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Serialization)
+* [Vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vectors)
+    * [Vector Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Types)
+    * [Vector Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations)
+* [Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrices)
+    * [Matrix Types](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types)
+    * [Matrix Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Operations)
+* [Adaptors](https://bitbucket.org/blaze-lib/blaze/wiki/Adaptors)
+    * [Symmetric Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Symmetric Matrices)
+    * [Triangular Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Triangular Matrices)
+* [Views](https://bitbucket.org/blaze-lib/blaze/wiki/Views)
+    * [Subvectors](https://bitbucket.org/blaze-lib/blaze/wiki/Subvectors)
+    * [Submatrices](https://bitbucket.org/blaze-lib/blaze/wiki/Submatrices)
+    * [Rows](https://bitbucket.org/blaze-lib/blaze/wiki/Rows)
+    * [Columns](https://bitbucket.org/blaze-lib/blaze/wiki/Columns)
+* [Arithmetic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
+    * [Addition](https://bitbucket.org/blaze-lib/blaze/wiki/Addition)
+    * [Subtraction](https://bitbucket.org/blaze-lib/blaze/wiki/Subtraction)
+    * [Scalar Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Scalar Multiplication)
+    * [Vector/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication)
+        * [Componentwise Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!componentwise-multiplication)
+        * [Inner Product / Scalar Product / Dot Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!inner-product-scalar-product-dot-product)
+        * [Outer Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!outer-product)
+        * [Cross Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!cross-product)
+    * [Matrix/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Vector Multiplication)
+    * [Matrix/Matrix Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication)
+* [Shared-Memory Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Shared Memory Parallelization)
+    * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
+    * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
+    * [Boost Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Boost Thread Parallelization)
+    * [Serial Execution](https://bitbucket.org/blaze-lib/blaze/wiki/Serial Execution)
+* [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
+    * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
+    * [Matrix Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Serialization)
 * [Intra-Statement Optimization](https://bitbucket.org/blaze-lib/blaze/wiki/Intra-Statement Optimization)
 * [Configuration Files](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files)
 * [Blazemark: The Blaze Benchmark Suite](https://bitbucket.org/blaze-lib/blaze/wiki/Blazemark)
