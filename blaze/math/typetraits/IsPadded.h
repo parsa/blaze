@@ -63,9 +63,6 @@ namespace blaze {
 // is set to 0, \a Type is \a FalseType, and the class derives from \a FalseType. Examples:
 
    \code
-   typedef blaze::StaticVector<int,3UL>  VectorType;
-   typedef blaze::DynamicMatrix<double>  MatrixType;
-
    blaze::IsPadded< blaze::StaticVector<int,3UL> >::value     // Evaluates to 1
    blaze::IsPadded< const blaze::HybridVector<float> >::Type  // Results in TrueType
    blaze::IsPadded< volatile blaze::DynamicMatrix<double> >   // Is derived from TrueType
