@@ -6988,8 +6988,8 @@ namespace blaze {}
 // beneficial to use a single OpenMP parallel directive for several operations:
 
    \code
-   blaze::DynamicVector x, y1, y2;
-   blaze::DynamicMatrix A, B;
+   blaze::DynamicVector<double> x, y1, y2;
+   blaze::DynamicMatrix<double> A, B;
 
    #pragma omp parallel
    {
@@ -7014,8 +7014,8 @@ namespace blaze {}
 // constructs is the \c sections directive:
 
    \code
-   blaze::DynamicVector x, y1, y2;
-   blaze::DynamicMatrix A, B;
+   blaze::DynamicVector<double> x, y1, y2;
+   blaze::DynamicMatrix<double> A, B;
 
    // ... Resizing and initialization
 
@@ -7048,8 +7048,8 @@ namespace blaze {}
 // function:
 
    \code
-   blaze::DynamicVector x, y1, y2;
-   blaze::DynamicMatrix A, B;
+   blaze::DynamicVector<double> x, y1, y2;
+   blaze::DynamicMatrix<double> A, B;
 
    // ... Resizing and initialization
 
