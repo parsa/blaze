@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
@@ -64,7 +65,6 @@
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
-#include <blaze/math/views/AlignmentFlag.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/logging/FunctionTrace.h>

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Accuracy.h>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/BLAS.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>

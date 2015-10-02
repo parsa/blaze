@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/views/AlignmentFlag.h
-//  \brief Header file for the subvector/submatrix alignment flag values
+//  \file blaze/math/AlignmentFlag.h
+//  \brief Header file for the alignment flag values
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_ALIGNMENTFLAG_H_
-#define _BLAZE_MATH_VIEWS_ALIGNMENTFLAG_H_
+#ifndef _BLAZE_MATH_ALIGNMENTFLAG_H_
+#define _BLAZE_MATH_ALIGNMENTFLAG_H_
 
 
 namespace blaze {
@@ -45,10 +45,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Alignment flag for unaligned subvectors and submatrices.
+/*!\brief Alignment flag for unaligned vectors and matrices.
 //
-// Via this flag it is possible to specify subvectors and submatrices as unaligned. The following
-// example demonstrates the setup of an unaligned subvector:
+// Via this flag it is possible to specify subvectors, submatrices, custom vector and matrices
+// as unaligned. The following example demonstrates the setup of an unaligned subvector:
 
    \code
    using blaze::columnVector;
@@ -65,10 +65,10 @@ const bool unaligned = false;
 
 
 //*************************************************************************************************
-/*!\brief Alignment flag for aligned subvectors and submatrices.
+/*!\brief Alignment flag for aligned vectors and matrices.
 //
-// Via this flag it is possible to specify subvectors and submatrices as aligned. The following
-// example demonstrates the setup of an aligned subvector:
+// Via this flag it is possible to specify subvectors, submatrices, custom vectors and matrices
+// as aligned. The following example demonstrates the setup of an aligned subvector:
 
    \code
    using blaze::columnVector;
