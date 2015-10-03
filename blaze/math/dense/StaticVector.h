@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -178,19 +179,21 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef StaticVector<Type,N,TF>    This;            //!< Type of this StaticVector instance.
-   typedef This                       ResultType;      //!< Result type for expression template evaluations.
-   typedef StaticVector<Type,N,!TF>   TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                       ElementType;     //!< Type of the vector elements.
-   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the vector elements.
-   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
-   typedef const StaticVector&        CompositeType;   //!< Data type for composite expression templates.
-   typedef Type&                      Reference;       //!< Reference to a non-constant vector value.
-   typedef const Type&                ConstReference;  //!< Reference to a constant vector value.
-   typedef Type*                      Pointer;         //!< Pointer to a non-constant vector value.
-   typedef const Type*                ConstPointer;    //!< Pointer to a constant vector value.
-   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
+   typedef StaticVector<Type,N,TF>   This;           //!< Type of this StaticVector instance.
+   typedef This                      ResultType;     //!< Result type for expression template evaluations.
+   typedef StaticVector<Type,N,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                      ElementType;    //!< Type of the vector elements.
+   typedef typename IT::Type         IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef const Type&               ReturnType;     //!< Return type for expression template evaluations.
+   typedef const StaticVector&       CompositeType;  //!< Data type for composite expression templates.
+
+   typedef Type&        Reference;       //!< Reference to a non-constant vector value.
+   typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
+   typedef Type*        Pointer;         //!< Pointer to a non-constant vector value.
+   typedef const Type*  ConstPointer;    //!< Pointer to a constant vector value.
+
+   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************

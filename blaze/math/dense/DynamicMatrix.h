@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -196,20 +197,22 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,SO>     This;            //!< Type of this DynamicMatrix instance.
-   typedef This                       ResultType;      //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>    OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,!SO>    TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                       ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                CompositeType;   //!< Data type for composite expression templates.
-   typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                      Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*                ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
+   typedef DynamicMatrix<Type,SO>   This;           //!< Type of this DynamicMatrix instance.
+   typedef This                     ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<Type,!SO>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                     ElementType;    //!< Type of the matrix elements.
+   typedef typename IT::Type        IntrinsicType;  //!< Intrinsic type of the matrix elements.
+   typedef const Type&              ReturnType;     //!< Return type for expression template evaluations.
+   typedef const This&              CompositeType;  //!< Data type for composite expression templates.
+
+   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+
+   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -2509,20 +2512,22 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
 
  public:
    //**Type definitions****************************************************************************
-   typedef DynamicMatrix<Type,true>   This;            //!< Type of this DynamicMatrix instance.
-   typedef This                       ResultType;      //!< Result type for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  OppositeType;    //!< Result type with opposite storage order for expression template evaluations.
-   typedef DynamicMatrix<Type,false>  TransposeType;   //!< Transpose type for expression template evaluations.
-   typedef Type                       ElementType;     //!< Type of the matrix elements.
-   typedef typename IT::Type          IntrinsicType;   //!< Intrinsic type of the matrix elements.
-   typedef const Type&                ReturnType;      //!< Return type for expression template evaluations.
-   typedef const This&                CompositeType;   //!< Data type for composite expression templates.
-   typedef Type&                      Reference;       //!< Reference to a non-constant matrix value.
-   typedef const Type&                ConstReference;  //!< Reference to a constant matrix value.
-   typedef Type*                      Pointer;         //!< Pointer to a non-constant matrix value.
-   typedef const Type*                ConstPointer;    //!< Pointer to a constant matrix value.
-   typedef DenseIterator<Type>        Iterator;        //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type>  ConstIterator;   //!< Iterator over constant elements.
+   typedef DynamicMatrix<Type,true>   This;           //!< Type of this DynamicMatrix instance.
+   typedef This                       ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicMatrix<Type,false>  OppositeType;   //!< Result type with opposite storage order for expression template evaluations.
+   typedef DynamicMatrix<Type,false>  TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                       ElementType;    //!< Type of the matrix elements.
+   typedef typename IT::Type          IntrinsicType;  //!< Intrinsic type of the matrix elements.
+   typedef const Type&                ReturnType;     //!< Return type for expression template evaluations.
+   typedef const This&                CompositeType;  //!< Data type for composite expression templates.
+
+   typedef Type&        Reference;       //!< Reference to a non-constant matrix value.
+   typedef const Type&  ConstReference;  //!< Reference to a constant matrix value.
+   typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
+   typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
+
+   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
