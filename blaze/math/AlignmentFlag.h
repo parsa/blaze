@@ -47,7 +47,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\brief Alignment flag for unaligned vectors and matrices.
 //
-// Via this flag it is possible to specify subvectors, submatrices, custom vector and matrices
+// Via this flag it is possible to specify subvectors, submatrices, custom vectors and matrices
 // as unaligned. The following example demonstrates the setup of an unaligned subvector:
 
    \code
