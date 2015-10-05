@@ -33,7 +33,6 @@
 
 #include <algorithm>
 #include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -170,7 +169,7 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   enum { NN = N + ( IT::size - ( N % IT::size ) ) % IT::size };
+   static const size_t NN = N + ( IT::size - ( N % IT::size ) ) % IT::size;
    //**********************************************************************************************
 
  public:
@@ -1803,13 +1802,22 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 {
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
 
-   for( size_t i=0UL; i<size_; i+=IT::size ) {
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+
+   for( ; i<ipos; i+=IT::size ) {
       store( v_+i, (~rhs).load(i) );
+   }
+   for( ; remainder && i<size_; ++i ) {
+      v_[i] = (~rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -1887,13 +1895,22 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
 
-   for( size_t i=0UL; i<size_; i+=IT::size ) {
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+
+   for( ; i<ipos; i+=IT::size ) {
       store( v_+i, load( v_+i ) + (~rhs).load(i) );
+   }
+   for( ; remainder && i<size_; ++i ) {
+      v_[i] += (~rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -1974,10 +1991,19 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
-   for( size_t i=0UL; i<size_; i+=IT::size ) {
+   const bool remainder( IsPadded<VT>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+
+   for( ; i<ipos; i+=IT::size ) {
       store( v_+i, load( v_+i ) - (~rhs).load(i) );
+   }
+   for( ; remainder && i<size_; ++i ) {
+      v_[i] -= (~rhs)[i];
    }
 }
 //*************************************************************************************************
@@ -2058,10 +2084,19 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
-   for( size_t i=0UL; i<size_; i+=IT::size ) {
+   const bool remainder( !IsPadded<VT>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
+
+   for( ; i<size_; i+=IT::size ) {
       store( v_+i, load( v_+i ) * (~rhs).load(i) );
+   }
+   for( ; remainder && i<size_; ++i ) {
+      v_[i] *= (~rhs)[i];
    }
 }
 //*************************************************************************************************
