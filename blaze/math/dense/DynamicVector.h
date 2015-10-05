@@ -42,7 +42,6 @@
 
 #include <algorithm>
 #include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -1615,31 +1614,46 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    using blaze::store;
    using blaze::stream;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
-      for( size_t i=0UL; i<size_; i+=IT::size ) {
+      size_t i=0UL;
+
+      for( ; i<ipos; i+=IT::size ) {
          stream( v_+i, (~rhs).load(i) );
+      }
+      for( ; remainder && i<size_; ++i ) {
+         v_[i] = (~rhs)[i];
       }
    }
    else
    {
-      const size_t ipos( size_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+      const size_t i4way( size_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+      BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
+      size_t i( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; i<i4way; i+=IT::size*4UL ) {
          store( v_+i             , it.load() ); it += IT::size;
          store( v_+i+IT::size    , it.load() ); it += IT::size;
          store( v_+i+IT::size*2UL, it.load() ); it += IT::size;
          store( v_+i+IT::size*3UL, it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( v_+i, it.load() );
+      }
+      for( ; remainder && i<size_; ++i, ++it ) {
+         v_[i] = *it;
       }
    }
 }
@@ -1722,23 +1736,33 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) + it.load() ); it += IT::size;
       store( v_+i+IT::size    , load(v_+i+IT::size    ) + it.load() ); it += IT::size;
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) + it.load() ); it += IT::size;
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( v_+i, load(v_+i) + it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      v_[i] += *it;
    }
 }
 //*************************************************************************************************
@@ -1820,23 +1844,33 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) - it.load() ); it += IT::size;
       store( v_+i+IT::size    , load(v_+i+IT::size    ) - it.load() ); it += IT::size;
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) - it.load() ); it += IT::size;
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( v_+i, load(v_+i) - it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      v_[i] -= *it;
    }
 }
 //*************************************************************************************************
@@ -1918,23 +1952,33 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    using blaze::load;
    using blaze::store;
 
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
+   const bool remainder( !IsPadded<VT>::value );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( v_+i             , load(v_+i             ) * it.load() ); it += IT::size;
       store( v_+i+IT::size    , load(v_+i+IT::size    ) * it.load() ); it += IT::size;
       store( v_+i+IT::size*2UL, load(v_+i+IT::size*2UL) * it.load() ); it += IT::size;
       store( v_+i+IT::size*3UL, load(v_+i+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( v_+i, load(v_+i) * it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      v_[i] *= *it;
    }
 }
 //*************************************************************************************************
