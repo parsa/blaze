@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -1620,32 +1619,46 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
+
+   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
-      for( size_t i=0UL; i<rows; i+=IT::size ) {
+      size_t i( 0UL );
+
+      for( ; i<ipos; i+=IT::size ) {
          matrix_.stream( i, col_, (~rhs).load(i) );
+      }
+      for( ; remainder && i<rows; ++i ) {
+         matrix_(i,col_) = (~rhs)[i];
       }
    }
    else
    {
-      const size_t ipos( rows & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+      const size_t i4way( rows & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+      BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
+      size_t i( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; i<i4way; i+=IT::size*4UL ) {
          matrix_.store( i             , col_, it.load() ); it+=IT::size;
          matrix_.store( i+IT::size    , col_, it.load() ); it+=IT::size;
          matrix_.store( i+IT::size*2UL, col_, it.load() ); it+=IT::size;
          matrix_.store( i+IT::size*3UL, col_, it.load() ); it+=IT::size;
       }
-      for( size_t i=ipos; i<rows; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          matrix_.store( i, col_, it.load() );
+      }
+      for( ; remainder && i<rows; ++i, ++it ) {
+         matrix_(i,col_) = *it;
       }
    }
 }
@@ -1727,24 +1740,33 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( rows & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) + it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) + it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) + it.load() ); it += IT::size;
       matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) + it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<rows; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       matrix_.store( i, col_, matrix_.load(i,col_) + it.load() );
+   }
+   for( ; remainder && i<rows; ++i, ++it ) {
+      matrix_(i,col_) += *it;
    }
 }
 //*************************************************************************************************
@@ -1825,24 +1847,33 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( rows & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) - it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) - it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) - it.load() ); it += IT::size;
       matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) - it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<rows; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       matrix_.store( i, col_, matrix_.load(i,col_) - it.load() );
+   }
+   for( ; remainder && i<rows; ++i, ++it ) {
+      matrix_(i,col_) -= *it;
    }
 }
 //*************************************************************************************************
@@ -1923,24 +1954,33 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    DenseColumn<MT,SO,SF>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t rows( size() );
 
-   const size_t ipos( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
+   const size_t i4way( rows & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) * it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) * it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) * it.load() ); it += IT::size;
       matrix_.store( i+IT::size*3UL, col_, matrix_.load(i+IT::size*3UL,col_) * it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<rows; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       matrix_.store( i, col_, matrix_.load(i,col_) * it.load() );
+   }
+   for( ; remainder && i<rows; ++i, ++it ) {
+      matrix_(i,col_) *= *it;
    }
 }
 //*************************************************************************************************
@@ -4845,32 +4885,46 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
+
+   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
-      for( size_t j=0UL; j<columns; j+=IT::size ) {
+      size_t j( 0UL );
+
+      for( ; j<jpos; j+=IT::size ) {
          matrix_.stream( col_, j, (~rhs).load(j) );
+      }
+      for( ; remainder && j<columns; ++j ) {
+         matrix_(col_,j) = (~rhs)[j];
       }
    }
    else
    {
-      const size_t jpos( columns & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+      const size_t j4way( columns & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
+      BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
 
+      size_t j( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
-      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+      for( ; j<j4way; j+=IT::size*4UL ) {
          matrix_.store( col_, j             , it.load() ); it+=IT::size;
          matrix_.store( col_, j+IT::size    , it.load() ); it+=IT::size;
          matrix_.store( col_, j+IT::size*2UL, it.load() ); it+=IT::size;
          matrix_.store( col_, j+IT::size*3UL, it.load() ); it+=IT::size;
       }
-      for( size_t j=jpos; j<columns; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          matrix_.store( col_, j, it.load() );
+      }
+      for( ; remainder && j<columns; ++j, ++it ) {
+         matrix_(col_,j) = *it;
       }
    }
 }
@@ -4952,24 +5006,33 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::addAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
+   const size_t j4way( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
+
+   size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+   for( ; j<j4way; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) + it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) + it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) + it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t j=jpos; j<columns; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
       matrix_.store( col_, j, matrix_.load(col_,j) + it.load() );
+   }
+   for( ; remainder && j<columns; ++j, ++it ) {
+      matrix_(col_,j) += *it;
    }
 }
 /*! \endcond */
@@ -5050,24 +5113,33 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::subAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
+   const size_t j4way( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
+
+   size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+   for( ; j<j4way; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) - it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) - it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) - it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t j=jpos; j<columns; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
       matrix_.store( col_, j, matrix_.load(col_,j) - it.load() );
+   }
+   for( ; remainder && j<columns; ++j, ++it ) {
+      matrix_(col_,j) -= *it;
    }
 }
 /*! \endcond */
@@ -5148,24 +5220,33 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    DenseColumn<MT,false,true>::multAssign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT );
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
    const size_t columns( size() );
 
-   const size_t jpos( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
+   const size_t j4way( columns & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
+
+   size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
-   for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+   for( ; j<j4way; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t j=jpos; j<columns; j+=IT::size, it+=IT::size ) {
+   for( ; j<columns; j+=IT::size, it+=IT::size ) {
       matrix_.store( col_, j, matrix_.load(col_,j) * it.load() );
+   }
+   for( ; remainder && j<columns; ++j, ++it ) {
+      matrix_(col_,j) *= *it;
    }
 }
 /*! \endcond */
