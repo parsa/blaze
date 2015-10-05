@@ -44,7 +44,6 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Subvector.h>
@@ -2064,11 +2063,11 @@ inline typename DisableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vec
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] = (~rhs)[i    ];
-      vector_[i+offset_+1UL] = (~rhs)[i+1UL];
+      vector_[offset_+i    ] = (~rhs)[i    ];
+      vector_[offset_+i+1UL] = (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] = (~rhs)[ipos];
+      vector_[offset_+ipos] = (~rhs)[ipos];
    }
 }
 //*************************************************************************************************
@@ -2095,30 +2094,45 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        ( size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
        !(~rhs).isAliased( &vector_ ) )
    {
-      for( size_t i=0UL; i<size(); i+=IT::size ) {
+      size_t i( 0UL );
+
+      for( ; i<ipos; i+=IT::size ) {
          vector_.stream( offset_+i, (~rhs).load(i) );
+      }
+      for( ; remainder && i<size_; ++i ) {
+         vector_[offset_+i] = (~rhs)[i];
       }
    }
    else
    {
-      const size_t ipos( size_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+      const size_t i4way( size_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+      BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
+      size_t i( 0UL );
       typename VT2::ConstIterator it( (~rhs).begin() );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; i<i4way; i+=IT::size*4UL ) {
          vector_.storeu( offset_+i             , it.load() ); it += IT::size;
          vector_.storeu( offset_+i+IT::size    , it.load() ); it += IT::size;
          vector_.storeu( offset_+i+IT::size*2UL, it.load() ); it += IT::size;
          vector_.storeu( offset_+i+IT::size*3UL, it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          storeu( i, it.load() );
+      }
+      for( ; remainder && i<size_; ++i, ++it ) {
+         vector_[offset_+i] = *it;
       }
    }
 }
@@ -2145,7 +2159,7 @@ inline void DenseSubvector<VT,AF,TF>::assign( const SparseVector<VT2,TF>& rhs )
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] = element->value();
+      vector_[offset_+element->index()] = element->value();
 }
 //*************************************************************************************************
 
@@ -2172,11 +2186,11 @@ inline typename DisableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vec
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] += (~rhs)[i    ];
-      vector_[i+offset_+1UL] += (~rhs)[i+1UL];
+      vector_[offset_+i    ] += (~rhs)[i    ];
+      vector_[offset_+i+1UL] += (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] += (~rhs)[ipos];
+      vector_[offset_+ipos] += (~rhs)[ipos];
    }
 }
 //*************************************************************************************************
@@ -2203,20 +2217,30 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       vector_.storeu( offset_+i             , load(i             ) + it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       storeu( i, load(i) + it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] += *it;
    }
 }
 //*************************************************************************************************
@@ -2242,7 +2266,7 @@ inline void DenseSubvector<VT,AF,TF>::addAssign( const SparseVector<VT2,TF>& rhs
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] += element->value();
+      vector_[offset_+element->index()] += element->value();
 }
 //*************************************************************************************************
 
@@ -2269,11 +2293,11 @@ inline typename DisableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vec
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] -= (~rhs)[i    ];
-      vector_[i+offset_+1UL] -= (~rhs)[i+1UL];
+      vector_[offset_+i    ] -= (~rhs)[i    ];
+      vector_[offset_+i+1UL] -= (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] -= (~rhs)[ipos];
+      vector_[offset_+ipos] -= (~rhs)[ipos];
    }
 }
 //*************************************************************************************************
@@ -2300,20 +2324,30 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       vector_.storeu( offset_+i             , load(i             ) - it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       storeu( i, load(i) - it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] -= *it;
    }
 }
 //*************************************************************************************************
@@ -2339,7 +2373,7 @@ inline void DenseSubvector<VT,AF,TF>::subAssign( const SparseVector<VT2,TF>& rhs
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] -= element->value();
+      vector_[offset_+element->index()] -= element->value();
 }
 //*************************************************************************************************
 
@@ -2366,11 +2400,11 @@ inline typename DisableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vec
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] *= (~rhs)[i    ];
-      vector_[i+offset_+1UL] *= (~rhs)[i+1UL];
+      vector_[offset_+i    ] *= (~rhs)[i    ];
+      vector_[offset_+i+1UL] *= (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] *= (~rhs)[ipos];
+      vector_[offset_+ipos] *= (~rhs)[ipos];
    }
 }
 //*************************************************************************************************
@@ -2397,20 +2431,30 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       vector_.storeu( offset_+i             , load(i             ) * it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
       vector_.storeu( offset_+i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       storeu( i, load(i) * it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] *= *it;
    }
 }
 //*************************************************************************************************
@@ -2440,7 +2484,7 @@ inline void DenseSubvector<VT,AF,TF>::multAssign( const SparseVector<VT2,TF>& rh
    reset();
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] = tmp[element->index()] * element->value();
+      vector_[offset_+element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
 
@@ -3794,11 +3838,11 @@ inline typename DisableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLAT
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] = (~rhs)[i    ];
-      vector_[i+offset_+1UL] = (~rhs)[i+1UL];
+      vector_[offset_+i    ] = (~rhs)[i    ];
+      vector_[offset_+i+1UL] = (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] = (~rhs)[ipos];
+      vector_[offset_+ipos] = (~rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -3826,28 +3870,43 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
+
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
+
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
    {
-      for( size_t i=0UL; i<size(); i+=IT::size ) {
-         vector_.stream( offset_+i, (~rhs).load(i) );
+      size_t i( 0UL );
+
+      for( ; i<ipos; i+=IT::size ) {
+         stream( i, (~rhs).load(i) );
+      }
+      for( ; remainder && i<size_; ++i ) {
+         vector_[offset_+i] = (~rhs)[i];
       }
    }
    else
    {
-      const size_t ipos( size_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+      const size_t i4way( size_ & size_t(-IT::size*4) );
+      BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+      BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
+      size_t i( 0UL );
       typename VT2::ConstIterator it( (~rhs).begin() );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; i<i4way; i+=IT::size*4UL ) {
          store( i             , it.load() ); it += IT::size;
          store( i+IT::size    , it.load() ); it += IT::size;
          store( i+IT::size*2UL, it.load() ); it += IT::size;
          store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( i, it.load() );
+      }
+      for( ; remainder && i<size_; ++i, ++it ) {
+         vector_[offset_+i] = *it;
       }
    }
 }
@@ -3875,7 +3934,7 @@ inline void DenseSubvector<VT,aligned,TF>::assign( const SparseVector<VT2,TF>& r
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] = element->value();
+      vector_[offset_+element->index()] = element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3903,11 +3962,11 @@ inline typename DisableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLAT
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] += (~rhs)[i    ];
-      vector_[i+offset_+1UL] += (~rhs)[i+1UL];
+      vector_[offset_+i    ] += (~rhs)[i    ];
+      vector_[offset_+i+1UL] += (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] += (~rhs)[ipos];
+      vector_[offset_+ipos] += (~rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -3935,20 +3994,30 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) + it.load() ); it += IT::size;
       store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
       store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
       store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( i, load(i) + it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] += *it;
    }
 }
 /*! \endcond */
@@ -3975,7 +4044,7 @@ inline void DenseSubvector<VT,aligned,TF>::addAssign( const SparseVector<VT2,TF>
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] += element->value();
+      vector_[offset_+element->index()] += element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4003,11 +4072,11 @@ inline typename DisableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLAT
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] -= (~rhs)[i    ];
-      vector_[i+offset_+1UL] -= (~rhs)[i+1UL];
+      vector_[offset_+i    ] -= (~rhs)[i    ];
+      vector_[offset_+i+1UL] -= (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] -= (~rhs)[ipos];
+      vector_[offset_+ipos] -= (~rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -4035,20 +4104,30 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) - it.load() ); it += IT::size;
       store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
       store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
       store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( i, load(i) - it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] -= *it;
    }
 }
 /*! \endcond */
@@ -4075,7 +4154,7 @@ inline void DenseSubvector<VT,aligned,TF>::subAssign( const SparseVector<VT2,TF>
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] -= element->value();
+      vector_[offset_+element->index()] -= element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4103,11 +4182,11 @@ inline typename DisableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLAT
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      vector_[i+offset_    ] *= (~rhs)[i    ];
-      vector_[i+offset_+1UL] *= (~rhs)[i+1UL];
+      vector_[offset_+i    ] *= (~rhs)[i    ];
+      vector_[offset_+i+1UL] *= (~rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      vector_[ipos+offset_] *= (~rhs)[ipos];
+      vector_[offset_+ipos] *= (~rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -4135,20 +4214,30 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
-   const size_t ipos( size_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
 
+   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   const size_t i4way( size_ & size_t(-IT::size*4) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
+   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
+
+   size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
-   for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+   for( ; i<i4way; i+=IT::size*4UL ) {
       store( i             , load(i             ) * it.load() ); it += IT::size;
       store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
       store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
       store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( size_t i=ipos; i<size_; i+=IT::size, it+=IT::size ) {
+   for( ; i<ipos; i+=IT::size, it+=IT::size ) {
       store( i, load(i) * it.load() );
+   }
+   for( ; remainder && i<size_; ++i, ++it ) {
+      vector_[offset_+i] *= *it;
    }
 }
 /*! \endcond */
@@ -4179,7 +4268,7 @@ inline void DenseSubvector<VT,aligned,TF>::multAssign( const SparseVector<VT2,TF
    reset();
 
    for( typename VT2::ConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[element->index()+offset_] = tmp[element->index()] * element->value();
+      vector_[offset_+element->index()] = tmp[element->index()] * element->value();
 }
 /*! \endcond */
 //*************************************************************************************************
