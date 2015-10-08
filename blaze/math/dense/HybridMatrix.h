@@ -1331,7 +1331,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator*=( const M
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   HybridMatrix tmp( *this * (~rhs) );
+   const HybridMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
 }
 //*************************************************************************************************
@@ -3807,7 +3807,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator*=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   HybridMatrix tmp( *this * (~rhs) );
+   const HybridMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
 }
 /*! \endcond */
