@@ -1233,7 +1233,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
    }
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
-      StaticVector tmp( *this * (~rhs) );
+      const StaticVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
    else {
