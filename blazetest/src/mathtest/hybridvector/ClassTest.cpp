@@ -2022,7 +2022,7 @@ void ClassTest::testSwap()
           << " Error: Swapping the first vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 1 2 3 4 )\n";
+          << "   Expected result:\n( 4 3 2 1 )\n";
       throw std::runtime_error( oss.str() );
    }
 
@@ -2036,7 +2036,7 @@ void ClassTest::testSwap()
           << " Error: Swapping the second vector failed\n"
           << " Details:\n"
           << "   Result:\n" << vec1 << "\n"
-          << "   Expected result:\n( 4 3 2 1 )\n";
+          << "   Expected result:\n( 1 2 3 )\n";
       throw std::runtime_error( oss.str() );
    }
 }
