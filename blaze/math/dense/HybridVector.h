@@ -1088,7 +1088,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
    }
 
    if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
-      HybridVector tmp( *this * (~rhs) );
+      const HybridVector tmp( *this * (~rhs) );
       this->operator=( tmp );
    }
    else {
