@@ -136,6 +136,13 @@ class UniquePtr : private NonCopyable
    //@}
    //**********************************************************************************************
 
+   //**Conversion operator*************************************************************************
+   /*!\name Conversion operator */
+   //@{
+   inline operator bool() const /* throw() */;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
@@ -309,6 +316,28 @@ inline void UniquePtr<T,D>::swap( UniquePtr& ptr ) /* throw() */
    Pointer tmp( ptr_ );
    ptr_ = ptr.ptr_;
    ptr.ptr_ = tmp;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONVERSION OPERATOR
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Returns whether the unique pointer is set to a non-NULL pointer.
+//
+// \return \a true in case the unique pointer is not NULL, \a false if it is NULL.
+*/
+template< typename T    // Type of the resource
+        , typename D >  // Type of the deleter
+inline UniquePtr<T,D>::operator bool() const /* throw() */
+{
+   return ( ptr_ != NULL );
 }
 //*************************************************************************************************
 
