@@ -1910,7 +1910,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator*=( const M
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   StaticMatrix tmp( *this * (~rhs) );
+   const StaticMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
 }
 //*************************************************************************************************
@@ -4832,7 +4832,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator*=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   StaticMatrix tmp( *this * (~rhs) );
+   const StaticMatrix tmp( *this * (~rhs) );
    return this->operator=( tmp );
 }
 /*! \endcond */
