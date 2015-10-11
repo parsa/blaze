@@ -56,6 +56,7 @@
 #include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -1026,6 +1027,24 @@ struct Rows< DMatTDMatAddExpr<MT1,MT2> >
 template< typename MT1, typename MT2 >
 struct Columns< DMatTDMatAddExpr<MT1,MT2> >
    : public Max< Columns<MT1>, Columns<MT2> >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsAligned< DMatTDMatAddExpr<MT1,MT2> >
+   : public IsTrue< And< IsAligned<MT1>, IsAligned<MT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
