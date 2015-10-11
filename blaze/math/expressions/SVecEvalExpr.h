@@ -667,8 +667,7 @@ inline const SVecEvalExpr<VT,TF> eval( const SVecEvalExpr<VT,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecEvalExpr<VT,TF> >
-   : public Size<VT>
+struct Size< SVecEvalExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

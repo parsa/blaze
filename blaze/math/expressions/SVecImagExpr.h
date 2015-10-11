@@ -917,8 +917,7 @@ inline const SVecImagExpr<VT,TF>& imag( const SVecImagExpr<VT,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecImagExpr<VT,TF> >
-   : public Size<VT>
+struct Size< SVecImagExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

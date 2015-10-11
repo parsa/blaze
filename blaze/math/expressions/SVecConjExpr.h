@@ -918,8 +918,7 @@ inline const SVecTransExpr<VT,!TF> conj( const SVecTransExpr<SVecConjExpr<VT,TF>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecConjExpr<VT,TF> >
-   : public Size<VT>
+struct Size< SVecConjExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

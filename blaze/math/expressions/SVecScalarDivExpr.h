@@ -924,8 +924,7 @@ inline const typename EnableIf< IsNumeric<ST2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< SVecScalarDivExpr<VT,ST,TF> >
-   : public Size<VT>
+struct Size< SVecScalarDivExpr<VT,ST,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

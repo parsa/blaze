@@ -917,8 +917,7 @@ inline const SVecRealExpr<VT,TF>& real( const SVecRealExpr<VT,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecRealExpr<VT,TF> >
-   : public Size<VT>
+struct Size< SVecRealExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

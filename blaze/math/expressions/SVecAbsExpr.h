@@ -850,8 +850,7 @@ inline const SVecAbsExpr<VT,TF>& abs( const SVecAbsExpr<VT,TF>& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< SVecAbsExpr<VT,TF> >
-   : public Size<VT>
+struct Size< SVecAbsExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -1147,8 +1147,7 @@ inline const typename EnableIf< IsMatMatMultExpr<T1>, typename MultExprTrait<T1,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
-struct Size< SMatSVecMultExpr<MT,VT> >
-   : public Rows<MT>
+struct Size< SMatSVecMultExpr<MT,VT> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

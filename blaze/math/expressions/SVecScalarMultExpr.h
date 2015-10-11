@@ -1457,8 +1457,7 @@ inline const typename MultExprTrait< SVecScalarMultExpr<VT,ST,true>, MT >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< SVecScalarMultExpr<VT,ST,TF> >
-   : public Size<VT>
+struct Size< SVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -472,8 +472,7 @@ inline const DVecDVecCrossExpr<T1,T2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Size< DVecDVecCrossExpr<VT1,VT2> >
-   : public SizeT<3UL>
+struct Size< DVecDVecCrossExpr<VT1,VT2> > : public SizeT<3UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

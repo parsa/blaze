@@ -893,8 +893,7 @@ inline const typename DisableIf< IsMatMatMultExpr<T1>, TSMatSVecMultExpr<T1,T2> 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
-struct Size< TSMatSVecMultExpr<MT,VT> >
-   : public Rows<MT>
+struct Size< TSMatSVecMultExpr<MT,VT> > : public Rows<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -1276,8 +1276,7 @@ inline const SMatTSMatMultExpr<T1,T2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Rows< SMatTSMatMultExpr<MT1,MT2> >
-   : public Rows<MT1>
+struct Rows< SMatTSMatMultExpr<MT1,MT2> > : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1294,8 +1293,7 @@ struct Rows< SMatTSMatMultExpr<MT1,MT2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Columns< SMatTSMatMultExpr<MT1,MT2> >
-   : public Columns<MT2>
+struct Columns< SMatTSMatMultExpr<MT1,MT2> > : public Columns<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
