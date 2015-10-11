@@ -54,6 +54,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -936,8 +937,24 @@ inline typename DVecConjExpr<VT,TF>::Operand trans( const DVecConjExpr<VT,TF>& d
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecTransExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecTransExpr<VT,TF> > : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsAligned< DVecTransExpr<VT,TF> > : public IsTrue< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -954,8 +971,7 @@ struct Size< DVecTransExpr<VT,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsPadded< DVecTransExpr<VT,TF> >
-   : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecTransExpr<VT,TF> > : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
