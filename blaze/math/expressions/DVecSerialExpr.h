@@ -51,6 +51,7 @@
 #include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecSerialExprTrait.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -689,11 +690,28 @@ inline const DVecSerialExpr<VT,TF> serial( const DVecSerialExpr<VT,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecSerialExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecSerialExpr<VT,TF> > : public Size<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsAligned< DVecSerialExpr<VT,TF> > : public IsTrue< IsAligned<VT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 
 
