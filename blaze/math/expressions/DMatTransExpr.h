@@ -56,6 +56,7 @@
 #include <blaze/math/traits/TDMatTransExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -998,6 +999,23 @@ struct Rows< DMatTransExpr<MT,SO> > : public Columns<MT>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct Columns< DMatTransExpr<MT,SO> > : public Rows<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsAligned< DMatTransExpr<MT,SO> > : public IsTrue< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
