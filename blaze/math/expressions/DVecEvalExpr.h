@@ -51,6 +51,7 @@
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/TDVecEvalExprTrait.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -669,8 +670,24 @@ inline const DVecEvalExpr<VT,TF> eval( const DVecEvalExpr<VT,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecEvalExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecEvalExpr<VT,TF> > : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsAligned< DVecEvalExpr<VT,TF> > : public IsTrue< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
