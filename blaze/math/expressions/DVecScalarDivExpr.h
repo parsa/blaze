@@ -55,6 +55,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -1088,8 +1089,24 @@ inline const typename EnableIf< IsNumeric<ST2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarDivExpr<VT,ST,TF> >
-   : public Size<VT>
+struct Size< DVecScalarDivExpr<VT,ST,TF> > : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct IsAligned< DVecScalarDivExpr<VT,ST,TF> > : public IsTrue< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1106,8 +1123,7 @@ struct Size< DVecScalarDivExpr<VT,ST,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct IsPadded< DVecScalarDivExpr<VT,ST,TF> >
-   : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecScalarDivExpr<VT,ST,TF> > : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
