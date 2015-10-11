@@ -62,6 +62,7 @@
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBlasCompatible.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -5453,8 +5454,25 @@ inline const typename EnableIf< IsMatMatMultExpr<T1>, typename MultExprTrait<T1,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
-struct Size< DMatDVecMultExpr<MT,VT> >
-   : public Rows<MT>
+struct Size< DMatDVecMultExpr<MT,VT> > : public Rows<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, typename VT >
+struct IsAligned< DMatDVecMultExpr<MT,VT> >
+   : public IsTrue< And< IsAligned<MT>, IsAligned<VT> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
