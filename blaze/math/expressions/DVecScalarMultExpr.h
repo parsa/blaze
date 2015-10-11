@@ -58,6 +58,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/BaseElementType.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -1747,8 +1748,24 @@ inline const typename MultExprTrait< DVecScalarMultExpr<VT,ST,true>, MT >::Type
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarMultExpr<VT,ST,TF> >
-   : public Size<VT>
+struct Size< DVecScalarMultExpr<VT,ST,TF> > : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename ST, bool TF >
+struct IsAligned< DVecScalarMultExpr<VT,ST,TF> > : public IsTrue< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1765,8 +1782,7 @@ struct Size< DVecScalarMultExpr<VT,ST,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
-   : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecScalarMultExpr<VT,ST,TF> > : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
