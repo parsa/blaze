@@ -64,6 +64,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -1639,6 +1640,24 @@ struct Rows< DVecTDVecMultExpr<VT1,VT2> > : public Size<VT1>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct Columns< DVecTDVecMultExpr<VT1,VT2> > : public Size<VT2>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2 >
+struct IsAligned< DVecTDVecMultExpr<VT1,VT2> >
+   : public IsTrue< And< IsAligned<VT1>, IsAligned<VT2> >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
