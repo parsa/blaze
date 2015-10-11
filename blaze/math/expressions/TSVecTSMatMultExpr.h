@@ -1068,9 +1068,8 @@ inline const typename EnableIf< IsSymmetric<T2>, typename MultExprTrait<T1,T2>::
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct Size< TSVecTSMatMultExpr<MT,VT> >
-   : public Columns<MT>
+template< typename VT, typename MT >
+struct Size< TSVecTSMatMultExpr<VT,MT> > : public Columns<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
