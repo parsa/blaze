@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/intrinsics/IntrinsicTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -673,6 +674,23 @@ inline void reset( DVecTransposer<VT,TF>& v )
 
 //=================================================================================================
 //
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsAligned< DVecTransposer<VT,TF> > : public IsTrue< IsAligned<VT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISPADDED SPECIALIZATIONS
 //
 //=================================================================================================
@@ -680,8 +698,7 @@ inline void reset( DVecTransposer<VT,TF>& v )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct IsPadded< DVecTransposer<VT,TF> >
-   : public IsTrue< IsPadded<VT>::value >
+struct IsPadded< DVecTransposer<VT,TF> > : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
