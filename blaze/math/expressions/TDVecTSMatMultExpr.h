@@ -56,6 +56,7 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
@@ -779,9 +780,25 @@ inline const typename DisableIf< IsMatMatMultExpr<T2>, TDVecTSMatMultExpr<T1,T2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct Size< TDVecTSMatMultExpr<MT,VT> >
-   : public Columns<MT>
+template< typename VT, typename MT >
+struct Size< TDVecTSMatMultExpr<VT,MT> > : public Columns<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, typename MT >
+struct IsAligned< TDVecTSMatMultExpr<VT,MT> > : public IsTrue< IsAligned<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
