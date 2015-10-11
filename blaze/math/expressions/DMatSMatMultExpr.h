@@ -68,6 +68,7 @@
 #include <blaze/math/traits/TDVecSMatMultExprTrait.h>
 #include <blaze/math/traits/TSVecDMatMultExprTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -1460,8 +1461,7 @@ inline const DMatSMatMultExpr<T1,T2>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Rows< DMatSMatMultExpr<MT1,MT2> >
-   : public Rows<MT1>
+struct Rows< DMatSMatMultExpr<MT1,MT2> > : public Rows<MT1>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1478,8 +1478,24 @@ struct Rows< DMatSMatMultExpr<MT1,MT2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Columns< DMatSMatMultExpr<MT1,MT2> >
-   : public Columns<MT2>
+struct Columns< DMatSMatMultExpr<MT1,MT2> > : public Columns<MT2>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct IsAligned< DMatSMatMultExpr<MT1,MT2> > : public IsTrue< IsAligned<MT1>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
