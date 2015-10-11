@@ -53,6 +53,7 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorExprTrait.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -1051,6 +1052,24 @@ inline const DVecDVecMultExpr<T1,T2,TF>
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecDVecMultExpr<VT1,VT2,TF> >
    : public Max< Size<VT1>, Size<VT2> >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT1, typename VT2, bool TF >
+struct IsAligned< DVecDVecMultExpr<VT1,VT2,TF> >
+   : public IsTrue< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
 {};
 /*! \endcond */
 //*************************************************************************************************
