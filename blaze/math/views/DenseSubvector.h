@@ -62,6 +62,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -5346,6 +5347,23 @@ struct HasConstDataAccess< DenseSubvector<VT,AF,TF> >
 template< typename VT, bool AF, bool TF >
 struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
    : public IsTrue< HasMutableDataAccess<VT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISPADDED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsAligned< DenseSubvector<VT,aligned,TF> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
