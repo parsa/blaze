@@ -51,6 +51,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -2350,6 +2351,23 @@ struct HasConstDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct HasMutableDataAccess< HybridVector<T,N,TF> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct IsAligned< HybridVector<T,N,TF> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
