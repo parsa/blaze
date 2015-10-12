@@ -71,6 +71,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -11303,6 +11304,23 @@ struct HasConstDataAccess< DenseSubmatrix<MT,AF,SO> >
 template< typename MT, bool AF, bool SO >
 struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
    : public IsTrue< HasMutableDataAccess<MT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsAligned< DenseSubmatrix<MT,aligned,SO> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
