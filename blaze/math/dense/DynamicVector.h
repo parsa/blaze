@@ -59,6 +59,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -2194,6 +2195,23 @@ struct HasConstDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
 struct HasMutableDataAccess< DynamicVector<T,TF> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF >
+struct IsAligned< DynamicVector<T,TF> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
