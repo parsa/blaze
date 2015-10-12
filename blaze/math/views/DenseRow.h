@@ -62,6 +62,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -5639,6 +5640,24 @@ struct HasMutableDataAccess< DenseRow<MT,SO,SF> >
 
 //=================================================================================================
 //
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool SF >
+struct IsAligned< DenseRow<MT,SO,SF> >
+   : public IsTrue< And< IsAligned<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISPADDED SPECIALIZATIONS
 //
 //=================================================================================================
@@ -5646,7 +5665,8 @@ struct HasMutableDataAccess< DenseRow<MT,SO,SF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF >
-struct IsPadded< DenseRow<MT,SO,SF> > : public IsTrue< IsPadded<MT>::value >
+struct IsPadded< DenseRow<MT,SO,SF> >
+   : public IsTrue< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
