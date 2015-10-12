@@ -64,6 +64,7 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
@@ -5458,6 +5459,23 @@ struct HasConstDataAccess< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
 struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO >
+struct IsAligned< HybridMatrix<T,M,N,SO> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
