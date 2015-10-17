@@ -699,18 +699,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( N & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<m; ++i ) {
+      for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) = x[i] * y[j  ];
             (~A)(i,j+1UL) = x[i] * y[j+1];
          }
-         if( jpos < n ) {
+         if( jpos < N ) {
             (~A)(i,jpos) = x[i] * y[jpos];
          }
       }
@@ -738,20 +738,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t i=0UL; i<m; ++i )
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<M; ++i )
       {
          const IntrinsicType x1( set( x[i] ) );
 
-         for( size_t j=0UL; j<n; j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( i, j, x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(i,j) = x[i] * y[j];
          }
       }
    }
@@ -813,18 +822,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( M & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<n; ++j ) {
+      for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) = x[i  ] * y[j];
             (~A)(i+1UL,j) = x[i+1] * y[j];
          }
-         if( ipos < m ) {
+         if( ipos < M ) {
             (~A)(ipos,j) = x[ipos] * y[j];
          }
       }
@@ -852,20 +861,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t j=0UL; j<n; ++j )
+      const bool remainder( !IsPadded<VT3>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<N; ++j )
       {
          const IntrinsicType y1( set( y[j] ) );
 
-         for( size_t i=0UL; i<m; i+=IT::size ) {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             (~A).store( i, j, x.load(i) * y1 );
+         }
+         for( ; remainder && i<M; ++i ) {
+            (~A)(i,j) = x[i] * y[j];
          }
       }
    }
@@ -965,18 +983,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( N & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<m; ++i ) {
+      for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) += x[i] * y[j    ];
             (~A)(i,j+1UL) += x[i] * y[j+1UL];
          }
-         if( jpos < n ) {
+         if( jpos < N ) {
             (~A)(i,jpos) += x[i] * y[jpos];
          }
       }
@@ -1004,20 +1022,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t i=0UL; i<m; ++i )
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<M; ++i )
       {
          const IntrinsicType x1( set( x[i] ) );
 
-         for( size_t j=0UL; j<n; j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( i, j, (~A).load(i,j) + x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(i,j) += x[i] * y[j];
          }
       }
    }
@@ -1080,18 +1107,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( M & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<n; ++j ) {
+      for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) += x[i    ] * y[j];
             (~A)(i+1UL,j) += x[i+1UL] * y[j];
          }
-         if( ipos < m ) {
+         if( ipos < M ) {
             (~A)(ipos,j) += x[ipos] * y[j];
          }
       }
@@ -1119,20 +1146,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t j=0UL; j<n; ++j )
+      const bool remainder( !IsPadded<VT3>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<N; ++j )
       {
          const IntrinsicType y1( set( y[j] ) );
 
-         for( size_t i=0UL; i<m; i+=IT::size ) {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             (~A).store( i, j, (~A).load(i,j) + x.load(i) * y1 );
+         }
+         for( ; remainder && i<M; ++i ) {
+            (~A)(i,j) += x[i] * y[j];
          }
       }
    }
@@ -1200,18 +1236,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( N & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
-      for( size_t i=0UL; i<m; ++i ) {
+      for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
             (~A)(i,j    ) -= x[i] * y[j    ];
             (~A)(i,j+1UL) -= x[i] * y[j+1UL];
          }
-         if( jpos < n ) {
+         if( jpos < N ) {
             (~A)(i,jpos) -= x[i] * y[jpos];
          }
       }
@@ -1239,20 +1275,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t i=0UL; i<m; ++i )
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
+      for( size_t i=0UL; i<M; ++i )
       {
          const IntrinsicType x1( set( x[i] ) );
 
-         for( size_t j=0UL; j<n; j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( i, j, (~A).load(i,j) - x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(i,j) -= x[i] * y[j];
          }
       }
    }
@@ -1315,18 +1360,18 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseDefaultKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( M & size_t(-2) );
+      BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
-      for( size_t j=0UL; j<n; ++j ) {
+      for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
             (~A)(i    ,j) -= x[i    ] * y[j];
             (~A)(i+1UL,j) -= x[i+1UL] * y[j];
          }
-         if( ipos < m ) {
+         if( ipos < M ) {
             (~A)(ipos,j) -= x[ipos] * y[j];
          }
       }
@@ -1354,20 +1399,29 @@ class DVecTDVecMultExpr : public DenseMatrix< DVecTDVecMultExpr<VT1,VT2>, false 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT3 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
-      const size_t m( (~A).rows() );
-      const size_t n( (~A).columns() );
+      const size_t M( (~A).rows() );
+      const size_t N( (~A).columns() );
 
-      for( size_t j=0UL; j<n; ++j )
+      const bool remainder( !IsPadded<VT3>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
+      for( size_t j=0UL; j<N; ++j )
       {
          const IntrinsicType y1( set( y[j] ) );
 
-         for( size_t i=0UL; i<m; i+=IT::size ) {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             (~A).store( i, j, (~A).load(i,j) - x.load(i) * y1 );
+         }
+         for( ; remainder && i<M; ++i ) {
+            (~A)(i,j) -= x[i] * y[j];
          }
       }
    }
