@@ -40,11 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/system/Optimizations.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
@@ -206,9 +206,6 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
    typedef typename MultTrait<ET1,ET2>::Type  MultType;
    typedef IntrinsicTrait<MultType>           IT;
 
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( typename RemoveReference<Lhs>::Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( typename RemoveReference<Rhs>::Type );
-
    if( (~lhs).size() == 0UL ) return MultType();
 
    Lhs left ( ~lhs );
@@ -216,10 +213,11 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
 
    typename IT::Type xmm1, xmm2, xmm3, xmm4;
 
-   const size_t N  ( left.size() );
-   const size_t end( N - N % (IT::size*4UL) );
+   const size_t N   ( left.size() );
+   const size_t iend( N - N % (IT::size*4UL) );
+   BLAZE_INTERNAL_ASSERT( iend % (IT::size*4UL) == 0, "Invalid end calculation" );
 
-   for( size_t i=0UL; i<end; i+=IT::size*4UL ) {
+   for( size_t i=0UL; i<iend; i+=IT::size*4UL ) {
       xmm1 = xmm1 + ( left.load(i             ) * right.load(i             ) );
       xmm2 = xmm2 + ( left.load(i+IT::size    ) * right.load(i+IT::size    ) );
       xmm3 = xmm3 + ( left.load(i+IT::size*2UL) * right.load(i+IT::size*2UL) );
@@ -228,7 +226,7 @@ inline typename EnableIf< TDVecDVecMultExprHelper<T1,T2>,
 
    MultType sp( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );
 
-   for( size_t i=end; i<N; ++i )
+   for( size_t i=iend; i<N; ++i )
       sp += left[i] * right[i];
 
    return sp;
