@@ -582,12 +582,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -601,9 +602,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -623,6 +628,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+5UL] = sum( xmm6 );
          y[i+6UL] = sum( xmm7 );
          y[i+7UL] = sum( xmm8 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+            y[i+4UL] += A(i+4UL,j) * x[j];
+            y[i+5UL] += A(i+5UL,j) * x[j];
+            y[i+6UL] += A(i+6UL,j) * x[j];
+            y[i+7UL] += A(i+7UL,j) * x[j];
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -635,9 +651,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -649,6 +669,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+1UL] = sum( xmm2 );
          y[i+2UL] = sum( xmm3 );
          y[i+3UL] = sum( xmm4 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -661,9 +688,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -673,6 +704,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
          y[i+2UL] = sum( xmm3 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -685,9 +722,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -695,6 +736,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
          y[i    ] = sum( xmm1 );
          y[i+1UL] = sum( xmm2 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+         }
       }
 
       if( i < M )
@@ -707,13 +753,21 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] = sum( xmm1 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j];
+         }
       }
    }
    /*! \endcond */
@@ -765,12 +819,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       reset( y );
 
@@ -786,9 +841,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -806,7 +864,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -820,7 +878,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
@@ -830,6 +888,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+5UL] += sum( A.load(i+5UL,j) * x1 );
             y[i+6UL] += sum( A.load(i+6UL,j) * x1 );
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+            y[i+4UL] += A(i+4UL,j) * x[j];
+            y[i+5UL] += A(i+5UL,j) * x[j];
+            y[i+6UL] += A(i+6UL,j) * x[j];
+            y[i+7UL] += A(i+7UL,j) * x[j];
          }
       }
 
@@ -843,9 +912,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -859,7 +931,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -869,12 +941,19 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
             y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
          }
       }
 
@@ -888,9 +967,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -902,7 +984,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -910,10 +992,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
          }
       }
 
@@ -927,9 +1014,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -940,16 +1030,20 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] += sum( A.load(i,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j];
          }
       }
    }
@@ -1276,12 +1370,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -1295,9 +1390,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -1317,6 +1416,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+5UL] += sum( xmm6 );
          y[i+6UL] += sum( xmm7 );
          y[i+7UL] += sum( xmm8 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+            y[i+4UL] += A(i+4UL,j) * x[j];
+            y[i+5UL] += A(i+5UL,j) * x[j];
+            y[i+6UL] += A(i+6UL,j) * x[j];
+            y[i+7UL] += A(i+7UL,j) * x[j];
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -1329,9 +1439,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -1343,6 +1457,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+1UL] += sum( xmm2 );
          y[i+2UL] += sum( xmm3 );
          y[i+3UL] += sum( xmm4 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -1355,9 +1476,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -1367,6 +1492,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
          y[i+2UL] += sum( xmm3 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -1379,9 +1510,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -1389,6 +1524,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
          y[i    ] += sum( xmm1 );
          y[i+1UL] += sum( xmm2 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+         }
       }
 
       if( i < M )
@@ -1401,13 +1541,21 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] += sum( xmm1 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j];
+         }
       }
    }
    /*! \endcond */
@@ -1459,12 +1607,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -1478,9 +1627,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -1498,7 +1650,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -1512,7 +1664,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
@@ -1522,6 +1674,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+5UL] += sum( A.load(i+5UL,j) * x1 );
             y[i+6UL] += sum( A.load(i+6UL,j) * x1 );
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+            y[i+4UL] += A(i+4UL,j) * x[j];
+            y[i+5UL] += A(i+5UL,j) * x[j];
+            y[i+6UL] += A(i+6UL,j) * x[j];
+            y[i+7UL] += A(i+7UL,j) * x[j];
          }
       }
 
@@ -1535,9 +1698,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -1551,7 +1717,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -1561,12 +1727,19 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
             y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
          }
       }
 
@@ -1580,9 +1753,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -1594,7 +1770,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -1602,10 +1778,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
          }
       }
 
@@ -1619,9 +1800,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -1632,16 +1816,20 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] += sum( A.load(i,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j];
          }
       }
    }
@@ -1946,12 +2134,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -1965,9 +2154,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -1987,6 +2180,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+5UL] -= sum( xmm6 );
          y[i+6UL] -= sum( xmm7 );
          y[i+7UL] -= sum( xmm8 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+            y[i+2UL] -= A(i+2UL,j) * x[j];
+            y[i+3UL] -= A(i+3UL,j) * x[j];
+            y[i+4UL] -= A(i+4UL,j) * x[j];
+            y[i+5UL] -= A(i+5UL,j) * x[j];
+            y[i+6UL] -= A(i+6UL,j) * x[j];
+            y[i+7UL] -= A(i+7UL,j) * x[j];
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -1999,9 +2203,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -2013,6 +2221,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i+1UL] -= sum( xmm2 );
          y[i+2UL] -= sum( xmm3 );
          y[i+3UL] -= sum( xmm4 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+            y[i+2UL] -= A(i+2UL,j) * x[j];
+            y[i+3UL] -= A(i+3UL,j) * x[j];
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -2025,9 +2240,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -2037,6 +2256,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
          y[i+2UL] -= sum( xmm3 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+            y[i+2UL] -= A(i+2UL,j) * x[j];
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -2049,9 +2274,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -2059,6 +2288,11 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
 
          y[i    ] -= sum( xmm1 );
          y[i+1UL] -= sum( xmm2 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+         }
       }
 
       if( i < M )
@@ -2071,13 +2305,21 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] -= sum( xmm1 );
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] -= A(i,j) * x[j];
+         }
       }
    }
    /*! \endcond */
@@ -2129,12 +2371,13 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -2148,9 +2391,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -2168,7 +2414,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -2182,7 +2428,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 );
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
@@ -2192,6 +2438,17 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+5UL] -= sum( A.load(i+5UL,j) * x1 );
             y[i+6UL] -= sum( A.load(i+6UL,j) * x1 );
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+            y[i+2UL] -= A(i+2UL,j) * x[j];
+            y[i+3UL] -= A(i+3UL,j) * x[j];
+            y[i+4UL] -= A(i+4UL,j) * x[j];
+            y[i+5UL] -= A(i+5UL,j) * x[j];
+            y[i+6UL] -= A(i+6UL,j) * x[j];
+            y[i+7UL] -= A(i+7UL,j) * x[j];
          }
       }
 
@@ -2205,9 +2462,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -2221,7 +2481,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -2231,12 +2491,19 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 );
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
             y[i+2UL] -= sum( A.load(i+2UL,j) * x1 );
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
+            y[i+2UL] -= A(i+2UL,j) * x[j];
+            y[i+3UL] -= A(i+3UL,j) * x[j];
          }
       }
 
@@ -2250,9 +2517,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -2264,7 +2534,7 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -2272,10 +2542,15 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 );
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j];
+            y[i+1UL] -= A(i+1UL,j) * x[j];
          }
       }
 
@@ -2289,9 +2564,12 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -2302,16 +2580,20 @@ class DMatDVecMultExpr : public DenseVector< DMatDVecMultExpr<MT,VT>, false >
             y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] -= sum( A.load(i,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] -= A(i,j) * x[j];
          }
       }
    }
@@ -3186,12 +3468,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -3205,9 +3488,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3227,6 +3514,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+5UL] = sum( xmm6 ) * scalar;
          y[i+6UL] = sum( xmm7 ) * scalar;
          y[i+7UL] = sum( xmm8 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
+            y[i+4UL] += A(i+4UL,j) * x[j] * scalar;
+            y[i+5UL] += A(i+5UL,j) * x[j] * scalar;
+            y[i+6UL] += A(i+6UL,j) * x[j] * scalar;
+            y[i+7UL] += A(i+7UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -3239,9 +3537,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3253,6 +3555,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+1UL] = sum( xmm2 ) * scalar;
          y[i+2UL] = sum( xmm3 ) * scalar;
          y[i+3UL] = sum( xmm4 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -3265,9 +3574,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3277,6 +3590,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
          y[i+2UL] = sum( xmm3 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -3289,9 +3608,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3299,6 +3622,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
          y[i    ] = sum( xmm1 ) * scalar;
          y[i+1UL] = sum( xmm2 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+         }
       }
 
       if( i < M )
@@ -3311,13 +3639,21 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] = sum( xmm1 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j] * scalar;
+         }
       }
    }
    //**********************************************************************************************
@@ -3369,7 +3705,6 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
@@ -3390,9 +3725,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -3410,7 +3748,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -3424,7 +3762,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
@@ -3434,6 +3772,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+5UL] += sum( A.load(i+5UL,j) * x1 );
             y[i+6UL] += sum( A.load(i+6UL,j) * x1 );
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
+            y[i+4UL] += A(i+4UL,j) * x[j];
+            y[i+5UL] += A(i+5UL,j) * x[j];
+            y[i+6UL] += A(i+6UL,j) * x[j];
+            y[i+7UL] += A(i+7UL,j) * x[j];
          }
 
          y[i    ] *= scalar;
@@ -3456,9 +3805,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -3472,7 +3824,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -3482,12 +3834,19 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
             y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
+            y[i+2UL] += A(i+2UL,j) * x[j];
+            y[i+3UL] += A(i+3UL,j) * x[j];
          }
 
          y[i    ] *= scalar;
@@ -3506,9 +3865,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -3520,7 +3882,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -3528,10 +3890,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 );
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j];
+            y[i+1UL] += A(i+1UL,j) * x[j];
          }
 
          y[i    ] *= scalar;
@@ -3548,9 +3915,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -3561,16 +3931,20 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] += sum( A.load(i,j) * x1 );
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j];
          }
 
          y[i] *= scalar;
@@ -3898,12 +4272,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -3917,9 +4292,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3939,6 +4318,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+5UL] += sum( xmm6 ) * scalar;
          y[i+6UL] += sum( xmm7 ) * scalar;
          y[i+7UL] += sum( xmm8 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
+            y[i+4UL] += A(i+4UL,j) * x[j] * scalar;
+            y[i+5UL] += A(i+5UL,j) * x[j] * scalar;
+            y[i+6UL] += A(i+6UL,j) * x[j] * scalar;
+            y[i+7UL] += A(i+7UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -3951,9 +4341,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3965,6 +4359,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+1UL] += sum( xmm2 ) * scalar;
          y[i+2UL] += sum( xmm3 ) * scalar;
          y[i+3UL] += sum( xmm4 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -3977,9 +4378,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -3989,6 +4394,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
          y[i+2UL] += sum( xmm3 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -4001,9 +4412,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -4011,6 +4426,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
          y[i    ] += sum( xmm1 ) * scalar;
          y[i+1UL] += sum( xmm2 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+         }
       }
 
       if( i < M )
@@ -4023,13 +4443,21 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] += sum( xmm1 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j] * scalar;
+         }
       }
    }
    //**********************************************************************************************
@@ -4081,12 +4509,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -4100,9 +4529,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4120,7 +4552,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4134,7 +4566,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 ) * scalar;
@@ -4144,6 +4576,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+5UL] += sum( A.load(i+5UL,j) * x1 ) * scalar;
             y[i+6UL] += sum( A.load(i+6UL,j) * x1 ) * scalar;
             y[i+7UL] += sum( A.load(i+7UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
+            y[i+4UL] += A(i+4UL,j) * x[j] * scalar;
+            y[i+5UL] += A(i+5UL,j) * x[j] * scalar;
+            y[i+6UL] += A(i+6UL,j) * x[j] * scalar;
+            y[i+7UL] += A(i+7UL,j) * x[j] * scalar;
          }
       }
 
@@ -4157,9 +4600,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4173,7 +4619,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4183,12 +4629,19 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 ) * scalar;
             y[i+2UL] += sum( A.load(i+2UL,j) * x1 ) * scalar;
             y[i+3UL] += sum( A.load(i+3UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] += A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] += A(i+3UL,j) * x[j] * scalar;
          }
       }
 
@@ -4202,9 +4655,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4216,7 +4672,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4224,10 +4680,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] += sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] += sum( A.load(i+1UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] += A(i    ,j) * x[j] * scalar;
+            y[i+1UL] += A(i+1UL,j) * x[j] * scalar;
          }
       }
 
@@ -4241,9 +4702,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4254,16 +4718,20 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] += sum( A.load(i,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] += A(i,j) * x[j] * scalar;
          }
       }
    }
@@ -4569,12 +5037,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -4588,9 +5057,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -4610,6 +5083,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+5UL] -= sum( xmm6 ) * scalar;
          y[i+6UL] -= sum( xmm7 ) * scalar;
          y[i+7UL] -= sum( xmm8 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] -= A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] -= A(i+3UL,j) * x[j] * scalar;
+            y[i+4UL] -= A(i+4UL,j) * x[j] * scalar;
+            y[i+5UL] -= A(i+5UL,j) * x[j] * scalar;
+            y[i+6UL] -= A(i+6UL,j) * x[j] * scalar;
+            y[i+7UL] -= A(i+7UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+4UL) <= M; i+=4UL )
@@ -4622,9 +5106,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3, xmm4;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -4636,6 +5124,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i+1UL] -= sum( xmm2 ) * scalar;
          y[i+2UL] -= sum( xmm3 ) * scalar;
          y[i+3UL] -= sum( xmm4 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] -= A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] -= A(i+3UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+3UL) <= M; i+=3UL )
@@ -4648,9 +5143,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2, xmm3;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2, xmm3;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -4660,6 +5159,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
          y[i+2UL] -= sum( xmm3 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] -= A(i+2UL,j) * x[j] * scalar;
+         }
       }
 
       for( ; (i+2UL) <= M; i+=2UL )
@@ -4672,9 +5177,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1, xmm2;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1, xmm2;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             xmm1 = xmm1 + A.load(i    ,j) * x1;
             xmm2 = xmm2 + A.load(i+1UL,j) * x1;
@@ -4682,6 +5191,11 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
          y[i    ] -= sum( xmm1 ) * scalar;
          y[i+1UL] -= sum( xmm2 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+         }
       }
 
       if( i < M )
@@ -4694,13 +5208,21 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         IntrinsicType xmm1;
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t j=jbegin; j<jend; j+=IT::size ) {
+         IntrinsicType xmm1;
+         size_t j( jbegin );
+
+         for( ; j<jpos; j+=IT::size ) {
             xmm1 = xmm1 + A.load(i,j) * x.load(j);
          }
 
          y[i] -= sum( xmm1 ) * scalar;
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] -= A(i,j) * x[j] * scalar;
+         }
       }
    }
    //**********************************************************************************************
@@ -4752,12 +5274,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT2 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT2>::value );
 
       size_t i( 0UL );
 
@@ -4771,9 +5294,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4791,7 +5317,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4805,7 +5331,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 ) * scalar;
@@ -4815,6 +5341,17 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+5UL] -= sum( A.load(i+5UL,j) * x1 ) * scalar;
             y[i+6UL] -= sum( A.load(i+6UL,j) * x1 ) * scalar;
             y[i+7UL] -= sum( A.load(i+7UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] -= A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] -= A(i+3UL,j) * x[j] * scalar;
+            y[i+4UL] -= A(i+4UL,j) * x[j] * scalar;
+            y[i+5UL] -= A(i+5UL,j) * x[j] * scalar;
+            y[i+6UL] -= A(i+6UL,j) * x[j] * scalar;
+            y[i+7UL] -= A(i+7UL,j) * x[j] * scalar;
          }
       }
 
@@ -4828,9 +5365,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4844,7 +5384,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4854,12 +5394,19 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 ) * scalar;
             y[i+2UL] -= sum( A.load(i+2UL,j) * x1 ) * scalar;
             y[i+3UL] -= sum( A.load(i+3UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
+            y[i+2UL] -= A(i+2UL,j) * x[j] * scalar;
+            y[i+3UL] -= A(i+3UL,j) * x[j] * scalar;
          }
       }
 
@@ -4873,9 +5420,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4887,7 +5437,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
@@ -4895,10 +5445,15 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i    ] -= sum( A.load(i    ,j) * x1 ) * scalar;
             y[i+1UL] -= sum( A.load(i+1UL,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i    ] -= A(i    ,j) * x[j] * scalar;
+            y[i+1UL] -= A(i+1UL,j) * x[j] * scalar;
          }
       }
 
@@ -4912,9 +5467,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
          size_t j( jbegin );
 
-         for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             const size_t j1( j+IT::size     );
             const size_t j2( j+IT::size*2UL );
             const size_t j3( j+IT::size*3UL );
@@ -4925,16 +5483,20 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
             y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 ) * scalar;
          }
 
-         for( ; (j+IT::size) < jend; j+=IT::size*2UL ) {
+         for( ; (j+IT::size) < jpos; j+=IT::size*2UL ) {
             const size_t j1( j+IT::size );
             const IntrinsicType x1( x.load(j ) );
             const IntrinsicType x2( x.load(j1) );
             y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 ) * scalar;
          }
 
-         if( j < jend ) {
+         for( ; j<jpos; j+=IT::size ) {
             const IntrinsicType x1( x.load(j) );
             y[i] -= sum( A.load(i,j) * x1 ) * scalar;
+         }
+
+         for( ; remainder && j<jend; ++j ) {
+            y[i] -= A(i,j) * x[j] * scalar;
          }
       }
    }
