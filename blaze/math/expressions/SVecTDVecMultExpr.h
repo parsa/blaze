@@ -609,13 +609,19 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
+
+      const size_t N( (~A).columns() );
+
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
@@ -624,8 +630,13 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       {
          const IntrinsicType x1( set( element->value() ) );
 
-         for( size_t j=0UL; j<(~A).columns(); j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( element->index(), j, x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(element->index(),j) = element->value() * y[j];
          }
       }
    }
@@ -886,13 +897,19 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
+
+      const size_t N( (~A).columns() );
+
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
@@ -901,8 +918,13 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       {
          const IntrinsicType x1( set( element->value() ) );
 
-         for( size_t j=0UL; j<(~A).columns(); j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( element->index(), j, (~A).load(element->index(),j) + x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(element->index(),j) += element->value() * y[j];
          }
       }
    }
@@ -1052,13 +1074,19 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT  );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT4 );
+      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
       typedef typename RemoveReference<LT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename IT::Type            IntrinsicType;
+
+      const size_t N( (~A).columns() );
+
+      const bool remainder( !IsPadded<VT4>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
 
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
@@ -1067,8 +1095,13 @@ class SVecTDVecMultExpr : public SparseMatrix< SVecTDVecMultExpr<VT1,VT2>, true 
       {
          const IntrinsicType x1( set( element->value() ) );
 
-         for( size_t j=0UL; j<(~A).columns(); j+=IT::size ) {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             (~A).store( element->index(), j, (~A).load(element->index(),j) - x1 * y.load(j) );
+         }
+         for( ; remainder && j<N; ++j ) {
+            (~A)(element->index(),j) -= element->value() * y[j];
          }
       }
    }
