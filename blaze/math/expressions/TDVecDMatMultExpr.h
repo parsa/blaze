@@ -631,7 +631,6 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -639,9 +638,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -675,7 +679,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*7UL, xmm8 );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -701,7 +705,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*3UL, xmm4 );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -725,7 +729,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*2UL, xmm3 );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -747,7 +751,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size, xmm2 );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -764,6 +768,25 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          }
 
          y.store( j, xmm1 );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] = value;
       }
    }
    /*! \endcond */
@@ -814,13 +837,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -838,11 +862,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -868,7 +895,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8 );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -886,7 +913,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4 );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -902,7 +929,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3 );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -916,7 +943,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size, y.load(j+IT::size) + xmm2 );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -925,6 +952,17 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                }
 
                y.store( j, y.load(j) + xmm1 );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] += value;
             }
          }
       }
@@ -1281,7 +1319,6 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1289,9 +1326,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1332,7 +1374,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*7UL, xmm8 );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1361,7 +1403,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*3UL, xmm4 );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1387,7 +1429,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*2UL, xmm3 );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1410,7 +1452,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size, xmm2 );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1427,6 +1469,25 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          }
 
          y.store( j, xmm1 );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] += value;
       }
    }
    /*! \endcond */
@@ -1477,13 +1538,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -1499,11 +1561,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -1529,7 +1594,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8 );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -1547,7 +1612,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4 );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -1563,7 +1628,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3 );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -1577,7 +1642,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size, y.load(j+IT::size) + xmm2 );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -1586,6 +1651,17 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                }
 
                y.store( j, y.load(j) + xmm1 );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] += value;
             }
          }
       }
@@ -1921,7 +1997,6 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1929,9 +2004,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -1972,7 +2052,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*7UL, xmm8 );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -2001,7 +2081,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*3UL, xmm4 );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -2027,7 +2107,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size*2UL, xmm3 );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -2050,7 +2130,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          y.store( j+IT::size, xmm2 );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -2067,6 +2147,25 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
          }
 
          y.store( j, xmm1 );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] -= value;
       }
    }
    /*! \endcond */
@@ -2118,13 +2217,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -2140,11 +2240,14 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -2170,7 +2273,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) - xmm8 );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -2188,7 +2291,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) - xmm4 );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -2204,7 +2307,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3 );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -2218,7 +2321,7 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                y.store( j+IT::size, y.load(j+IT::size) - xmm2 );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -2227,6 +2330,17 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
                }
 
                y.store( j, y.load(j) - xmm1 );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] -= value;
             }
          }
       }
@@ -3156,7 +3270,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -3164,11 +3277,16 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3202,7 +3320,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*7UL, xmm8*factor );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3228,7 +3346,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*3UL, xmm4*factor );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3252,7 +3370,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*2UL, xmm3*factor );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3274,7 +3392,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size, xmm2*factor );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3291,6 +3409,25 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          }
 
          y.store( j, xmm1*factor );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] = value * scalar;
       }
    }
    //**********************************************************************************************
@@ -3341,13 +3478,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -3367,11 +3505,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -3397,7 +3538,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8*factor );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -3415,7 +3556,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4*factor );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -3431,7 +3572,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -3445,7 +3586,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size, y.load(j+IT::size) + xmm2*factor );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -3454,6 +3595,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                }
 
                y.store( j, y.load(j) + xmm1*factor );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] += value * scalar;
             }
          }
       }
@@ -3779,7 +3931,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -3787,11 +3938,16 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3825,7 +3981,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8*factor );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3851,7 +4007,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4*factor );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3875,7 +4031,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3897,7 +4053,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size, y.load(j+IT::size) + xmm2*factor );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -3914,6 +4070,25 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          }
 
          y.store( j, y.load(j) + xmm1*factor );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] += value * scalar;
       }
    }
    //**********************************************************************************************
@@ -3965,13 +4140,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -3989,11 +4165,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4019,7 +4198,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) + xmm8*factor );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -4037,7 +4216,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) + xmm4*factor );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -4053,7 +4232,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) + xmm3*factor );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -4067,7 +4246,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size, y.load(j+IT::size) + xmm2*factor );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -4076,6 +4255,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                }
 
                y.store( j, y.load(j) + xmm1*factor );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] += value * scalar;
             }
          }
       }
@@ -4382,7 +4572,6 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -4390,11 +4579,16 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL )
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -4428,7 +4622,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) - xmm8*factor );
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -4454,7 +4648,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) - xmm4*factor );
       }
 
-      for( ; (j+IT::size*2UL) < N; j+=IT::size*3UL )
+      for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -4478,7 +4672,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3*factor );
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -4500,7 +4694,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          y.store( j+IT::size, y.load(j+IT::size) - xmm2*factor );
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
@@ -4517,6 +4711,25 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
          }
 
          y.store( j, y.load(j) - xmm1*factor );
+      }
+
+      for( ; remainder && j<N; ++j )
+      {
+         const size_t ibegin( ( IsLower<MT1>::value )
+                              ?( IsStrictlyLower<MT1>::value ? j+1UL : j )
+                              :( 0UL ) );
+         const size_t iend( ( IsUpper<MT1>::value )
+                            ?( min( j+1UL, M ) - ( IsStrictlyUpper<MT1>::value ? 1UL : 0UL ) )
+                            :( M ) );
+         BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+         ElementType value = ElementType();
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            value += x[i] * A(i,j);
+         }
+
+         y[j] -= value * scalar;
       }
    }
    //**********************************************************************************************
@@ -4568,13 +4781,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
+
+      const bool remainder( !IsPadded<VT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -4592,11 +4806,14 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                                ?( min( jtmp, ( IsStrictlyLower<MT1>::value ? iend-1UL : iend ) ) )
                                :( jtmp ) );
 
+            const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
             size_t j( ( IsUpper<MT1>::value )
                       ?( max( jj, ( IsStrictlyUpper<MT1>::value ? ii+1UL : ii ) & size_t(-IT::size) ) )
                       :( jj ) );
 
-            for( ; (j+IT::size*7UL) < jend; j+=IT::size*8UL )
+            for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -4622,7 +4839,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*7UL, y.load(j+IT::size*7UL) - xmm8*factor );
             }
 
-            for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+            for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
             {
                IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
@@ -4640,7 +4857,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*3UL, y.load(j+IT::size*3UL) - xmm4*factor );
             }
 
-            for( ; (j+IT::size*2UL) < jend; j+=IT::size*3UL )
+            for( ; (j+IT::size*2UL) < jpos; j+=IT::size*3UL )
             {
                IntrinsicType xmm1, xmm2, xmm3;
 
@@ -4656,7 +4873,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size*2UL, y.load(j+IT::size*2UL) - xmm3*factor );
             }
 
-            for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+            for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
             {
                IntrinsicType xmm1, xmm2;
 
@@ -4670,7 +4887,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                y.store( j+IT::size, y.load(j+IT::size) - xmm2*factor );
             }
 
-            if( j < jend )
+            for( ; j<jpos; j+=IT::size )
             {
                IntrinsicType xmm1;
 
@@ -4679,6 +4896,17 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
                }
 
                y.store( j, y.load(j) - xmm1*factor );
+            }
+
+            for( ; remainder && j<jend; ++j )
+            {
+               ElementType value = ElementType();
+
+               for( size_t i=ii; i<iend; ++i ) {
+                  value += x[i] * A(i,j);
+               }
+
+               y[j] -= value * scalar;
             }
          }
       }
