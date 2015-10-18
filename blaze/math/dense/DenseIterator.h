@@ -397,7 +397,7 @@ template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::load() const
 {
-   BLAZE_INTERNAL_ASSERT( checkAlignment( ptr_ ), "Invalid alignment detected" );
+   BLAZE_INTERNAL_ASSERT( !AF || checkAlignment( ptr_ ), "Invalid alignment detected" );
 
    if( AF )
       return blaze::load( ptr_ );
