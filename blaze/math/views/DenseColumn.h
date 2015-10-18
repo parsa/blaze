@@ -1642,14 +1642,10 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    }
    else
    {
-      const size_t i4way( rows & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
-      BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
-
       size_t i( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
 
-      for( ; i<i4way; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          matrix_.store( i             , col_, it.load() ); it+=IT::size;
          matrix_.store( i+IT::size    , col_, it.load() ); it+=IT::size;
          matrix_.store( i+IT::size*2UL, col_, it.load() ); it+=IT::size;
@@ -1750,14 +1746,10 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
-
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; i<i4way; i+=IT::size*4UL ) {
+   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) + it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) + it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) + it.load() ); it += IT::size;
@@ -1857,14 +1849,10 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
-
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; i<i4way; i+=IT::size*4UL ) {
+   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) - it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) - it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) - it.load() ); it += IT::size;
@@ -1964,14 +1952,10 @@ inline typename EnableIf< typename DenseColumn<MT,SO,SF>::BLAZE_TEMPLATE Vectori
    const size_t ipos( ( remainder )?( rows & size_t(-IT::size) ):( rows ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( rows - ( rows % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( rows & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( rows - ( rows % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
-
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; i<i4way; i+=IT::size*4UL ) {
+   for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
       matrix_.store( i             , col_, matrix_.load(i             ,col_) * it.load() ); it += IT::size;
       matrix_.store( i+IT::size    , col_, matrix_.load(i+IT::size    ,col_) * it.load() ); it += IT::size;
       matrix_.store( i+IT::size*2UL, col_, matrix_.load(i+IT::size*2UL,col_) * it.load() ); it += IT::size;
@@ -4908,14 +4892,10 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    }
    else
    {
-      const size_t j4way( columns & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
-      BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
-
       size_t j( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
 
-      for( ; j<j4way; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          matrix_.store( col_, j             , it.load() ); it+=IT::size;
          matrix_.store( col_, j+IT::size    , it.load() ); it+=IT::size;
          matrix_.store( col_, j+IT::size*2UL, it.load() ); it+=IT::size;
@@ -5016,14 +4996,10 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-   const size_t j4way( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
-
    size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; j<j4way; j+=IT::size*4UL ) {
+   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) + it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) + it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) + it.load() ); it += IT::size;
@@ -5123,14 +5099,10 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-   const size_t j4way( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
-
    size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; j<j4way; j+=IT::size*4UL ) {
+   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) - it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) - it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) - it.load() ); it += IT::size;
@@ -5230,20 +5202,16 @@ inline typename EnableIf< typename DenseColumn<MT,false,true>::BLAZE_TEMPLATE Ve
    const size_t jpos( ( remainder )?( columns & size_t(-IT::size) ):( columns ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-   const size_t j4way( columns & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (IT::size*4UL) ) ) == j4way, "Invalid end calculation" );
-   BLAZE_INTERNAL_ASSERT( j4way <= jpos, "Invalid end calculation" );
-
    size_t j( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
-   for( ; j<j4way; j+=IT::size*4UL ) {
+   for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
       matrix_.store( col_, j             , matrix_.load(col_,j             ) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size    , matrix_.load(col_,j+IT::size    ) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*2UL, matrix_.load(col_,j+IT::size*2UL) * it.load() ); it += IT::size;
       matrix_.store( col_, j+IT::size*3UL, matrix_.load(col_,j+IT::size*3UL) * it.load() ); it += IT::size;
    }
-   for( ; j<columns; j+=IT::size, it+=IT::size ) {
+   for( ; j<jpos; j+=IT::size, it+=IT::size ) {
       matrix_.store( col_, j, matrix_.load(col_,j) * it.load() );
    }
    for( ; remainder && j<columns; ++j, ++it ) {
