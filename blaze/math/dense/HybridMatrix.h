@@ -44,7 +44,6 @@
 #include <cmath>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -2288,13 +2287,23 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=0UL; j<n_; j+=IT::size ) {
+   const bool remainder( !IsPadded<MT>::value );
+
+   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ; j<jpos; j+=IT::size ) {
          store( &v_[i*NN+j], (~rhs).load(i,j) );
+      }
+      for( ; remainder && j<n_; ++j ) {
+         v_[i*NN+j] = (~rhs)(i,j);
       }
    }
 }
@@ -2432,10 +2441,11 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2447,8 +2457,16 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      for( size_t j=jbegin; j<jend; j+=IT::size ) {
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( jbegin );
+
+      for( ; j<jpos; j+=IT::size ) {
          store( &v_[i*NN+j], load( &v_[i*NN+j] ) + (~rhs).load(i,j) );
+      }
+      for( ; remainder && j<jend; ++j ) {
+         v_[i*NN+j] += (~rhs)(i,j);
       }
    }
 }
@@ -2586,10 +2604,11 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2601,8 +2620,16 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      for( size_t j=jbegin; j<jend; j+=IT::size ) {
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( jbegin );
+
+      for( ; j<jpos; j+=IT::size ) {
          store( &v_[i*NN+j], load( &v_[i*NN+j] ) - (~rhs).load(i,j) );
+      }
+      for( ; remainder && j<jend; ++j ) {
+         v_[i*NN+j] -= (~rhs)(i,j);
       }
    }
 }
@@ -4782,13 +4809,23 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=0UL; i<m_; i+=IT::size ) {
+   const bool remainder( !IsPadded<MT>::value );
+
+   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ; i<ipos; i+=IT::size ) {
          store( &v_[i+j*MM], (~rhs).load(i,j) );
+      }
+      for( ; remainder && i<m_; ++i ) {
+         v_[i+j*MM] = (~rhs)(i,j);
       }
    }
 }
@@ -4930,10 +4967,11 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -4945,8 +4983,16 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      for( size_t i=ibegin; i<iend; i+=IT::size ) {
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( ibegin );
+
+      for( ; i<ipos; i+=IT::size ) {
          store( &v_[i+j*MM], load( &v_[i+j*MM] ) + (~rhs).load(i,j) );
+      }
+      for( ; remainder && i<iend; ++i ) {
+         v_[i+j*MM] += (~rhs)(i,j);
       }
    }
 }
@@ -5088,10 +5134,11 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -5103,8 +5150,16 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      for( size_t i=ibegin; i<iend; i+=IT::size ) {
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( ibegin );
+
+      for( ; i<ipos; i+=IT::size ) {
          store( &v_[i+j*MM], load( &v_[i+j*MM] ) - (~rhs).load(i,j) );
+      }
+      for( ; remainder && i<iend; ++i ) {
+         v_[i+j*MM] -= (~rhs)(i,j);
       }
    }
 }
