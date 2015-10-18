@@ -43,7 +43,6 @@
 #include <algorithm>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -1940,32 +1939,47 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    using blaze::stream;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
+   const bool remainder( !IsPadded<MT>::value );
+
+   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
    if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<m_; ++i )
-         for( size_t j=0UL; j<n_; j+=IT::size )
+      {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             stream( v_+i*nn_+j, (~rhs).load(i,j) );
+         }
+         for( ; remainder && j<n_; ++j ) {
+            v_[i*nn_+j] = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t jpos( n_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t i=0UL; i<m_; ++i )
+      {
+         size_t j( 0UL );
          typename MT::ConstIterator it( (~rhs).begin(i) );
-         for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             store( v_+i*nn_+j             , it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size    , it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size*2UL, it.load() ); it += IT::size;
             store( v_+i*nn_+j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+         for( ; j<jpos; j+=IT::size, it+=IT::size ) {
             store( v_+i*nn_+j, it.load() );
+         }
+         for( ; remainder && j<n_; ++j, ++it ) {
+            v_[i*nn_+j] = *it;
          }
       }
    }
@@ -2137,11 +2151,12 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2153,17 +2168,23 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
       size_t j( jbegin );
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
-      for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( ; j<jend; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( v_+i*nn_+j, load( v_+i*nn_+j ) + it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         v_[i*nn_+j] += *it;
       }
    }
 }
@@ -2346,11 +2367,12 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2362,17 +2384,23 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
       size_t j( jbegin );
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
-      for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL ) {
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
          store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( ; j<jend; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( v_+i*nn_+j, load( v_+i*nn_+j ) - it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         v_[i*nn_+j] -= *it;
       }
    }
 }
@@ -4254,32 +4282,47 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    using blaze::stream;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
+   const bool remainder( !IsPadded<MT>::value );
+
+   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
    if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<m_; i+=IT::size )
+      {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             stream( v_+i+j*mm_, (~rhs).load(i,j) );
+         }
+         for( ; remainder && i<m_; ++i ) {
+            v_[i+j*mm_] = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t ipos( m_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t j=0UL; j<n_; ++j )
+      {
+         size_t i( 0UL );
          typename MT::ConstIterator it( (~rhs).begin(j) );
-         for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+         for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             store( v_+i+j*mm_             , it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size    , it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size*2UL, it.load() ); it += IT::size;
             store( v_+i+j*mm_+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+         for( ; i<ipos; i+=IT::size, it+=IT::size ) {
             store( v_+i+j*mm_, it.load() );
+         }
+         for( ; remainder && i<m_; ++i, ++it ) {
+            v_[i+j*mm_] = *it;
          }
       }
    }
@@ -4456,11 +4499,12 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -4472,17 +4516,23 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
       size_t i( ibegin );
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
-      for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
       }
-      for( ; i<iend; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( v_+i+j*mm_, load( v_+i+j*mm_ ) + it.load() );
+      }
+      for( ; remainder && i<iend; ++i, ++it ) {
+         v_[i+j*mm_] += *it;
       }
    }
 }
@@ -4671,11 +4721,12 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -4687,17 +4738,23 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
       size_t i( ibegin );
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
-      for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL ) {
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
          store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
       }
-      for( ; i<iend; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( v_+i+j*mm_, load( v_+i+j*mm_ ) - it.load() );
+      }
+      for( ; remainder && i<iend; ++i, ++it ) {
+         v_[i+j*mm_] -= *it;
       }
    }
 }
