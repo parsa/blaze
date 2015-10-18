@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -2657,34 +2656,49 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
+
+   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
        !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t i=0UL; i<m_; ++i )
-         for( size_t j=0UL; j<n_; j+=IT::size )
+      {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
+         }
+         for( ; remainder && j<n_; ++j ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t jpos( n_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t i=0UL; i<m_; ++i )
+      {
+         size_t j( 0UL );
          typename MT2::ConstIterator it( (~rhs).begin(i) );
-         for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             matrix_.storeu( row_+i, column_+j             , it.load() ); it += IT::size;
             matrix_.storeu( row_+i, column_+j+IT::size    , it.load() ); it += IT::size;
             matrix_.storeu( row_+i, column_+j+IT::size*2UL, it.load() ); it += IT::size;
             matrix_.storeu( row_+i, column_+j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+         for( ; j<jpos; j+=IT::size, it+=IT::size ) {
             storeu( i, j, it.load() );
+         }
+         for( ; remainder && j<n_; ++j, ++it ) {
+            matrix_(row_+i,column_+j) = *it;
          }
       }
    }
@@ -2843,24 +2857,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t i=0UL; i<m_; ++i ) {
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT2>::value )
+                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT2>::value )
+                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+                           :( n_ ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          matrix_.storeu( row_+i, column_+j             , load(i,j             ) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
-      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          storeu( i, j, load(i,j) + it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         matrix_(row_+i,column_+j) += *it;
       }
    }
 }
@@ -3018,24 +3047,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    DenseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t i=0UL; i<m_; ++i ) {
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT2>::value )
+                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT2>::value )
+                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+                           :( n_ ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          matrix_.storeu( row_+i, column_+j             , load(i,j             ) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
-      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          storeu( i, j, load(i,j) - it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         matrix_(row_+i,column_+j) -= *it;
       }
    }
 }
@@ -5288,34 +5332,49 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
+
+   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
        !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<m_; i+=IT::size )
+      {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
+         }
+         for( ; remainder && i<m_; ++i ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t ipos( m_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t j=0UL; j<n_; ++j )
+      {
+         size_t i( 0UL );
          typename MT2::ConstIterator it( (~rhs).begin(j) );
-         for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+         for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             matrix_.storeu( row_+i             , column_+j, it.load() ); it += IT::size;
             matrix_.storeu( row_+i+IT::size    , column_+j, it.load() ); it += IT::size;
             matrix_.storeu( row_+i+IT::size*2UL, column_+j, it.load() ); it += IT::size;
             matrix_.storeu( row_+i+IT::size*3UL, column_+j, it.load() ); it += IT::size;
          }
-         for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+         for( ; i<ipos; i+=IT::size, it+=IT::size ) {
             storeu( i, j, it.load() );
+         }
+         for( ; remainder && i<m_; ++i, ++it ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
    }
@@ -5474,24 +5533,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t j=0UL; j<n_; ++j ) {
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( m_ ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          matrix_.storeu( row_+i             , column_+j, load(i             ,j) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          storeu( i, j, load(i,j) + it.load() );
+      }
+      for( ; i<iend; ++i, ++it ) {
+         matrix_(row_+i,column_+j) += *it;
       }
    }
 }
@@ -5649,24 +5723,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    DenseSubmatrix<MT,unaligned,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t j=0UL; j<n_; ++j ) {
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( m_ ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          matrix_.storeu( row_+i             , column_+j, load(i             ,j) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
          matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          storeu( i, j, load(i,j) - it.load() );
+      }
+      for( ; i<iend; ++i, ++it ) {
+         matrix_(row_+i,column_+j) -= *it;
       }
    }
 }
@@ -7585,34 +7674,49 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
+
+   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
        !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t i=0UL; i<m_; ++i )
-         for( size_t j=0UL; j<n_; j+=IT::size )
+      {
+         size_t j( 0UL );
+
+         for( ; j<jpos; j+=IT::size ) {
             stream( i, j, (~rhs).load(i,j) );
+         }
+         for( ; remainder && j<n_; ++j ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t jpos( n_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t i=0UL; i<m_; ++i )
+      {
+         size_t j( 0UL );
          typename MT2::ConstIterator it( (~rhs).begin(i) );
-         for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+         for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
             store( i, j             , it.load() ); it += IT::size;
             store( i, j+IT::size    , it.load() ); it += IT::size;
             store( i, j+IT::size*2UL, it.load() ); it += IT::size;
             store( i, j+IT::size*3UL, it.load() ); it += IT::size;
          }
-         for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+         for( ; j<jpos; j+=IT::size, it+=IT::size ) {
             store( i, j, it.load() );
+         }
+         for( ; remainder && j<n_; ++j, ++it ) {
+            matrix_(row_+i,column_+j) = *it;
          }
       }
    }
@@ -7771,24 +7875,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t i=0UL; i<m_; ++i ) {
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT2>::value )
+                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT2>::value )
+                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+                           :( n_ ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
          store( i, j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
          store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
          store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
-      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) + it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         matrix_(row_+i,column_+j) += *it;
       }
    }
 }
@@ -7946,24 +8065,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    DenseSubmatrix<MT,aligned,false>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( n_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size*4UL) ) ) == jpos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t i=0UL; i<m_; ++i ) {
+   for( size_t i=0UL; i<m_; ++i )
+   {
+      const size_t jbegin( ( IsUpper<MT2>::value )
+                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t jend  ( ( IsLower<MT2>::value )
+                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+                           :( n_ ) );
+      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+
+      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+
+      size_t j( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
-      for( size_t j=0UL; j<jpos; j+=IT::size*4UL ) {
+
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
          store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
          store( i, j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
          store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
          store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
-      for( size_t j=jpos; j<n_; j+=IT::size, it+=IT::size ) {
+      for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) - it.load() );
+      }
+      for( ; remainder && j<jend; ++j, ++it ) {
+         matrix_(row_+i,column_+j) -= *it;
       }
    }
 }
@@ -9830,34 +9964,49 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
+
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
+
+   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
        !(~rhs).isAliased( &matrix_ ) )
    {
       for( size_t j=0UL; j<n_; ++j )
-         for( size_t i=0UL; i<m_; i+=IT::size )
+      {
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
             stream( i, j, (~rhs).load(i,j) );
+         }
+         for( ; remainder && i<m_; ++i ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
+         }
+      }
    }
    else
    {
-      const size_t ipos( m_ & size_t(-IT::size*4) );
-      BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t j=0UL; j<n_; ++j )
+      {
+         size_t i( 0UL );
          typename MT2::ConstIterator it( (~rhs).begin(j) );
-         for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+         for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
             store( i             , j, it.load() ); it += IT::size;
             store( i+IT::size    , j, it.load() ); it += IT::size;
             store( i+IT::size*2UL, j, it.load() ); it += IT::size;
             store( i+IT::size*3UL, j, it.load() ); it += IT::size;
          }
-         for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+         for( ; i<ipos; i+=IT::size, it+=IT::size ) {
             store( i, j, it.load() );
+         }
+         for( ; remainder && i<m_; ++i, ++it ) {
+            matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
    }
@@ -10016,24 +10165,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t j=0UL; j<n_; ++j ) {
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( m_ ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
          store( i+IT::size    , j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
          store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
          store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) + it.load() );
+      }
+      for( ; i<iend; ++i, ++it ) {
+         matrix_(row_+i,column_+j) += *it;
       }
    }
 }
@@ -10191,24 +10355,39 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    DenseSubmatrix<MT,aligned,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT2 );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t ipos( m_ & size_t(-IT::size*4) );
-   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size*4UL) ) ) == ipos, "Invalid end calculation" );
+   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
 
-   for( size_t j=0UL; j<n_; ++j ) {
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      const size_t ibegin( ( IsLower<MT>::value )
+                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-IT::size) )
+                           :( 0UL ) );
+      const size_t iend  ( ( IsUpper<MT>::value )
+                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+                           :( m_ ) );
+      BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
+
+      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+
+      size_t i( 0UL );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
-      for( size_t i=0UL; i<ipos; i+=IT::size*4UL ) {
+
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
          store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
          store( i+IT::size    , j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
          store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
          store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
-      for( size_t i=ipos; i<m_; i+=IT::size, it+=IT::size ) {
+      for( ; i<ipos; i+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) - it.load() );
+      }
+      for( ; i<iend; ++i, ++it ) {
+         matrix_(row_+i,column_+j) -= *it;
       }
    }
 }
