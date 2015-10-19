@@ -609,7 +609,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -619,6 +618,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
@@ -627,52 +628,80 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       if( jpos > 3UL )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
          ++element;
-         const size_t        j2( element->index() );
-         const IntrinsicType v2( set( element->value() ) );
+         const size_t j2( element->index() );
+         const VET    v2( element->value() );
          ++element;
-         const size_t        j3( element->index() );
-         const IntrinsicType v3( set( element->value() ) );
+         const size_t j3( element->index() );
+         const VET    v3( element->value() );
          ++element;
-         const size_t        j4( element->index() );
-         const IntrinsicType v4( set( element->value() ) );
+         const size_t j4( element->index() );
+         const VET    v4( element->value() );
          ++element;
 
          BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
+         const IntrinsicType xmm1( set( v1 ) );
+         const IntrinsicType xmm2( set( v2 ) );
+         const IntrinsicType xmm3( set( v3 ) );
+         const IntrinsicType xmm4( set( v4 ) );
+
+         const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, A.load(i,j1) * xmm1 + A.load(i,j2) * xmm2 + A.load(i,j3) * xmm3 + A.load(i,j4) * xmm4 );
+         }
+         for( ; remainder && i<M; ++i ) {
+            y[i] = A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
       else
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
          ++element;
 
-         for( size_t i=0UL; i<M; i+=IT::size ) {
-            y.store( i, A.load(i,j1) * v1 );
+         const IntrinsicType xmm1( set( v1 ) );
+
+         const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( 0UL );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, A.load(i,j1) * xmm1 );
+         }
+         for( ; remainder && i<M; ++i ) {
+            y[i] = A(i,j1) * v1;
          }
       }
 
       for( size_t j=(jpos>3UL)?(4UL):(1UL); (j+4UL)<=jpos; j+=4UL )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
          ++element;
-         const size_t        j2( element->index() );
-         const IntrinsicType v2( set( element->value() ) );
+         const size_t j2( element->index() );
+         const VET    v2( element->value() );
          ++element;
-         const size_t        j3( element->index() );
-         const IntrinsicType v3( set( element->value() ) );
+         const size_t j3( element->index() );
+         const VET    v3( element->value() );
          ++element;
-         const size_t        j4( element->index() );
-         const IntrinsicType v4( set( element->value() ) );
+         const size_t j4( element->index() );
+         const VET    v4( element->value() );
          ++element;
 
          BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const IntrinsicType xmm1( set( v1 ) );
+         const IntrinsicType xmm2( set( v2 ) );
+         const IntrinsicType xmm3( set( v3 ) );
+         const IntrinsicType xmm4( set( v4 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -682,14 +711,25 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) + A.load(i,j1) * xmm1 + A.load(i,j2) * xmm2 + A.load(i,j3) * xmm3 + A.load(i,j4) * xmm4 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
+
       for( ; element!=end; ++element )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
+
+         const IntrinsicType xmm1( set( v1 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -699,8 +739,16 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) + A.load(i,j1) * v1 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) + A.load(i,j1) * xmm1 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] += A(i,j1) * v1;
          }
       }
    }
@@ -936,7 +984,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -946,6 +993,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
@@ -954,20 +1003,25 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       for( size_t j=0UL; (j+4UL)<=jpos; j+=4UL )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
          ++element;
-         const size_t        j2( element->index() );
-         const IntrinsicType v2( set( element->value() ) );
+         const size_t j2( element->index() );
+         const VET    v2( element->value() );
          ++element;
-         const size_t        j3( element->index() );
-         const IntrinsicType v3( set( element->value() ) );
+         const size_t j3( element->index() );
+         const VET    v3( element->value() );
          ++element;
-         const size_t        j4( element->index() );
-         const IntrinsicType v4( set( element->value() ) );
+         const size_t j4( element->index() );
+         const VET    v4( element->value() );
          ++element;
 
          BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const IntrinsicType xmm1( set( v1 ) );
+         const IntrinsicType xmm2( set( v2 ) );
+         const IntrinsicType xmm3( set( v3 ) );
+         const IntrinsicType xmm4( set( v4 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -977,14 +1031,24 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) + A.load(i,j1) * v1 + A.load(i,j2) * v2 + A.load(i,j3) * v3 + A.load(i,j4) * v4 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) + A.load(i,j1) * xmm1 + A.load(i,j2) * xmm2 + A.load(i,j3) * xmm3 + A.load(i,j4) * xmm4 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] += A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
       for( ; element!=end; ++element )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
+
+         const IntrinsicType xmm1( set( v1 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -994,8 +1058,16 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) + A.load(i,j1) * v1 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) + A.load(i,j1) * xmm1 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] += A(i,j1) * v1;
          }
       }
    }
@@ -1205,7 +1277,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( VT1 );
       BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1215,6 +1286,8 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
+      const bool remainder( !IsPadded<VT1>::value );
+
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
 
@@ -1223,20 +1296,25 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       for( size_t j=0UL; (j+4UL)<=jpos; j+=4UL )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
          ++element;
-         const size_t        j2( element->index() );
-         const IntrinsicType v2( set( element->value() ) );
+         const size_t j2( element->index() );
+         const VET    v2( element->value() );
          ++element;
-         const size_t        j3( element->index() );
-         const IntrinsicType v3( set( element->value() ) );
+         const size_t j3( element->index() );
+         const VET    v3( element->value() );
          ++element;
-         const size_t        j4( element->index() );
-         const IntrinsicType v4( set( element->value() ) );
+         const size_t j4( element->index() );
+         const VET    v4( element->value() );
          ++element;
 
          BLAZE_INTERNAL_ASSERT( j1 < j2 && j2 < j3 && j3 < j4, "Invalid sparse vector index detected" );
+
+         const IntrinsicType xmm1( set( v1 ) );
+         const IntrinsicType xmm2( set( v2 ) );
+         const IntrinsicType xmm3( set( v3 ) );
+         const IntrinsicType xmm4( set( v4 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -1246,14 +1324,24 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) - A.load(i,j1) * v1 - A.load(i,j2) * v2 - A.load(i,j3) * v3 - A.load(i,j4) * v4 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) - A.load(i,j1) * xmm1 - A.load(i,j2) * xmm2 - A.load(i,j3) * xmm3 - A.load(i,j4) * xmm4 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] -= A(i,j1) * v1 + A(i,j2) * v2 + A(i,j3) * v3 + A(i,j4) * v4;
          }
       }
       for( ; element!=end; ++element )
       {
-         const size_t        j1( element->index() );
-         const IntrinsicType v1( set( element->value() ) );
+         const size_t j1( element->index() );
+         const VET    v1( element->value() );
+
+         const IntrinsicType xmm1( set( v1 ) );
 
          const size_t ibegin( ( IsLower<MT1>::value )
                               ?( ( IsStrictlyLower<MT1>::value ? j1+1UL : j1 ) & size_t(-IT::size) )
@@ -1263,8 +1351,16 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         for( size_t i=ibegin; i<iend; i+=IT::size ) {
-            y.store( i, y.load(i) - A.load(i,j1) * v1 );
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
+         size_t i( ibegin );
+
+         for( ; i<ipos; i+=IT::size ) {
+            y.store( i, y.load(i) - A.load(i,j1) * xmm1 );
+         }
+         for( ; remainder && i<iend; ++i ) {
+            y[i] -= A(i,j1) * v1;
          }
       }
    }
