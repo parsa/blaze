@@ -46,7 +46,6 @@
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Integral.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsSigned.h>
