@@ -80,7 +80,7 @@ struct IntrinsicTraitHelper;
 template<>
 struct IntrinsicTraitHelper<false,1UL>
 {
-   typedef sse_int8_t  Type;
+   typedef simd_int8_t  Type;
    enum { size           = 32,
           addition       = 1,
           subtraction    = 1,
@@ -93,7 +93,7 @@ struct IntrinsicTraitHelper<false,1UL>
 template<>
 struct IntrinsicTraitHelper<false,1UL>
 {
-   typedef sse_int8_t  Type;
+   typedef simd_int8_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -116,7 +116,7 @@ struct IntrinsicTraitHelper<false,1UL>
 template<>
 struct IntrinsicTraitHelper<false,2UL>
 {
-   typedef sse_int16_t  Type;
+   typedef simd_int16_t  Type;
    enum { size           = 16,
           addition       = 1,
           subtraction    = 1,
@@ -129,7 +129,7 @@ struct IntrinsicTraitHelper<false,2UL>
 template<>
 struct IntrinsicTraitHelper<false,2UL>
 {
-   typedef sse_int16_t  Type;
+   typedef simd_int16_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -152,7 +152,7 @@ struct IntrinsicTraitHelper<false,2UL>
 template<>
 struct IntrinsicTraitHelper<false,4UL>
 {
-   typedef sse_int32_t  Type;
+   typedef simd_int32_t  Type;
    enum { size           = 16,
           addition       = 1,
           subtraction    = 1,
@@ -165,7 +165,7 @@ struct IntrinsicTraitHelper<false,4UL>
 template<>
 struct IntrinsicTraitHelper<false,4UL>
 {
-   typedef sse_int32_t  Type;
+   typedef simd_int32_t  Type;
    enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
@@ -178,7 +178,7 @@ struct IntrinsicTraitHelper<false,4UL>
 template<>
 struct IntrinsicTraitHelper<false,4UL>
 {
-   typedef sse_int32_t  Type;
+   typedef simd_int32_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -201,7 +201,7 @@ struct IntrinsicTraitHelper<false,4UL>
 template<>
 struct IntrinsicTraitHelper<false,8UL>
 {
-   typedef sse_int64_t  Type;
+   typedef simd_int64_t  Type;
    enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
@@ -214,7 +214,7 @@ struct IntrinsicTraitHelper<false,8UL>
 template<>
 struct IntrinsicTraitHelper<false,8UL>
 {
-   typedef sse_int64_t  Type;
+   typedef simd_int64_t  Type;
    enum { size           = 4,
           addition       = 1,
           subtraction    = 1,
@@ -227,7 +227,7 @@ struct IntrinsicTraitHelper<false,8UL>
 template<>
 struct IntrinsicTraitHelper<false,8UL>
 {
-   typedef sse_int64_t  Type;
+   typedef simd_int64_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -250,7 +250,7 @@ struct IntrinsicTraitHelper<false,8UL>
 template<>
 struct IntrinsicTraitHelper<true,1UL>
 {
-   typedef sse_cint8_t  Type;
+   typedef simd_cint8_t  Type;
    enum { size           = 16,
           addition       = 1,
           subtraction    = 1,
@@ -263,7 +263,7 @@ struct IntrinsicTraitHelper<true,1UL>
 template<>
 struct IntrinsicTraitHelper<true,1UL>
 {
-   typedef sse_cint8_t  Type;
+   typedef simd_cint8_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 8 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -286,7 +286,7 @@ struct IntrinsicTraitHelper<true,1UL>
 template<>
 struct IntrinsicTraitHelper<true,2UL>
 {
-   typedef sse_cint16_t  Type;
+   typedef simd_cint16_t  Type;
    enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
@@ -299,7 +299,7 @@ struct IntrinsicTraitHelper<true,2UL>
 template<>
 struct IntrinsicTraitHelper<true,2UL>
 {
-   typedef sse_cint16_t  Type;
+   typedef simd_cint16_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 4 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -322,7 +322,7 @@ struct IntrinsicTraitHelper<true,2UL>
 template<>
 struct IntrinsicTraitHelper<true,4UL>
 {
-   typedef sse_cint32_t  Type;
+   typedef simd_cint32_t  Type;
    enum { size           = 8,
           addition       = 1,
           subtraction    = 1,
@@ -335,7 +335,7 @@ struct IntrinsicTraitHelper<true,4UL>
 template<>
 struct IntrinsicTraitHelper<true,4UL>
 {
-   typedef sse_cint32_t  Type;
+   typedef simd_cint32_t  Type;
    enum { size           = 4,
           addition       = 1,
           subtraction    = 1,
@@ -348,7 +348,7 @@ struct IntrinsicTraitHelper<true,4UL>
 template<>
 struct IntrinsicTraitHelper<true,4UL>
 {
-   typedef sse_cint32_t  Type;
+   typedef simd_cint32_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 2 ):( 1 ),
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -371,7 +371,7 @@ struct IntrinsicTraitHelper<true,4UL>
 template<>
 struct IntrinsicTraitHelper<true,8UL>
 {
-   typedef sse_cint64_t  Type;
+   typedef simd_cint64_t  Type;
    enum { size           = 4,
           addition       = 1,
           subtraction    = 1,
@@ -384,7 +384,7 @@ struct IntrinsicTraitHelper<true,8UL>
 template<>
 struct IntrinsicTraitHelper<true,8UL>
 {
-   typedef sse_cint64_t  Type;
+   typedef simd_cint64_t  Type;
    enum { size           = 2,
           addition       = 1,
           subtraction    = 1,
@@ -397,7 +397,7 @@ struct IntrinsicTraitHelper<true,8UL>
 template<>
 struct IntrinsicTraitHelper<true,8UL>
 {
-   typedef sse_cint64_t  Type;
+   typedef simd_cint64_t  Type;
    enum { size           = 1,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -709,7 +709,7 @@ struct IntrinsicTraitBase<unsigned long>
 #if BLAZE_MIC_MODE
 struct IntrinsicTraitBase<float>
 {
-   typedef sse_float_t  Type;
+   typedef simd_float_t  Type;
    enum { size           = ( 64UL / sizeof(float) ),
           alignment      = AlignmentOf<float>::value,
           addition       = 1,
@@ -723,7 +723,7 @@ struct IntrinsicTraitBase<float>
 template<>
 struct IntrinsicTraitBase<float>
 {
-   typedef sse_float_t  Type;
+   typedef simd_float_t  Type;
    enum { size           = ( 32UL / sizeof(float) ),
           alignment      = AlignmentOf<float>::value,
           addition       = 1,
@@ -737,7 +737,7 @@ struct IntrinsicTraitBase<float>
 template<>
 struct IntrinsicTraitBase<float>
 {
-   typedef sse_float_t  Type;
+   typedef simd_float_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(float) ):( 1 ),
           alignment      = AlignmentOf<float>::value,
           addition       = BLAZE_SSE_MODE,
@@ -761,7 +761,7 @@ struct IntrinsicTraitBase<float>
 template<>
 struct IntrinsicTraitBase<double>
 {
-   typedef sse_double_t  Type;
+   typedef simd_double_t  Type;
    enum { size           = ( 64UL / sizeof(double) ),
           alignment      = AlignmentOf<double>::value,
           addition       = 1,
@@ -775,7 +775,7 @@ struct IntrinsicTraitBase<double>
 template<>
 struct IntrinsicTraitBase<double>
 {
-   typedef sse_double_t  Type;
+   typedef simd_double_t  Type;
    enum { size           = ( 32UL / sizeof(double) ),
           alignment      = AlignmentOf<double>::value,
           addition       = 1,
@@ -789,7 +789,7 @@ struct IntrinsicTraitBase<double>
 template<>
 struct IntrinsicTraitBase<double>
 {
-   typedef sse_double_t  Type;
+   typedef simd_double_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(double) ):( 1 ),
           alignment      = AlignmentOf<double>::value,
           addition       = BLAZE_SSE2_MODE,
@@ -1093,7 +1093,7 @@ struct IntrinsicTraitBase< complex<unsigned long> >
 template<>
 struct IntrinsicTraitBase< complex<float> >
 {
-   typedef sse_cfloat_t  Type;
+   typedef simd_cfloat_t  Type;
    enum { size           = ( 64UL / sizeof(complex<float>) ),
           alignment      = AlignmentOf< complex<float> >::value,
           addition       = 1,
@@ -1109,7 +1109,7 @@ struct IntrinsicTraitBase< complex<float> >
 template<>
 struct IntrinsicTraitBase< complex<float> >
 {
-   typedef sse_cfloat_t  Type;
+   typedef simd_cfloat_t  Type;
    enum { size           = ( 32UL / sizeof(complex<float>) ),
           alignment      = AlignmentOf< complex<float> >::value,
           addition       = 1,
@@ -1125,7 +1125,7 @@ struct IntrinsicTraitBase< complex<float> >
 template<>
 struct IntrinsicTraitBase< complex<float> >
 {
-   typedef sse_cfloat_t  Type;
+   typedef simd_cfloat_t  Type;
    enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<float>) ):( 1 ),
           alignment      = AlignmentOf< complex<float> >::value,
           addition       = BLAZE_SSE_MODE,
@@ -1151,7 +1151,7 @@ struct IntrinsicTraitBase< complex<float> >
 template<>
 struct IntrinsicTraitBase< complex<double> >
 {
-   typedef sse_cdouble_t  Type;
+   typedef simd_cdouble_t  Type;
    enum { size           = ( 64UL / sizeof(complex<double>) ),
           alignment      = AlignmentOf< complex<double> >::value,
           addition       = 1,
@@ -1167,7 +1167,7 @@ struct IntrinsicTraitBase< complex<double> >
 template<>
 struct IntrinsicTraitBase< complex<double> >
 {
-   typedef sse_cdouble_t  Type;
+   typedef simd_cdouble_t  Type;
    enum { size           = ( 32UL / sizeof(complex<double>) ),
           alignment      = AlignmentOf< complex<double> >::value,
           addition       = 1,
@@ -1183,7 +1183,7 @@ struct IntrinsicTraitBase< complex<double> >
 template<>
 struct IntrinsicTraitBase< complex<double> >
 {
-   typedef sse_cdouble_t  Type;
+   typedef simd_cdouble_t  Type;
    enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
           alignment      = AlignmentOf< complex<double> >::value,
           addition       = BLAZE_SSE2_MODE,

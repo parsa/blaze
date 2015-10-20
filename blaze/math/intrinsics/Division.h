@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn sse_float_t operator/( sse_int32_t, sse_int32_t )
+/*!\fn simd_float_t operator/( simd_int32_t, simd_int32_t )
 // \brief Division of two vectors of 32-bit integral values.
 // \ingroup intrinsics
 //
@@ -63,7 +63,7 @@ namespace blaze {
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t operator/( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator/( const simd_int32_t& a, const simd_int32_t& b )
 {
    return _mm512_div_epi32( a.value, b.value );
 }
@@ -72,7 +72,7 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator/( const sse_int32_t& a, const sse_int32
 
 
 //*************************************************************************************************
-/*!\fn sse_float_t operator/( sse_int64_t, sse_int64_t )
+/*!\fn simd_float_t operator/( simd_int64_t, simd_int64_t )
 // \brief Division of two vectors of 64-bit integral values.
 // \ingroup intrinsics
 //
@@ -81,7 +81,7 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator/( const sse_int32_t& a, const sse_int32
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_int64_t operator/( const sse_int64_t& a, const sse_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator/( const simd_int64_t& a, const simd_int64_t& b )
 {
    return _mm512_div_epi64( a.value, b.value );
 }
@@ -90,7 +90,7 @@ BLAZE_ALWAYS_INLINE sse_int64_t operator/( const sse_int64_t& a, const sse_int64
 
 
 //*************************************************************************************************
-/*!\fn sse_float_t operator/( sse_float_t, sse_float_t )
+/*!\fn simd_float_t operator/( simd_float_t, simd_float_t )
 // \brief Division of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
@@ -99,17 +99,17 @@ BLAZE_ALWAYS_INLINE sse_int64_t operator/( const sse_int64_t& a, const sse_int64
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator/( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm512_div_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator/( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm256_div_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator/( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator/( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm_div_ps( a.value, b.value );
 }
@@ -118,7 +118,7 @@ BLAZE_ALWAYS_INLINE sse_float_t operator/( const sse_float_t& a, const sse_float
 
 
 //*************************************************************************************************
-/*!\fn sse_double_t operator/( sse_double_t, sse_double_t )
+/*!\fn simd_double_t operator/( simd_double_t, simd_double_t )
 // \brief Division of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
@@ -127,17 +127,17 @@ BLAZE_ALWAYS_INLINE sse_float_t operator/( const sse_float_t& a, const sse_float
 // \return The result of the division.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator/( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm512_div_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator/( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm256_div_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator/( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator/( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm_div_pd( a.value, b.value );
 }

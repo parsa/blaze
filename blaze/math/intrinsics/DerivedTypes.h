@@ -56,7 +56,7 @@ namespace blaze {
 /*!\brief The intrinsic data type for 'short'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<short>::Type  sse_short_t;
+typedef IntrinsicTrait<short>::Type  simd_short_t;
 //*************************************************************************************************
 
 
@@ -64,7 +64,7 @@ typedef IntrinsicTrait<short>::Type  sse_short_t;
 /*!\brief The intrinsic data type for 'unsigned short'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<unsigned short>::Type  sse_ushort_t;
+typedef IntrinsicTrait<unsigned short>::Type  simd_ushort_t;
 //*************************************************************************************************
 
 
@@ -72,7 +72,7 @@ typedef IntrinsicTrait<unsigned short>::Type  sse_ushort_t;
 /*!\brief The intrinsic data type for 'int'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<int>::Type  sse_int_t;
+typedef IntrinsicTrait<int>::Type  simd_int_t;
 //*************************************************************************************************
 
 
@@ -80,7 +80,7 @@ typedef IntrinsicTrait<int>::Type  sse_int_t;
 /*!\brief The intrinsic data type for 'unsigned int'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<unsigned int>::Type  sse_uint_t;
+typedef IntrinsicTrait<unsigned int>::Type  simd_uint_t;
 //*************************************************************************************************
 
 
@@ -88,7 +88,7 @@ typedef IntrinsicTrait<unsigned int>::Type  sse_uint_t;
 /*!\brief The intrinsic data type for 'long int'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<long>::Type  sse_long_t;
+typedef IntrinsicTrait<long>::Type  simd_long_t;
 //*************************************************************************************************
 
 
@@ -96,7 +96,7 @@ typedef IntrinsicTrait<long>::Type  sse_long_t;
 /*!\brief The intrinsic data type for 'unsigned long int'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait<unsigned long>::Type  sse_ulong_t;
+typedef IntrinsicTrait<unsigned long>::Type  simd_ulong_t;
 //*************************************************************************************************
 
 
@@ -104,7 +104,7 @@ typedef IntrinsicTrait<unsigned long>::Type  sse_ulong_t;
 /*!\brief The intrinsic data type for 'complex<short>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<short> >::Type  sse_cshort_t;
+typedef IntrinsicTrait< complex<short> >::Type  simd_cshort_t;
 //*************************************************************************************************
 
 
@@ -112,7 +112,7 @@ typedef IntrinsicTrait< complex<short> >::Type  sse_cshort_t;
 /*!\brief The intrinsic data type for 'complex<unsigned short>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<unsigned short> >::Type  sse_cushort_t;
+typedef IntrinsicTrait< complex<unsigned short> >::Type  simd_cushort_t;
 //*************************************************************************************************
 
 
@@ -120,7 +120,7 @@ typedef IntrinsicTrait< complex<unsigned short> >::Type  sse_cushort_t;
 /*!\brief The intrinsic data type for 'complex<int>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<int> >::Type  sse_cint_t;
+typedef IntrinsicTrait< complex<int> >::Type  simd_cint_t;
 //*************************************************************************************************
 
 
@@ -128,7 +128,7 @@ typedef IntrinsicTrait< complex<int> >::Type  sse_cint_t;
 /*!\brief The intrinsic data type for 'complex<unsigned int>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<unsigned int> >::Type  sse_cuint_t;
+typedef IntrinsicTrait< complex<unsigned int> >::Type  simd_cuint_t;
 //*************************************************************************************************
 
 
@@ -136,7 +136,7 @@ typedef IntrinsicTrait< complex<unsigned int> >::Type  sse_cuint_t;
 /*!\brief The intrinsic data type for 'complex<long int>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<long> >::Type  sse_clong_t;
+typedef IntrinsicTrait< complex<long> >::Type  simd_clong_t;
 //*************************************************************************************************
 
 
@@ -144,7 +144,7 @@ typedef IntrinsicTrait< complex<long> >::Type  sse_clong_t;
 /*!\brief The intrinsic data type for 'complex<unsigned long int>'.
 // \ingroup intrinsics
 */
-typedef IntrinsicTrait< complex<unsigned long> >::Type  sse_culong_t;
+typedef IntrinsicTrait< complex<unsigned long> >::Type  simd_culong_t;
 //*************************************************************************************************
 
 } // namespace blaze

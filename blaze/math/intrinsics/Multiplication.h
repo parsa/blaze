@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn sse_int16_t operator*( sse_int16_t, sse_int16_t )
+/*!\fn simd_int16_t operator*( simd_int16_t, simd_int16_t )
 // \brief Multiplication of two vectors of 16-bit integral values.
 // \ingroup intrinsics
 //
@@ -63,12 +63,12 @@ namespace blaze {
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_int16_t operator*( const sse_int16_t& a, const sse_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b )
 {
    return _mm256_mullo_epi16( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_int16_t operator*( const sse_int16_t& a, const sse_int16_t& b )
+BLAZE_ALWAYS_INLINE simd_int16_t operator*( const simd_int16_t& a, const simd_int16_t& b )
 {
    return _mm_mullo_epi16( a.value, b.value );
 }
@@ -77,7 +77,7 @@ BLAZE_ALWAYS_INLINE sse_int16_t operator*( const sse_int16_t& a, const sse_int16
 
 
 //*************************************************************************************************
-/*!\fn sse_int32_t operator*( sse_int32_t, sse_int32_t )
+/*!\fn simd_int32_t operator*( simd_int32_t, simd_int32_t )
 // \brief Multiplication of two vectors of 32-bit integral values.
 // \ingroup intrinsics
 //
@@ -86,17 +86,17 @@ BLAZE_ALWAYS_INLINE sse_int16_t operator*( const sse_int16_t& a, const sse_int16
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
 {
    return _mm512_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
 {
    return _mm256_mullo_epi32( a.value, b.value );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32_t& b )
+BLAZE_ALWAYS_INLINE simd_int32_t operator*( const simd_int32_t& a, const simd_int32_t& b )
 {
    return _mm_mullo_epi32( a.value, b.value );
 }
@@ -105,7 +105,7 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32
 
 
 //*************************************************************************************************
-/*!\fn sse_int64_t operator*( sse_int64_t, sse_int64_t )
+/*!\fn simd_int64_t operator*( simd_int64_t, simd_int64_t )
 // \brief Multiplication of two vectors of 64-bit integral values.
 // \ingroup intrinsics
 //
@@ -114,7 +114,7 @@ BLAZE_ALWAYS_INLINE sse_int32_t operator*( const sse_int32_t& a, const sse_int32
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_int64_t operator*( const sse_int64_t& a, const sse_int64_t& b )
+BLAZE_ALWAYS_INLINE simd_int64_t operator*( const simd_int64_t& a, const simd_int64_t& b )
 {
    return _mm512_mullo_epi64( a.value, b.value );
 }
@@ -123,7 +123,7 @@ BLAZE_ALWAYS_INLINE sse_int64_t operator*( const sse_int64_t& a, const sse_int64
 
 
 //*************************************************************************************************
-/*!\fn sse_float_t operator*( sse_float_t, sse_float_t )
+/*!\fn simd_float_t operator*( simd_float_t, simd_float_t )
 // \brief Multiplication of two vectors of single precision floating point values.
 // \ingroup intrinsics
 //
@@ -132,17 +132,17 @@ BLAZE_ALWAYS_INLINE sse_int64_t operator*( const sse_int64_t& a, const sse_int64
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm512_mul_ps( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm256_mul_ps( a.value, b.value );
 }
 #elif BLAZE_SSE_MODE
-BLAZE_ALWAYS_INLINE sse_float_t operator*( const sse_float_t& a, const sse_float_t& b )
+BLAZE_ALWAYS_INLINE simd_float_t operator*( const simd_float_t& a, const simd_float_t& b )
 {
    return _mm_mul_ps( a.value, b.value );
 }
@@ -151,7 +151,7 @@ BLAZE_ALWAYS_INLINE sse_float_t operator*( const sse_float_t& a, const sse_float
 
 
 //*************************************************************************************************
-/*!\fn sse_double_t operator*( sse_double_t, sse_double_t )
+/*!\fn simd_double_t operator*( simd_double_t, simd_double_t )
 // \brief Multiplication of two vectors of double precision floating point values.
 // \ingroup intrinsics
 //
@@ -160,17 +160,17 @@ BLAZE_ALWAYS_INLINE sse_float_t operator*( const sse_float_t& a, const sse_float
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm512_mul_pd( a.value, b.value );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm256_mul_pd( a.value, b.value );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_double_t& b )
+BLAZE_ALWAYS_INLINE simd_double_t operator*( const simd_double_t& a, const simd_double_t& b )
 {
    return _mm_mul_pd( a.value, b.value );
 }
@@ -179,7 +179,7 @@ BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_dou
 
 
 //*************************************************************************************************
-/*!\fn sse_cint16_t operator*( sse_cint16_t, sse_cint16_t )
+/*!\fn simd_cint16_t operator*( simd_cint16_t, simd_cint16_t )
 // \brief Multiplication of two vectors of 16-bit integral values.
 // \ingroup intrinsics
 //
@@ -188,7 +188,7 @@ BLAZE_ALWAYS_INLINE sse_double_t operator*( const sse_double_t& a, const sse_dou
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b )
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -205,7 +205,7 @@ BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cin
    return _mm256_add_epi16( z, y );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cint16_t& b )
+BLAZE_ALWAYS_INLINE simd_cint16_t operator*( const simd_cint16_t& a, const simd_cint16_t& b )
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi16( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -226,7 +226,7 @@ BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cin
 
 
 //*************************************************************************************************
-/*!\fn sse_cint32_t operator*( sse_cint32_t, sse_cint32_t )
+/*!\fn simd_cint32_t operator*( simd_cint32_t, simd_cint32_t )
 // \brief Multiplication of two vectors of 32-bit integral values.
 // \ingroup intrinsics
 //
@@ -235,7 +235,7 @@ BLAZE_ALWAYS_INLINE sse_cint16_t operator*( const sse_cint16_t& a, const sse_cin
 // \return The result of the multiplication.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
 {
    __m512i x, y, z;
    const __m512i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -249,7 +249,7 @@ BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cin
    return _mm512_add_epi32( z, y );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
 {
    __m256i x, y, z;
    const __m256i neg( _mm256_set_epi32( 1, -1, 1, -1, 1, -1, 1, -1 ) );
@@ -263,7 +263,7 @@ BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cin
    return _mm256_add_epi32( z, y );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cint32_t& b )
+BLAZE_ALWAYS_INLINE simd_cint32_t operator*( const simd_cint32_t& a, const simd_cint32_t& b )
 {
    __m128i x, y, z;
    const __m128i neg( _mm_set_epi32( 1, -1, 1, -1 ) );
@@ -281,7 +281,7 @@ BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cin
 
 
 //*************************************************************************************************
-/*!\fn sse_cfloat_t operator*( sse_cfloat_t, sse_cfloat_t )
+/*!\fn simd_cfloat_t operator*( simd_cfloat_t, simd_cfloat_t )
 // \brief Multiplication of two vectors of single precision complex values.
 // \ingroup intrinsics
 //
@@ -290,7 +290,7 @@ BLAZE_ALWAYS_INLINE sse_cint32_t operator*( const sse_cint32_t& a, const sse_cin
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b )
 {
    __m256 x, y, z;
 
@@ -302,7 +302,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfl
    return _mm256_addsub_ps( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfloat_t& b )
+BLAZE_ALWAYS_INLINE simd_cfloat_t operator*( const simd_cfloat_t& a, const simd_cfloat_t& b )
 {
    __m128 x, y, z;
 
@@ -318,7 +318,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfl
 
 
 //*************************************************************************************************
-/*!\fn sse_cdouble_t operator*( sse_cdouble_t, sse_cdouble_t )
+/*!\fn simd_cdouble_t operator*( simd_cdouble_t, simd_cdouble_t )
 // \brief Multiplication of two vectors of double precision complex values.
 // \ingroup intrinsics
 //
@@ -327,7 +327,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t operator*( const sse_cfloat_t& a, const sse_cfl
 // \return The result of the multiplication.
 */
 #if BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_cdouble_t operator*( const sse_cdouble_t& a, const sse_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b )
 {
    __m256d x, y, z;
 
@@ -339,7 +339,7 @@ BLAZE_ALWAYS_INLINE sse_cdouble_t operator*( const sse_cdouble_t& a, const sse_c
    return _mm256_addsub_pd( z, y );
 }
 #elif BLAZE_SSE3_MODE
-BLAZE_ALWAYS_INLINE sse_cdouble_t operator*( const sse_cdouble_t& a, const sse_cdouble_t& b )
+BLAZE_ALWAYS_INLINE simd_cdouble_t operator*( const simd_cdouble_t& a, const simd_cdouble_t& b )
 {
    __m128d x, y, z;
 

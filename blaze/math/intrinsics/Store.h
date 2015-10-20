@@ -75,7 +75,7 @@ namespace blaze {
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   store( T* address, const sse_int16_t& value )
+   store( T* address, const simd_int16_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -104,7 +104,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   store( T* address, const sse_int32_t& value )
+   store( T* address, const simd_int32_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -135,7 +135,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   store( T* address, const sse_int64_t& value )
+   store( T* address, const simd_int64_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -164,7 +164,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
 // AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void store( float* address, const sse_float_t& value )
+BLAZE_ALWAYS_INLINE void store( float* address, const simd_float_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -193,7 +193,7 @@ BLAZE_ALWAYS_INLINE void store( float* address, const sse_float_t& value )
 // to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment in case of
 // AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void store( double* address, const sse_double_t& value )
+BLAZE_ALWAYS_INLINE void store( double* address, const simd_double_t& value )
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
@@ -224,7 +224,7 @@ BLAZE_ALWAYS_INLINE void store( double* address, const sse_double_t& value )
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::Type
-   store( complex<T>* address, const sse_cint16_t& value )
+   store( complex<T>* address, const simd_cint16_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -254,7 +254,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::Type
-   store( complex<T>* address, const sse_cint32_t& value )
+   store( complex<T>* address, const simd_cint32_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -286,7 +286,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> > >::T
 */
 template< typename T >  // Type of the integral value
 BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::Type
-   store( complex<T>* address, const sse_cint64_t& value )
+   store( complex<T>* address, const simd_cint64_t& value )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -316,7 +316,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> > >::T
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void store( complex<float>* address, const sse_cfloat_t& value )
+BLAZE_ALWAYS_INLINE void store( complex<float>* address, const simd_cfloat_t& value )
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<float> ) == 2UL*sizeof( float ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -346,7 +346,7 @@ BLAZE_ALWAYS_INLINE void store( complex<float>* address, const sse_cfloat_t& val
 // according to the enabled instruction set (16-byte alignment in case of SSE, 32-byte alignment
 // in case of AVX, and 64-byte alignment in case of MIC.
 */
-BLAZE_ALWAYS_INLINE void store( complex<double>* address, const sse_cdouble_t& value )
+BLAZE_ALWAYS_INLINE void store( complex<double>* address, const simd_cdouble_t& value )
 {
    BLAZE_STATIC_ASSERT  ( sizeof( complex<double> ) == 2UL*sizeof( double ) );
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );

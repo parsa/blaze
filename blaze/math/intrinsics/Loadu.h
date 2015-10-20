@@ -70,7 +70,7 @@ namespace blaze {
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_int16_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_t >::Type
    loadu( const T* address )
 {
 #if BLAZE_AVX2_MODE
@@ -95,7 +95,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_int32_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_t >::Type
    loadu( const T* address )
 {
 #if BLAZE_MIC_MODE
@@ -125,7 +125,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse
 // function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_int64_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_t >::Type
    loadu( const T* address )
 {
 #if BLAZE_MIC_MODE
@@ -154,7 +154,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse
 // This function loads a vector of 'float' values. In contrast to the according load function,
 // the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE sse_float_t loadu( const float* address )
+BLAZE_ALWAYS_INLINE simd_float_t loadu( const float* address )
 {
 #if BLAZE_MIC_MODE
    __m512 v1 = _mm512_setzero_ps();
@@ -182,7 +182,7 @@ BLAZE_ALWAYS_INLINE sse_float_t loadu( const float* address )
 // This function loads a vector of 'double' values. In contrast to the according load function,
 // the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE sse_double_t loadu( const double* address )
+BLAZE_ALWAYS_INLINE simd_double_t loadu( const double* address )
 {
 #if BLAZE_MIC_MODE
    __m512d v1 = _mm512_setzero_pd();
@@ -211,7 +211,7 @@ BLAZE_ALWAYS_INLINE sse_double_t loadu( const double* address )
 // load function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_cint16_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16_t >::Type
    loadu( const complex<T>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -238,7 +238,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse
 // load function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_cint32_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32_t >::Type
    loadu( const complex<T>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -270,7 +270,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse
 // load function, the given address is not required to be properly aligned.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_cint64_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64_t >::Type
    loadu( const complex<T>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -301,7 +301,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse
 // This function loads a vector of 'complex<float>' values. In contrast to the according load
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE sse_cfloat_t loadu( const complex<float>* address )
+BLAZE_ALWAYS_INLINE simd_cfloat_t loadu( const complex<float>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -331,7 +331,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t loadu( const complex<float>* address )
 // This function loads a vector of 'complex<double>' values. In contrast to the according load
 // function, the given address is not required to be properly aligned.
 */
-BLAZE_ALWAYS_INLINE sse_cdouble_t loadu( const complex<double>* address )
+BLAZE_ALWAYS_INLINE simd_cdouble_t loadu( const complex<double>* address )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

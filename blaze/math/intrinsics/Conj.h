@@ -54,14 +54,14 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn sse_int8_t conj( const sse_int8_t& )
+/*!\fn simd_int8_t conj( const simd_int8_t& )
 // \brief Complex conjugate of a vector of 8-bit integral values.
 // \ingroup intrinsics
 //
 // \param a The vector of 8-bit integral values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_int8_t conj( const sse_int8_t& a )
+BLAZE_ALWAYS_INLINE simd_int8_t conj( const simd_int8_t& a )
 {
    return a;
 }
@@ -69,14 +69,14 @@ BLAZE_ALWAYS_INLINE sse_int8_t conj( const sse_int8_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int16_t conj( const sse_int16_t& )
+/*!\fn simd_int16_t conj( const simd_int16_t& )
 // \brief Complex conjugate of a vector of 16-bit integral values.
 // \ingroup intrinsics
 //
 // \param a The vector of 16-bit integral values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_int16_t conj( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE simd_int16_t conj( const simd_int16_t& a )
 {
    return a;
 }
@@ -84,14 +84,14 @@ BLAZE_ALWAYS_INLINE sse_int16_t conj( const sse_int16_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int32_t conj( const sse_int32_t& )
+/*!\fn simd_int32_t conj( const simd_int32_t& )
 // \brief Complex conjugate of a vector of 32-bit integral values.
 // \ingroup intrinsics
 //
 // \param a The vector of 32-bit integral values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_int32_t conj( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE simd_int32_t conj( const simd_int32_t& a )
 {
    return a;
 }
@@ -99,14 +99,14 @@ BLAZE_ALWAYS_INLINE sse_int32_t conj( const sse_int32_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int64_t conj( const sse_int64_t& )
+/*!\fn simd_int64_t conj( const simd_int64_t& )
 // \brief Complex conjugate of a vector of 64-bit integral values.
 // \ingroup intrinsics
 //
 // \param a The vector of 64-bit integral values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_int64_t conj( const sse_int64_t& a )
+BLAZE_ALWAYS_INLINE simd_int64_t conj( const simd_int64_t& a )
 {
    return a;
 }
@@ -114,14 +114,14 @@ BLAZE_ALWAYS_INLINE sse_int64_t conj( const sse_int64_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_float_t conj( const sse_float_t& )
+/*!\fn simd_float_t conj( const simd_float_t& )
 // \brief Complex conjugate of a vector of single precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The vector of single precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_float_t conj( const sse_float_t& a )
+BLAZE_ALWAYS_INLINE simd_float_t conj( const simd_float_t& a )
 {
    return a;
 }
@@ -129,14 +129,14 @@ BLAZE_ALWAYS_INLINE sse_float_t conj( const sse_float_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_double_t conj( const sse_double_t& )
+/*!\fn simd_double_t conj( const simd_double_t& )
 // \brief Complex conjugate of a vector of double precision floating point values.
 // \ingroup intrinsics
 //
 // \param a The vector of double precision floating point values.
 // \return The complex conjugate values.
 */
-BLAZE_ALWAYS_INLINE sse_double_t conj( const sse_double_t& a )
+BLAZE_ALWAYS_INLINE simd_double_t conj( const simd_double_t& a )
 {
    return a;
 }
@@ -144,7 +144,7 @@ BLAZE_ALWAYS_INLINE sse_double_t conj( const sse_double_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cint16_t conj( const sse_cint16_t& )
+/*!\fn simd_cint16_t conj( const simd_cint16_t& )
 // \brief Complex conjugate of a vector of 16-bit integral complex values.
 // \ingroup intrinsics
 //
@@ -152,13 +152,13 @@ BLAZE_ALWAYS_INLINE sse_double_t conj( const sse_double_t& a )
 // \return The complex conjugate values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
+BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a )
 {
    return _mm256_mullo_epi16( a.value, _mm256_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1,
                                                          -1, 1, -1, 1, -1, 1, -1, 1 ) );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
+BLAZE_ALWAYS_INLINE simd_cint16_t conj( const simd_cint16_t& a )
 {
    return _mm_mullo_epi16( a.value, _mm_set_epi16( -1, 1, -1, 1, -1, 1, -1, 1 ) );
 }
@@ -167,7 +167,7 @@ BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cint32_t conj( const sse_cint32_t& )
+/*!\fn simd_cint32_t conj( const simd_cint32_t& )
 // \brief Complex conjugate of a vector of 32-bit integral complex values.
 // \ingroup intrinsics
 //
@@ -175,18 +175,18 @@ BLAZE_ALWAYS_INLINE sse_cint16_t conj( const sse_cint16_t& a )
 // \return The complex conjugate values.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a )
 {
    return _mm512_mullo_epi32( a.value, _mm512_set_epi32( -1, 1, -1, 1, -1, 1, -1, 1,
                                                          -1, 1, -1, 1, -1, 1, -1, 1 ) );
 }
 #elif BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a )
 {
    return _mm256_mullo_epi32( a.value, _mm256_set_epi32( -1, 1, -1, 1, -1, 1, -1, 1 ) );
 }
 #elif BLAZE_SSE4_MODE
-BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
+BLAZE_ALWAYS_INLINE simd_cint32_t conj( const simd_cint32_t& a )
 {
    return _mm_mullo_epi32( a.value, _mm_set_epi32( -1, 1, -1, 1 ) );
 }
@@ -195,7 +195,7 @@ BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cfloat_t conj( const sse_cfloat_t& )
+/*!\fn simd_cfloat_t conj( const simd_cfloat_t& )
 // \brief Complex conjugate of a vector of single precision complex values.
 // \ingroup intrinsics
 //
@@ -203,18 +203,18 @@ BLAZE_ALWAYS_INLINE sse_cint32_t conj( const sse_cint32_t& a )
 // \return The complex conjugate values.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
+BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a )
 {
    return _mm512_mul_ps( a.value, _mm512_set_ps( -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F,
                                                  -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F ) );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
+BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a )
 {
    return _mm256_mul_ps( a.value, _mm256_set_ps( -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F ) );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
+BLAZE_ALWAYS_INLINE simd_cfloat_t conj( const simd_cfloat_t& a )
 {
    return _mm_mul_ps( a.value, _mm_set_ps( -1.0F, 1.0F, -1.0F, 1.0F ) );
 }
@@ -223,7 +223,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_cdouble_t conj( const sse_cdouble_t& )
+/*!\fn simd_cdouble_t conj( const simd_cdouble_t& )
 // \brief Complex conjugate of a vector of double precision complex values.
 // \ingroup intrinsics
 //
@@ -231,17 +231,17 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t conj( const sse_cfloat_t& a )
 // \return The complex conjugate values.
 */
 #if BLAZE_MIC_MODE
-BLAZE_ALWAYS_INLINE sse_cdouble_t conj( const sse_cdouble_t& a )
+BLAZE_ALWAYS_INLINE simd_cdouble_t conj( const simd_cdouble_t& a )
 {
    return _mm512_mul_pd( a.value, _mm512_set_pd( -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 ) );
 }
 #elif BLAZE_AVX_MODE
-BLAZE_ALWAYS_INLINE sse_cdouble_t conj( const sse_cdouble_t& a )
+BLAZE_ALWAYS_INLINE simd_cdouble_t conj( const simd_cdouble_t& a )
 {
    return _mm256_mul_pd( a.value, _mm256_set_pd( -1.0, 1.0, -1.0, 1.0 ) );
 }
 #elif BLAZE_SSE2_MODE
-BLAZE_ALWAYS_INLINE sse_cdouble_t conj( const sse_cdouble_t& a )
+BLAZE_ALWAYS_INLINE simd_cdouble_t conj( const simd_cdouble_t& a )
 {
    return _mm_mul_pd( a.value, _mm_set_pd( -1.0, 1.0 ) );
 }

@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\fn sse_int8_t abs( sse_int8_t )
+/*!\fn simd_int8_t abs( simd_int8_t )
 // \brief Absolute value of a vector of 8-bit integral values.
 // \ingroup intrinsics
 //
@@ -62,12 +62,12 @@ namespace blaze {
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
+BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a )
 {
    return _mm256_abs_epi8( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
+BLAZE_ALWAYS_INLINE simd_int8_t abs( const simd_int8_t& a )
 {
    return _mm_abs_epi8( a.value );
 }
@@ -76,7 +76,7 @@ BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int16_t abs( sse_int16_t )
+/*!\fn simd_int16_t abs( simd_int16_t )
 // \brief Absolute value of a vector of 16-bit integral values.
 // \ingroup intrinsics
 //
@@ -84,12 +84,12 @@ BLAZE_ALWAYS_INLINE sse_int8_t abs( const sse_int8_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a )
 {
    return _mm256_abs_epi16( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
+BLAZE_ALWAYS_INLINE simd_int16_t abs( const simd_int16_t& a )
 {
    return _mm_abs_epi16( a.value );
 }
@@ -98,7 +98,7 @@ BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
 
 
 //*************************************************************************************************
-/*!\fn sse_int32_t abs( sse_int32_t )
+/*!\fn simd_int32_t abs( simd_int32_t )
 // \brief Absolute value of a vector of 32-bit integral values.
 // \ingroup intrinsics
 //
@@ -106,12 +106,12 @@ BLAZE_ALWAYS_INLINE sse_int16_t abs( const sse_int16_t& a )
 // \return The absolute values.
 */
 #if BLAZE_AVX2_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t abs( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a )
 {
    return _mm256_abs_epi32( a.value );
 }
 #elif BLAZE_SSSE3_MODE
-BLAZE_ALWAYS_INLINE sse_int32_t abs( const sse_int32_t& a )
+BLAZE_ALWAYS_INLINE simd_int32_t abs( const simd_int32_t& a )
 {
    return _mm_abs_epi32( a.value );
 }

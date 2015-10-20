@@ -69,7 +69,7 @@ namespace blaze {
 // \return The set vector of 2-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_int16_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_int16_t >::Type
    set( T value )
 {
 #if BLAZE_AVX2_MODE
@@ -91,7 +91,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse
 // \return The set vector of 4-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_int32_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_int32_t >::Type
    set( T value )
 {
 #if BLAZE_MIC_MODE
@@ -115,7 +115,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse
 // \return The set vector of 8-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_int64_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_int64_t >::Type
    set( T value )
 {
 #if BLAZE_MIC_MODE
@@ -138,7 +138,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse
 // \param value The given 'float' value.
 // \return The set vector of 'float' values.
 */
-BLAZE_ALWAYS_INLINE sse_float_t set( float value )
+BLAZE_ALWAYS_INLINE simd_float_t set( float value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_ps( value );
@@ -160,7 +160,7 @@ BLAZE_ALWAYS_INLINE sse_float_t set( float value )
 // \param value The given 'double' value.
 // \return The set vector of 'double' values.
 */
-BLAZE_ALWAYS_INLINE sse_double_t set( double value )
+BLAZE_ALWAYS_INLINE simd_double_t set( double value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set1_pd( value );
@@ -183,7 +183,7 @@ BLAZE_ALWAYS_INLINE sse_double_t set( double value )
 // \return The set vector of 2-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse_cint16_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, simd_cint16_t >::Type
    set( complex<T> value )
 {
 #if BLAZE_AVX2_MODE
@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,2UL> >, sse
 // \return The set vector of 4-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse_cint32_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, simd_cint32_t >::Type
    set( complex<T> value )
 {
 #if BLAZE_MIC_MODE
@@ -239,7 +239,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,4UL> >, sse
 // \return The set vector of 8-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse_cint64_t >::Type
+BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, simd_cint64_t >::Type
    set( complex<T> value )
 {
 #if BLAZE_MIC_MODE
@@ -264,7 +264,7 @@ BLAZE_ALWAYS_INLINE typename EnableIf< And< IsIntegral<T>, HasSize<T,8UL> >, sse
 // \param value The given 'complex<float>' value.
 // \return The set vector of 'complex<float>' values.
 */
-BLAZE_ALWAYS_INLINE sse_cfloat_t set( const complex<float>& value )
+BLAZE_ALWAYS_INLINE simd_cfloat_t set( const complex<float>& value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_ps( value.imag(), value.real(), value.imag(), value.real(),
@@ -291,7 +291,7 @@ BLAZE_ALWAYS_INLINE sse_cfloat_t set( const complex<float>& value )
 // \param value The given 'complex<double>' value.
 // \return The set vector of 'complex<double>' values.
 */
-BLAZE_ALWAYS_INLINE sse_cdouble_t set( const complex<double>& value )
+BLAZE_ALWAYS_INLINE simd_cdouble_t set( const complex<double>& value )
 {
 #if BLAZE_MIC_MODE
    return _mm512_set_pd( value.imag(), value.real(), value.imag(), value.real(),
