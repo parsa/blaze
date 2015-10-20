@@ -46,6 +46,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Padding flag for unpadded vectors and matrices.
+// \ingroup math
 //
 // Via this flag it is possible to specify custom vectors and matrices as unpadded. The following
 // example demonstrates the setup of an unaligned, unpadded custom row vector of size 7:
@@ -66,6 +67,7 @@ const bool unpadded = false;
 
 //*************************************************************************************************
 /*!\brief Padding flag for padded vectors and matrices.
+// \ingroup math
 //
 // Via this flag it is possible to specify custom vectors and matrices as aligned. The following
 // example demonstrates the setup of an aligned, padded custom row vector of size 7:
