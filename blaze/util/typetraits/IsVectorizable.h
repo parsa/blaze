@@ -45,9 +45,8 @@
 #include <blaze/util/SelectType.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsComplex.h>
-#include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
-#include <blaze/util/typetraits/IsIntegral.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -83,12 +82,9 @@ struct IsVectorizableHelper
 
  public:
    //**********************************************************************************************
-   enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value    ) ) ||
-                  ( BLAZE_SSE2_MODE && ( IsDouble<T2>::value   ) ) ||
-                  ( BLAZE_SSE2_MODE && ( IsIntegral<T2>::value ) ) ||
-                  ( BLAZE_MIC_MODE  && ( IsFloat<T2>::value    ) ) ||
-                  ( BLAZE_MIC_MODE  && ( IsDouble<T2>::value   ) ) ||
-                  ( BLAZE_MIC_MODE  && ( IsIntegral<T2>::value && sizeof(T2) >= 4UL ) ) };
+   enum { value = ( BLAZE_SSE_MODE  && ( IsFloat<T2>::value   ) ) ||
+                  ( BLAZE_SSE2_MODE && ( IsNumeric<T2>::value ) ) ||
+                  ( BLAZE_MIC_MODE  && ( IsNumeric<T2>::value && sizeof(T2) >= 4UL ) ) };
    typedef typename SelectType<value,TrueType,FalseType>::Type  Type;
    //**********************************************************************************************
 };
