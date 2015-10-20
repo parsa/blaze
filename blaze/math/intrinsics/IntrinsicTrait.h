@@ -790,7 +790,7 @@ template<>
 struct IntrinsicTraitBase<double>
 {
    typedef sse_double_t  Type;
-   enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(double) ):( 1 ),
+   enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(double) ):( 1 ),
           alignment      = AlignmentOf<double>::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
@@ -1184,7 +1184,7 @@ template<>
 struct IntrinsicTraitBase< complex<double> >
 {
    typedef sse_cdouble_t  Type;
-   enum { size           = ( BLAZE_SSE_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
+   enum { size           = ( BLAZE_SSE2_MODE )?( 16UL / sizeof(complex<double>) ):( 1 ),
           alignment      = AlignmentOf< complex<double> >::value,
           addition       = BLAZE_SSE2_MODE,
           subtraction    = BLAZE_SSE2_MODE,
