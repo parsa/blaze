@@ -87,6 +87,9 @@ BLAZE_ALWAYS_INLINE const typename MathTrait< typename MathTrait<T1,T2>::HighTyp
 template< typename T >
 BLAZE_ALWAYS_INLINE T round( T a );
 
+template< typename T >
+BLAZE_ALWAYS_INLINE T nextMultiple( T value, T factor );
+
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE bool lessThan( T1 a, T2 b );
 //@}
@@ -344,6 +347,32 @@ BLAZE_ALWAYS_INLINE long double round<long double>( long double a )
    return std::floor( a + 0.5L );
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Rounds up an integral value to the next multiple of a given factor.
+// \ingroup math
+//
+// \param value The integral value to be rounded up \f$[1..\infty)\f$.
+// \param factor The factor of the multiple \f$[1..\infty)\f$.
+// \return The multiple of the given factor.
+//
+// This function rounds up the given integral value to the next multiple of the given factor.
+// In case the integral value is already a multiple of the given factor, the value itself is
+// returned. Note that both \a value and \factor are expected to be positive integrals. In
+// case any of them is negative, the function returns 0. Note that the attempt to use the
+// function with non-integral types results in a compilation error!
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE T nextMultiple( T value, T factor )
+{
+   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
+
+   if( value > T(0) && factor > T(0) )
+      return value + ( factor - ( value % factor ) ) % factor;
+   else return T(0);
+}
 //*************************************************************************************************
 
 
