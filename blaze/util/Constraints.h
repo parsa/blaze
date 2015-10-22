@@ -71,6 +71,7 @@
 #include <blaze/util/constraints/TypeRestriction.h>
 #include <blaze/util/constraints/Union.h>
 #include <blaze/util/constraints/Unsigned.h>
+#include <blaze/util/constraints/Valid.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Void.h>
 #include <blaze/util/constraints/Volatile.h>

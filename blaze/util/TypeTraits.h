@@ -80,6 +80,7 @@
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnion.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
+#include <blaze/util/typetraits/IsValid.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/IsVolatile.h>
