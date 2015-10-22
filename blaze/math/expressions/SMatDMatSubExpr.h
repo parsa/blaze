@@ -692,7 +692,7 @@ inline const typename SubExprTrait< SMatDMatSubExpr<T1,T2,SO1>, T3 >::Type
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct Rows< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public Max< Rows<MT1>, Rows<MT2> >::Type
+   : public Max< Rows<MT1>, Rows<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -710,7 +710,7 @@ struct Rows< SMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct Columns< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public Max< Columns<MT1>, Columns<MT2> >::Type
+   : public Max< Columns<MT1>, Columns<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

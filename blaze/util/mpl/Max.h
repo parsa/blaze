@@ -69,7 +69,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Max : public If< Less<T1,T2>, T2, T1 >
+struct Max : public If< Less<T1,T2>, T2, T1 >::Type
 {};
 //*************************************************************************************************
 

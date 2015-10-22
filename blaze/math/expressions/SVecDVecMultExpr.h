@@ -727,7 +727,7 @@ inline const SVecDVecMultExpr<T1,T2,TF>
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< SVecDVecMultExpr<VT1,VT2,TF> >
-   : public Max< Size<VT1>, Size<VT2> >::Type
+   : public Max< Size<VT1>, Size<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

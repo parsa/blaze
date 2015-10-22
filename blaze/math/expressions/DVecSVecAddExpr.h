@@ -747,7 +747,7 @@ inline const typename SubExprTrait< DVecSVecAddExpr<T1,T2,TF>, T3 >::Type
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct Size< DVecSVecAddExpr<VT1,VT2,TF> >
-   : public Max< Size<VT1>, Size<VT2> >::Type
+   : public Max< Size<VT1>, Size<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

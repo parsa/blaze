@@ -862,7 +862,7 @@ inline const SMatTSMatAddExpr<T2,T1>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Rows< SMatTSMatAddExpr<MT1,MT2> >
-   : public Max< Rows<MT1>, Rows<MT2> >::Type
+   : public Max< Rows<MT1>, Rows<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -880,7 +880,7 @@ struct Rows< SMatTSMatAddExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Columns< SMatTSMatAddExpr<MT1,MT2> >
-   : public Max< Columns<MT1>, Columns<MT2> >::Type
+   : public Max< Columns<MT1>, Columns<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
