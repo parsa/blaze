@@ -36,6 +36,24 @@
 namespace blaze {
 
 //*************************************************************************************************
+/*!\brief Configuration of the padding of dense vectors and matrices.
+// \ingroup config
+//
+// This configuration switch enables/disables the padding of dense vectors and matrices. Padding
+// is used by the Blaze library in order to achieve maximum performance for both dense vector
+// and matrix operations. Due to padding, the proper alignment of data elements can be guaranteed
+// and the need for remainder loops is minimized. In case the switch is set to \a true, padding
+// is enabled for all native dense vectors and matrices. If the switch is set to \a false, padding
+// is generally disabled.
+//
+// \warning Note that disabling padding can considerably reduce the performance of all dense
+// vector and matrix operations!
+*/
+const bool usePadding = true;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Configuration of the streaming behavior.
 // \ingroup config
 //
@@ -44,7 +62,7 @@ namespace blaze {
 // of the target architecture is maxed out. If the target architecture's memory bandwidth cannot
 // be exhausted the use of non-temporal stores can decrease performance instead of increasing it.
 //
-// Via this compilation switch streaming  (i.e. non-temporal stores) can be (de-)activated. If
+// Via this compilation switch streaming (i.e. non-temporal stores) can be (de-)activated. If
 // set to \a true streaming is enabled, if set to \a false streaming is disabled.
 */
 const bool useStreaming = true;
