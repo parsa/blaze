@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Modulus.h
+//  \brief Header file for the Modulus class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,32 +32,50 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_MODULUS_H_
+#define _BLAZE_UTIL_MPL_MODULUS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
 #include <blaze/util/mpl/IntegralC.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Max.h>
-#include <blaze/util/mpl/Min.h>
-#include <blaze/util/mpl/Minus.h>
-#include <blaze/util/mpl/Modulus.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/Plus.h>
-#include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/mpl/Times.h>
+#include <blaze/util/typetraits/CommonType.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time integral modulus operation.
+// \ingroup mpl
+//
+// The Modulus class template returns the result of a modulus operation between the two given
+// template arguments \a T1 and \a T2. In order for Modulus to be able to perform the operation
+// with the given two types, both arguments are required to have a nested member \a value. The
+// result of the modulus operation can be accessed via the nested member \a value, the resulting
+// type is available via the nested type \a ValueType.
+
+   \code
+   blaze::Modulus< Int<3> , Int<2>  >::value      // Results in 1
+   blaze::Modulus< Long<3>, Int<2>  >::ValueType  // Results in long
+   blaze::Modulus< Int<3> , Long<2> >::ValueType  // Results in long
+   \endcode
+*/
+template< typename T1    // Type of the first compile time value
+        , typename T2 >  // Type of the second compile time value
+struct Modulus
+   : public IntegralC< typename CommonType<typename T1::ValueType,typename T2::ValueType>::Type
+                     , ( T1::value % T2::value ) >
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
