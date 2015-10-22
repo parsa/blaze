@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/mpl/IntegralC.h>
 #include <blaze/util/Types.h>
 
 
@@ -68,16 +69,8 @@ namespace blaze {
    \endcode
 */
 template< size_t N >
-struct SizeT
-{
- public:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   static const size_t value = N;
-   typedef size_t  ValueType;
-   /*! \endcond */
-   //**********************************************************************************************
-};
+struct SizeT : public IntegralC<size_t,N>
+{};
 //*************************************************************************************************
 
 } // namespace blaze
