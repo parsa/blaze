@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Plus.h
+//  \brief Header file for the Plus class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,29 +32,49 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_PLUS_H_
+#define _BLAZE_UTIL_MPL_PLUS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
 #include <blaze/util/mpl/IntegralC.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Max.h>
-#include <blaze/util/mpl/Min.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/Plus.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/typetraits/CommonType.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time integral addition.
+// \ingroup mpl
+//
+// The Plus class template returns the sum of the two given template arguments \a T1 and \a T2.
+// In order for Plus to be able to add the two types, both arguments are required to have a nested
+// member \a value. The result of the addition can be accessed via the nested member \a value, the
+// resulting type is available via the nested type \a ValueType.
+
+   \code
+   blaze::Plus< Int<3> , Int<2>  >::value      // Results in 5
+   blaze::Plus< Long<3>, Int<2>  >::ValueType  // Results in long
+   blaze::Plus< Int<3> , Long<2> >::ValueType  // Results in long
+   \endcode
+*/
+template< typename T1    // Type of the first compile time value
+        , typename T2 >  // Type of the second compile time value
+struct Plus
+   : public IntegralC< typename CommonType<typename T1::ValueType,typename T2::ValueType>::Type
+                     , ( T1::value + T2::value ) >
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
