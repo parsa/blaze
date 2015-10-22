@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/IntegralC.h
+//  \brief Header file for the IntegralC class template
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
@@ -32,28 +32,60 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_INTEGRALC_H_
+#define _BLAZE_UTIL_MPL_INTEGRALC_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
-#include <blaze/util/mpl/IntegralC.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Max.h>
-#include <blaze/util/mpl/Min.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/constraints/Integral.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Generic wrapper for a compile time constant integral value.
+// \ingroup mpl
+//
+// The IntegralC class template represents a generic wrapper for a compile time constant integral
+// value. The value of an IntegralC can be accessed via the nested \a value (which is guaranteed
+// to be of type \a T), the type can be accessed via the nested type definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   IntegralC<int,3>::value        // Evaluates to 3
+   IntegralC<long,5L>::ValueType  // Results in long
+   \endcode
+*/
+template< typename T, T N >
+struct IntegralC
+{
+ public:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   static const T value = N;
+   typedef T  ValueType;
+   /*! \endcond */
+   //**********************************************************************************************
+
+ private:
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
+   /*! \endcond */
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
