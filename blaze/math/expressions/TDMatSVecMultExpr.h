@@ -46,7 +46,6 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -609,8 +608,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
@@ -618,7 +615,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -984,8 +981,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
@@ -993,7 +988,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
@@ -1277,8 +1272,6 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
    static inline typename EnableIf< UseVectorizedKernel<VT1,MT1,VT2> >::Type
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
@@ -1286,7 +1279,7 @@ class TDMatSVecMultExpr : public DenseVector< TDMatSVecMultExpr<MT,VT>, false >
 
       const size_t M( A.rows() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<MT1>::value || !IsPadded<VT1>::value );
 
       ConstIterator element( x.begin() );
       const ConstIterator end( x.end() );
