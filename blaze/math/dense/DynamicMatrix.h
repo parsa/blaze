@@ -5343,6 +5343,18 @@ struct MultTrait< DynamicVector<T1,true>, DynamicMatrix<T2,SO> >
    typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
 };
 
+template< typename T1, bool SO, typename T2, bool AF, bool PF >
+struct MultTrait< DynamicMatrix<T1,SO>, CustomVector<T2,AF,PF,false> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, bool AF, bool PF, typename T2, bool SO >
+struct MultTrait< CustomVector<T1,AF,PF,true>, DynamicMatrix<T2,SO> >
+{
+   typedef DynamicVector< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< DynamicMatrix<T1,SO>, CompressedVector<T2,false> >
 {
