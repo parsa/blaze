@@ -43,7 +43,6 @@
 #include <iterator>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
@@ -656,8 +655,6 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
-
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -665,7 +662,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
@@ -942,8 +939,6 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
-
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -951,7 +946,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
@@ -1117,8 +1112,6 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
    static inline typename EnableIf< UseVectorizedKernel<MT,VT3,VT4> >::Type
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT );
-
       typedef typename RemoveReference<RT>::Type::ConstIterator  ConstIterator;
 
       typedef IntrinsicTrait<ElementType>  IT;
@@ -1126,7 +1119,7 @@ class DVecTSVecMultExpr : public SparseMatrix< DVecTSVecMultExpr<VT1,VT2>, false
 
       const size_t M( (~A).rows() );
 
-      const bool remainder( !IsPadded<VT3>::value );
+      const bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
 
       const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
