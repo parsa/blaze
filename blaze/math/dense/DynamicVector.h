@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1319,7 +1320,7 @@ template< typename Type  // Data type of the vector
 inline size_t DynamicVector<Type,TF>::adjustCapacity( size_t minCapacity ) const
 {
    if( IsVectorizable<Type>::value )
-      return minCapacity + ( IT::size - ( minCapacity % IT::size ) ) % IT::size;
+      return nextMultiple<size_t>( minCapacity, IT::size );
    else return minCapacity;
 }
 //*************************************************************************************************
@@ -1619,7 +1620,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -1737,7 +1738,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -1841,7 +1842,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -1945,7 +1946,7 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -2212,7 +2213,7 @@ struct IsAligned< DynamicVector<T,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
-struct IsPadded< DynamicVector<T,TF> > : public IsTrue<true>
+struct IsPadded< DynamicVector<T,TF> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
