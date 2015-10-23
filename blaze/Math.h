@@ -47,6 +47,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/Constants.h>
 #include <blaze/math/Constraints.h>
+#include <blaze/math/CustomVector.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
@@ -57,6 +58,7 @@
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/PaddingFlag.h>
 #include <blaze/math/Serialization.h>
 #include <blaze/math/Shims.h>
 #include <blaze/math/SMP.h>
