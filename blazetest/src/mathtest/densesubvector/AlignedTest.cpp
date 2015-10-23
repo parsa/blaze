@@ -40,7 +40,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/CustomVector.h>
+#include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubvector/AlignedTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -204,6 +207,9 @@ void AlignedTest::testAssignment()
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
 
 
    //=====================================================================================
@@ -298,14 +304,45 @@ void AlignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector assignment";
+      test_ = "DenseSubvector dense vector assignment (aligned/padded)";
 
       initialize();
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 16UL, 16UL, blaze::Deallocate() );
+      randomize( vec, int(randmin), int(randmax) );
+
+      sv1 = vec;
+      sv2 = vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector dense vector assignment (unaligned/unpadded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[17] );
+      UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 = vec;
@@ -338,7 +375,7 @@ void AlignedTest::testAssignment()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 16UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 = vec;
@@ -375,6 +412,9 @@ void AlignedTest::testAddAssign()
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
 
 
    //=====================================================================================
@@ -440,14 +480,45 @@ void AlignedTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector addition assignment";
+      test_ = "DenseSubvector dense vector addition assignment (aligned/padded)";
 
       initialize();
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 16UL, 16UL, blaze::Deallocate() );
+      randomize( vec, int(randmin), int(randmax) );
+
+      sv1 += vec;
+      sv2 += vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector dense vector addition assignment (unaligned/unpadded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[17] );
+      UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 += vec;
@@ -480,7 +551,7 @@ void AlignedTest::testAddAssign()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 16UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 += vec;
@@ -517,6 +588,9 @@ void AlignedTest::testSubAssign()
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
 
 
    //=====================================================================================
@@ -582,14 +656,45 @@ void AlignedTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector subtraction assignment";
+      test_ = "DenseSubvector dense vector subtraction assignment (aligned/padded)";
 
       initialize();
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 16UL, 16UL, blaze::Deallocate() );
+      randomize( vec, int(randmin), int(randmax) );
+
+      sv1 -= vec;
+      sv2 -= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector dense vector subtraction assignment (unaligned/unpadded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[17] );
+      UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 -= vec;
@@ -622,7 +727,7 @@ void AlignedTest::testSubAssign()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 16UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
@@ -659,6 +764,9 @@ void AlignedTest::testMultAssign()
    using blaze::subvector;
    using blaze::aligned;
    using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
 
 
    //=====================================================================================
@@ -724,14 +832,45 @@ void AlignedTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "DenseSubvector dense vector multiplication assignment";
+      test_ = "DenseSubvector dense vector multiplication assignment (aligned/padded)";
 
       initialize();
 
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 16UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 16UL, 16UL, blaze::Deallocate() );
+      randomize( vec, int(randmin), int(randmax) );
+
+      sv1 *= vec;
+      sv2 *= vec;
+
+      checkSize( sv1, 16UL );
+      checkSize( sv2, 16UL );
+
+      if( sv1 != sv2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv1 << "\n"
+             << "   Expected result:\n" << sv2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "DenseSubvector dense vector multiplication assignment (unaligned/unpadded)";
+
+      initialize();
+
+      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[17] );
+      UnalignedUnpadded vec( array.get()+1UL, 16UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 *= vec;

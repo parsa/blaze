@@ -40,6 +40,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/CustomVector.h>
+#include <blaze/util/policies/Deallocate.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubvector/UnalignedTest.h>
 
 
@@ -290,14 +293,70 @@ void UnalignedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Dense vector assignment";
+      test_ = "Dense vector assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       SVT sv = subvector( vec_, 3UL, 4UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
+      vec[0] = 0;
       vec[1] = 8;
+      vec[2] = 0;
+      vec[3] = 9;
+
+      sv = vec;
+
+      checkSize    ( sv  , 4UL );
+      checkNonZeros( sv  , 2UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv != vec ||
+          sv[0] != 0 || sv[1] != 8 || sv[2] != 0 || sv[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] != 0 || vec_[1] != 1 || vec_[2] != 0 || vec_[3] != 0 ||
+          vec_[4] != 8 || vec_[5] != 0 || vec_[6] != 9 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 1 0 0 8 0 9 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      SVT sv = subvector( vec_, 3UL, 4UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] = 0;
+      vec[1] = 8;
+      vec[2] = 0;
       vec[3] = 9;
 
       sv = vec;
@@ -475,15 +534,68 @@ void UnalignedTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "Dense vector addition assignment";
+      test_ = "Dense vector addition assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+
+      sv += vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
+
+      if( sv[0] != 3 || sv[1] != -4 || sv[2] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 3 -4 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 3 || vec_[2] != -4 || vec_[3] != -2 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] !=  4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 3 -4 -2 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector addition assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4] );
+      UnalignedUnpadded vec( array.get()+1UL, 3UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
 
       sv += vec;
 
@@ -659,15 +771,68 @@ void UnalignedTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "Dense vector subtraction assignment";
+      test_ = "Dense vector subtraction assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+
+      sv -= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 3UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 5UL );
+
+      if( sv[0] != -1 || sv[1] != 4 || sv[2] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( -1 4 -2 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != -1 || vec_[2] != 4 || vec_[3] != -2 ||
+          vec_[4] != -3 || vec_[5] !=  0 || vec_[6] != 4 || vec_[7] !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 -1 4 -2 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector subtraction assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4] );
+      UnalignedUnpadded vec( array.get()+1UL, 3UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
 
       sv -= vec;
 
@@ -843,15 +1008,68 @@ void UnalignedTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "Dense vector multiplication assignment";
+      test_ = "Dense vector multiplication assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 3UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 3UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+
+      sv *= vec;
+
+      checkSize    ( sv  , 3UL );
+      checkNonZeros( sv  , 1UL );
+      checkSize    ( vec_, 8UL );
+      checkNonZeros( vec_, 3UL );
+
+      if( sv[0] != 2 || sv[1] != 0 || sv[2] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n"
+             << "   Expected result:\n( 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( vec_[0] !=  0 || vec_[1] != 2 || vec_[2] != 0 || vec_[3] != 0 ||
+          vec_[4] != -3 || vec_[5] != 0 || vec_[6] != 4 || vec_[7] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec_ << "\n"
+             << "   Expected result:\n( 0 2 0 0 -3 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Dense vector multiplication assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      SVT sv = subvector( vec_, 1UL, 3UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4] );
+      UnalignedUnpadded vec( array.get()+1UL, 3UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
 
       sv *= vec;
 
