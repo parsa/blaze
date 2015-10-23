@@ -5728,6 +5728,18 @@ struct MultTrait< DynamicVector<T1,true>, HybridMatrix<T2,M,N,SO> >
    typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
 };
 
+template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
+struct MultTrait< HybridMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
+{
+   typedef HybridVector< typename MultTrait<T1,T2>::Type, M, false >  Type;
+};
+
+template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
+struct MultTrait< CustomVector<T1,AF,PF,true>, HybridMatrix<T2,M,N,SO> >
+{
+   typedef HybridVector< typename MultTrait<T1,T2>::Type, N, true >  Type;
+};
+
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
 {
