@@ -78,6 +78,8 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
+#include <blaze/util/mpl/NextMultiple.h>
+#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -174,7 +176,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   enum { NN = N + ( IT::size - ( N % IT::size ) ) % IT::size };
+   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -444,7 +446,7 @@ class StaticVector : public DenseVector< StaticVector<Type,N,TF>, TF >
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( NN % IT::size == 0UL );
+   BLAZE_STATIC_ASSERT( !usePadding || ( NN % IT::size == 0UL ) );
    BLAZE_STATIC_ASSERT( NN >= N );
    /*! \endcond */
    //**********************************************************************************************
@@ -1859,7 +1861,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( N & size_t(-IT::size) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -1952,7 +1954,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( N & size_t(-IT::size) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -2045,7 +2047,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( N & size_t(-IT::size) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -2138,14 +2140,14 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value );
+   const bool remainder( !usePadding || !IsPadded<VT>::value );
 
    const size_t ipos( ( remainder )?( N & size_t(-IT::size) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
 
-   for( ; i<N; i+=IT::size ) {
+   for( ; i<ipos; i+=IT::size ) {
       store( v_+i, load( v_+i ) * (~rhs).load(i) );
    }
    for( ; remainder && i<N; ++i ) {
@@ -2508,7 +2510,7 @@ struct IsAligned< StaticVector<T,N,TF> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct IsPadded< StaticVector<T,N,TF> > : public IsTrue<true>
+struct IsPadded< StaticVector<T,N,TF> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
