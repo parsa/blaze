@@ -43,7 +43,6 @@
 #include <blaze/math/blas/Level2.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -631,14 +630,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -837,14 +834,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -1319,14 +1314,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -1538,14 +1531,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -1997,14 +1988,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -2217,14 +2206,12 @@ class TDVecDMatMultExpr : public DenseVector< TDVecDMatMultExpr<VT,MT>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -3270,14 +3257,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -3478,14 +3463,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -3931,14 +3914,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -4140,14 +4121,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeAddAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
@@ -4572,14 +4551,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectSmallSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
@@ -4781,14 +4758,12 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<VT1,VT2,MT1,ST2> >::Type
       selectLargeSubAssignKernel( VT1& y, const VT2& x, const MT1& A, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT1 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( A.columns() );
 
-      const bool remainder( !IsPadded<VT1>::value );
+      const bool remainder( !IsPadded<VT1>::value || !IsPadded<MT1>::value );
 
       const size_t jblock( 32768UL / sizeof( ElementType ) );
       const size_t iblock( ( N < jblock )?( 8UL ):( 4UL ) );
