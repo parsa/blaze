@@ -1980,6 +1980,18 @@ struct AddTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
    typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
 };
 
+template< typename T1, bool TF, typename T2, bool AF, bool PF >
+struct AddTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct AddTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
+{
+   typedef DynamicVector< typename AddTrait<T1,T2>::Type, TF >  Type;
+};
+
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
@@ -2031,6 +2043,18 @@ struct SubTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
+{
+   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, bool TF, typename T2, bool AF, bool PF >
+struct SubTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct SubTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
    typedef DynamicVector< typename SubTrait<T1,T2>::Type, TF >  Type;
 };
@@ -2172,6 +2196,42 @@ struct MultTrait< DynamicVector<T1,false>, CompressedVector<T2,true> >
 
 template< typename T1, typename T2 >
 struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, bool TF, typename T2, bool AF, bool PF >
+struct MultTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, typename T2, bool AF, bool PF >
+struct MultTrait< CompressedVector<T1,false>, CustomVector<T2,AF,PF,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, true >  Type;
+};
+
+template< typename T1, typename T2, bool AF, bool PF >
+struct MultTrait< CompressedVector<T1,true>, CustomVector<T2,AF,PF,false> >
+{
+   typedef typename MultTrait<T1,T2>::Type  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool TF, typename T2 >
+struct MultTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
+{
+   typedef CompressedVector< typename MultTrait<T1,T2>::Type, TF >  Type;
+};
+
+template< typename T1, bool AF, bool PF, typename T2 >
+struct MultTrait< CustomVector<T1,AF,PF,false>, CompressedVector<T2,true> >
+{
+   typedef CompressedMatrix< typename MultTrait<T1,T2>::Type, false >  Type;
+};
+
+template< typename T1, bool AF, bool PF, typename T2 >
+struct MultTrait< CustomVector<T1,AF,PF,true>, CompressedVector<T2,false> >
 {
    typedef typename MultTrait<T1,T2>::Type  Type;
 };
