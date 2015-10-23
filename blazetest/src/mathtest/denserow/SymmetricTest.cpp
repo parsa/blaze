@@ -40,10 +40,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/DenseSubmatrix.h>
-#include <blaze/math/DenseSubvector.h>
+#include <blaze/math/CustomVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Views.h>
+#include <blaze/util/policies/Deallocate.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/denserow/SymmetricTest.h>
 
 
@@ -391,14 +392,76 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Row-major dense vector assignment";
+      test_ = "Row-major dense vector assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       RT row1 = row( mat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
+      vec1[0] = 0;
       vec1[1] = 8;
+      vec1[2] = 0;
+      vec1[3] = 9;
+
+      row1 = vec1;
+
+      checkSize    ( row1, 4UL );
+      checkCapacity( row1, 4UL );
+      checkNonZeros( row1, 2UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 7UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) != 0 || mat_(0,2) != 0 || mat_(0,3) != 0 ||
+          mat_(1,0) != 0 || mat_(1,1) != 8 || mat_(1,2) != 0 || mat_(1,3) != 9 ||
+          mat_(2,0) != 0 || mat_(2,1) != 0 || mat_(2,2) != 3 || mat_(2,3) != 4 ||
+          mat_(3,0) != 0 || mat_(3,1) != 9 || mat_(3,2) != 4 || mat_(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major dense vector assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row1 = row( mat_, 1UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec1( array.get()+1UL, 4UL );
+      vec1[0] = 0;
+      vec1[1] = 8;
+      vec1[2] = 0;
       vec1[3] = 9;
 
       row1 = vec1;
@@ -588,14 +651,76 @@ void SymmetricTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "Column-major dense vector assignment";
+      test_ = "Column-major dense vector assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       ORT row1 = row( tmat_, 1UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec1( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec1( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
+      vec1[0] = 0;
       vec1[1] = 8;
+      vec1[2] = 0;
+      vec1[3] = 9;
+
+      row1 = vec1;
+
+      checkSize    ( row1 , 4UL );
+      checkCapacity( row1 , 4UL );
+      checkNonZeros( row1 , 2UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 7UL );
+
+      if( row1[0] != 0 || row1[1] != 8 || row1[2] != 0 || row1[3] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row1 << "\n"
+             << "   Expected result:\n( 0 8 0 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 0 || tmat_(0,2) != 0 || tmat_(0,3) != 0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 8 || tmat_(1,2) != 0 || tmat_(1,3) != 9 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 0 || tmat_(2,2) != 3 || tmat_(2,3) != 4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 9 || tmat_(3,2) != 4 || tmat_(3,3) != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0  0  0 )\n"
+                                     "(  0  8  0  9 )\n"
+                                     "(  0  0  3  4 )\n"
+                                     "(  0  9  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major dense vector assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row1 = row( tmat_, 1UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec1( array.get()+1UL, 4UL );
+      vec1[0] = 0;
+      vec1[1] = 8;
+      vec1[2] = 0;
       vec1[3] = 9;
 
       row1 = vec1;
@@ -751,15 +876,77 @@ void SymmetricTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "Row-major dense vector addition assignment";
+      test_ = "Row-major dense vector addition assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
+
+      row2 += vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 -4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=  2 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) != -4 || mat_(1,3) != -2 ||
+          mat_(2,0) != 2 || mat_(2,1) != -4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major dense vector addition assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
 
       row2 += vec;
 
@@ -902,15 +1089,77 @@ void SymmetricTest::testAddAssign()
    //=====================================================================================
 
    {
-      test_ = "Column-major dense vector addition assignment";
+      test_ = "Column-major dense vector addition assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
+
+      row2 += vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( row2[0] != 2 || row2[1] != -4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 2 -4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=  2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) != -4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 2 || tmat_(2,1) != -4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  0  2  0 )\n"
+                                     "( 0  1 -4 -2 )\n"
+                                     "( 2 -4  3  4 )\n"
+                                     "( 0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major dense vector addition assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
 
       row2 += vec;
 
@@ -1066,15 +1315,77 @@ void SymmetricTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "Row-major dense vector subtraction assignment";
+      test_ = "Row-major dense vector subtraction assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
+
+      row2 -= vec;
+
+      checkSize    ( row2,  4UL );
+      checkCapacity( row2,  4UL );
+      checkNonZeros( row2,  4UL );
+      checkRows    ( mat_,  4UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 11UL );
+
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -2 4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) !=  0 || mat_(0,1) !=  0 || mat_(0,2) != -2 || mat_(0,3) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) !=  1 || mat_(1,2) !=  4 || mat_(1,3) != -2 ||
+          mat_(2,0) != -2 || mat_(2,1) !=  4 || mat_(2,2) !=  3 || mat_(2,3) !=  4 ||
+          mat_(3,0) !=  0 || mat_(3,1) != -2 || mat_(3,2) !=  4 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major dense vector subtraction assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
 
       row2 -= vec;
 
@@ -1217,15 +1528,77 @@ void SymmetricTest::testSubAssign()
    //=====================================================================================
 
    {
-      test_ = "Column-major dense vector subtraction assignment";
+      test_ = "Column-major dense vector subtraction assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
       vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
+
+      row2 -= vec;
+
+      checkSize    ( row2 ,  4UL );
+      checkCapacity( row2 ,  4UL );
+      checkNonZeros( row2 ,  4UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( row2[0] != -2 || row2[1] != 4 || row2[2] != 3 || row2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( -2 4 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) !=  0 || tmat_(0,1) !=  0 || tmat_(0,2) != -2 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  0 || tmat_(1,1) !=  1 || tmat_(1,2) !=  4 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != -2 || tmat_(2,1) !=  4 || tmat_(2,2) !=  3 || tmat_(2,3) !=  4 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -2 || tmat_(3,2) !=  4 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0 -2  0 )\n"
+                                     "(  0  1  4 -2 )\n"
+                                     "( -2  4  3  4 )\n"
+                                     "(  0 -2  4  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major dense vector subtraction assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] = -4;
+      vec[2] =  0;
+      vec[3] =  0;
 
       row2 -= vec;
 
@@ -1381,15 +1754,77 @@ void SymmetricTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "Row-major dense vector multiplication assignment";
+      test_ = "Row-major dense vector multiplication assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       RT row2 = row( mat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
+      vec[1] =  0;
       vec[2] = -4;
+      vec[3] =  0;
+
+      row2 *= vec;
+
+      checkSize    ( row2, 4UL );
+      checkCapacity( row2, 4UL );
+      checkNonZeros( row2, 1UL );
+      checkRows    ( mat_, 4UL );
+      checkColumns ( mat_, 4UL );
+      checkNonZeros( mat_, 5UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 -12 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) !=   0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 0 || mat_(1,1) !=  1 || mat_(1,2) !=   0 || mat_(1,3) != -2 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  0 || mat_(2,2) != -12 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) != -2 || mat_(3,2) !=   0 || mat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major dense vector multiplication assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      RT row2 = row( mat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] =  0;
+      vec[2] = -4;
+      vec[3] =  0;
 
       row2 *= vec;
 
@@ -1532,15 +1967,77 @@ void SymmetricTest::testMultAssign()
    //=====================================================================================
 
    {
-      test_ = "Column-major dense vector multiplication assignment";
+      test_ = "Column-major dense vector multiplication assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowVector;
 
       initialize();
 
       ORT row2 = row( tmat_, 2UL );
 
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL, 0 );
+      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      AlignedPadded vec( blaze::allocate<int>( 16UL ), 4UL, 16UL, blaze::Deallocate() );
       vec[0] =  2;
+      vec[1] =  0;
       vec[2] = -4;
+      vec[3] =  0;
+
+      row2 *= vec;
+
+      checkSize    ( row2 , 4UL );
+      checkCapacity( row2 , 4UL );
+      checkNonZeros( row2 , 1UL );
+      checkRows    ( tmat_, 4UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 5UL );
+
+      if( row2[0] != 0 || row2[1] != 0 || row2[2] != -12 || row2[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << row2 << "\n"
+             << "   Expected result:\n( 0 0 -12 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) !=  0 || tmat_(0,2) !=   0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) != 0 || tmat_(1,1) !=  1 || tmat_(1,2) !=   0 || tmat_(1,3) != -2 ||
+          tmat_(2,0) != 0 || tmat_(2,1) !=  0 || tmat_(2,2) != -12 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != -2 || tmat_(3,2) !=   0 || tmat_(3,3) !=  5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n(  0  0   0  0 )\n"
+                                     "(  0  1   0 -2 )\n"
+                                     "(  0  0 -12  0 )\n"
+                                     "(  0 -2   0  5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major dense vector multiplication assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowVector;
+
+      initialize();
+
+      ORT row2 = row( tmat_, 2UL );
+
+      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5] );
+      UnalignedUnpadded vec( array.get()+1UL, 4UL );
+      vec[0] =  2;
+      vec[1] =  0;
+      vec[2] = -4;
+      vec[3] =  0;
 
       row2 *= vec;
 
