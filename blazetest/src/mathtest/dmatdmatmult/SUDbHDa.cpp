@@ -58,14 +58,14 @@ int main()
 {
    std::cout << "   Running 'SUDbHDa'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
-   using blazetest::mathtest::TypeB;
+   using blazetest::mathtest::NumericA;
+   using blazetest::mathtest::NumericB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<TypeB> >  SUDb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeA> >      HDa;
+      typedef blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<NumericB> >  SUDb;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >      HDa;
 
       // Creator type definitions
       typedef blazetest::Creator<SUDb>  CSUDb;

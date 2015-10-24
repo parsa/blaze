@@ -58,13 +58,13 @@ int main()
 {
    std::cout << "   Running 'SLDbHDb'..." << std::endl;
 
-   using blazetest::mathtest::TypeB;
+   using blazetest::mathtest::NumericB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<TypeB> >  SLDb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeB> >      HDb;
+      typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<NumericB> >  SLDb;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >      HDb;
 
       // Creator type definitions
       typedef blazetest::Creator<SLDb>  CSLDb;
