@@ -58,13 +58,13 @@ int main()
 {
    std::cout << "   Running 'HDaMCa'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::NumericA;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeA> >  HDa;
-      typedef blaze::CompressedMatrix<TypeA>                         MCa;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >  HDa;
+      typedef blaze::CompressedMatrix<NumericA>                         MCa;
 
       // Creator type definitions
       typedef blazetest::Creator<HDa>  CHDa;
