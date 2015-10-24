@@ -110,7 +110,7 @@ class OperationTest : private blaze::NonCopyable
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testStore         ();
+   void testStorea        ();
    void testStream        ();
    void testStoreu        ( size_t offset );
    void testAddition      ( blaze::TrueType );
@@ -185,7 +185,7 @@ OperationTest<T>::OperationTest()
    , d_    ( blaze::allocate<T>( NN ) )  // The fourth aligned array of size NN
    , test_ ()                            // Label of the currently performed test
 {
-   testStore();
+   testStorea();
    testStream();
 
    for( size_t offset=0UL; offset<IT::size; ++offset ) {
@@ -243,17 +243,17 @@ OperationTest<T>::~OperationTest()
 // load and store. In case any error is detected, a \a std::runtime_error exception is thrown.
 */
 template< typename T >  // Data type of the intrinsic test
-void OperationTest<T>::testStore()
+void OperationTest<T>::testStorea()
 {
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
-   test_  = "store() operation";
+   test_  = "storea() operation";
 
    initialize();
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( b_+i, load( a_+i ) );
+      storea( b_+i, loada( a_+i ) );
    }
 
    compare( a_, b_ );
@@ -274,7 +274,7 @@ void OperationTest<T>::testStore()
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testStream()
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::stream;
 
    test_  = "stream() operation";
@@ -282,7 +282,7 @@ void OperationTest<T>::testStream()
    initialize();
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      stream( b_+i, load( a_+i ) );
+      stream( b_+i, loada( a_+i ) );
    }
 
    compare( a_, b_ );
@@ -330,8 +330,8 @@ void OperationTest<T>::testStoreu( size_t offset )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testAddition( blaze::TrueType )
 {
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Addition operation";
 
@@ -342,7 +342,7 @@ void OperationTest<T>::testAddition( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, load( a_+i ) + load( b_+i ) );
+      storea( d_+i, loada( a_+i ) + loada( b_+i ) );
    }
 
    compare( c_, d_ );
@@ -376,8 +376,8 @@ void OperationTest<T>::testAddition( blaze::FalseType )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testSubtraction( blaze::TrueType )
 {
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Subtraction operation";
 
@@ -388,7 +388,7 @@ void OperationTest<T>::testSubtraction( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, load( a_+i ) - load( b_+i ) );
+      storea( d_+i, loada( a_+i ) - loada( b_+i ) );
    }
 
    compare( c_, d_ );
@@ -423,8 +423,8 @@ void OperationTest<T>::testSubtraction( blaze::FalseType )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testMultiplication( blaze::TrueType )
 {
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Multiplication operation";
 
@@ -435,7 +435,7 @@ void OperationTest<T>::testMultiplication( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, load( a_+i ) * load( b_+i ) );
+      storea( d_+i, loada( a_+i ) * loada( b_+i ) );
    }
 
    compare( c_, d_ );
@@ -469,8 +469,8 @@ void OperationTest<T>::testMultiplication( blaze::FalseType )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testDivision( blaze::TrueType )
 {
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Division operation";
 
@@ -481,7 +481,7 @@ void OperationTest<T>::testDivision( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, load( a_+i ) / load( b_+i ) );
+      storea( d_+i, loada( a_+i ) / loada( b_+i ) );
    }
 
    compare( c_, d_ );
@@ -518,8 +518,8 @@ void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
 {
    using std::abs;
    using blaze::abs;
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Absolute value operation";
 
@@ -530,7 +530,7 @@ void OperationTest<T>::testAbsoluteValue( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, abs( load( a_+i ) ) );
+      storea( d_+i, abs( loada( a_+i ) ) );
    }
 
    compare( c_, d_ );
@@ -565,8 +565,8 @@ template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testConjugate( blaze::TrueType )
 {
    using blaze::conj;
-   using blaze::load;
-   using blaze::store;
+   using blaze::loada;
+   using blaze::storea;
 
    test_ = "Conjugate operation";
 
@@ -577,7 +577,7 @@ void OperationTest<T>::testConjugate( blaze::TrueType )
    }
 
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      store( d_+i, conj( load( a_+i ) ) );
+      storea( d_+i, conj( loada( a_+i ) ) );
    }
 
    compare( c_, d_ );
@@ -611,7 +611,7 @@ void OperationTest<T>::testConjugate( blaze::FalseType )
 template< typename T >  // Data type of the intrinsic test
 void OperationTest<T>::testReduction()
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::sum;
 
    test_ = "sum() operation";
@@ -629,7 +629,7 @@ void OperationTest<T>::testReduction()
 
    T vsum = T();
    for( size_t i=0UL; i<N; i+=IT::size ) {
-      vsum += sum( load( a_+i ) );
+      vsum += sum( loada( a_+i ) );
    }
 
    if( !blaze::equal( ssum, vsum ) ) {
