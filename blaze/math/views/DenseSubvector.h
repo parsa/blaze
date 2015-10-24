@@ -615,7 +615,7 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
                array[i] = *(iterator_+i);
             for( size_t i=rest_; i<IT::size; ++i )
                array[i] = ElementType();
-            return blaze::load( array.data() );
+            return blaze::loada( array.data() );
          }
       }
       //*******************************************************************************************
@@ -1927,7 +1927,7 @@ template< typename VT  // Type of the dense vector
 inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
    DenseSubvector<VT,AF,TF>::loadu( size_t index ) const
 {
-   using blaze::load;
+   using blaze::loada;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1946,7 +1946,7 @@ inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
          array[i] = vector_[offset_+index+i];
       for( size_t i=rest_; i<IT::size; ++i )
          array[i] = ElementType();
-      return load( array.data() );
+      return loada( array.data() );
    }
 }
 //*************************************************************************************************

@@ -44,7 +44,7 @@
 #include <blaze/math/intrinsics/Addition.h>
 #include <blaze/math/intrinsics/Conj.h>
 #include <blaze/math/intrinsics/Division.h>
-#include <blaze/math/intrinsics/Load.h>
+#include <blaze/math/intrinsics/Loada.h>
 #include <blaze/math/intrinsics/Loadu.h>
 #include <blaze/math/intrinsics/Multiplication.h>
 #include <blaze/math/intrinsics/Reduction.h>

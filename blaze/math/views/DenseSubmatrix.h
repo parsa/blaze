@@ -706,7 +706,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
                array[j] = *(iterator_+j);
             for( size_t j=rest_; j<IT::size; ++j )
                array[j] = ElementType();
-            return blaze::load( array.data() );
+            return blaze::loada( array.data() );
          }
       }
       //*******************************************************************************************
@@ -2476,7 +2476,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
    DenseSubmatrix<MT,AF,SO>::loadu( size_t i, size_t j ) const
 {
-   using blaze::load;
+   using blaze::loada;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2496,7 +2496,7 @@ inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
          array[k] = matrix_(row_+i,column_+j+k);
       for( size_t k=rest_; k<IT::size; ++k )
          array[k] = ElementType();
-      return load( array.data() );
+      return loada( array.data() );
    }
 }
 //*************************************************************************************************
@@ -3436,7 +3436,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                array[i] = *(iterator_+i);
             for( size_t i=rest_; i<IT::size; ++i )
                array[i] = ElementType();
-            return blaze::load( array.data() );
+            return blaze::loada( array.data() );
          }
       }
       //*******************************************************************************************
@@ -5154,7 +5154,7 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
    DenseSubmatrix<MT,unaligned,true>::loadu( size_t i, size_t j ) const
 {
-   using blaze::load;
+   using blaze::loada;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5174,7 +5174,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
          array[k] = matrix_(row_+i+k,column_+j);
       for( size_t k=rest_; k<IT::size; ++k )
          array[k] = ElementType();
-      return load( array.data() );
+      return loada( array.data() );
    }
 }
 /*! \endcond */

@@ -400,7 +400,7 @@ inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,A
    BLAZE_INTERNAL_ASSERT( !AF || checkAlignment( ptr_ ), "Invalid alignment detected" );
 
    if( AF )
-      return blaze::load( ptr_ );
+      return blaze::loada( ptr_ );
    else
       return blaze::loadu( ptr_ );
 }

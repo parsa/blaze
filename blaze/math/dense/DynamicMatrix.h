@@ -1731,7 +1731,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
 {
-   using blaze::load;
+   using blaze::loada;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1740,7 +1740,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   return load( v_+i*nn_+j );
+   return loada( v_+i*nn_+j );
 }
 //*************************************************************************************************
 
@@ -2147,7 +2147,7 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2175,13 +2175,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) + it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j             , loada( v_+i*nn_+j              ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size    , loada( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*2UL, loada( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*3UL, loada( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         store( v_+i*nn_+j, load( v_+i*nn_+j ) + it.load() );
+         store( v_+i*nn_+j, loada( v_+i*nn_+j ) + it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] += *it;
@@ -2363,7 +2363,7 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2391,13 +2391,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         store( v_+i*nn_+j             , load( v_+i*nn_+j              ) - it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size    , load( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size*2UL, load( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
-         store( v_+i*nn_+j+IT::size*3UL, load( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j             , loada( v_+i*nn_+j              ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size    , loada( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*2UL, loada( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
+         store( v_+i*nn_+j+IT::size*3UL, loada( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         store( v_+i*nn_+j, load( v_+i*nn_+j ) - it.load() );
+         store( v_+i*nn_+j, loada( v_+i*nn_+j ) - it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] -= *it;
@@ -4071,7 +4071,7 @@ template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
 {
-   using blaze::load;
+   using blaze::loada;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4080,7 +4080,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   return load( v_+i+j*mm_ );
+   return loada( v_+i+j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4495,7 +4495,7 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -4523,13 +4523,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) + it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_             , loada( v_+i+j*mm_              ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size    , loada( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*2UL, loada( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*3UL, loada( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         store( v_+i+j*mm_, load( v_+i+j*mm_ ) + it.load() );
+         store( v_+i+j*mm_, loada( v_+i+j*mm_ ) + it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] += *it;
@@ -4717,7 +4717,7 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
-   using blaze::load;
+   using blaze::loada;
    using blaze::store;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -4745,13 +4745,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         store( v_+i+j*mm_             , load( v_+i+j*mm_              ) - it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size    , load( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size*2UL, load( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
-         store( v_+i+j*mm_+IT::size*3UL, load( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_             , loada( v_+i+j*mm_              ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size    , loada( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*2UL, loada( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
+         store( v_+i+j*mm_+IT::size*3UL, loada( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         store( v_+i+j*mm_, load( v_+i+j*mm_ ) - it.load() );
+         store( v_+i+j*mm_, loada( v_+i+j*mm_ ) - it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] -= *it;
