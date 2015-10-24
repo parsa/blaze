@@ -58,13 +58,13 @@ int main()
 {
    std::cout << "   Running 'VDbHDb'..." << std::endl;
 
-   using blazetest::mathtest::TypeB;
+   using blazetest::mathtest::NumericB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicVector<TypeB>                            VDb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeB> >  HDb;
+      typedef blaze::DynamicVector<NumericB>                            VDb;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >  HDb;
 
       // Creator type definitions
       typedef blazetest::Creator<VDb>  CVDb;
