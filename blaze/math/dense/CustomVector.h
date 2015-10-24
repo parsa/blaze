@@ -5431,7 +5431,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::store( size_t index, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5439,7 +5439,7 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::store( size_t i
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
 
-   store( v_.get()+index, value );
+   storea( v_.get()+index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5562,7 +5562,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,aligned,unpadded,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::store;
+   using blaze::storea;
    using blaze::stream;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5594,13 +5594,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
       typename VT::ConstIterator it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
-         store( v+i             , it.load() ); it += IT::size;
-         store( v+i+IT::size    , it.load() ); it += IT::size;
-         store( v+i+IT::size*2UL, it.load() ); it += IT::size;
-         store( v+i+IT::size*3UL, it.load() ); it += IT::size;
+         storea( v+i             , it.load() ); it += IT::size;
+         storea( v+i+IT::size    , it.load() ); it += IT::size;
+         storea( v+i+IT::size*2UL, it.load() ); it += IT::size;
+         storea( v+i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         store( v+i, it.load() );
+         storea( v+i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
          v_[i] = *it;
@@ -5690,7 +5690,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    CustomVector<Type,aligned,unpadded,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5708,13 +5708,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) + it.load() );
+      storea( v+i, loada(v+i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -5803,7 +5803,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    CustomVector<Type,aligned,unpadded,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5821,13 +5821,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) - it.load() );
+      storea( v+i, loada(v+i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -5916,7 +5916,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    CustomVector<Type,aligned,unpadded,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5934,13 +5934,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) * it.load() );
+      storea( v+i, loada(v+i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] *= *it;
@@ -7299,7 +7299,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::store( size_t index, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -7307,7 +7307,7 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::store( size_t ind
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
 
-   store( v_.get()+index, value );
+   storea( v_.get()+index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7430,7 +7430,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,aligned,padded,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::store;
+   using blaze::storea;
    using blaze::stream;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -7464,13 +7464,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
       typename VT::ConstIterator it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
-         store( v+i             , it.load() ); it += IT::size;
-         store( v+i+IT::size    , it.load() ); it += IT::size;
-         store( v+i+IT::size*2UL, it.load() ); it += IT::size;
-         store( v+i+IT::size*3UL, it.load() ); it += IT::size;
+         storea( v+i             , it.load() ); it += IT::size;
+         storea( v+i+IT::size    , it.load() ); it += IT::size;
+         storea( v+i+IT::size*2UL, it.load() ); it += IT::size;
+         storea( v+i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         store( v+i, it.load() );
+         storea( v+i, it.load() );
       }
       for( ; remainder && i<size_; ++i, ++it ) {
          v_[i] = *it;
@@ -7560,7 +7560,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    CustomVector<Type,aligned,padded,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -7580,13 +7580,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) + it.load() );
+      storea( v+i, loada(v+i) + it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -7675,7 +7675,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    CustomVector<Type,aligned,padded,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -7695,13 +7695,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) - it.load() );
+      storea( v+i, loada(v+i) - it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -7790,7 +7790,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    CustomVector<Type,aligned,padded,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -7810,13 +7810,13 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      store( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
-      store( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
-      store( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      store( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      storea( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
+      storea( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
+      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
+      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      store( v+i, loada(v+i) * it.load() );
+      storea( v+i, loada(v+i) * it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] *= *it;

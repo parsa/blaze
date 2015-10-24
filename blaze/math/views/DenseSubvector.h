@@ -1995,7 +1995,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2010,7 +2010,7 @@ inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType&
    }
    else {
       AlignedArray<ElementType,IT::size> array;
-      store( array.data(), value );
+      storea( array.data(), value );
       for( size_t i=0UL; i<rest_; ++i )
          vector_[offset_+index+i] = array[i];
    }

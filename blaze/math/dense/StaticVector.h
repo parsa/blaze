@@ -1733,7 +1733,7 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE void
    StaticVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1741,7 +1741,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( index + IT::size <= NN , "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
 
-   store( &v_[index], value );
+   storea( &v_[index], value );
 }
 //*************************************************************************************************
 
@@ -1855,7 +1855,7 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    StaticVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1869,7 +1869,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      store( v_+i, (~rhs).load(i) );
+      storea( v_+i, (~rhs).load(i) );
    }
    for( ; remainder && i<N; ++i ) {
       v_[i] = (~rhs)[i];
@@ -1948,7 +1948,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    StaticVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1962,7 +1962,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      store( v_+i, loada( v_+i ) + (~rhs).load(i) );
+      storea( v_+i, loada( v_+i ) + (~rhs).load(i) );
    }
    for( ; remainder && i<N; ++i ) {
       v_[i] += (~rhs)[i];
@@ -2041,7 +2041,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    StaticVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2055,7 +2055,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      store( v_+i, loada( v_+i ) - (~rhs).load(i) );
+      storea( v_+i, loada( v_+i ) - (~rhs).load(i) );
    }
    for( ; remainder && i<N; ++i ) {
       v_[i] -= (~rhs)[i];
@@ -2134,7 +2134,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    StaticVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2148,7 +2148,7 @@ inline typename EnableIf< typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      store( v_+i, loada( v_+i ) * (~rhs).load(i) );
+      storea( v_+i, loada( v_+i ) * (~rhs).load(i) );
    }
    for( ; remainder && i<N; ++i ) {
       v_[i] *= (~rhs)[i];

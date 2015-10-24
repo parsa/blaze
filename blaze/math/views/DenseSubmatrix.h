@@ -2549,7 +2549,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2565,7 +2565,7 @@ inline void DenseSubmatrix<MT,AF,SO>::storeu( size_t i, size_t j, const Intrinsi
    }
    else {
       AlignedArray<ElementType,IT::size> array;
-      store( array.data(), value );
+      storea( array.data(), value );
       for( size_t k=0UL; k<rest_; ++k )
          matrix_(row_+i,column_+j+k) = array[k];
    }
@@ -5226,7 +5226,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const 
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5242,7 +5242,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::storeu( size_t i, size_t j, const
    }
    else {
       AlignedArray<ElementType,IT::size> array;
-      store( array.data(), value );
+      storea( array.data(), value );
       for( size_t k=0UL; k<rest_; ++k )
          matrix_(row_+i+k,column_+j) = array[k];
    }

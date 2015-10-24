@@ -2579,7 +2579,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    StaticMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2588,7 +2588,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   store( &v_[i*NN+j], value );
+   storea( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -2717,7 +2717,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2733,7 +2733,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( 0UL );
 
       for( ; j<jpos; j+=IT::size ) {
-         store( &v_[i*NN+j], (~rhs).load(i,j) );
+         storea( &v_[i*NN+j], (~rhs).load(i,j) );
       }
       for( ; remainder && j<N; ++j ) {
          v_[i*NN+j] = (~rhs)(i,j);
@@ -2871,7 +2871,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -2896,7 +2896,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         store( &v_[i*NN+j], loada( &v_[i*NN+j] ) + (~rhs).load(i,j) );
+         storea( &v_[i*NN+j], loada( &v_[i*NN+j] ) + (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] += (~rhs)(i,j);
@@ -3034,7 +3034,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
    StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -3059,7 +3059,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         store( &v_[i*NN+j], loada( &v_[i*NN+j] ) - (~rhs).load(i,j) );
+         storea( &v_[i*NN+j], loada( &v_[i*NN+j] ) - (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] -= (~rhs)(i,j);
@@ -5543,7 +5543,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5552,7 +5552,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
 
-   store( &v_[i+j*MM], value );
+   storea( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5684,7 +5684,7 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5700,7 +5700,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( 0UL );
 
       for( ; i<ipos; i+=IT::size ) {
-         store( &v_[i+j*MM], (~rhs).load(i,j) );
+         storea( &v_[i+j*MM], (~rhs).load(i,j) );
       }
       for( ; remainder && i<M; ++i ) {
          v_[i+j*MM] = (~rhs)(i,j);
@@ -5842,7 +5842,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -5867,7 +5867,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         store( &v_[i+j*MM], loada( &v_[i+j*MM] ) + (~rhs).load(i,j) );
+         storea( &v_[i+j*MM], loada( &v_[i+j*MM] ) + (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] += (~rhs)(i,j);
@@ -6009,7 +6009,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
    StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    using blaze::loada;
-   using blaze::store;
+   using blaze::storea;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -6034,7 +6034,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         store( &v_[i+j*MM], loada( &v_[i+j*MM] ) - (~rhs).load(i,j) );
+         storea( &v_[i+j*MM], loada( &v_[i+j*MM] ) - (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] -= (~rhs)(i,j);
