@@ -59,14 +59,14 @@ int main()
 {
    std::cout << "   Running 'DCbHDa'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
-   using blazetest::mathtest::TypeB;
+   using blazetest::mathtest::NumericA;
+   using blazetest::mathtest::NumericB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeB> >  DCb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<TypeA> >    HDa;
+      typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<NumericB> >  DCb;
+      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >    HDa;
 
       // Creator type definitions
       typedef blazetest::Creator<DCb>  CDCb;
