@@ -405,8 +405,11 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
    inline bool isAligned() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
+
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -2053,6 +2056,33 @@ inline bool HybridMatrix<Type,M,N,SO>::isAligned() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller then the
+// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
+// index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
+   HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
+{
+   return loada( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2072,7 +2102,7 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
-   HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
 
@@ -2920,9 +2950,11 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
    inline bool isAligned() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -4574,6 +4606,33 @@ inline bool HybridMatrix<Type,M,N,true>::isAligned() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
+   HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
+{
+   return loada( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -4591,7 +4650,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
-   HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
+   HybridMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
 
@@ -4645,6 +4704,34 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+BLAZE_ALWAYS_INLINE void
+   HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   return storea( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -4663,7 +4750,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   HybridMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
 
