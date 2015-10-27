@@ -477,10 +477,10 @@ namespace blaze {}
 // \n \section vectors_general General Concepts
 // <hr>
 //
-// The \b Blaze library currently offers three dense vector types (\ref vector_types_static_vector,
-// \ref vector_types_dynamic_vector and \ref vector_types_hybrid_vector) and one sparse vector type
-// (\ref vector_types_compressed_vector). All vectors can be specified as either column vectors
-// or row vectors:
+// The \b Blaze library currently offers four dense vector types (\ref vector_types_static_vector,
+// \ref vector_types_dynamic_vector, \ref vector_types_hybrid_vector, and \ref vector_types_custom_vector)
+// and one sparse vector type (\ref vector_types_compressed_vector). All vectors can be specified
+// as either column vectors or row vectors:
 
    \code
    using blaze::DynamicVector;
@@ -670,6 +670,260 @@ namespace blaze {}
    blaze::HybridVector<double,6UL,blaze::rowVector> c;
    \endcode
 
+// \n \section vector_types_custom_vector CustomVector
+// <hr>
+//
+// The blaze::CustomVector class template provides the functionality to represent an external
+// array of elements of arbitrary type and a fixed size as a native \b Blaze dense vector data
+// structure. Thus in contrast to all other dense vector types a custom vector does not perform
+// any kind of memory allocation by itself, but it is provided with an existing array of element
+// during construction. A custom vector can therefore be considered an alias to the existing
+// array. It can be included via the header file
+
+   \code
+   #include <blaze/math/CustomVector.h>
+   \endcode
+
+// The type of the elements, the properties of the given array of elements and the transpose
+// flag of the vector can be specified via the following four template parameters:
+
+   \code
+   template< typename Type, bool AF, bool PF, bool TF >
+   class CustomVector;
+   \endcode
+
+//  - Type: specifies the type of the vector elements. CustomVector can be used with any
+//          non-cv-qualified, non-reference, non-pointer element type.
+//  - AF  : specifies whether the represented, external arrays are properly aligned with
+//          respect to the available instruction set (SSE, AVX, ...) or not.
+//  - PF  : specified whether the represented, external arrays are properly padded with
+//          respect to the available instruction set (SSE, AVX, ...) or not.
+//  - TF  : specifies whether the vector is a row vector (\a blaze::rowVector) or a column
+//          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
+//
+// The blaze::CustomVector is the right choice if any external array needs to be represented as
+// a \b Blaze dense vector data structure:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   // Definition of an unmanaged custom column vector for unaligned, unpadded integer arrays
+   typedef CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+   std::vector<int> vec( 7UL );
+   UnalignedUnpadded a( &vec[0], 7UL );
+
+   // Definition of a managed custom column vector for unaligned but padded 'float' arrays
+   typedef CustomVector<float,unaligned,padded,columnVector>  UnalignedPadded;
+   UnalignedPadded b( new float[16], 9UL, 16UL, blaze::ArrayDelete() );
+
+   // Definition of a managed custom row vector for aligned, unpadded 'double' arrays
+   typedef CustomVector<double,aligned,unpadded,rowVector>  AlignedUnpadded;
+   AlignedUnpadded c( allocate<double>( 7UL ), 7UL, blaze::Deallocate() );
+
+   // Definition of a managed custom row vector for aligned, padded 'complex<double>' arrays
+   typedef CustomVector<complex<double>,aligned,padded,columnVector>  AlignedPadded;
+   AlignedPadded d( allocate< complex<double> >( 8UL ), 5UL, 8UL, blaze::Deallocate() );
+   \endcode
+
+// In comparison with the remaining \b Blaze dense vector types CustomVector has several special
+// characteristics. All of these result from the fact that a custom vector is not performing any
+// kind of memory allocation, but instead is given an existing array of elements. The following
+// sections discuss all of these characteristics:
+//
+//  -# <b>\ref vector_types_custom_vector_memory_management</b>
+//  -# <b>\ref vector_types_custom_vector_copy_operations</b>
+//  -# <b>\ref vector_types_custom_vector_alignment</b>
+//  -# <b>\ref vector_types_custom_vector_padding</b>
+//
+// \n \subsection vector_types_custom_vector_memory_management Memory Management
+//
+// The CustomVector class template acts as an adaptor for an existing array of elements. As such
+// it provides everything that is required to use the array just like a native \b Blaze dense
+// vector data structure. However, this flexibility comes with the price that the user of a custom
+// vector is responsible for the resource management.
+//
+// When constructing a custom vector there are two choices: Either a user manually manages the
+// array of elements outside the custom vector, or alternatively passes the responsibility for
+// the memory management to an instance of CustomVector. In the second case the CustomVector
+// class employs shared ownership between all copies of the custom vector, which reference the
+// same array.
+//
+// The following examples give an impression of several possible types of custom vectors:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::ArrayDelete;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Definition of a 3-dimensional custom vector with unaligned, unpadded and externally
+   // managed integer array. Note that the std::vector must be guaranteed to outlive the
+   // custom vector!
+   std::vector<int> vec( 3UL );
+   CustomVector<int,unaligned,unpadded> a( &vec[0], 3UL );
+
+   // Definition of a custom row vector with size 3 for unaligned, unpadded integer arrays.
+   // The responsibility for the memory management is passed to the custom vector by
+   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
+   // of the custom vector.
+   CustomVector<int,unaligned,unpadded,rowVector> b( new int[3], 3UL, ArrayDelete() );
+
+   // Definition of a custom vector with size 3 and capacity 16 with aligned and padded
+   // integer array. The memory management is passed to the custom vector by providing a
+   // deleter of type 'blaze::Deallocate'.
+   CustomVector<int,aligned,padded> c( allocate<int>( 16UL ), 3UL, 16UL, Deallocate() );
+   \endcode
+
+// It is possible to pass any type of deleter to the constructor. The deleter is only required
+// to provide a function call operator that can be passed the pointer to the managed array. As
+// an example the following code snipped shows the implementation of two native \b Blaze deleters
+// blaze::ArrayDelete and blaze::Deallocate:
+
+   \code
+   namespace blaze {
+
+   struct ArrayDelete
+   {
+      template< typename Type >
+      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+   };
+
+   struct Deallocate
+   {
+      template< typename Type >
+      inline void operator()( Type ptr ) const { deallocate( ptr ); }
+   };
+
+   } // namespace blaze
+   \endcode
+
+// \n \subsection vector_types_custom_vector_copy_operations Copy Operations
+//
+// As with all dense vectors it is possible to copy construct a custom vector:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   typedef CustomVector<int,unaligned,unpadded>  CustomType;
+
+   std::vector<int> vec( 5UL, 10 );  // Vector of 5 integers of the value 10
+   CustomType a( &vec[0], 5UL );     // Represent the std::vector as Blaze dense vector
+   a[1] = 20;                        // Also modifies the std::vector
+
+   CustomType b( a );  // Creating a copy of vector a
+   b[2] = 20;          // Also affect vector a and the std::vector
+   \endcode
+
+// It is important to note that a custom vector acts as a reference to the specified array. Thus
+// the result of the copy constructor is a new custom vector that is referencing and representing
+// the same array as the original custom vector. In case a deleter has been provided to the first
+// custom vector, both vectors share the responsibility to destroy the array when the last vector
+// goes out of scope.
+//
+// In contrast to copy construction, just as with references, copy assignment does not change
+// which array is referenced by the custom vector, but modifies the values of the array:
+
+   \code
+   std::vector<int> vec2( 5UL, 4 );  // Vector of 5 integers of the value 4
+   CustomType c( &vec2[0], 5UL );    // Represent the std::vector as Blaze dense vector
+
+   a = c;  // Copy assignment: Set all values of vector a and b to 4.
+   \endcode
+
+// \n \subsection vector_types_custom_vector_alignment Alignment
+//
+// In case the custom vector is specified as \a aligned the passed array must be guaranteed to
+// be aligned according to the requirements of the used instruction set (SSE, AVX, ...). For
+// instance, if AVX is active an array of integers must be 32-bit aligned:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::Deallocate;
+   using blaze::aligned;
+   using blaze::unpadded;
+
+   int* array = blaze::allocate<int>( 5UL );  // Needs to be 32-bit aligned
+   CustomVector<int,aligned,unpadded> a( array, 5UL, Deallocate() );
+   \endcode
+
+// In case the alignment requirements are violated, a \a std::invalid_argument exception is
+// thrown.
+//
+// \n \subsection vector_types_custom_vector_padding Padding
+//
+// Adding padding elements to the end of an array can have a significant impact on performance.
+// For instance, assuming that AVX is available, then two aligned, padded, 3-dimensional vectors
+// of double precision values can be added via a single intrinsic addition instruction:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::padded;
+
+   typedef CustomVector<double,aligned,padded>  CustomType;
+
+   // Creating padded custom vectors of size 3 and a capacity of 4
+   CustomType a( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
+   CustomType b( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
+   CustomType c( allocate<double>( 4UL ), 3UL, 4UL, Deallocate() );
+
+   // ... Initialization
+
+   c = a + b;  // AVX-based vector addition
+   \endcode
+
+// In this example, maximum performance is possible. However, in case no padding elements are
+// inserted, a scalar addition has to be used:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::unpadded;
+
+   typedef CustomVector<double,aligned,unpadded>  CustomType;
+
+   // Creating unpadded custom vector of size 3
+   CustomType a( allocate<double>( 3UL ), 3UL, Deallocate() );
+   CustomType b( allocate<double>( 3UL ), 3UL, Deallocate() );
+   CustomType c( allocate<double>( 3UL ), 3UL, Deallocate() );
+
+   // ... Initialization
+
+   c = a + b;  // Scalar vector addition
+   \endcode
+
+// Note the different number of constructor parameters for unpadded and padded custom vectors:
+// In contrast to unpadded vectors, where during the construction only the size of the array
+// has to be specified, during the construction of a padded custom vector it is additionally
+// necessary to explicitly specify the capacity of the array.
+//
+// The number of padding elements is required to be sufficient with respect to the available
+// instruction set: In case of an aligned padded custom vector the added padding elements must
+// guarantee that the capacity is a multiple of the intrinsic vector width. In case of unaligned
+// padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is the
+// intrinsic vector width. In case the padding is insufficient with respect to the available
+// instruction set, a \a std::invalid_argument exception is thrown.
+//
+// Please also note that \b Blaze will zero initialize the padding elements in order to achieve
+// maximum performance!
+//
+//
 // \n \section vector_types_compressed_vector CompressedVector
 // <hr>
 //
@@ -1139,9 +1393,9 @@ namespace blaze {}
 
 // \n \subsection vector_operations_resize_reserve Resize/Reserve
 //
-// The size of a \c StaticVector is fixed by the second template parameter. In contrast, the size
-// of \c DynamicVectors, \c HybridVectors as well as \c CompressedVectors can be changed via the
-// \c resize() function:
+// The size of a \c StaticVector is fixed by the second template parameter and a \c CustomVector
+// cannot be resized. In contrast, the size of \c DynamicVectors, \c HybridVectors as well as
+// \c CompressedVectors can be changed via the \c resize() function:
 
    \code
    using blaze::DynamicVector;
@@ -1255,13 +1509,13 @@ namespace blaze {}
    if( isDefault( a ) ) { ... }
    \endcode
 
-// A vector is in default state if it appears to just have been default constructed. A resizable
-// vector (\c HybridVector, \c DynamicVector, or \c CompressedVector) is in default state if its
-// size is equal to zero. A non-resizable vector (\c StaticVector, all subvectors, rows, and
-// columns) is in default state if all its elements are in default state. For instance, in case
-// the vector is instantiated for a built-in integral or floating point data type, the function
-// returns \c true in case all vector elements are 0 and \c false in case any vector element is
-// not 0.
+// A vector is in default state if it appears to just have been default constructed. All resizable
+// vectors (\c HybridVector, \c DynamicVector, or \c CompressedVector) and \a CustomVector are
+// in default state if its size is equal to zero. All non-resizable vector (\c StaticVector, all
+// subvectors, rows, and columns) is in default state if all its elements are in default state.
+// For instance, in case the vector is instantiated for a built-in integral or floating point data
+// type, the function returns \c true in case all vector elements are 0 and \c false in case any
+// vector element is not 0.
 //
 //
 // \n \subsection vector_operations_isUniform isUniform
