@@ -377,9 +377,11 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -1712,6 +1714,31 @@ inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
+// index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
+   DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
+{
+   return loada( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -1729,7 +1756,7 @@ inline bool DynamicMatrix<Type,SO>::canSMPAssign() const
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
-   DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
+   DynamicMatrix<Type,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
 
@@ -1779,6 +1806,32 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 
 
 //*************************************************************************************************
+/*!\brief Store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
+// index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storea( i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned store of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -1797,7 +1850,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
 
@@ -2715,9 +2768,11 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -4054,6 +4109,31 @@ inline bool DynamicMatrix<Type,true>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
+   DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
+{
+   return loada( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -4069,7 +4149,7 @@ inline bool DynamicMatrix<Type,true>::canSMPAssign() const
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
-   DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
+   DynamicMatrix<Type,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
 
@@ -4121,6 +4201,32 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type >  // Data type of the matrix
+BLAZE_ALWAYS_INLINE void
+   DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storea( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -4137,7 +4243,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
-   DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   DynamicMatrix<Type,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
 
