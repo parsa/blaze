@@ -708,9 +708,11 @@ class HermitianMatrix<MT,SO,true>
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storea( size_t i, size_t j, const IntrinsicType& value );
    inline void storeu( size_t i, size_t j, const IntrinsicType& value );
    inline void stream( size_t i, size_t j, const IntrinsicType& value );
    //@}
@@ -2046,6 +2048,33 @@ inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the Hermitian matrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or
+// the row index (in case of a column-major matrix) must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
+   HermitianMatrix<MT,SO,true>::load( size_t i, size_t j ) const
+{
+   return matrix_.load( i, j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2063,9 +2092,9 @@ inline bool HermitianMatrix<MT,SO,true>::canSMPAssign() const
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
-   HermitianMatrix<MT,SO,true>::load( size_t i, size_t j ) const
+   HermitianMatrix<MT,SO,true>::loada( size_t i, size_t j ) const
 {
-   return matrix_.load( i, j );
+   return matrix_.loada( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2100,6 +2129,44 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller than the
+// number of columns. Additionally, the column index (in case of a row-major matrix) or the row
+// index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline void HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   matrix_.store( i, j, value );
+
+   if( SO ) {
+      const size_t kend( min( i+IT::size, rows() ) );
+      for( size_t k=i; k<kend; ++k )
+         matrix_(j,k) = conj( matrix_(k,j) );
+   }
+   else {
+      const size_t kend( min( j+IT::size, columns() ) );
+      for( size_t k=j; k<kend; ++k )
+         matrix_(k,i) = conj( matrix_(i,k) );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2117,9 +2184,9 @@ BLAZE_ALWAYS_INLINE typename HermitianMatrix<MT,SO,true>::IntrinsicType
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline void HermitianMatrix<MT,SO,true>::store( size_t i, size_t j, const IntrinsicType& value )
+inline void HermitianMatrix<MT,SO,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
-   matrix_.store( i, j, value );
+   matrix_.storea( i, j, value );
 
    if( SO ) {
       const size_t kend( min( i+IT::size, rows() ) );
