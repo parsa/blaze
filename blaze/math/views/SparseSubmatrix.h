@@ -477,17 +477,6 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the sparse submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the sparse submatrix will offer write access to the sparse matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseSubmatrix<MT,AF,SO>           This;           //!< Type of this SparseSubmatrix instance.
@@ -502,7 +491,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -816,7 +805,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
    typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2776,17 +2765,6 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the sparse submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the sparse submatrix will offer write access to the sparse matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseSubmatrix<MT,AF,true>         This;           //!< Type of this SparseSubmatrix instance.
@@ -2801,7 +2779,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -3115,7 +3093,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
    typedef SubmatrixIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
