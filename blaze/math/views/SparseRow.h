@@ -374,17 +374,6 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the sparse row will return
-       references and iterators to const. Otherwise \a useConst will be set to 0 and the
-       sparse row will offer write access to the sparse matrix elements both via the subscript
-       operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseRow<MT,SO,SF>                 This;           //!< Type of this SparseRow instance.
@@ -398,13 +387,13 @@ class SparseRow : public SparseVector< SparseRow<MT,SO,SF>, true >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1972,17 +1961,6 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the sparse row will return
-       references and iterators to const. Otherwise \a useConst will be set to 0 and the
-       sparse row will offer write access to the sparse matrix elements both via the subscript
-       operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseRow<MT,false,false>           This;            //!< Type of this SparseRow instance.
@@ -1996,7 +1974,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
    //**********************************************************************************************
 
    //**RowElement class definition*****************************************************************
@@ -2337,7 +2315,7 @@ class SparseRow<MT,false,false> : public SparseVector< SparseRow<MT,false,false>
    typedef RowIterator<const MT,typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, RowIterator<MT,typename MT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, RowIterator<MT,typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3670,17 +3648,6 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the sparse row will return
-       references and iterators to const. Otherwise \a useConst will be set to 0 and the
-       sparse row will offer write access to the sparse matrix elements both via the subscript
-       operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseRow<MT,false,true>            This;           //!< Type of this SparseRow instance.
@@ -3694,13 +3661,13 @@ class SparseRow<MT,false,true> : public SparseVector< SparseRow<MT,false,true>, 
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant row value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
