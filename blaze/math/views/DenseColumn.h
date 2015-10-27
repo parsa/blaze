@@ -90,6 +90,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
@@ -346,17 +347,6 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense column will
-       return references and iterators to const. Otherwise \a useConst will be set to 0
-       and the dense column will offer write access to the dense matrix elements both via
-       the subscript operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseColumn<MT,SO,SF>               This;           //!< Type of this DenseColumn instance.
@@ -371,19 +361,20 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant column value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a non-constant row value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   //! Pointer to a non-constant column value.
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -527,9 +518,11 @@ class DenseColumn : public DenseVector< DenseColumn<MT,SO,SF>, false >
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -703,7 +696,8 @@ inline typename DenseColumn<MT,SO,SF>::ConstReference
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense column.
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
@@ -720,7 +714,8 @@ inline typename DenseColumn<MT,SO,SF>::Pointer DenseColumn<MT,SO,SF>::data()
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense column.
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
@@ -1456,6 +1451,29 @@ inline bool DenseColumn<MT,SO,SF>::canSMPAssign() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
+   DenseColumn<MT,SO,SF>::load( size_t index ) const
+{
+   return matrix_.load( index, col_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1471,9 +1489,9 @@ template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
-   DenseColumn<MT,SO,SF>::load( size_t index ) const
+   DenseColumn<MT,SO,SF>::loada( size_t index ) const
 {
-   return matrix_.load( index, col_ );
+   return matrix_.loada( index, col_ );
 }
 //*************************************************************************************************
 
@@ -1502,6 +1520,29 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 
 
 //*************************************************************************************************
+/*!\brief Store of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store a specific intrinsic element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , bool SF >    // Symmetry flag
+BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::store( size_t index, const IntrinsicType& value )
+{
+   matrix_.store( index, col_, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned store of an intrinsic element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -1517,9 +1558,9 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,SO,SF>::IntrinsicType
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , bool SF >    // Symmetry flag
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseColumn<MT,SO,SF>::storea( size_t index, const IntrinsicType& value )
 {
-   matrix_.store( index, col_, value );
+   matrix_.storea( index, col_, value );
 }
 //*************************************************************************************************
 
@@ -2030,17 +2071,6 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    typedef typename If< IsExpression<MT>, MT, MT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense column will
-       return references and iterators to const. Otherwise \a useConst will be set to 0
-       and the dense column will offer write access to the dense matrix elements both via
-       the subscript operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseColumn<MT,false,false>         This;            //!< Type of this DenseColumn instance.
@@ -2054,7 +2084,14 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
+
+   //! Pointer to a constant column value.
+   typedef const ElementType*  ConstPointer;
+
+   //! Pointer to a non-constant column value.
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**ColumnIterator class definition*************************************************************
@@ -2370,7 +2407,7 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    typedef ColumnIterator<const MT>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, ColumnIterator<MT> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, ColumnIterator<MT> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2398,6 +2435,8 @@ class DenseColumn<MT,false,false> : public DenseVector< DenseColumn<MT,false,fal
    //@{
    inline Reference      operator[]( size_t index );
    inline ConstReference operator[]( size_t index ) const;
+   inline Pointer        data  ();
+   inline ConstPointer   data  () const;
    inline Iterator       begin ();
    inline ConstIterator  begin () const;
    inline ConstIterator  cbegin() const;
@@ -2587,6 +2626,42 @@ inline typename DenseColumn<MT,false,false>::ConstReference
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,col_);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the column elements.
+//
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,false>::Pointer DenseColumn<MT,false,false>::data()
+{
+   return matrix_.data() + col_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the column elements.
+//
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseColumn<MT,false,false>::ConstPointer DenseColumn<MT,false,false>::data() const
+{
+   return matrix_.data() + col_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3605,17 +3680,6 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense column will
-       return references and iterators to const. Otherwise \a useConst will be set to 0
-       and the dense column will offer write access to the dense matrix elements both via
-       the subscript operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseColumn<MT,false,true>          This;           //!< Type of this DenseColumn instance.
@@ -3630,19 +3694,20 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant column value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
-   //! Pointer to a constant row value.
+   //! Pointer to a constant column value.
    typedef const ElementType*  ConstPointer;
 
-   //! Pointer to a non-constant row value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   //! Pointer to a non-constant column value.
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3778,9 +3843,11 @@ class DenseColumn<MT,false,true> : public DenseVector< DenseColumn<MT,false,true
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -3954,7 +4021,8 @@ inline typename DenseColumn<MT,false,true>::ConstReference
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense column.
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::data()
@@ -3971,7 +4039,8 @@ inline typename DenseColumn<MT,false,true>::Pointer DenseColumn<MT,false,true>::
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense column.
+// This function returns a pointer to the internal storage of the dense column. Note that in case
+// of a row-major matrix you can NOT assume that the column elements lie adjacent to each other!
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseColumn<MT,false,true>::ConstPointer DenseColumn<MT,false,true>::data() const
@@ -4708,6 +4777,29 @@ inline bool DenseColumn<MT,false,true>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
+   DenseColumn<MT,false,true>::load( size_t index ) const
+{
+   return matrix_.load( col_, index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -4721,9 +4813,9 @@ inline bool DenseColumn<MT,false,true>::canSMPAssign() const
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
-   DenseColumn<MT,false,true>::load( size_t index ) const
+   DenseColumn<MT,false,true>::loada( size_t index ) const
 {
-   return matrix_.load( col_, index );
+   return matrix_.loada( col_, index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4754,6 +4846,29 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the dense column.
+//
+// \param index Access index. The index must be smaller than the number of matrix rows.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store a specific intrinsic element of the dense column. The
+// index must be smaller than the number of matrix rows. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::store( size_t index, const IntrinsicType& value )
+{
+   matrix_.store( col_, index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the dense column.
 //
 // \param index Access index. The index must be smaller than the number of matrix rows.
@@ -4767,9 +4882,9 @@ BLAZE_ALWAYS_INLINE typename DenseColumn<MT,false,true>::IntrinsicType
 // and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void DenseColumn<MT,false,true>::storea( size_t index, const IntrinsicType& value )
 {
-   matrix_.store( col_, index, value );
+   matrix_.storea( col_, index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
