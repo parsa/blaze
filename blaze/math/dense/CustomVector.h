@@ -111,7 +111,7 @@ namespace blaze {
 // \section customvector_general General
 //
 // The CustomVector class template provides the functionality to represent an external array of
-// elements of arbitrary type and a fixed size as a native \a Blaze dense vector data structure.
+// elements of arbitrary type and a fixed size as a native \b Blaze dense vector data structure.
 // Thus in contrast to all other dense vector types a custom vector does not perform any kind
 // of memory allocation by itself, but it is provided with an existing array of element during
 // construction. A custom vector can therefore be considered an alias to the existing array.
@@ -157,7 +157,7 @@ namespace blaze {
 
 // \n \section customvector_special_properties Special Properties of Custom Vectors
 //
-// In comparison with the remaining \a Blaze dense vector types CustomVector has several special
+// In comparison with the remaining \b Blaze dense vector types CustomVector has several special
 // characteristics. All of these result from the fact that a custom vector is not performing any
 // kind of memory allocation, but instead is given an existing array of elements. The following
 // sections discuss all of these characteristics:
@@ -270,7 +270,7 @@ namespace blaze {
    a = c;  // Copy assignment: Set all values of vector a and b to 4.
    \endcode
 
-// \n \subsection customvector_padding Alignment
+// \n \subsection customvector_alignment Alignment
 //
 // In case the custom vector is specified as \a aligned the passed array must be guaranteed to
 // be aligned according to the requirements of the used instruction set (SSE, AVX, ...). For
@@ -606,9 +606,11 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -1732,6 +1734,31 @@ inline bool CustomVector<Type,AF,PF,TF>::canSMPAssign() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
+   CustomVector<Type,AF,PF,TF>::load( size_t index ) const
+{
+   return loadu( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -1749,9 +1776,17 @@ template< typename Type  // Data type of the vector
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
-   CustomVector<Type,AF,PF,TF>::load( size_t index ) const
+   CustomVector<Type,AF,PF,TF>::loada( size_t index ) const
 {
-   return loadu( index );
+   using blaze::loada;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   return loada( v_.get()+index );
 }
 //*************************************************************************************************
 
@@ -1789,6 +1824,31 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
 
 
 //*************************************************************************************************
+/*!\brief Store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::store( size_t index, const IntrinsicType& value )
+{
+   storeu( index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned store of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -1806,9 +1866,17 @@ template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storea( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   using blaze::storea;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   storea( v_.get()+index, value );
 }
 //*************************************************************************************************
 
@@ -2530,9 +2598,11 @@ class CustomVector<Type,unaligned,padded,TF>
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -3546,6 +3616,31 @@ inline bool CustomVector<Type,unaligned,padded,TF>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicType
+   CustomVector<Type,unaligned,padded,TF>::load( size_t index ) const
+{
+   return loadu( index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -3561,9 +3656,17 @@ inline bool CustomVector<Type,unaligned,padded,TF>::canSMPAssign() const
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicType
-   CustomVector<Type,unaligned,padded,TF>::load( size_t index ) const
+   CustomVector<Type,unaligned,padded,TF>::loada( size_t index ) const
 {
-   return loadu( index );
+   using blaze::loada;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   return loada( v_.get()+index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3603,6 +3706,32 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicTy
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE void
+   CustomVector<Type,unaligned,padded,TF>::store( size_t index, const IntrinsicType& value )
+{
+   storeu( index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -3619,9 +3748,17 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicTy
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void
-   CustomVector<Type,unaligned,padded,TF>::store( size_t index, const IntrinsicType& value )
+   CustomVector<Type,unaligned,padded,TF>::storea( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   using blaze::storea;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   storea( v_.get()+index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4354,9 +4491,11 @@ class CustomVector<Type,aligned,unpadded,TF>
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -5349,6 +5488,31 @@ inline bool CustomVector<Type,aligned,unpadded,TF>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicType
+   CustomVector<Type,aligned,unpadded,TF>::load( size_t index ) const
+{
+   return loada( index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -5364,7 +5528,7 @@ inline bool CustomVector<Type,aligned,unpadded,TF>::canSMPAssign() const
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicType
-   CustomVector<Type,aligned,unpadded,TF>::load( size_t index ) const
+   CustomVector<Type,aligned,unpadded,TF>::loada( size_t index ) const
 {
    using blaze::loada;
 
@@ -5414,6 +5578,31 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicTy
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::store( size_t index, const IntrinsicType& value )
+{
+   storea( index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -5429,7 +5618,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicTy
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::storea( size_t index, const IntrinsicType& value )
 {
    using blaze::storea;
 
@@ -6185,9 +6374,11 @@ class CustomVector<Type,aligned,padded,TF>
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -7217,6 +7408,31 @@ inline bool CustomVector<Type,aligned,padded,TF>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
+   CustomVector<Type,aligned,padded,TF>::load( size_t index ) const
+{
+   return loada( index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -7232,7 +7448,7 @@ inline bool CustomVector<Type,aligned,padded,TF>::canSMPAssign() const
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
-   CustomVector<Type,aligned,padded,TF>::load( size_t index ) const
+   CustomVector<Type,aligned,padded,TF>::loada( size_t index ) const
 {
    using blaze::loada;
 
@@ -7282,6 +7498,31 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::store( size_t index, const IntrinsicType& value )
+{
+   storea( index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -7297,7 +7538,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::storea( size_t index, const IntrinsicType& value )
 {
    using blaze::storea;
 
