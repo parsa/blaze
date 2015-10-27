@@ -315,7 +315,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the vector.
+   /*!\brief Load of an intrinsic element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
    // \return The loaded intrinsic element.
@@ -327,6 +327,22 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    BLAZE_ALWAYS_INLINE IntrinsicType load( size_t index ) const
    {
       return dv_.load( index );
+   }
+   //**********************************************************************************************
+
+   //**Loada function******************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const
+   {
+      return dv_.loada( index );
    }
    //**********************************************************************************************
 
@@ -347,7 +363,7 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the vector.
+   /*!\brief Store of an intrinsic element of the vector.
    //
    // \param index Access index. The index must be smaller than the number of vector elements.
    // \param value The intrinsic element to be stored.
@@ -360,6 +376,23 @@ class DVecTransposer : public DenseVector< DVecTransposer<VT,TF>, TF >
    BLAZE_ALWAYS_INLINE void store( size_t index, const IntrinsicType& value )
    {
       dv_.store( index, value );
+   }
+   //**********************************************************************************************
+
+   //**Storea function******************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the vector.
+   //
+   // \param index Access index. The index must be smaller than the number of vector elements.
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value )
+   {
+      dv_.storea( index, value );
    }
    //**********************************************************************************************
 
