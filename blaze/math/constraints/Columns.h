@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/util/constraints/ConstraintTest.h>
 #include <blaze/util/mpl/Equal.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/Suffix.h>
