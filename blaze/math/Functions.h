@@ -360,7 +360,7 @@ BLAZE_ALWAYS_INLINE long double round<long double>( long double a )
 //
 // This function rounds up the given integral value to the next multiple of the given factor.
 // In case the integral value is already a multiple of the given factor, the value itself is
-// returned. Note that both \a value and \factor are expected to be positive integrals. In
+// returned. Note that both \a value and \a factor are expected to be positive integrals. In
 // case any of them is negative, the function returns 0. Note that the attempt to use the
 // function with non-integral types results in a compilation error!
 */
