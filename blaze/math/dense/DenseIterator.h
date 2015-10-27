@@ -131,6 +131,7 @@ class DenseIterator
    /*!\name Expression template evaluation functions */
    //@{
    inline const IntrinsicType load () const;
+   inline const IntrinsicType loada() const;
    inline const IntrinsicType loadu() const;
    //@}
    //**********************************************************************************************
@@ -397,12 +398,31 @@ template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
 inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::load() const
 {
-   BLAZE_INTERNAL_ASSERT( !AF || checkAlignment( ptr_ ), "Invalid alignment detected" );
-
    if( AF )
-      return blaze::loada( ptr_ );
+      return loada();
    else
-      return blaze::loadu( ptr_ );
+      return loadu();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Aligned load of the intrinsic element at the current iterator position.
+//
+// \return The loaded intrinsic element.
+//
+// This function performs an aligned load of the intrinsic element of the current element.
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Type of the elements
+        , bool AF >      // Alignment flag
+inline const typename DenseIterator<Type,AF>::IntrinsicType DenseIterator<Type,AF>::loada() const
+{
+   BLAZE_INTERNAL_ASSERT( checkAlignment( ptr_ ), "Invalid alignment detected" );
+
+   return blaze::loada( ptr_ );
 }
 //*************************************************************************************************
 
