@@ -377,7 +377,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the matrix.
+   /*!\brief Load of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
@@ -390,6 +390,23 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
    {
       return dm_.load( j, i );
+   }
+   //**********************************************************************************************
+
+   //**Loada function******************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const
+   {
+      return dm_.loada( j, i );
    }
    //**********************************************************************************************
 
@@ -411,7 +428,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the matrix.
+   /*!\brief Store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
@@ -425,6 +442,24 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
    BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.store( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**Storea function******************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.storea( j, i, value );
    }
    //**********************************************************************************************
 
@@ -1165,7 +1200,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //**********************************************************************************************
 
    //**Load function*******************************************************************************
-   /*!\brief Aligned load of an intrinsic element of the matrix.
+   /*!\brief Load of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
@@ -1178,6 +1213,23 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    BLAZE_ALWAYS_INLINE IntrinsicType load( size_t i, size_t j ) const
    {
       return dm_.load( j, i );
+   }
+   //**********************************************************************************************
+
+   //**Loada function*******************************************************************************
+   /*!\brief Aligned load of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \return The loaded intrinsic element.
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const
+   {
+      return dm_.loada( j, i );
    }
    //**********************************************************************************************
 
@@ -1199,7 +1251,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    //**********************************************************************************************
 
    //**Store function******************************************************************************
-   /*!\brief Aligned store of an intrinsic element of the matrix.
+   /*!\brief Store of an intrinsic element of the matrix.
    //
    // \param i Access index for the row. The index has to be in the range [0..M-1].
    // \param j Access index for the column. The index has to be in the range [0..N-1].
@@ -1213,6 +1265,24 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
    BLAZE_ALWAYS_INLINE void store( size_t i, size_t j, const IntrinsicType& value )
    {
       dm_.store( j, i, value );
+   }
+   //**********************************************************************************************
+
+   //**Storea function******************************************************************************
+   /*!\brief Aligned store of an intrinsic element of the matrix.
+   //
+   // \param i Access index for the row. The index has to be in the range [0..M-1].
+   // \param j Access index for the column. The index has to be in the range [0..N-1].
+   // \param value The intrinsic element to be stored.
+   // \return void
+   //
+   // This function must \b NOT be called explicitly! It is used internally for the performance
+   // optimized evaluation of expression templates. Calling this function explicitly might result
+   // in erroneous results and/or in compilation errors.
+   */
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value )
+   {
+      dm_.storea( j, i, value );
    }
    //**********************************************************************************************
 
