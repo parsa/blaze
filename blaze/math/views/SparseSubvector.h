@@ -396,17 +396,6 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef typename If< IsExpression<VT>, VT, VT& >::Type  Operand;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given sparse vector of type
-       \a VT is const qualified, \a useConst will be set to 1 and the sparse subvector will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the sparse subvector will offer write access to the sparse vector elements both via
-       the subscript operator and iterators. */
-   enum { useConst = IsConst<VT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef SparseSubvector<VT,AF,TF>           This;           //!< Type of this SparseSubvector instance.
@@ -420,7 +409,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef typename VT::ConstReference  ConstReference;
 
    //! Reference to a non-constant subvector value.
-   typedef typename IfTrue< useConst, ConstReference, typename VT::Reference >::Type  Reference;
+   typedef typename If< IsConst<VT>, ConstReference, typename VT::Reference >::Type  Reference;
    //**********************************************************************************************
 
    //**SubvectorElement class definition***********************************************************
@@ -734,7 +723,7 @@ class SparseSubvector : public SparseVector< SparseSubvector<VT,AF,TF>, TF >
    typedef SubvectorIterator<const VT,typename VT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<VT>, ConstIterator, SubvectorIterator<VT,typename VT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
