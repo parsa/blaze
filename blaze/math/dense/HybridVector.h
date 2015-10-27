@@ -369,9 +369,11 @@ class HybridVector : public DenseVector< HybridVector<Type,N,TF>, TF >
    inline bool isAligned() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t index ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t index ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t index ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t index, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t index, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t index, const IntrinsicType& value );
 
@@ -1602,6 +1604,30 @@ inline bool HybridVector<Type,N,TF>::isAligned() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
+   HybridVector<Type,N,TF>::load( size_t index ) const
+{
+   return loada( index );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -1618,7 +1644,7 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
-   HybridVector<Type,N,TF>::load( size_t index ) const
+   HybridVector<Type,N,TF>::loada( size_t index ) const
 {
    using blaze::loada;
 
@@ -1665,6 +1691,30 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
 
 //*************************************************************************************************
+/*!\brief Store of an intrinsic element of the vector.
+//
+// \param index Access index. The index must be smaller than the number of vector elements.
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense vector. The
+// index must be smaller than the number of vector elements and it must be a multiple of
+// the number of values inside the intrinsic element. This function must \b NOT be called
+// explicitly! It is used internally for the performance optimized evaluation of expression
+// templates. Calling this function explicitly might result in erroneous results and/or in
+// compilation errors.
+*/
+template< typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+{
+   storea( index, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned store of an intrinsic element of the vector.
 //
 // \param index Access index. The index must be smaller than the number of vector elements.
@@ -1681,7 +1731,7 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::store( size_t index, const IntrinsicType& value )
+BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storea( size_t index, const IntrinsicType& value )
 {
    using blaze::storea;
 
