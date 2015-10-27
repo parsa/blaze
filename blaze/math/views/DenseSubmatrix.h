@@ -101,6 +101,7 @@
 #include <blaze/util/logging/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
@@ -484,17 +485,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the dense submatrix will offer write access to the dense matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseSubmatrix<MT,AF,SO>            This;           //!< Type of this DenseSubmatrix instance.
@@ -510,13 +500,14 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -669,6 +660,21 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       //*******************************************************************************************
 
       //**Load function****************************************************************************
+      /*!\brief Load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs a load of the current intrinsic element of the submatrix iterator.
+      // This function must \b NOT be called explicitly! It is used internally for the performance
+      // optimized evaluation of expression templates. Calling this function explicitly might
+      // result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType load() const {
+         return loadu();
+      }
+      //*******************************************************************************************
+
+      //**Loada function***************************************************************************
       /*!\brief Aligned load of an intrinsic element of the dense submatrix.
       //
       // \return The loaded intrinsic element.
@@ -678,8 +684,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // performance optimized evaluation of expression templates. Calling this function explicitly
       // might result in erroneous results and/or in compilation errors.
       */
-      inline IntrinsicType load() const {
-         return loadu();
+      inline IntrinsicType loada() const {
+         return iterator_.loada();
       }
       //*******************************************************************************************
 
@@ -879,7 +885,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -909,6 +915,8 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t i );
+   inline ConstPointer   data  ( size_t i ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -1034,9 +1042,11 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    inline bool canSMPAssign() const;
 
    inline IntrinsicType load ( size_t i, size_t j ) const;
+   inline IntrinsicType loada( size_t i, size_t j ) const;
    inline IntrinsicType loadu( size_t i, size_t j ) const;
 
    inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storea( size_t i, size_t j, const IntrinsicType& value );
    inline void storeu( size_t i, size_t j, const IntrinsicType& value );
    inline void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -1308,6 +1318,42 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::ConstPointer DenseSubmatrix<MT,AF,SO>::data() const
 {
    return matrix_.data() + row_*spacing() + column_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the submatrix elements of row/column \a i.
+//
+// \param i The row/column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in row/column \a i.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,AF,SO>::Pointer DenseSubmatrix<MT,AF,SO>::data( size_t i )
+{
+   return matrix_.data() + (row_+i)*spacing() + column_;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the submatrix elements of row/column \a i.
+//
+// \param i The row/column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in row/column \a i.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,AF,SO>::ConstPointer DenseSubmatrix<MT,AF,SO>::data( size_t i ) const
+{
+   return matrix_.data() + (row_+i)*spacing() + column_;
 }
 //*************************************************************************************************
 
@@ -2428,6 +2474,32 @@ inline bool DenseSubmatrix<MT,AF,SO>::canSMPAssign() const
 
 
 //*************************************************************************************************
+/*!\brief Load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or
+// the row index (in case of a column-major matrix) must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
+   DenseSubmatrix<MT,AF,SO>::load( size_t i, size_t j ) const
+{
+   return loadu( i, j );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2447,9 +2519,15 @@ template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
 inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
-   DenseSubmatrix<MT,AF,SO>::load( size_t i, size_t j ) const
+   DenseSubmatrix<MT,AF,SO>::loada( size_t i, size_t j ) const
 {
-   return loadu( i, j );
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   return matrix_.loada( row_+i, column_+j );
 }
 //*************************************************************************************************
 
@@ -2503,6 +2581,32 @@ inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
 
 
 //*************************************************************************************************
+/*!\brief Store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or the
+// row index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline void DenseSubmatrix<MT,AF,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Aligned store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -2521,9 +2625,15 @@ inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
-inline void DenseSubmatrix<MT,AF,SO>::store( size_t i, size_t j, const IntrinsicType& value )
+inline void DenseSubmatrix<MT,AF,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   matrix_.storea( row_+i, column_+j, value );
 }
 //*************************************************************************************************
 
@@ -3214,17 +3324,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the dense submatrix will offer write access to the dense matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseSubmatrix<MT,unaligned,true>   This;           //!< Type of this DenseSubmatrix instance.
@@ -3240,13 +3339,14 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3399,6 +3499,21 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       //*******************************************************************************************
 
       //**Load function****************************************************************************
+      /*!\brief Load of an intrinsic element of the dense submatrix.
+      //
+      // \return The loaded intrinsic element.
+      //
+      // This function performs a load of the current intrinsic element of the submatrix iterator.
+      // This function must \b NOT be called explicitly! It is used internally for the performance
+      // optimized evaluation of expression templates. Calling this function explicitly might
+      // result in erroneous results and/or in compilation errors.
+      */
+      inline IntrinsicType load() const {
+         return loadu();
+      }
+      //*******************************************************************************************
+
+      //**Loada function***************************************************************************
       /*!\brief Aligned load of an intrinsic element of the dense submatrix.
       //
       // \return The loaded intrinsic element.
@@ -3408,8 +3523,8 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // performance optimized evaluation of expression templates. Calling this function explicitly
       // might result in erroneous results and/or in compilation errors.
       */
-      inline IntrinsicType load() const {
-         return loadu();
+      inline IntrinsicType loada() const {
+         return iterator_.loada();
       }
       //*******************************************************************************************
 
@@ -3609,7 +3724,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    typedef SubmatrixIterator<typename MT::ConstIterator>  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, SubmatrixIterator<typename MT::Iterator> >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3639,12 +3754,14 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  ( size_t j );
+   inline ConstPointer   data  ( size_t j ) const;
+   inline Iterator       begin ( size_t j );
+   inline ConstIterator  begin ( size_t j ) const;
+   inline ConstIterator  cbegin( size_t j ) const;
+   inline Iterator       end   ( size_t j );
+   inline ConstIterator  end   ( size_t j ) const;
+   inline ConstIterator  cend  ( size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -3758,9 +3875,11 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    inline bool canSMPAssign() const;
 
    inline IntrinsicType load ( size_t i, size_t j ) const;
+   inline IntrinsicType loada( size_t i, size_t j ) const;
    inline IntrinsicType loadu( size_t i, size_t j ) const;
 
    inline void store ( size_t i, size_t j, const IntrinsicType& value );
+   inline void storea( size_t i, size_t j, const IntrinsicType& value );
    inline void storeu( size_t i, size_t j, const IntrinsicType& value );
    inline void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -4006,7 +4125,8 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstReference
 // may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,unaligned,true>::Pointer DenseSubmatrix<MT,unaligned,true>::data()
+inline typename DenseSubmatrix<MT,unaligned,true>::Pointer
+   DenseSubmatrix<MT,unaligned,true>::data()
 {
    return matrix_.data() + row_ + column_*spacing();
 }
@@ -4029,6 +4149,44 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstPointer
    DenseSubmatrix<MT,unaligned,true>::data() const
 {
    return matrix_.data() + row_ + column_*spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,unaligned,true>::Pointer
+   DenseSubmatrix<MT,unaligned,true>::data( size_t j )
+{
+   return matrix_.data() + row_ + (column_+j)*spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,unaligned,true>::ConstPointer
+   DenseSubmatrix<MT,unaligned,true>::data( size_t j ) const
+{
+   return matrix_.data() + row_ + (column_+j)*spacing();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5110,19 +5268,18 @@ inline bool DenseSubmatrix<MT,unaligned,true>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the submatrix.
+/*!\brief Load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return The loaded intrinsic element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense
-// submatrix. The row index must be smaller than the number of rows and the column index
-// must be smaller than the number of columns. Additionally, the row index must be a
-// multiple of the number of values inside the intrinsic element. This function must
-// \b NOT be called explicitly! It is used internally for the performance optimized
-// evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
+// This function performs a load of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
@@ -5143,6 +5300,32 @@ inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
 // \return The loaded intrinsic element.
 //
 // This function performs an aligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a
+// multiple of the number of values inside the intrinsic element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
+   DenseSubmatrix<MT,unaligned,true>::loada( size_t i, size_t j ) const
+{
+   return matrix_.loada( row_+i, column_+j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense
 // submatrix. The row index must be smaller than the number of rows and the column index
 // must be smaller than the number of columns. Additionally, the row index must be a
 // multiple of the number of values inside the intrinsic element. This function must
@@ -5183,6 +5366,31 @@ inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storeu( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5198,9 +5406,9 @@ inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
-inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
+inline void DenseSubmatrix<MT,unaligned,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   matrix_.storea( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5891,17 +6099,6 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the dense submatrix will offer write access to the dense matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseSubmatrix<MT,aligned,false>    This;           //!< Type of this DenseSubmatrix instance.
@@ -5917,19 +6114,20 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -5959,6 +6157,8 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
+   inline Pointer        data  ( size_t i );
+   inline ConstPointer   data  ( size_t i ) const;
    inline Iterator       begin ( size_t i );
    inline ConstIterator  begin ( size_t i ) const;
    inline ConstIterator  cbegin( size_t i ) const;
@@ -6078,9 +6278,11 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -6310,7 +6512,8 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstReference
 // may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,false>::Pointer DenseSubmatrix<MT,aligned,false>::data()
+inline typename DenseSubmatrix<MT,aligned,false>::Pointer
+   DenseSubmatrix<MT,aligned,false>::data()
 {
    return matrix_.data() + row_*spacing() + column_;
 }
@@ -6333,6 +6536,44 @@ inline typename DenseSubmatrix<MT,aligned,false>::ConstPointer
    DenseSubmatrix<MT,aligned,false>::data() const
 {
    return matrix_.data() + row_*spacing() + column_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of row \a i.
+//
+// \param i The row index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix in row \a i.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,false>::Pointer
+   DenseSubmatrix<MT,aligned,false>::data( size_t i )
+{
+   return matrix_.data() + (row_+i)*spacing() + column_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of row \a i.
+//
+// \param i The row index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense submatrix in row \a i.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,false>::ConstPointer
+   DenseSubmatrix<MT,aligned,false>::data( size_t i ) const
+{
+   return matrix_.data() + (row_+i)*spacing() + column_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7455,6 +7696,38 @@ inline bool DenseSubmatrix<MT,aligned,false>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs a load of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or
+// the row index (in case of a column-major matrix) must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
+   DenseSubmatrix<MT,aligned,false>::load( size_t i, size_t j ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   return matrix_.load( row_+i, column_+j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -7472,7 +7745,7 @@ inline bool DenseSubmatrix<MT,aligned,false>::canSMPAssign() const
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
-   DenseSubmatrix<MT,aligned,false>::load( size_t i, size_t j ) const
+   DenseSubmatrix<MT,aligned,false>::loada( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -7480,7 +7753,7 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   return matrix_.load( row_+i, column_+j );
+   return matrix_.loada( row_+i, column_+j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7521,15 +7794,15 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of an intrinsic element of the submatrix.
+/*!\brief Store of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \param value The intrinsic element to be stored.
 // \return void
 //
-// This function performs an aligned store of a specific intrinsic element of the dense submatrix.
-// The row index must be smaller than the number of rows and the column index must be smaller than
+// This function performs a store of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
 // the number of columns. Additionally, the column index (in case of a row-major matrix) or the
 // row index (in case of a column-major matrix) must be a multiple of the number of values inside
 // the intrinsic element. This function must \b NOT be called explicitly! It is used internally
@@ -7547,6 +7820,39 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return matrix_.store( row_+i, column_+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Aligned store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs an aligned store of a specific intrinsic element of the dense submatrix.
+// The row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the column index (in case of a row-major matrix) or the
+// row index (in case of a column-major matrix) must be a multiple of the number of values inside
+// the intrinsic element. This function must \b NOT be called explicitly! It is used internally
+// for the performance optimized evaluation of expression templates. Calling this function
+// explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,false>::storea( size_t i, size_t j, const IntrinsicType& value )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   return matrix_.storea( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8233,17 +8539,6 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef IntrinsicTrait<typename MT::ElementType>  IT;
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! Compilation switch for the non-const reference and iterator types.
-   /*! The \a useConst compile time constant expression represents a compilation switch for
-       the non-const reference and iterator types. In case the given dense matrix of type
-       \a MT is const qualified, \a useConst will be set to 1 and the dense submatrix will
-       return references and iterators to const. Otherwise \a useConst will be set to 0 and
-       the dense submatrix will offer write access to the dense matrix elements both via
-       the function call operator and iterators. */
-   enum { useConst = IsConst<MT>::value };
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    typedef DenseSubmatrix<MT,aligned,true>     This;           //!< Type of this DenseSubmatrix instance.
@@ -8259,19 +8554,20 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    typedef typename MT::ConstReference  ConstReference;
 
    //! Reference to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstReference, typename MT::Reference >::Type  Reference;
+   typedef typename If< IsConst<MT>, ConstReference, typename MT::Reference >::Type  Reference;
 
    //! Pointer to a constant submatrix value.
    typedef const ElementType*  ConstPointer;
 
    //! Pointer to a non-constant submatrix value.
-   typedef typename IfTrue< useConst, ConstPointer, ElementType* >::Type  Pointer;
+   typedef typename If< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >
+                      , ConstPointer, ElementType* >::Type  Pointer;
 
    //! Iterator over constant elements.
    typedef typename MT::ConstIterator  ConstIterator;
 
    //! Iterator over non-constant elements.
-   typedef typename IfTrue< useConst, ConstIterator, typename MT::Iterator >::Type  Iterator;
+   typedef typename If< IsConst<MT>, ConstIterator, typename MT::Iterator >::Type  Iterator;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -8301,12 +8597,14 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    inline ConstReference operator()( size_t i, size_t j ) const;
    inline Pointer        data  ();
    inline ConstPointer   data  () const;
-   inline Iterator       begin ( size_t i );
-   inline ConstIterator  begin ( size_t i ) const;
-   inline ConstIterator  cbegin( size_t i ) const;
-   inline Iterator       end   ( size_t i );
-   inline ConstIterator  end   ( size_t i ) const;
-   inline ConstIterator  cend  ( size_t i ) const;
+   inline Pointer        data  ( size_t j );
+   inline ConstPointer   data  ( size_t j ) const;
+   inline Iterator       begin ( size_t j );
+   inline ConstIterator  begin ( size_t j ) const;
+   inline ConstIterator  cbegin( size_t j ) const;
+   inline Iterator       end   ( size_t j );
+   inline ConstIterator  end   ( size_t j ) const;
+   inline ConstIterator  cend  ( size_t j ) const;
    //@}
    //**********************************************************************************************
 
@@ -8420,9 +8718,11 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
    inline bool canSMPAssign() const;
 
    BLAZE_ALWAYS_INLINE IntrinsicType load ( size_t i, size_t j ) const;
+   BLAZE_ALWAYS_INLINE IntrinsicType loada( size_t i, size_t j ) const;
    BLAZE_ALWAYS_INLINE IntrinsicType loadu( size_t i, size_t j ) const;
 
    BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const IntrinsicType& value );
+   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const IntrinsicType& value );
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const IntrinsicType& value );
 
@@ -8652,7 +8952,8 @@ inline typename DenseSubmatrix<MT,aligned,true>::ConstReference
 // may use techniques such as padding to improve the alignment of the data.
 */
 template< typename MT >  // Type of the dense matrix
-inline typename DenseSubmatrix<MT,aligned,true>::Pointer DenseSubmatrix<MT,aligned,true>::data()
+inline typename DenseSubmatrix<MT,aligned,true>::Pointer
+   DenseSubmatrix<MT,aligned,true>::data()
 {
    return matrix_.data() + row_ + column_*spacing();
 }
@@ -8675,6 +8976,44 @@ inline typename DenseSubmatrix<MT,aligned,true>::ConstPointer
    DenseSubmatrix<MT,aligned,true>::data() const
 {
    return matrix_.data() + row_ + column_*spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,true>::Pointer
+   DenseSubmatrix<MT,aligned,true>::data( size_t j )
+{
+   return matrix_.data() + row_ + (column_+j)*spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the submatrix elements of column \a j.
+//
+// \param j The column index.
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage for the elements in column \a j.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename DenseSubmatrix<MT,aligned,true>::ConstPointer
+   DenseSubmatrix<MT,aligned,true>::data( size_t j ) const
+{
+   return matrix_.data() + row_ + (column_+j)*spacing();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -9749,19 +10088,18 @@ inline bool DenseSubmatrix<MT,aligned,true>::canSMPAssign() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of an intrinsic element of the submatrix.
+/*!\brief Load of an intrinsic element of the submatrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
 // \param j Access index for the column. The index has to be in the range [0..N-1].
 // \return The loaded intrinsic element.
 //
-// This function performs an aligned load of a specific intrinsic element of the dense
-// submatrix. The row index must be smaller than the number of rows and the column index
-// must be smaller than the number of columns. Additionally, the row index must be a
-// multiple of the number of values inside the intrinsic element. This function must
-// \b NOT be called explicitly! It is used internally for the performance optimized
-// evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors.
+// This function performs a load of a specific intrinsic element of the dense submatrix.
+// The row index must be smaller than the number of rows and the column index must be smaller
+// than the number of columns. Additionally, the row index must be a multiple of the number of
+// values inside the intrinsic element. This function must \b NOT be called explicitly! It is
+// used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
@@ -9797,6 +10135,38 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
+   DenseSubmatrix<MT,aligned,true>::loada( size_t i, size_t j ) const
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+
+   return matrix_.loada( row_+i, column_+j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Unaligned load of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \return The loaded intrinsic element.
+//
+// This function performs an unaligned load of a specific intrinsic element of the dense
+// submatrix. The row index must be smaller than the number of rows and the column index
+// must be smaller than the number of columns. Additionally, the row index must be a
+// multiple of the number of values inside the intrinsic element. This function must
+// \b NOT be called explicitly! It is used internally for the performance optimized
+// evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
    DenseSubmatrix<MT,aligned,true>::loadu( size_t i, size_t j ) const
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9806,6 +10176,38 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
 
    return matrix_.loadu( row_+i, column_+j );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the submatrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense submatrix. The
+// row index must be smaller than the number of rows and the column index must be smaller than
+// the number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename MT >  // Type of the dense matrix
+BLAZE_ALWAYS_INLINE void
+   DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
+   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+
+   matrix_.store( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -9829,7 +10231,7 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 */
 template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
-   DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   DenseSubmatrix<MT,aligned,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9837,7 +10239,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
 
-   matrix_.store( row_+i, column_+j, value );
+   matrix_.storea( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
