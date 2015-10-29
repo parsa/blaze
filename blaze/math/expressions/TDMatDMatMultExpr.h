@@ -44,7 +44,6 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
-#include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/expressions/Computation.h>
@@ -1039,18 +1038,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -1089,7 +1090,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -1161,7 +1162,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -1219,7 +1220,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -1263,6 +1264,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             (~C).store( i, j, xmm1 );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i    ,k) * B(k,j);
+               value2 += A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) = value1;
+            (~C)(i+1UL,j) = value2;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1288,18 +1334,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -1338,7 +1386,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -1410,7 +1458,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -1468,7 +1516,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -1510,6 +1558,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             }
 
             (~C).store( i, j, xmm1 );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i,k) * B(k,j    );
+               value2 += A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) = value1;
+            (~C)(i,j+1UL) = value2;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
          }
       }
    }
@@ -1562,14 +1655,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -1578,6 +1670,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t jj=0UL; jj<N; jj+=jblock )
       {
          const size_t jend( min( jj+jblock, N ) );
+
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
@@ -1595,7 +1690,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -1673,7 +1768,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -1772,7 +1867,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -1789,6 +1884,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -1819,14 +1933,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -1835,6 +1948,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t ii=0UL; ii<M; ii+=iblock )
       {
          const size_t iend( min( ii+iblock, M ) );
+
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
 
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
@@ -1852,7 +1968,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -1930,7 +2046,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -2029,7 +2145,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -2046,6 +2162,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -2724,18 +2859,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -2781,7 +2918,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -2863,7 +3000,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -2925,7 +3062,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -2970,6 +3107,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             (~C).store( i, j, xmm1 );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1( (~C)(i    ,j) );
+            ElementType value2( (~C)(i+1UL,j) );;
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i    ,k) * B(k,j);
+               value2 += A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) = value1;
+            (~C)(i+1UL,j) = value2;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value( (~C)(i,j) );
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2995,18 +3177,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -3052,7 +3236,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -3134,7 +3318,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -3196,7 +3380,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -3239,6 +3423,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             }
 
             (~C).store( i, j, xmm1 );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1( (~C)(i,j    ) );
+            ElementType value2( (~C)(i,j+1UL) );
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i,k) * B(k,j    );
+               value2 += A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) = value1;
+            (~C)(i,j+1UL) = value2;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value( (~C)(i,j) );
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
          }
       }
    }
@@ -3291,14 +3520,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -3307,6 +3535,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t jj=0UL; jj<N; jj+=jblock )
       {
          const size_t jend( min( jj+jblock, N ) );
+
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
@@ -3318,7 +3549,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -3396,7 +3627,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -3495,7 +3726,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -3512,6 +3743,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -3542,14 +3792,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -3558,6 +3807,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t ii=0UL; ii<M; ii+=iblock )
       {
          const size_t iend( min( ii+iblock, M ) );
+
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
 
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
@@ -3569,7 +3821,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -3647,7 +3899,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -3746,7 +3998,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -3763,6 +4015,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -4416,18 +4687,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -4473,7 +4746,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -4555,7 +4828,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -4617,7 +4890,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -4662,6 +4935,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             (~C).store( i, j, xmm1 );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1( (~C)(i    ,j) );
+            ElementType value2( (~C)(i+1UL,j) );
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 -= A(i    ,k) * B(k,j);
+               value2 -= A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) = value1;
+            (~C)(i+1UL,j) = value2;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value( (~C)(i,j) );
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value -= A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
+         }
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4687,18 +5005,20 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -4744,7 +5064,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -4826,7 +5146,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -4888,7 +5208,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -4931,6 +5251,51 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
             }
 
             (~C).store( i, j, xmm1 );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1( (~C)(i,j    ) );
+            ElementType value2( (~C)(i,j+1UL) );
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 -= A(i,k) * B(k,j    );
+               value2 -= A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) = value1;
+            (~C)(i,j+1UL) = value2;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value( (~C)(i,j) );
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value -= A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value;
          }
       }
    }
@@ -4983,14 +5348,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -4999,6 +5363,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t jj=0UL; jj<N; jj+=jblock )
       {
          const size_t jend( min( jj+jblock, N ) );
+
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
@@ -5010,7 +5377,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -5088,7 +5455,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -5187,7 +5554,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -5204,6 +5571,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value -= A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -5234,14 +5620,13 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -5250,6 +5635,9 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
       for( size_t ii=0UL; ii<M; ii+=iblock )
       {
          const size_t iend( min( ii+iblock, M ) );
+
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
 
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
@@ -5261,7 +5649,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -5339,7 +5727,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -5438,7 +5826,7 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -5455,6 +5843,25 @@ class TDMatDMatMultExpr : public DenseMatrix< TDMatDMatMultExpr<MT1,MT2>, true >
                      }
 
                      (~C).store( i, j, xmm1 );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value( (~C)(i,j) );
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value -= A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) = value;
                   }
                }
             }
@@ -6780,20 +7187,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -6832,7 +7241,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -6904,7 +7313,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -6962,7 +7371,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -7006,6 +7415,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             (~C).store( i, j, xmm1 * factor );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i    ,k) * B(k,j);
+               value2 += A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) = value1 * scalar;
+            (~C)(i+1UL,j) = value2 * scalar;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value * scalar;
+         }
+      }
    }
    //**********************************************************************************************
 
@@ -7031,20 +7485,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -7083,7 +7539,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -7155,7 +7611,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -7213,7 +7669,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -7255,6 +7711,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             }
 
             (~C).store( i, j, xmm1 * factor );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i,k) * B(k,j    );
+               value2 += A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) = value1 * scalar;
+            (~C)(i,j+1UL) = value2 * scalar;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) = value * scalar;
          }
       }
    }
@@ -7307,14 +7808,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -7325,6 +7825,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       for( size_t jj=0UL; jj<N; jj+=jblock )
       {
          const size_t jend( min( jj+jblock, N ) );
+
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
@@ -7342,7 +7845,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -7357,14 +7860,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i    ,j ) );
-                     IntrinsicType xmm2( (~C).load(i    ,j1) );
-                     IntrinsicType xmm3( (~C).load(i    ,j2) );
-                     IntrinsicType xmm4( (~C).load(i    ,j3) );
-                     IntrinsicType xmm5( (~C).load(i+1UL,j ) );
-                     IntrinsicType xmm6( (~C).load(i+1UL,j1) );
-                     IntrinsicType xmm7( (~C).load(i+1UL,j2) );
-                     IntrinsicType xmm8( (~C).load(i+1UL,j3) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i    ,k) ) );
@@ -7383,14 +7879,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a2 * b4;
                      }
 
-                     (~C).store( i    , j , xmm1 * factor );
-                     (~C).store( i    , j1, xmm2 * factor );
-                     (~C).store( i    , j2, xmm3 * factor );
-                     (~C).store( i    , j3, xmm4 * factor );
-                     (~C).store( i+1UL, j , xmm5 * factor );
-                     (~C).store( i+1UL, j1, xmm6 * factor );
-                     (~C).store( i+1UL, j2, xmm7 * factor );
-                     (~C).store( i+1UL, j3, xmm8 * factor );
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i    , j2, (~C).load(i    ,j2) + xmm3 * factor );
+                     (~C).store( i    , j3, (~C).load(i    ,j3) + xmm4 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm5 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm6 * factor );
+                     (~C).store( i+1UL, j2, (~C).load(i+1UL,j2) + xmm7 * factor );
+                     (~C).store( i+1UL, j3, (~C).load(i+1UL,j3) + xmm8 * factor );
                   }
 
                   if( i < iend )
@@ -7400,10 +7896,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size*4UL, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j ) );
-                     IntrinsicType xmm2( (~C).load(i,j1) );
-                     IntrinsicType xmm3( (~C).load(i,j2) );
-                     IntrinsicType xmm4( (~C).load(i,j3) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i,k) ) );
@@ -7413,14 +7906,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + a1 * B.load(k,j3);
                      }
 
-                     (~C).store( i, j , xmm1 * factor );
-                     (~C).store( i, j1, xmm2 * factor );
-                     (~C).store( i, j2, xmm3 * factor );
-                     (~C).store( i, j3, xmm4 * factor );
+                     (~C).store( i, j , (~C).load(i,j ) + xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) + xmm2 * factor );
+                     (~C).store( i, j2, (~C).load(i,j2) + xmm3 * factor );
+                     (~C).store( i, j3, (~C).load(i,j3) + xmm4 * factor );
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -7433,14 +7926,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+4UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i    ,j ) );
-                     IntrinsicType xmm2( (~C).load(i    ,j1) );
-                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
-                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
-                     IntrinsicType xmm5( (~C).load(i+2UL,j ) );
-                     IntrinsicType xmm6( (~C).load(i+2UL,j1) );
-                     IntrinsicType xmm7( (~C).load(i+3UL,j ) );
-                     IntrinsicType xmm8( (~C).load(i+3UL,j1) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i    ,k) ) );
@@ -7459,14 +7945,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a4 * b2;
                      }
 
-                     (~C).store( i    , j , xmm1 * factor );
-                     (~C).store( i    , j1, xmm2 * factor );
-                     (~C).store( i+1UL, j , xmm3 * factor );
-                     (~C).store( i+1UL, j1, xmm4 * factor );
-                     (~C).store( i+2UL, j , xmm5 * factor );
-                     (~C).store( i+2UL, j1, xmm6 * factor );
-                     (~C).store( i+3UL, j , xmm7 * factor );
-                     (~C).store( i+3UL, j1, xmm8 * factor );
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm4 * factor );
+                     (~C).store( i+2UL, j , (~C).load(i+2UL,j ) + xmm5 * factor );
+                     (~C).store( i+2UL, j1, (~C).load(i+2UL,j1) + xmm6 * factor );
+                     (~C).store( i+3UL, j , (~C).load(i+3UL,j ) + xmm7 * factor );
+                     (~C).store( i+3UL, j1, (~C).load(i+3UL,j1) + xmm8 * factor );
                   }
 
                   for( ; (i+2UL) <= iend; i+=2UL )
@@ -7476,10 +7962,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+2UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i    ,j ) );
-                     IntrinsicType xmm2( (~C).load(i    ,j1) );
-                     IntrinsicType xmm3( (~C).load(i+1UL,j ) );
-                     IntrinsicType xmm4( (~C).load(i+1UL,j1) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i    ,k) ) );
@@ -7492,10 +7975,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + a2 * b2;
                      }
 
-                     (~C).store( i    , j , xmm1 * factor );
-                     (~C).store( i    , j1, xmm2 * factor );
-                     (~C).store( i+1UL, j , xmm3 * factor );
-                     (~C).store( i+1UL, j1, xmm4 * factor );
+                     (~C).store( i    , j , (~C).load(i    ,j ) + xmm1 * factor );
+                     (~C).store( i    , j1, (~C).load(i    ,j1) + xmm2 * factor );
+                     (~C).store( i+1UL, j , (~C).load(i+1UL,j ) + xmm3 * factor );
+                     (~C).store( i+1UL, j1, (~C).load(i+1UL,j1) + xmm4 * factor );
                   }
 
                   if( i < iend )
@@ -7505,8 +7988,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size*2UL, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j ) );
-                     IntrinsicType xmm2( (~C).load(i,j1) );
+                     IntrinsicType xmm1, xmm2;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i,k) ) );
@@ -7514,12 +7996,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm2 = xmm2 + a1 * B.load(k,j1);
                      }
 
-                     (~C).store( i, j , xmm1 * factor );
-                     (~C).store( i, j1, xmm2 * factor );
+                     (~C).store( i, j , (~C).load(i,j ) + xmm1 * factor );
+                     (~C).store( i, j1, (~C).load(i,j1) + xmm2 * factor );
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -7528,14 +8010,33 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( min( j+IT::size, ktmp ) ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j) );
+                     IntrinsicType xmm1;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( set( A(i,k) ) );
                         xmm1 = xmm1 + a1 * B.load(k,j);
                      }
 
-                     (~C).store( i, j, xmm1 * factor );
+                     (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) += value * scalar;
                   }
                }
             }
@@ -7566,14 +8067,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -7584,6 +8084,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       for( size_t ii=0UL; ii<M; ii+=iblock )
       {
          const size_t iend( min( ii+iblock, M ) );
+
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
 
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
@@ -7601,7 +8104,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -7616,14 +8119,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i2,j    ) );
-                     IntrinsicType xmm4( (~C).load(i3,j    ) );
-                     IntrinsicType xmm5( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm7( (~C).load(i2,j+1UL) );
-                     IntrinsicType xmm8( (~C).load(i3,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -7642,14 +8138,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a4 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i2, j    , xmm3 * factor );
-                     (~C).store( i3, j    , xmm4 * factor );
-                     (~C).store( i , j+1UL, xmm5 * factor );
-                     (~C).store( i1, j+1UL, xmm6 * factor );
-                     (~C).store( i2, j+1UL, xmm7 * factor );
-                     (~C).store( i3, j+1UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i2, j    , (~C).load(i2,j    ) + xmm3 * factor );
+                     (~C).store( i3, j    , (~C).load(i3,j    ) + xmm4 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm5 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm6 * factor );
+                     (~C).store( i2, j+1UL, (~C).load(i2,j+1UL) + xmm7 * factor );
+                     (~C).store( i3, j+1UL, (~C).load(i3,j+1UL) + xmm8 * factor );
                   }
 
                   if( j < jend )
@@ -7659,10 +8155,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
-                     IntrinsicType xmm3( (~C).load(i2,j) );
-                     IntrinsicType xmm4( (~C).load(i3,j) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
@@ -7672,14 +8165,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + A.load(i3,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
-                     (~C).store( i2, j, xmm3 * factor );
-                     (~C).store( i3, j, xmm4 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) + xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) + xmm2 * factor );
+                     (~C).store( i2, j, (~C).load(i2,j) + xmm3 * factor );
+                     (~C).store( i3, j, (~C).load(i3,j) + xmm4 * factor );
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -7692,14 +8185,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+4UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm5( (~C).load(i ,j+2UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+2UL) );
-                     IntrinsicType xmm7( (~C).load(i ,j+3UL) );
-                     IntrinsicType xmm8( (~C).load(i1,j+3UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -7718,14 +8204,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a2 * b4;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
-                     (~C).store( i , j+2UL, xmm5 * factor );
-                     (~C).store( i1, j+2UL, xmm6 * factor );
-                     (~C).store( i , j+3UL, xmm7 * factor );
-                     (~C).store( i1, j+3UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm4 * factor );
+                     (~C).store( i , j+2UL, (~C).load(i ,j+2UL) + xmm5 * factor );
+                     (~C).store( i1, j+2UL, (~C).load(i1,j+2UL) + xmm6 * factor );
+                     (~C).store( i , j+3UL, (~C).load(i ,j+3UL) + xmm7 * factor );
+                     (~C).store( i1, j+3UL, (~C).load(i1,j+3UL) + xmm8 * factor );
                   }
 
                   for( ; (j+2UL) <= jend; j+=2UL )
@@ -7735,10 +8221,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -7751,10 +8234,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + a2 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm4 * factor );
                   }
 
                   if( j < jend )
@@ -7764,8 +8247,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
+                     IntrinsicType xmm1, xmm2;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
@@ -7773,12 +8255,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm2 = xmm2 + A.load(i1,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) + xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) + xmm2 * factor );
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -7787,14 +8269,33 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j) );
+                     IntrinsicType xmm1;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
                         xmm1 = xmm1 + A.load(i,k) * b1;
                      }
 
-                     (~C).store( i, j, xmm1 * factor );
+                     (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) += value * scalar;
                   }
                }
             }
@@ -8378,20 +8879,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -8430,7 +8933,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -8502,7 +9005,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -8560,7 +9063,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -8604,6 +9107,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i    ,k) * B(k,j);
+               value2 += A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) += value1 * scalar;
+            (~C)(i+1UL,j) += value2 * scalar;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) += value * scalar;
+         }
+      }
    }
    //**********************************************************************************************
 
@@ -8629,20 +9177,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -8681,7 +9231,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -8753,7 +9303,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -8811,7 +9361,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -8853,6 +9403,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             }
 
             (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i,k) * B(k,j    );
+               value2 += A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) += value1 * scalar;
+            (~C)(i,j+1UL) += value2 * scalar;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) += value * scalar;
          }
       }
    }
@@ -8905,14 +9500,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -8924,6 +9518,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       {
          const size_t jend( min( jj+jblock, N ) );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
             const size_t iend( min( ii+iblock, M ) );
@@ -8934,7 +9531,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -9002,7 +9599,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -9090,7 +9687,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -9107,6 +9704,25 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      }
 
                      (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) += value * scalar;
                   }
                }
             }
@@ -9137,14 +9753,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -9156,6 +9771,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       {
          const size_t iend( min( ii+iblock, M ) );
 
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
             const size_t jend( min( jj+jblock, N ) );
@@ -9166,7 +9784,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -9181,14 +9799,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i2,j    ) );
-                     IntrinsicType xmm4( (~C).load(i3,j    ) );
-                     IntrinsicType xmm5( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm7( (~C).load(i2,j+1UL) );
-                     IntrinsicType xmm8( (~C).load(i3,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -9207,14 +9818,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a4 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i2, j    , xmm3 * factor );
-                     (~C).store( i3, j    , xmm4 * factor );
-                     (~C).store( i , j+1UL, xmm5 * factor );
-                     (~C).store( i1, j+1UL, xmm6 * factor );
-                     (~C).store( i2, j+1UL, xmm7 * factor );
-                     (~C).store( i3, j+1UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i2, j    , (~C).load(i2,j    ) + xmm3 * factor );
+                     (~C).store( i3, j    , (~C).load(i3,j    ) + xmm4 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm5 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm6 * factor );
+                     (~C).store( i2, j+1UL, (~C).load(i2,j+1UL) + xmm7 * factor );
+                     (~C).store( i3, j+1UL, (~C).load(i3,j+1UL) + xmm8 * factor );
                   }
 
                   if( j < jend )
@@ -9224,10 +9835,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
-                     IntrinsicType xmm3( (~C).load(i2,j) );
-                     IntrinsicType xmm4( (~C).load(i3,j) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
@@ -9237,14 +9845,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + A.load(i3,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
-                     (~C).store( i2, j, xmm3 * factor );
-                     (~C).store( i3, j, xmm4 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) + xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) + xmm2 * factor );
+                     (~C).store( i2, j, (~C).load(i2,j) + xmm3 * factor );
+                     (~C).store( i3, j, (~C).load(i3,j) + xmm4 * factor );
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -9257,14 +9865,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+4UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm5( (~C).load(i ,j+2UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+2UL) );
-                     IntrinsicType xmm7( (~C).load(i ,j+3UL) );
-                     IntrinsicType xmm8( (~C).load(i1,j+3UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -9283,14 +9884,14 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm8 = xmm8 + a2 * b4;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
-                     (~C).store( i , j+2UL, xmm5 * factor );
-                     (~C).store( i1, j+2UL, xmm6 * factor );
-                     (~C).store( i , j+3UL, xmm7 * factor );
-                     (~C).store( i1, j+3UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm4 * factor );
+                     (~C).store( i , j+2UL, (~C).load(i ,j+2UL) + xmm5 * factor );
+                     (~C).store( i1, j+2UL, (~C).load(i1,j+2UL) + xmm6 * factor );
+                     (~C).store( i , j+3UL, (~C).load(i ,j+3UL) + xmm7 * factor );
+                     (~C).store( i1, j+3UL, (~C).load(i1,j+3UL) + xmm8 * factor );
                   }
 
                   for( ; (j+2UL) <= jend; j+=2UL )
@@ -9300,10 +9901,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -9316,10 +9914,10 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm4 = xmm4 + a2 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) + xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) + xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) + xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) + xmm4 * factor );
                   }
 
                   if( j < jend )
@@ -9329,8 +9927,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
+                     IntrinsicType xmm1, xmm2;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
@@ -9338,12 +9935,12 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         xmm2 = xmm2 + A.load(i1,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) + xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) + xmm2 * factor );
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -9352,14 +9949,33 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j) );
+                     IntrinsicType xmm1;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
                         xmm1 = xmm1 + A.load(i,k) * b1;
                      }
 
-                     (~C).store( i, j, xmm1 * factor );
+                     (~C).store( i, j, (~C).load(i,j) + xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) += value * scalar;
                   }
                }
             }
@@ -9920,20 +10536,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+
+      const size_t jpos( remainder ? ( N & size_t(-IT::size) ) : N );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % IT::size ) ) == jpos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t j( 0UL );
 
-      for( ; (j+IT::size*7UL) < N; j+=IT::size*8UL ) {
+      for( ; (j+IT::size*7UL) < jpos; j+=IT::size*8UL ) {
          for( size_t i=0UL; i<M; ++i )
          {
             const size_t kbegin( ( IsUpper<MT4>::value )
@@ -9972,7 +10590,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size*3UL) < N; j+=IT::size*4UL )
+      for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
       {
          size_t i( 0UL );
 
@@ -10044,7 +10662,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (j+IT::size) < N; j+=IT::size*2UL )
+      for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
       {
          size_t i( 0UL );
 
@@ -10102,7 +10720,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( j < N )
+      for( ; j<jpos; j+=IT::size )
       {
          size_t i( 0UL );
 
@@ -10146,6 +10764,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             (~C).store( i, j, (~C).load(i,j) - xmm1 * factor );
          }
       }
+
+      for( ; remainder && j<N; ++j )
+      {
+         size_t i( 0UL );
+
+         for( ; (i+2UL) <= M; i+=2UL )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+            const size_t kend( ( IsLower<MT4>::value )
+                               ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i    ,k) * B(k,j);
+               value2 += A(i+1UL,k) * B(k,j);
+            }
+
+            (~C)(i    ,j) -= value1 * scalar;
+            (~C)(i+1UL,j) -= value2 * scalar;
+         }
+
+         if( i < M )
+         {
+            const size_t kbegin( ( IsUpper<MT4>::value )
+                                 ?( ( IsLower<MT5>::value )
+                                    ?( max( ( IsStrictlyUpper<MT4>::value ? i+1UL : i ), j ) )
+                                    :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
+                                 :( IsLower<MT5>::value ? j : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) -= value * scalar;
+         }
+      }
    }
    //**********************************************************************************************
 
@@ -10171,20 +10834,22 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT4 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
 
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+
+      const size_t ipos( remainder ? ( M & size_t(-IT::size) ) : M );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % IT::size ) ) == ipos, "Invalid end calculation" );
+
       const IntrinsicType factor( set( scalar ) );
 
       size_t i( 0UL );
 
-      for( ; (i+IT::size*7UL) < M; i+=IT::size*8UL ) {
+      for( ; (i+IT::size*7UL) < ipos; i+=IT::size*8UL ) {
          for( size_t j=0UL; j<N; ++j )
          {
             const size_t kbegin( ( IsLower<MT5>::value )
@@ -10223,7 +10888,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size*3UL) < M; i+=IT::size*4UL )
+      for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
       {
          size_t j( 0UL );
 
@@ -10295,7 +10960,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      for( ; (i+IT::size) < M; i+=IT::size*2UL )
+      for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
       {
          size_t j( 0UL );
 
@@ -10353,7 +11018,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
          }
       }
 
-      if( i < M )
+      for( ; i<ipos; i+=IT::size )
       {
          size_t j( 0UL );
 
@@ -10395,6 +11060,51 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
             }
 
             (~C).store( i, j, (~C).load(i,j) - xmm1 * factor );
+         }
+      }
+
+      for( ; remainder && i<M; ++i )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kend( ( IsUpper<MT5>::value )
+                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+                               :( K ) );
+
+            ElementType value1 = ElementType();
+            ElementType value2 = ElementType();
+
+            for( size_t k=kbegin; k<kend; ++k ) {
+               value1 += A(i,k) * B(k,j    );
+               value2 += A(i,k) * B(k,j+1UL);
+            }
+
+            (~C)(i,j    ) -= value1 * scalar;
+            (~C)(i,j+1UL) -= value2 * scalar;
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsLower<MT5>::value )
+                                 ?( ( IsUpper<MT4>::value )
+                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
+                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+
+            ElementType value = ElementType();
+
+            for( size_t k=kbegin; k<K; ++k ) {
+               value += A(i,k) * B(k,j);
+            }
+
+            (~C)(i,j) -= value * scalar;
          }
       }
    }
@@ -10447,14 +11157,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
       const size_t iblock(  64UL );
       const size_t jblock( 128UL );
@@ -10466,6 +11175,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       {
          const size_t jend( min( jj+jblock, N ) );
 
+         const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
+
          for( size_t ii=0UL; ii<M; ii+=iblock )
          {
             const size_t iend( min( ii+iblock, M ) );
@@ -10476,7 +11188,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t j( jj );
 
-               for( ; (j+IT::size*3UL) < jend; j+=IT::size*4UL )
+               for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL )
                {
                   const size_t j1( j+IT::size     );
                   const size_t j2( j+IT::size*2UL );
@@ -10544,7 +11256,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                   }
                }
 
-               for( ; (j+IT::size) < jend; j+=IT::size*2UL )
+               for( ; (j+IT::size) < jpos; j+=IT::size*2UL )
                {
                   const size_t j1( j+IT::size );
 
@@ -10632,7 +11344,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                   }
                }
 
-               if( j < jend )
+               for( ; j<jpos; j+=IT::size )
                {
                   for( size_t i=ii; i<iend; ++i )
                   {
@@ -10649,6 +11361,25 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      }
 
                      (~C).store( i, j, (~C).load(i,j) - xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && j<jend; ++j )
+               {
+                  for( size_t i=ii; i<iend; ++i )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( i+1UL ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( min( j+1UL, ktmp ) ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) -= value * scalar;
                   }
                }
             }
@@ -10679,14 +11410,13 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
    static inline typename EnableIf< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >::Type
       selectLargeSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT3 );
-      BLAZE_CONSTRAINT_MUST_BE_PADDED_TYPE( MT5 );
-
       typedef IntrinsicTrait<ElementType>  IT;
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
       const size_t K( A.columns() );
+
+      const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
 
       const size_t iblock( 128UL );
       const size_t jblock(  64UL );
@@ -10698,6 +11428,9 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
       {
          const size_t iend( min( ii+iblock, M ) );
 
+         const size_t ipos( remainder ? ( iend & size_t(-IT::size) ) : iend );
+         BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % IT::size ) ) == ipos, "Invalid end calculation" );
+
          for( size_t jj=0UL; jj<N; jj+=jblock )
          {
             const size_t jend( min( jj+jblock, N ) );
@@ -10708,7 +11441,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
 
                size_t i( ii );
 
-               for( ; (i+IT::size*3UL) < iend; i+=IT::size*4UL )
+               for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL )
                {
                   const size_t i1( i+IT::size     );
                   const size_t i2( i+IT::size*2UL );
@@ -10723,14 +11456,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i2,j    ) );
-                     IntrinsicType xmm4( (~C).load(i3,j    ) );
-                     IntrinsicType xmm5( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm7( (~C).load(i2,j+1UL) );
-                     IntrinsicType xmm8( (~C).load(i3,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -10739,24 +11465,24 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         const IntrinsicType a4( A.load(i3,k) );
                         const IntrinsicType b1( set( B(k,j    ) ) );
                         const IntrinsicType b2( set( B(k,j+1UL) ) );
-                        xmm1 = xmm1 - a1 * b1;
-                        xmm2 = xmm2 - a2 * b1;
-                        xmm3 = xmm3 - a3 * b1;
-                        xmm4 = xmm4 - a4 * b1;
-                        xmm5 = xmm5 - a1 * b2;
-                        xmm6 = xmm6 - a2 * b2;
-                        xmm7 = xmm7 - a3 * b2;
-                        xmm8 = xmm8 - a4 * b2;
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a2 * b1;
+                        xmm3 = xmm3 + a3 * b1;
+                        xmm4 = xmm4 + a4 * b1;
+                        xmm5 = xmm5 + a1 * b2;
+                        xmm6 = xmm6 + a2 * b2;
+                        xmm7 = xmm7 + a3 * b2;
+                        xmm8 = xmm8 + a4 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i2, j    , xmm3 * factor );
-                     (~C).store( i3, j    , xmm4 * factor );
-                     (~C).store( i , j+1UL, xmm5 * factor );
-                     (~C).store( i1, j+1UL, xmm6 * factor );
-                     (~C).store( i2, j+1UL, xmm7 * factor );
-                     (~C).store( i3, j+1UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) - xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) - xmm2 * factor );
+                     (~C).store( i2, j    , (~C).load(i2,j    ) - xmm3 * factor );
+                     (~C).store( i3, j    , (~C).load(i3,j    ) - xmm4 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) - xmm5 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) - xmm6 * factor );
+                     (~C).store( i2, j+1UL, (~C).load(i2,j+1UL) - xmm7 * factor );
+                     (~C).store( i3, j+1UL, (~C).load(i3,j+1UL) - xmm8 * factor );
                   }
 
                   if( j < jend )
@@ -10766,27 +11492,24 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*4UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
-                     IntrinsicType xmm3( (~C).load(i2,j) );
-                     IntrinsicType xmm4( (~C).load(i3,j) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
-                        xmm1 = xmm1 - A.load(i ,k) * b1;
-                        xmm2 = xmm2 - A.load(i1,k) * b1;
-                        xmm3 = xmm3 - A.load(i2,k) * b1;
-                        xmm4 = xmm4 - A.load(i3,k) * b1;
+                        xmm1 = xmm1 + A.load(i ,k) * b1;
+                        xmm2 = xmm2 + A.load(i1,k) * b1;
+                        xmm3 = xmm3 + A.load(i2,k) * b1;
+                        xmm4 = xmm4 + A.load(i3,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
-                     (~C).store( i2, j, xmm3 * factor );
-                     (~C).store( i3, j, xmm4 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) - xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) - xmm2 * factor );
+                     (~C).store( i2, j, (~C).load(i2,j) - xmm3 * factor );
+                     (~C).store( i3, j, (~C).load(i3,j) - xmm4 * factor );
                   }
                }
 
-               for( ; (i+IT::size) < iend; i+=IT::size*2UL )
+               for( ; (i+IT::size) < ipos; i+=IT::size*2UL )
                {
                   const size_t i1( i+IT::size );
 
@@ -10799,14 +11522,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+4UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
-                     IntrinsicType xmm5( (~C).load(i ,j+2UL) );
-                     IntrinsicType xmm6( (~C).load(i1,j+2UL) );
-                     IntrinsicType xmm7( (~C).load(i ,j+3UL) );
-                     IntrinsicType xmm8( (~C).load(i1,j+3UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
@@ -10815,24 +11531,24 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                         const IntrinsicType b2( set( B(k,j+1UL) ) );
                         const IntrinsicType b3( set( B(k,j+2UL) ) );
                         const IntrinsicType b4( set( B(k,j+3UL) ) );
-                        xmm1 = xmm1 - a1 * b1;
-                        xmm2 = xmm2 - a2 * b1;
-                        xmm3 = xmm3 - a1 * b2;
-                        xmm4 = xmm4 - a2 * b2;
-                        xmm5 = xmm5 - a1 * b3;
-                        xmm6 = xmm6 - a2 * b3;
-                        xmm7 = xmm7 - a1 * b4;
-                        xmm8 = xmm8 - a2 * b4;
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a2 * b1;
+                        xmm3 = xmm3 + a1 * b2;
+                        xmm4 = xmm4 + a2 * b2;
+                        xmm5 = xmm5 + a1 * b3;
+                        xmm6 = xmm6 + a2 * b3;
+                        xmm7 = xmm7 + a1 * b4;
+                        xmm8 = xmm8 + a2 * b4;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
-                     (~C).store( i , j+2UL, xmm5 * factor );
-                     (~C).store( i1, j+2UL, xmm6 * factor );
-                     (~C).store( i , j+3UL, xmm7 * factor );
-                     (~C).store( i1, j+3UL, xmm8 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) - xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) - xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) - xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) - xmm4 * factor );
+                     (~C).store( i , j+2UL, (~C).load(i ,j+2UL) - xmm5 * factor );
+                     (~C).store( i1, j+2UL, (~C).load(i1,j+2UL) - xmm6 * factor );
+                     (~C).store( i , j+3UL, (~C).load(i ,j+3UL) - xmm7 * factor );
+                     (~C).store( i1, j+3UL, (~C).load(i1,j+3UL) - xmm8 * factor );
                   }
 
                   for( ; (j+2UL) <= jend; j+=2UL )
@@ -10842,26 +11558,23 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+2UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j    ) );
-                     IntrinsicType xmm2( (~C).load(i1,j    ) );
-                     IntrinsicType xmm3( (~C).load(i ,j+1UL) );
-                     IntrinsicType xmm4( (~C).load(i1,j+1UL) );
+                     IntrinsicType xmm1, xmm2, xmm3, xmm4;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType a1( A.load(i ,k) );
                         const IntrinsicType a2( A.load(i1,k) );
                         const IntrinsicType b1( set( B(k,j    ) ) );
                         const IntrinsicType b2( set( B(k,j+1UL) ) );
-                        xmm1 = xmm1 - a1 * b1;
-                        xmm2 = xmm2 - a2 * b1;
-                        xmm3 = xmm3 - a1 * b2;
-                        xmm4 = xmm4 - a2 * b2;
+                        xmm1 = xmm1 + a1 * b1;
+                        xmm2 = xmm2 + a2 * b1;
+                        xmm3 = xmm3 + a1 * b2;
+                        xmm4 = xmm4 + a2 * b2;
                      }
 
-                     (~C).store( i , j    , xmm1 * factor );
-                     (~C).store( i1, j    , xmm2 * factor );
-                     (~C).store( i , j+1UL, xmm3 * factor );
-                     (~C).store( i1, j+1UL, xmm4 * factor );
+                     (~C).store( i , j    , (~C).load(i ,j    ) - xmm1 * factor );
+                     (~C).store( i1, j    , (~C).load(i1,j    ) - xmm2 * factor );
+                     (~C).store( i , j+1UL, (~C).load(i ,j+1UL) - xmm3 * factor );
+                     (~C).store( i1, j+1UL, (~C).load(i1,j+1UL) - xmm4 * factor );
                   }
 
                   if( j < jend )
@@ -10871,21 +11584,20 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size*2UL, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i ,j) );
-                     IntrinsicType xmm2( (~C).load(i1,j) );
+                     IntrinsicType xmm1, xmm2;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
-                        xmm1 = xmm1 - A.load(i ,k) * b1;
-                        xmm2 = xmm2 - A.load(i1,k) * b1;
+                        xmm1 = xmm1 + A.load(i ,k) * b1;
+                        xmm2 = xmm2 + A.load(i1,k) * b1;
                      }
 
-                     (~C).store( i , j, xmm1 * factor );
-                     (~C).store( i1, j, xmm2 * factor );
+                     (~C).store( i , j, (~C).load(i ,j) - xmm1 * factor );
+                     (~C).store( i1, j, (~C).load(i1,j) - xmm2 * factor );
                   }
                }
 
-               if( i < iend )
+               for( ; i<ipos; i+=IT::size )
                {
                   for( size_t j=jj; j<jend; ++j )
                   {
@@ -10894,14 +11606,33 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2>, ST, true >
                      const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+IT::size, ktmp ) ):( ktmp ),
                                                ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
 
-                     IntrinsicType xmm1( (~C).load(i,j) );
+                     IntrinsicType xmm1;
 
                      for( size_t k=kbegin; k<kend; ++k ) {
                         const IntrinsicType b1( set( B(k,j) ) );
-                        xmm1 = xmm1 - A.load(i,k) * b1;
+                        xmm1 = xmm1 + A.load(i,k) * b1;
                      }
 
-                     (~C).store( i, j, xmm1 * factor );
+                     (~C).store( i, j, (~C).load(i,j) - xmm1 * factor );
+                  }
+               }
+
+               for( ; remainder && i<iend; ++i )
+               {
+                  for( size_t j=jj; j<jend; ++j )
+                  {
+                     const size_t kbegin( max( ( IsUpper<MT4>::value )?( max( i, kk ) ):( kk ),
+                                               ( IsLower<MT5>::value )?( max( j, kk ) ):( kk ) ) );
+                     const size_t kend  ( min( ( IsLower<MT4>::value )?( min( i+1UL, ktmp ) ):( ktmp ),
+                                               ( IsUpper<MT5>::value )?( j+1UL ):( ktmp ) ) );
+
+                     ElementType value = ElementType();
+
+                     for( size_t k=kbegin; k<kend; ++k ) {
+                        value += A(i,k) * B(k,j);
+                     }
+
+                     (~C)(i,j) -= value * scalar;
                   }
                }
             }
