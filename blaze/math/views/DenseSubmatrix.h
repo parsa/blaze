@@ -2986,7 +2986,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
       const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-      size_t j( 0UL );
+      size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
@@ -3176,7 +3176,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
       const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-      size_t j( 0UL );
+      size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
@@ -5760,7 +5760,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
       const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-      size_t i( 0UL );
+      size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
@@ -5950,7 +5950,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
       const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-      size_t i( 0UL );
+      size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
@@ -8200,7 +8200,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-      size_t j( 0UL );
+      size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
@@ -8390,7 +8390,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-      size_t j( 0UL );
+      size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
@@ -10586,7 +10586,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
       const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-      size_t i( 0UL );
+      size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
@@ -10776,7 +10776,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
       const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-      size_t i( 0UL );
+      size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
