@@ -211,8 +211,8 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
    typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
+   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -1621,8 +1621,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::adjustColumns( size_t minColumns ) const
 {
-   if( IsVectorizable<Type>::value )
-      return minColumns + ( IT::size - ( minColumns % IT::size ) ) % IT::size;
+   if( usePadding && IsVectorizable<Type>::value )
+      return nextMultiple<size_t>( minColumns, IT::size );
    else return minColumns;
 }
 //*************************************************************************************************
@@ -1689,7 +1689,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool DynamicMatrix<Type,SO>::isAligned() const
 {
-   return true;
+   return usePadding;
 }
 //*************************************************************************************************
 
@@ -1759,6 +1759,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
+   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1767,7 +1768,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   return loada( v_+i*nn_+j );
+   if( usePadding )
+      return loada( v_+i*nn_+j );
+   else
+      return loadu( v_+i*nn_+j );
 }
 //*************************************************************************************************
 
@@ -1853,6 +1857,7 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1861,7 +1866,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   storea( v_+i*nn_+j, value );
+   if( usePadding )
+      storea( v_+i*nn_+j, value );
+   else
+      storeu( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1922,6 +1930,7 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1930,7 +1939,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   stream( v_+i*nn_+j, value );
+   if( usePadding )
+      stream( v_+i*nn_+j, value );
+   else
+      storeu( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1988,15 +2000,12 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::storea;
-   using blaze::stream;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
@@ -2008,7 +2017,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
          size_t j( 0UL );
 
          for( ; j<jpos; j+=IT::size ) {
-            stream( v_+i*nn_+j, (~rhs).load(i,j) );
+            stream( i, j, (~rhs).load(i,j) );
          }
          for( ; remainder && j<n_; ++j ) {
             v_[i*nn_+j] = (~rhs)(i,j);
@@ -2023,13 +2032,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
          typename MT::ConstIterator it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-            storea( v_+i*nn_+j             , it.load() ); it += IT::size;
-            storea( v_+i*nn_+j+IT::size    , it.load() ); it += IT::size;
-            storea( v_+i*nn_+j+IT::size*2UL, it.load() ); it += IT::size;
-            storea( v_+i*nn_+j+IT::size*3UL, it.load() ); it += IT::size;
+            storea( i, j             , it.load() ); it += IT::size;
+            storea( i, j+IT::size    , it.load() ); it += IT::size;
+            storea( i, j+IT::size*2UL, it.load() ); it += IT::size;
+            storea( i, j+IT::size*3UL, it.load() ); it += IT::size;
          }
          for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-            storea( v_+i*nn_+j, it.load() );
+            storea( i, j, it.load() );
          }
          for( ; remainder && j<n_; ++j, ++it ) {
             v_[i*nn_+j] = *it;
@@ -2200,16 +2209,13 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2228,13 +2234,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         storea( v_+i*nn_+j             , loada( v_+i*nn_+j              ) + it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size    , loada( v_+i*nn_+j+IT::size     ) + it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size*2UL, loada( v_+i*nn_+j+IT::size*2UL ) + it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size*3UL, loada( v_+i*nn_+j+IT::size*3UL ) + it.load() ); it += IT::size;
+         storea( i, j             , loada(i,j             ) + it.load() ); it += IT::size;
+         storea( i, j+IT::size    , loada(i,j+IT::size    ) + it.load() ); it += IT::size;
+         storea( i, j+IT::size*2UL, loada(i,j+IT::size*2UL) + it.load() ); it += IT::size;
+         storea( i, j+IT::size*3UL, loada(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storea( v_+i*nn_+j, loada( v_+i*nn_+j ) + it.load() );
+         storea( i, j, loada(i,j) + it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] += *it;
@@ -2416,16 +2422,13 @@ template< typename MT >  // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -2444,13 +2447,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         storea( v_+i*nn_+j             , loada( v_+i*nn_+j              ) - it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size    , loada( v_+i*nn_+j+IT::size     ) - it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size*2UL, loada( v_+i*nn_+j+IT::size*2UL ) - it.load() ); it += IT::size;
-         storea( v_+i*nn_+j+IT::size*3UL, loada( v_+i*nn_+j+IT::size*3UL ) - it.load() ); it += IT::size;
+         storea( i, j             , loada(i,j             ) - it.load() ); it += IT::size;
+         storea( i, j+IT::size    , loada(i,j+IT::size    ) - it.load() ); it += IT::size;
+         storea( i, j+IT::size*2UL, loada(i,j+IT::size*2UL) - it.load() ); it += IT::size;
+         storea( i, j+IT::size*3UL, loada(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storea( v_+i*nn_+j, loada( v_+i*nn_+j ) - it.load() );
+         storea( i, j, loada(i,j) - it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] -= *it;
@@ -2608,8 +2611,8 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
    typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
+   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -4010,8 +4013,8 @@ inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) /* throw() */
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::adjustRows( size_t minRows ) const
 {
-   if( IsVectorizable<Type>::value )
-      return minRows + ( IT::size - ( minRows % IT::size ) ) % IT::size;
+   if( usePadding && IsVectorizable<Type>::value )
+      return nextMultiple<size_t>( minRows, IT::size );
    else return minRows;
 }
 /*! \endcond */
@@ -4081,7 +4084,7 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::isAligned() const
 {
-   return true;
+   return usePadding;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4152,6 +4155,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
+   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4160,7 +4164,10 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   return loada( v_+i+j*mm_ );
+   if( usePadding )
+      return loada( v_+i+j*mm_ );
+   else
+      return loadu( v_+i+j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4246,6 +4253,7 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4254,7 +4262,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   storea( v_+i+j*mm_, value );
+   if( usePadding )
+      storea( v_+i+j*mm_, value );
+   else
+      storeu( v_+i+j*mm_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4384,15 +4395,12 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
-   using blaze::storea;
-   using blaze::stream;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -4404,7 +4412,7 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
          size_t i( 0UL );
 
          for( ; i<ipos; i+=IT::size ) {
-            stream( v_+i+j*mm_, (~rhs).load(i,j) );
+            stream( i, j, (~rhs).load(i,j) );
          }
          for( ; remainder && i<m_; ++i ) {
             v_[i+j*mm_] = (~rhs)(i,j);
@@ -4419,13 +4427,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
          typename MT::ConstIterator it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-            storea( v_+i+j*mm_             , it.load() ); it += IT::size;
-            storea( v_+i+j*mm_+IT::size    , it.load() ); it += IT::size;
-            storea( v_+i+j*mm_+IT::size*2UL, it.load() ); it += IT::size;
-            storea( v_+i+j*mm_+IT::size*3UL, it.load() ); it += IT::size;
+            storea( i             , j, it.load() ); it += IT::size;
+            storea( i+IT::size    , j, it.load() ); it += IT::size;
+            storea( i+IT::size*2UL, j, it.load() ); it += IT::size;
+            storea( i+IT::size*3UL, j, it.load() ); it += IT::size;
          }
          for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-            storea( v_+i+j*mm_, it.load() );
+            storea( i, j, it.load() );
          }
          for( ; remainder && i<m_; ++i, ++it ) {
             v_[i+j*mm_] = *it;
@@ -4601,16 +4609,13 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -4629,13 +4634,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( v_+i+j*mm_             , loada( v_+i+j*mm_              ) + it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size    , loada( v_+i+j*mm_+IT::size     ) + it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size*2UL, loada( v_+i+j*mm_+IT::size*2UL ) + it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size*3UL, loada( v_+i+j*mm_+IT::size*3UL ) + it.load() ); it += IT::size;
+         storea( i             , j, loada(i             ,j) + it.load() ); it += IT::size;
+         storea( i+IT::size    , j, loada(i+IT::size    ,j) + it.load() ); it += IT::size;
+         storea( i+IT::size*2UL, j, loada(i+IT::size*2UL,j) + it.load() ); it += IT::size;
+         storea( i+IT::size*3UL, j, loada(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( v_+i+j*mm_, loada( v_+i+j*mm_ ) + it.load() );
+         storea( i, j, loada(i,j) + it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] += *it;
@@ -4823,16 +4828,13 @@ template< typename MT >    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<n_; ++j )
    {
@@ -4851,13 +4853,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( v_+i+j*mm_             , loada( v_+i+j*mm_              ) - it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size    , loada( v_+i+j*mm_+IT::size     ) - it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size*2UL, loada( v_+i+j*mm_+IT::size*2UL ) - it.load() ); it += IT::size;
-         storea( v_+i+j*mm_+IT::size*3UL, loada( v_+i+j*mm_+IT::size*3UL ) - it.load() ); it += IT::size;
+         storea( i             , j, loada(i             ,j) - it.load() ); it += IT::size;
+         storea( i+IT::size    , j, loada(i+IT::size    ,j) - it.load() ); it += IT::size;
+         storea( i+IT::size*2UL, j, loada(i+IT::size*2UL,j) - it.load() ); it += IT::size;
+         storea( i+IT::size*3UL, j, loada(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( v_+i+j*mm_, loada( v_+i+j*mm_ ) - it.load() );
+         storea( i, j, loada(i,j) - it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] -= *it;
@@ -5203,7 +5205,7 @@ struct HasMutableDataAccess< DynamicMatrix<T,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsAligned< DynamicMatrix<T,SO> > : public IsTrue<true>
+struct IsAligned< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5220,7 +5222,7 @@ struct IsAligned< DynamicMatrix<T,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
-struct IsPadded< DynamicMatrix<T,SO> > : public IsTrue<true>
+struct IsPadded< DynamicMatrix<T,SO> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
