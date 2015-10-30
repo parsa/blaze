@@ -204,7 +204,9 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const RowMajorMatrixType mat;
 
-      for( size_t i=0UL; i<mat.rows(); ++i )
+      const size_t rows( blaze::usePadding ? mat.rows() : 1UL );
+
+      for( size_t i=0UL; i<rows; ++i )
       {
          const size_t deviation( reinterpret_cast<size_t>( &mat(i,0UL) ) % alignment );
 
@@ -224,7 +226,9 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const ColumnMajorMatrixType mat;
 
-      for( size_t j=0UL; j<mat.columns(); ++j )
+      const size_t columns( blaze::usePadding ? mat.columns() : 1UL );
+
+      for( size_t j=0UL; j<columns; ++j )
       {
          const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,j) ) % alignment );
 
@@ -249,8 +253,11 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const boost::container::static_vector<RowMajorMatrixType,7UL> mats( 7UL );
 
-      for( size_t i=0UL; i<mats.size(); ++i ) {
-         for( size_t j=0UL; j<mats[i].rows(); ++j )
+      for( size_t i=0UL; i<mats.size(); ++i )
+      {
+         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
+
+         for( size_t j=0UL; j<rows; ++j )
          {
             const size_t deviation( reinterpret_cast<size_t>( &mats[i](j,0UL) ) % alignment );
 
@@ -271,8 +278,11 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const boost::container::static_vector<ColumnMajorMatrixType,7UL> mats( 7UL );
 
-      for( size_t i=0UL; i<mats.size(); ++i ) {
-         for( size_t j=0UL; j<mats[i].columns(); ++j )
+      for( size_t i=0UL; i<mats.size(); ++i )
+      {
+         const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
+
+         for( size_t j=0UL; j<columns; ++j )
          {
             const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
 
@@ -298,8 +308,11 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const boost::container::vector<RowMajorMatrixType,RowMajorAllocatorType> mats( 7UL );
 
-      for( size_t i=0UL; i<mats.size(); ++i ) {
-         for( size_t j=0UL; j<mats[i].rows(); ++j )
+      for( size_t i=0UL; i<mats.size(); ++i )
+      {
+         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
+
+         for( size_t j=0UL; j<rows; ++j )
          {
             const size_t deviation( reinterpret_cast<size_t>( &mats[i](j,0UL) ) % alignment );
 
@@ -320,8 +333,11 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const boost::container::vector<ColumnMajorMatrixType,ColumnMajorAllocatorType> mats( 7UL );
 
-      for( size_t i=0UL; i<mats.size(); ++i ) {
-         for( size_t j=0UL; j<mats[i].columns(); ++j )
+      for( size_t i=0UL; i<mats.size(); ++i )
+      {
+         const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
+
+         for( size_t j=0UL; j<columns; ++j )
          {
             const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
 
