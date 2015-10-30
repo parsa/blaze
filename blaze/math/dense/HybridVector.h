@@ -1853,8 +1853,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    HybridVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -1867,7 +1865,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( v_+i, (~rhs).load(i) );
+      storea( i, (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] = (~rhs)[i];
@@ -1945,9 +1943,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    HybridVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
@@ -1960,7 +1955,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( v_+i, loada( v_+i ) + (~rhs).load(i) );
+      storea( i, loada(i) + (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] += (~rhs)[i];
@@ -2038,12 +2033,9 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    HybridVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
-
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
@@ -2053,7 +2045,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( v_+i, loada( v_+i ) - (~rhs).load(i) );
+      storea( i, loada(i) - (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] -= (~rhs)[i];
@@ -2131,12 +2123,9 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    HybridVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
-
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    const bool remainder( !usePadding || !IsPadded<VT>::value );
 
@@ -2146,7 +2135,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( v_+i, loada( v_+i ) * (~rhs).load(i) );
+      storea( i, loada(i) * (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] *= (~rhs)[i];
