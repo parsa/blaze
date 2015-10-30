@@ -90,6 +90,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Memory.h>
+#include <blaze/util/mpl/NextMultiple.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
@@ -204,7 +205,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t NN = N + ( IT::size - ( N % IT::size ) ) % IT::size;
+   static const size_t NN = ( usePadding )?( NextMultiple< SizeT<N>, SizeT<IT::size> >::value ):( N );
    //**********************************************************************************************
 
  public:
@@ -223,8 +224,8 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
    typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
+   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -480,7 +481,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( NN % IT::size == 0UL );
+   BLAZE_STATIC_ASSERT( !usePadding || NN % IT::size == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
    /*! \endcond */
    //**********************************************************************************************
@@ -2482,7 +2483,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool StaticMatrix<Type,M,N,SO>::isAligned() const
 {
-   return true;
+   return usePadding;
 }
 //*************************************************************************************************
 
@@ -2537,6 +2538,7 @@ BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
    StaticMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
+   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2545,7 +2547,10 @@ BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   return loada( &v_[i*NN+j] );
+   if( usePadding )
+      return loada( &v_[i*NN+j] );
+   else
+      return loadu( &v_[i*NN+j] );
 }
 //*************************************************************************************************
 
@@ -2637,6 +2642,7 @@ BLAZE_ALWAYS_INLINE void
    StaticMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2645,7 +2651,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   storea( &v_[i*NN+j], value );
+   if( usePadding )
+      storea( &v_[i*NN+j], value );
+   else
+      storeu( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -2710,6 +2719,7 @@ BLAZE_ALWAYS_INLINE void
    StaticMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2718,7 +2728,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   stream( &v_[i*NN+j], value );
+   if( usePadding )
+      stream( &v_[i*NN+j], value );
+   else
+      storeu( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -2774,13 +2787,11 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 {
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    const size_t jpos( ( remainder )?( N & size_t(-IT::size) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (IT::size) ) ) == jpos, "Invalid end calculation" );
@@ -2790,7 +2801,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( 0UL );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( &v_[i*NN+j], (~rhs).load(i,j) );
+         storea( i, j, (~rhs).load(i,j) );
       }
       for( ; remainder && j<N; ++j ) {
          v_[i*NN+j] = (~rhs)(i,j);
@@ -2927,15 +2938,12 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<M; ++i )
    {
@@ -2953,7 +2961,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( &v_[i*NN+j], loada( &v_[i*NN+j] ) + (~rhs).load(i,j) );
+         storea( i, j, loada(i,j) + (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] += (~rhs)(i,j);
@@ -3090,15 +3098,12 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t i=0UL; i<M; ++i )
    {
@@ -3116,7 +3121,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( &v_[i*NN+j], loada( &v_[i*NN+j] ) - (~rhs).load(i,j) );
+         storea( i, j, loada(i,j) - (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] -= (~rhs)(i,j);
@@ -3218,7 +3223,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
 
    //**********************************************************************************************
    //! Alignment adjustment
-   static const size_t MM = M + ( IT::size - ( M % IT::size ) ) % IT::size;
+   static const size_t MM = ( usePadding )?( NextMultiple< SizeT<M>, SizeT<IT::size> >::value ):( M );
    //**********************************************************************************************
 
  public:
@@ -3237,8 +3242,8 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    typedef Type*        Pointer;         //!< Pointer to a non-constant matrix value.
    typedef const Type*  ConstPointer;    //!< Pointer to a constant matrix value.
 
-   typedef DenseIterator<Type,aligned>        Iterator;       //!< Iterator over non-constant elements.
-   typedef DenseIterator<const Type,aligned>  ConstIterator;  //!< Iterator over constant elements.
+   typedef DenseIterator<Type,usePadding>        Iterator;       //!< Iterator over non-constant elements.
+   typedef DenseIterator<const Type,usePadding>  ConstIterator;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3480,7 +3485,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( MM % IT::size == 0UL );
+   BLAZE_STATIC_ASSERT( !usePadding || MM % IT::size == 0UL );
    BLAZE_STATIC_ASSERT( MM >= M );
    //**********************************************************************************************
 };
@@ -5503,7 +5508,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline bool StaticMatrix<Type,M,N,true>::isAligned() const
 {
-   return true;
+   return usePadding;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5558,6 +5563,7 @@ BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
    StaticMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
+   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5566,7 +5572,10 @@ BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
 
-   return loada( &v_[i+j*MM] );
+   if( usePadding )
+      return loada( &v_[i+j*MM] );
+   else
+      return loadu( &v_[i+j*MM] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5609,6 +5618,34 @@ BLAZE_ALWAYS_INLINE typename StaticMatrix<Type,M,N,true>::IntrinsicType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Store of an intrinsic element of the matrix.
+//
+// \param i Access index for the row. The index has to be in the range [0..M-1].
+// \param j Access index for the column. The index has to be in the range [0..N-1].
+// \param value The intrinsic element to be stored.
+// \return void
+//
+// This function performs a store of a specific intrinsic element of the dense matrix. The row
+// index must be smaller than the number of rows and the column index must be smaller then the
+// number of columns. Additionally, the row index must be a multiple of the number of values
+// inside the intrinsic element. This function must \b NOT be called explicitly! It is used
+// internally for the performance optimized evaluation of expression templates. Calling this
+// function explicitly might result in erroneous results and/or in compilation errors.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+BLAZE_ALWAYS_INLINE void
+   StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+{
+   storea( i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Aligned store of an intrinsic element of the matrix.
 //
 // \param i Access index for the row. The index has to be in the range [0..M-1].
@@ -5627,9 +5664,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 BLAZE_ALWAYS_INLINE void
-   StaticMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
+   StaticMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5638,7 +5676,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
 
-   storea( &v_[i+j*MM], value );
+   if( usePadding )
+      storea( &v_[i+j*MM], value );
+   else
+      storeu( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5704,6 +5745,7 @@ BLAZE_ALWAYS_INLINE void
    StaticMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
+   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5712,7 +5754,10 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  N  , "Invalid column access index" );
 
-   stream( &v_[i+j*MM], value );
+   if( usePadding )
+      stream( &v_[i+j*MM], value );
+   else
+      storeu( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5770,13 +5815,11 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    const size_t ipos( ( remainder )?( M & size_t(-IT::size) ):( M ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % (IT::size) ) ) == ipos, "Invalid end calculation" );
@@ -5786,7 +5829,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( 0UL );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( &v_[i+j*MM], (~rhs).load(i,j) );
+         storea( i, j, (~rhs).load(i,j) );
       }
       for( ; remainder && i<M; ++i ) {
          v_[i+j*MM] = (~rhs)(i,j);
@@ -5927,15 +5970,12 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<N; ++j )
    {
@@ -5953,7 +5993,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( &v_[i+j*MM], loada( &v_[i+j*MM] ) + (~rhs).load(i,j) );
+         storea( i, j, loada(i,j) + (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] += (~rhs)(i,j);
@@ -6094,15 +6134,12 @@ template< typename MT    // Type of the right-hand side dense matrix
 inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >::Type
    StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   const bool remainder( !IsPadded<MT>::value );
+   const bool remainder( !usePadding || !IsPadded<MT>::value );
 
    for( size_t j=0UL; j<N; ++j )
    {
@@ -6120,7 +6157,7 @@ inline typename EnableIf< typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( &v_[i+j*MM], loada( &v_[i+j*MM] ) - (~rhs).load(i,j) );
+         storea( i, j, loada(i,j) - (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] -= (~rhs)(i,j);
@@ -6559,7 +6596,7 @@ struct HasMutableDataAccess< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsAligned< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
+struct IsAligned< StaticMatrix<T,M,N,SO> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6576,7 +6613,7 @@ struct IsAligned< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct IsPadded< StaticMatrix<T,M,N,SO> > : public IsTrue<true>
+struct IsPadded< StaticMatrix<T,M,N,SO> > : public IsTrue<usePadding>
 {};
 /*! \endcond */
 //*************************************************************************************************
