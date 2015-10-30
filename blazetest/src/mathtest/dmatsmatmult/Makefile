@@ -137,53 +137,53 @@ H3x3bHCa: H3x3bHCa.o
 H3x3bHCb: H3x3bHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
-HDaDCa: DDaDCa.o
+HDaDCa: HDaDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaDCb: DDaDCb.o
+HDaDCb: HDaDCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaHCa: DDaHCa.o
+HDaHCa: HDaHCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaHCb: DDaHCb.o
+HDaHCb: HDaHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaLCa: DDaLCa.o
+HDaLCa: HDaLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaLCb: DDaLCb.o
+HDaLCb: HDaLCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaMCa: DDaMCa.o
+HDaMCa: HDaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaMCb: DDaMCb.o
+HDaMCb: HDaMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaSCa: DDaSCa.o
+HDaSCa: HDaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaSCb: DDaSCb.o
+HDaSCb: HDaSCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaUCa: DDaUCa.o
+HDaUCa: HDaUCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDaUCb: DDaUCb.o
+HDaUCb: HDaUCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbDCa: DDbDCa.o
+HDbDCa: HDbDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbDCb: DDbDCb.o
+HDbDCb: HDbDCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbHCa: DDbHCa.o
+HDbHCa: HDbHCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbHCb: DDbHCb.o
+HDbHCb: HDbHCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbLCa: DDbLCa.o
+HDbLCa: HDbLCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbLCb: DDbLCb.o
+HDbLCb: HDbLCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbMCa: DDbMCa.o
+HDbMCa: HDbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbMCb: DDbMCb.o
+HDbMCb: HDbMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbSCa: DDbSCa.o
+HDbSCa: HDbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbSCb: DDbSCb.o
+HDbSCb: HDbSCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbUCa: DDbUCa.o
+HDbUCa: HDbUCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-HDbUCb: DDbUCb.o
+HDbUCb: HDbUCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 HHaHCa: HHaHCa.o
