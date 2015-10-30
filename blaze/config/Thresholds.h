@@ -52,9 +52,10 @@ namespace blaze {
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 4000000 (which for instance corresponds to a matrix
-// size of \f$ 2000 \times 2000 \f$).
+// size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::DMATDVECMULT_DEBUG_THRESHOLD value.
 */
-const size_t DMATDVECMULT_THRESHOLD = 4000000UL;
+const size_t DMATDVECMULT_USER_THRESHOLD = 4000000UL;
 //*************************************************************************************************
 
 
@@ -69,9 +70,10 @@ const size_t DMATDVECMULT_THRESHOLD = 4000000UL;
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 62500 (which for instance corresponds to a matrix
-// size of \f$ 250 \times 250 \f$).
+// size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDMATDVECMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDMATDVECMULT_THRESHOLD = 62500UL;
+const size_t TDMATDVECMULT_USER_THRESHOLD = 62500UL;
 //*************************************************************************************************
 
 
@@ -86,9 +88,10 @@ const size_t TDMATDVECMULT_THRESHOLD = 62500UL;
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 62500 (which for instance corresponds to a matrix
-// size of \f$ 250 \times 250 \f$).
+// size of \f$ 250 \times 250 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDVECDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDVECDMATMULT_THRESHOLD = 62500UL;
+const size_t TDVECDMATMULT_USER_THRESHOLD = 62500UL;
 //*************************************************************************************************
 
 
@@ -103,9 +106,10 @@ const size_t TDVECDMATMULT_THRESHOLD = 62500UL;
 // dense matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 4000000 (which for instance corresponds to a matrix
-// size of \f$ 2000 \times 2000 \f$).
+// size of \f$ 2000 \times 2000 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDVECTDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDVECTDMATMULT_THRESHOLD = 4000000UL;
+const size_t TDVECTDMATMULT_USER_THRESHOLD = 4000000UL;
 //*************************************************************************************************
 
 
@@ -120,9 +124,10 @@ const size_t TDVECTDMATMULT_THRESHOLD = 4000000UL;
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::DMATDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t DMATDMATMULT_THRESHOLD = 10000UL;
+const size_t DMATDMATMULT_USER_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
@@ -137,9 +142,10 @@ const size_t DMATDMATMULT_THRESHOLD = 10000UL;
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::DMATTDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t DMATTDMATMULT_THRESHOLD = 10000UL;
+const size_t DMATTDMATMULT_USER_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
@@ -154,9 +160,10 @@ const size_t DMATTDMATMULT_THRESHOLD = 10000UL;
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDMATDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDMATDMATMULT_THRESHOLD = 10000UL;
+const size_t TDMATDMATMULT_USER_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
@@ -171,9 +178,10 @@ const size_t TDMATDMATMULT_THRESHOLD = 10000UL;
 // the target matrix is smaller, the Blaze kernels are used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDMATTDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
+const size_t TDMATTDMATMULT_USER_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
@@ -188,9 +196,10 @@ const size_t TDMATTDMATMULT_THRESHOLD = 10000UL;
 // in the target matrix is smaller, the kernel for small matrices is used.
 //
 // The default setting for this threshold is 2500 (which for instance corresponds to a matrix
-// size of \f$ 50 \times 50 \f$).
+// size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::DMATSMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t DMATSMATMULT_THRESHOLD = 2500UL;
+const size_t DMATSMATMULT_USER_THRESHOLD = 2500UL;
 //*************************************************************************************************
 
 
@@ -205,9 +214,10 @@ const size_t DMATSMATMULT_THRESHOLD = 2500UL;
 // in the target matrix is smaller, the kernel for small matrices is used.
 //
 // The default setting for this threshold is 2500 (which for instance corresponds to a matrix
-// size of \f$ 50 \times 50 \f$).
+// size of \f$ 50 \times 50 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TDMATSMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TDMATSMATMULT_THRESHOLD = 2500UL;
+const size_t TDMATSMATMULT_USER_THRESHOLD = 2500UL;
 //*************************************************************************************************
 
 
@@ -222,9 +232,10 @@ const size_t TDMATSMATMULT_THRESHOLD = 2500UL;
 // in the target matrix is smaller, the kernel for small matrices is used.
 //
 // The default setting for this threshold is 10000 (which for instance corresponds to a matrix
-// size of \f$ 100 \times 100 \f$).
+// size of \f$ 100 \times 100 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TSMATDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TSMATDMATMULT_THRESHOLD = 10000UL;
+const size_t TSMATDMATMULT_USER_THRESHOLD = 10000UL;
 //*************************************************************************************************
 
 
@@ -239,9 +250,10 @@ const size_t TSMATDMATMULT_THRESHOLD = 10000UL;
 // in the target matrix is smaller, the kernel for small matrices is used.
 //
 // The default setting for this threshold is 22500 (which for instance corresponds to a matrix
-// size of \f$ 150 \times 150 \f$).
+// size of \f$ 150 \times 150 \f$). Note that in case the Blaze debug mode is active, this
+// threshold will be replaced by the blaze::TSMATTDMATMULT_DEBUG_THRESHOLD value.
 */
-const size_t TSMATTDMATMULT_THRESHOLD = 22500UL;
+const size_t TSMATTDMATMULT_USER_THRESHOLD = 22500UL;
 //*************************************************************************************************
 
 
@@ -249,7 +261,7 @@ const size_t TSMATTDMATMULT_THRESHOLD = 22500UL;
 
 //=================================================================================================
 //
-//  OPENMP THRESHOLDS
+//  SMP THRESHOLDS
 //
 //=================================================================================================
 
@@ -272,7 +284,7 @@ const size_t TSMATTDMATMULT_THRESHOLD = 22500UL;
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t SMP_DVECASSIGN_THRESHOLD = 38000UL;
+const size_t SMP_DVECASSIGN_USER_THRESHOLD = 38000UL;
 //*************************************************************************************************
 
 
@@ -295,7 +307,7 @@ const size_t SMP_DVECASSIGN_THRESHOLD = 38000UL;
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t SMP_DVECDVECADD_THRESHOLD = 38000UL;
+const size_t SMP_DVECDVECADD_USER_THRESHOLD = 38000UL;
 //*************************************************************************************************
 
 
@@ -318,7 +330,7 @@ const size_t SMP_DVECDVECADD_THRESHOLD = 38000UL;
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t SMP_DVECDVECSUB_THRESHOLD = 38000UL;
+const size_t SMP_DVECDVECSUB_USER_THRESHOLD = 38000UL;
 //*************************************************************************************************
 
 
@@ -341,7 +353,7 @@ const size_t SMP_DVECDVECSUB_THRESHOLD = 38000UL;
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t SMP_DVECDVECMULT_THRESHOLD = 38000UL;
+const size_t SMP_DVECDVECMULT_USER_THRESHOLD = 38000UL;
 //*************************************************************************************************
 
 
@@ -364,7 +376,7 @@ const size_t SMP_DVECDVECMULT_THRESHOLD = 38000UL;
 // The default setting for this threshold is 51000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
 */
-const size_t SMP_DVECSCALARMULT_THRESHOLD = 51000UL;
+const size_t SMP_DVECSCALARMULT_USER_THRESHOLD = 51000UL;
 //*************************************************************************************************
 
 
@@ -387,7 +399,7 @@ const size_t SMP_DVECSCALARMULT_THRESHOLD = 51000UL;
 // The default setting for this threshold is 330. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATDVECMULT_THRESHOLD = 330UL;
+const size_t SMP_DMATDVECMULT_USER_THRESHOLD = 330UL;
 //*************************************************************************************************
 
 
@@ -410,7 +422,7 @@ const size_t SMP_DMATDVECMULT_THRESHOLD = 330UL;
 // The default setting for this threshold is 360. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATDVECMULT_THRESHOLD = 360UL;
+const size_t SMP_TDMATDVECMULT_USER_THRESHOLD = 360UL;
 //*************************************************************************************************
 
 
@@ -433,7 +445,7 @@ const size_t SMP_TDMATDVECMULT_THRESHOLD = 360UL;
 // The default setting for this threshold is 370. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDVECDMATMULT_THRESHOLD = 370UL;
+const size_t SMP_TDVECDMATMULT_USER_THRESHOLD = 370UL;
 //*************************************************************************************************
 
 
@@ -456,7 +468,7 @@ const size_t SMP_TDVECDMATMULT_THRESHOLD = 370UL;
 // The default setting for this threshold is 340. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDVECTDMATMULT_THRESHOLD = 340UL;
+const size_t SMP_TDVECTDMATMULT_USER_THRESHOLD = 340UL;
 //*************************************************************************************************
 
 
@@ -479,7 +491,7 @@ const size_t SMP_TDVECTDMATMULT_THRESHOLD = 340UL;
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATSVECMULT_THRESHOLD = 480UL;
+const size_t SMP_DMATSVECMULT_USER_THRESHOLD = 480UL;
 //*************************************************************************************************
 
 
@@ -502,7 +514,7 @@ const size_t SMP_DMATSVECMULT_THRESHOLD = 480UL;
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATSVECMULT_THRESHOLD = 910UL;
+const size_t SMP_TDMATSVECMULT_USER_THRESHOLD = 910UL;
 //*************************************************************************************************
 
 
@@ -525,7 +537,7 @@ const size_t SMP_TDMATSVECMULT_THRESHOLD = 910UL;
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSVECDMATMULT_THRESHOLD = 910UL;
+const size_t SMP_TSVECDMATMULT_USER_THRESHOLD = 910UL;
 //*************************************************************************************************
 
 
@@ -548,7 +560,7 @@ const size_t SMP_TSVECDMATMULT_THRESHOLD = 910UL;
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSVECTDMATMULT_THRESHOLD = 480UL;
+const size_t SMP_TSVECTDMATMULT_USER_THRESHOLD = 480UL;
 //*************************************************************************************************
 
 
@@ -571,7 +583,7 @@ const size_t SMP_TSVECTDMATMULT_THRESHOLD = 480UL;
 // The default setting for this threshold is 600. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATDVECMULT_THRESHOLD = 600UL;
+const size_t SMP_SMATDVECMULT_USER_THRESHOLD = 600UL;
 //*************************************************************************************************
 
 
@@ -594,7 +606,7 @@ const size_t SMP_SMATDVECMULT_THRESHOLD = 600UL;
 // The default setting for this threshold is 1250. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATDVECMULT_THRESHOLD = 1250UL;
+const size_t SMP_TSMATDVECMULT_USER_THRESHOLD = 1250UL;
 //*************************************************************************************************
 
 
@@ -617,7 +629,7 @@ const size_t SMP_TSMATDVECMULT_THRESHOLD = 1250UL;
 // The default setting for this threshold is 1190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDVECSMATMULT_THRESHOLD = 1190UL;
+const size_t SMP_TDVECSMATMULT_USER_THRESHOLD = 1190UL;
 //*************************************************************************************************
 
 
@@ -640,7 +652,7 @@ const size_t SMP_TDVECSMATMULT_THRESHOLD = 1190UL;
 // The default setting for this threshold is 530. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDVECTSMATMULT_THRESHOLD = 530UL;
+const size_t SMP_TDVECTSMATMULT_USER_THRESHOLD = 530UL;
 //*************************************************************************************************
 
 
@@ -663,7 +675,7 @@ const size_t SMP_TDVECTSMATMULT_THRESHOLD = 530UL;
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATSVECMULT_THRESHOLD = 260UL;
+const size_t SMP_SMATSVECMULT_USER_THRESHOLD = 260UL;
 //*************************************************************************************************
 
 
@@ -686,7 +698,7 @@ const size_t SMP_SMATSVECMULT_THRESHOLD = 260UL;
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATSVECMULT_THRESHOLD = 2160UL;
+const size_t SMP_TSMATSVECMULT_USER_THRESHOLD = 2160UL;
 //*************************************************************************************************
 
 
@@ -709,7 +721,7 @@ const size_t SMP_TSMATSVECMULT_THRESHOLD = 2160UL;
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSVECSMATMULT_THRESHOLD = 2160UL;
+const size_t SMP_TSVECSMATMULT_USER_THRESHOLD = 2160UL;
 //*************************************************************************************************
 
 
@@ -732,7 +744,7 @@ const size_t SMP_TSVECSMATMULT_THRESHOLD = 2160UL;
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSVECTSMATMULT_THRESHOLD = 260UL;
+const size_t SMP_TSVECTSMATMULT_USER_THRESHOLD = 260UL;
 //*************************************************************************************************
 
 
@@ -755,7 +767,7 @@ const size_t SMP_TSVECTSMATMULT_THRESHOLD = 260UL;
 // The default setting for this threshold is 220. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATASSIGN_THRESHOLD = 220UL;
+const size_t SMP_DMATASSIGN_USER_THRESHOLD = 220UL;
 //*************************************************************************************************
 
 
@@ -779,7 +791,7 @@ const size_t SMP_DMATASSIGN_THRESHOLD = 220UL;
 // The default setting for this threshold is 190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATDMATADD_THRESHOLD = 190UL;
+const size_t SMP_DMATDMATADD_USER_THRESHOLD = 190UL;
 //*************************************************************************************************
 
 
@@ -804,7 +816,7 @@ const size_t SMP_DMATDMATADD_THRESHOLD = 190UL;
 // The default setting for this threshold is 175. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATTDMATADD_THRESHOLD = 175UL;
+const size_t SMP_DMATTDMATADD_USER_THRESHOLD = 175UL;
 //*************************************************************************************************
 
 
@@ -828,7 +840,7 @@ const size_t SMP_DMATTDMATADD_THRESHOLD = 175UL;
 // The default setting for this threshold is 190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATDMATSUB_THRESHOLD = 190UL;
+const size_t SMP_DMATDMATSUB_USER_THRESHOLD = 190UL;
 //*************************************************************************************************
 
 
@@ -853,7 +865,7 @@ const size_t SMP_DMATDMATSUB_THRESHOLD = 190UL;
 // The default setting for this threshold is 175. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATTDMATSUB_THRESHOLD = 175UL;
+const size_t SMP_DMATTDMATSUB_USER_THRESHOLD = 175UL;
 //*************************************************************************************************
 
 
@@ -876,7 +888,7 @@ const size_t SMP_DMATTDMATSUB_THRESHOLD = 175UL;
 // The default setting for this threshold is 220. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATSCALARMULT_THRESHOLD = 220UL;
+const size_t SMP_DMATSCALARMULT_USER_THRESHOLD = 220UL;
 //*************************************************************************************************
 
 
@@ -899,7 +911,7 @@ const size_t SMP_DMATSCALARMULT_THRESHOLD = 220UL;
 // The default setting for this threshold is 55. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATDMATMULT_THRESHOLD = 55UL;
+const size_t SMP_DMATDMATMULT_USER_THRESHOLD = 55UL;
 //*************************************************************************************************
 
 
@@ -922,7 +934,7 @@ const size_t SMP_DMATDMATMULT_THRESHOLD = 55UL;
 // The default setting for this threshold is 55. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATTDMATMULT_THRESHOLD = 55UL;
+const size_t SMP_DMATTDMATMULT_USER_THRESHOLD = 55UL;
 //*************************************************************************************************
 
 
@@ -945,7 +957,7 @@ const size_t SMP_DMATTDMATMULT_THRESHOLD = 55UL;
 // The default setting for this threshold is 55. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATDMATMULT_THRESHOLD = 55UL;
+const size_t SMP_TDMATDMATMULT_USER_THRESHOLD = 55UL;
 //*************************************************************************************************
 
 
@@ -968,7 +980,7 @@ const size_t SMP_TDMATDMATMULT_THRESHOLD = 55UL;
 // The default setting for this threshold is 55. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATTDMATMULT_THRESHOLD = 55UL;
+const size_t SMP_TDMATTDMATMULT_USER_THRESHOLD = 55UL;
 //*************************************************************************************************
 
 
@@ -991,7 +1003,7 @@ const size_t SMP_TDMATTDMATMULT_THRESHOLD = 55UL;
 // The default setting for this threshold is 64. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATSMATMULT_THRESHOLD = 64UL;
+const size_t SMP_DMATSMATMULT_USER_THRESHOLD = 64UL;
 //*************************************************************************************************
 
 
@@ -1014,7 +1026,7 @@ const size_t SMP_DMATSMATMULT_THRESHOLD = 64UL;
 // The default setting for this threshold is 68. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DMATTSMATMULT_THRESHOLD = 68UL;
+const size_t SMP_DMATTSMATMULT_USER_THRESHOLD = 68UL;
 //*************************************************************************************************
 
 
@@ -1037,7 +1049,7 @@ const size_t SMP_DMATTSMATMULT_THRESHOLD = 68UL;
 // The default setting for this threshold is 90. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATSMATMULT_THRESHOLD = 90UL;
+const size_t SMP_TDMATSMATMULT_USER_THRESHOLD = 90UL;
 //*************************************************************************************************
 
 
@@ -1060,7 +1072,7 @@ const size_t SMP_TDMATSMATMULT_THRESHOLD = 90UL;
 // The default setting for this threshold is 90. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TDMATTSMATMULT_THRESHOLD = 90UL;
+const size_t SMP_TDMATTSMATMULT_USER_THRESHOLD = 90UL;
 //*************************************************************************************************
 
 
@@ -1083,7 +1095,7 @@ const size_t SMP_TDMATTSMATMULT_THRESHOLD = 90UL;
 // The default setting for this threshold is 88. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATDMATMULT_THRESHOLD = 88UL;
+const size_t SMP_SMATDMATMULT_USER_THRESHOLD = 88UL;
 //*************************************************************************************************
 
 
@@ -1106,7 +1118,7 @@ const size_t SMP_SMATDMATMULT_THRESHOLD = 88UL;
 // The default setting for this threshold is 72. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATTDMATMULT_THRESHOLD = 72UL;
+const size_t SMP_SMATTDMATMULT_USER_THRESHOLD = 72UL;
 //*************************************************************************************************
 
 
@@ -1129,7 +1141,7 @@ const size_t SMP_SMATTDMATMULT_THRESHOLD = 72UL;
 // The default setting for this threshold is 66. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATDMATMULT_THRESHOLD = 66UL;
+const size_t SMP_TSMATDMATMULT_USER_THRESHOLD = 66UL;
 //*************************************************************************************************
 
 
@@ -1152,7 +1164,7 @@ const size_t SMP_TSMATDMATMULT_THRESHOLD = 66UL;
 // The default setting for this threshold is 66. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATTDMATMULT_THRESHOLD = 66UL;
+const size_t SMP_TSMATTDMATMULT_USER_THRESHOLD = 66UL;
 //*************************************************************************************************
 
 
@@ -1175,7 +1187,7 @@ const size_t SMP_TSMATTDMATMULT_THRESHOLD = 66UL;
 // The default setting for this threshold is 150. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATSMATMULT_THRESHOLD = 150UL;
+const size_t SMP_SMATSMATMULT_USER_THRESHOLD = 150UL;
 //*************************************************************************************************
 
 
@@ -1198,7 +1210,7 @@ const size_t SMP_SMATSMATMULT_THRESHOLD = 150UL;
 // The default setting for this threshold is 140. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_SMATTSMATMULT_THRESHOLD = 140UL;
+const size_t SMP_SMATTSMATMULT_USER_THRESHOLD = 140UL;
 //*************************************************************************************************
 
 
@@ -1221,7 +1233,7 @@ const size_t SMP_SMATTSMATMULT_THRESHOLD = 140UL;
 // The default setting for this threshold is 140. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATSMATMULT_THRESHOLD = 140UL;
+const size_t SMP_TSMATSMATMULT_USER_THRESHOLD = 140UL;
 //*************************************************************************************************
 
 
@@ -1244,7 +1256,7 @@ const size_t SMP_TSMATSMATMULT_THRESHOLD = 140UL;
 // The default setting for this threshold is 150. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_TSMATTSMATMULT_THRESHOLD = 150UL;
+const size_t SMP_TSMATTSMATMULT_USER_THRESHOLD = 150UL;
 //*************************************************************************************************
 
 
@@ -1267,7 +1279,7 @@ const size_t SMP_TSMATTSMATMULT_THRESHOLD = 150UL;
 // The default setting for this threshold is 290. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
 */
-const size_t SMP_DVECTDVECMULT_THRESHOLD = 290UL;
+const size_t SMP_DVECTDVECMULT_USER_THRESHOLD = 290UL;
 //*************************************************************************************************
 
 } // namespace blaze
