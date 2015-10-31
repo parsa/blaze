@@ -49,6 +49,7 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -557,7 +558,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -686,7 +687,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -815,7 +816,7 @@ class DMatTransposer : public DenseMatrix< DMatTransposer<MT,SO>, SO >
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -1380,7 +1381,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
@@ -1508,7 +1509,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
@@ -1636,7 +1637,7 @@ class DMatTransposer<MT,true> : public DenseMatrix< DMatTransposer<MT,true>, tru
 
       const size_t m( rows() );
       const size_t n( columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<n; jj+=block ) {
          const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
