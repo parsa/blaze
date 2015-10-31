@@ -337,7 +337,7 @@ void ClassTest::testAlignment( const std::string& type )
 
       for( size_t i=0UL; i<mats.size(); ++i )
       {
-         const size_t columns( blaze::usePadding ? mats[i].rows() : 1UL );
+         const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
 
          for( size_t j=0UL; j<columns; ++j )
          {
