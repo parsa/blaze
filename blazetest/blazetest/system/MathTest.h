@@ -48,9 +48,6 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/NumericElementType.h>
 #include <blaze/util/constraints/Valid.h>
 #include <blaze/util/StaticAssert.h>
