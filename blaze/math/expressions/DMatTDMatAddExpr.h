@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Reference.h>
@@ -339,7 +340,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -456,7 +457,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
@@ -533,7 +534,7 @@ class DMatTDMatAddExpr : public DenseMatrix< DMatTDMatAddExpr<MT1,MT2>, false >
 
       const size_t m( rhs.rows() );
       const size_t n( rhs.columns() );
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<m; ii+=block ) {
          const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
