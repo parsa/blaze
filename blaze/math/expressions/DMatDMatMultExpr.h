@@ -93,6 +93,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/BLAS.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -1225,20 +1226,16 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
@@ -1246,9 +1243,9 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
                }
             }
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
@@ -2452,24 +2449,20 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
@@ -3648,24 +3641,20 @@ class DMatDMatMultExpr : public DenseMatrix< DMatDMatMultExpr<MT1,MT2>, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
@@ -5548,22 +5537,18 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
       const IntrinsicType factor( set( scalar ) );
 
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
             for( size_t i=ii; i<iend; ++i ) {
                for( size_t j=jj; j<jend; ++j ) {
@@ -5571,9 +5556,9 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
                }
             }
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
@@ -6703,26 +6688,22 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
       const IntrinsicType factor( set( scalar ) );
 
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
@@ -7827,26 +7808,22 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2>, ST, false >
 
       const bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
-      const size_t iblock(  64UL );
-      const size_t jblock( 128UL );
-      const size_t kblock( 128UL );
-
       const IntrinsicType factor( set( scalar ) );
 
-      for( size_t jj=0UL; jj<N; jj+=jblock )
+      for( size_t jj=0UL; jj<N; jj+=DMATDMATMULT_JBLOCK_SIZE )
       {
-         const size_t jend( min( jj+jblock, N ) );
+         const size_t jend( min( jj+DMATDMATMULT_JBLOCK_SIZE, N ) );
 
          const size_t jpos( remainder ? ( jend & size_t(-IT::size) ) : jend );
          BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % IT::size ) ) == jpos, "Invalid end calculation" );
 
-         for( size_t ii=0UL; ii<M; ii+=iblock )
+         for( size_t ii=0UL; ii<M; ii+=DMATDMATMULT_IBLOCK_SIZE )
          {
-            const size_t iend( min( ii+iblock, M ) );
+            const size_t iend( min( ii+DMATDMATMULT_IBLOCK_SIZE, M ) );
 
-            for( size_t kk=0UL; kk<K; kk+=kblock )
+            for( size_t kk=0UL; kk<K; kk+=DMATDMATMULT_KBLOCK_SIZE )
             {
-               const size_t ktmp( min( kk+kblock, K ) );
+               const size_t ktmp( min( kk+DMATDMATMULT_KBLOCK_SIZE, K ) );
 
                size_t j( jj );
 
