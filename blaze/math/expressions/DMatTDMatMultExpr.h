@@ -91,6 +91,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/system/BLAS.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -813,7 +814,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -871,7 +872,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -2112,7 +2113,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -2160,7 +2161,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -3360,7 +3361,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -3408,7 +3409,7 @@ class DMatTDMatMultExpr : public DenseMatrix< DMatTDMatMultExpr<MT1,MT2>, false 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -5178,7 +5179,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -5236,7 +5237,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -6338,7 +6339,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -6386,7 +6387,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
@@ -7450,7 +7451,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t jj=0UL; jj<N; jj+=block ) {
          const size_t jend( min( N, jj+block ) );
@@ -7499,7 +7500,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2>, ST, false >
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
-      const size_t block( 16UL );
+      const size_t block( BLOCK_SIZE );
 
       for( size_t ii=0UL; ii<M; ii+=block ) {
          const size_t iend( min( M, ii+block ) );
