@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -2070,7 +2071,7 @@ inline void DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( min( m_, ii+block ) );
@@ -2271,7 +2272,7 @@ inline void DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( min( m_, ii+block ) );
@@ -2484,7 +2485,7 @@ inline void DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( min( m_, ii+block ) );
@@ -4466,7 +4467,7 @@ inline void DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,false>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( min( n_, jj+block ) );
@@ -4672,7 +4673,7 @@ inline void DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,false>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( min( n_, jj+block ) );
@@ -4891,7 +4892,7 @@ inline void DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,false>& rh
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( min( n_, jj+block ) );

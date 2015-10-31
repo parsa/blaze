@@ -86,6 +86,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/Blocking.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -2838,7 +2839,7 @@ inline void DenseSubmatrix<MT,AF,SO>::assign( const DenseMatrix<MT2,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -3028,7 +3029,7 @@ inline void DenseSubmatrix<MT,AF,SO>::addAssign( const DenseMatrix<MT2,!SO>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -3218,7 +3219,7 @@ inline void DenseSubmatrix<MT,AF,SO>::subAssign( const DenseMatrix<MT2,!SO>& rhs
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -5612,7 +5613,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::assign( const DenseMatrix<MT2,fal
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
@@ -5802,7 +5803,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::addAssign( const DenseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
@@ -5992,7 +5993,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::subAssign( const DenseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
@@ -8052,7 +8053,7 @@ inline void DenseSubmatrix<MT,aligned,false>::assign( const DenseMatrix<MT2,true
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -8242,7 +8243,7 @@ inline void DenseSubmatrix<MT,aligned,false>::addAssign( const DenseMatrix<MT2,t
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -8432,7 +8433,7 @@ inline void DenseSubmatrix<MT,aligned,false>::subAssign( const DenseMatrix<MT2,t
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t ii=0UL; ii<m_; ii+=block ) {
       const size_t iend( ( m_<(ii+block) )?( m_ ):( ii+block ) );
@@ -10438,7 +10439,7 @@ inline void DenseSubmatrix<MT,aligned,true>::assign( const DenseMatrix<MT2,false
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
@@ -10628,7 +10629,7 @@ inline void DenseSubmatrix<MT,aligned,true>::addAssign( const DenseMatrix<MT2,fa
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
@@ -10818,7 +10819,7 @@ inline void DenseSubmatrix<MT,aligned,true>::subAssign( const DenseMatrix<MT2,fa
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t block( 16UL );
+   const size_t block( BLOCK_SIZE );
 
    for( size_t jj=0UL; jj<n_; jj+=block ) {
       const size_t jend( ( n_<(jj+block) )?( n_ ):( jj+block ) );
