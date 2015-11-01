@@ -2079,7 +2079,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
    HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const
 {
-   return loada( i, j );
+   if( usePadding )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 //*************************************************************************************************
 
@@ -2107,7 +2110,6 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
    HybridMatrix<Type,M,N,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
-   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2116,10 +2118,7 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      return loada( &v_[i*NN+j] );
-   else
-      return loadu( &v_[i*NN+j] );
+   return loada( &v_[i*NN+j] );
 }
 //*************************************************************************************************
 
@@ -2182,7 +2181,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   storea( i, j, value );
+   if( usePadding )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 //*************************************************************************************************
 
@@ -2211,7 +2213,6 @@ BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2220,10 +2221,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      storea( &v_[i*NN+j], value );
-   else
-      storeu( &v_[i*NN+j], value );
+   storea( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -2288,7 +2286,6 @@ BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2297,10 +2294,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      stream( &v_[i*NN+j], value );
-   else
-      storeu( &v_[i*NN+j], value );
+   stream( &v_[i*NN+j], value );
 }
 //*************************************************************************************************
 
@@ -4659,7 +4653,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
    HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const
 {
-   return loada( i, j );
+   if( usePadding )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4687,7 +4684,6 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
    HybridMatrix<Type,M,N,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
-   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4696,10 +4692,7 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   if( usePadding )
-      return loada( &v_[i+j*MM] );
-   else
-      return loadu( &v_[i+j*MM] );
+   return loada( &v_[i+j*MM] );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4762,7 +4755,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   return storea( i, j, value );
+   if( usePadding )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4791,7 +4787,6 @@ BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4800,10 +4795,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   if( usePadding )
-      storea( &v_[i+j*MM], value );
-   else
-      storeu( &v_[i+j*MM], value );
+   storea( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4869,7 +4861,6 @@ BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4878,10 +4869,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   if( usePadding )
-      stream( &v_[i+j*MM], value );
-   else
-      storeu( &v_[i+j*MM], value );
+   stream( &v_[i+j*MM], value );
 }
 /*! \endcond */
 //*************************************************************************************************

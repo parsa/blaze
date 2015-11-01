@@ -1734,7 +1734,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::load( size_t i, size_t j ) const
 {
-   return loada( i, j );
+   if( usePadding )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 //*************************************************************************************************
 
@@ -1760,7 +1763,6 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    DynamicMatrix<Type,SO>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
-   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1769,10 +1771,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      return loada( v_+i*nn_+j );
-   else
-      return loadu( v_+i*nn_+j );
+   return loada( v_+i*nn_+j );
 }
 //*************************************************************************************************
 
@@ -1831,7 +1830,10 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   storea( i, j, value );
+   if( usePadding )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 //*************************************************************************************************
 
@@ -1858,7 +1860,6 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1867,10 +1868,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      storea( v_+i*nn_+j, value );
-   else
-      storeu( v_+i*nn_+j, value );
+   storea( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -1931,7 +1929,6 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::stream;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1940,10 +1937,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( usePadding )
-      stream( v_+i*nn_+j, value );
-   else
-      storeu( v_+i*nn_+j, value );
+   stream( v_+i*nn_+j, value );
 }
 //*************************************************************************************************
 
@@ -2011,7 +2005,8 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
    const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
-   if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( usePadding && useStreaming &&
+       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<m_; ++i )
       {
@@ -4130,7 +4125,10 @@ template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::load( size_t i, size_t j ) const
 {
-   return loada( i, j );
+   if( usePadding )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4156,7 +4154,6 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    DynamicMatrix<Type,true>::loada( size_t i, size_t j ) const
 {
    using blaze::loada;
-   using blaze::loadu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4165,10 +4162,7 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   if( usePadding )
-      return loada( v_+i+j*mm_ );
-   else
-      return loadu( v_+i+j*mm_ );
+   return loada( v_+i+j*mm_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4227,7 +4221,10 @@ template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   storea( i, j, value );
+   if( usePadding )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4254,7 +4251,6 @@ BLAZE_ALWAYS_INLINE void
    DynamicMatrix<Type,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
    using blaze::storea;
-   using blaze::storeu;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -4263,10 +4259,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
    BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
 
-   if( usePadding )
-      storea( v_+i+j*mm_, value );
-   else
-      storeu( v_+i+j*mm_, value );
+   storea( v_+i+j*mm_, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4406,7 +4399,8 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
    const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
-   if( useStreaming && m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
+   if( usePadding && useStreaming &&
+       ( m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<n_; ++j )
       {
