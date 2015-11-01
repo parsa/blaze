@@ -63,7 +63,7 @@ typetraits:
 valuetraits:
 	@echo
 	@echo "Building the value traits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
+	@$(MAKE) --no-print-directory -C ./valuetraits $(MAKECMDGOALS)
 
 uniqueptr:
 	@echo
