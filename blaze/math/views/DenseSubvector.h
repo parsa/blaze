@@ -72,7 +72,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Vectorizable.h>
@@ -958,15 +957,12 @@ class DenseSubvector : public DenseVector< DenseSubvector<VT,AF,TF>, TF >
    const size_t offset_;   //!< The offset of the subvector within the dense vector.
    const size_t size_;     //!< The size of the subvector.
    const bool isAligned_;  //!< Memory alignment flag.
-                           /*!< The alignment flag indicates whether the subvector is fully aligned.
-                                In case the subvector is fully aligned, no special handling has to
-                                be used for the last elements of the subvector in a vectorized
-                                operation. In order to be aligned, the following conditions must
-                                hold for the subvector:
-                                 - The first element of the subvector must be aligned
-                                 - The subvector must be at the end of the given vector or
-                                 - The size of the subvector must be a multiple of the number of
-                                   values per intrinsic element. */
+                           /*!< The alignment flag indicates whether the subvector is fully aligned
+                                with respect to the given element type and the available instruction
+                                set. In case the subvector is fully aligned it is possible to use
+                                aligned loads and stores instead of unaligned loads and stores. In
+                                order to be aligned, the first element of the subvector must be
+                                aligned. */
    //@}
    //**********************************************************************************************
 
@@ -1048,8 +1044,7 @@ inline DenseSubvector<VT,AF,TF>::DenseSubvector( Operand vector, size_t index, s
    : vector_   ( vector )  // The vector containing the subvector
    , offset_   ( index  )  // The offset of the subvector within the dense vector
    , size_     ( n      )  // The size of the subvector
-   , isAligned_( ( vectorizable && vector.data() != NULL && checkAlignment( vector.data() + index ) ) &&
-                 ( index + n == vector.size() || n % IT::size == 0UL ) )
+   , isAligned_( vectorizable && vector.data() != NULL && checkAlignment( data() ) )
 {
    if( index + n > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -1860,7 +1855,10 @@ template< typename VT       // Type of the dense vector
 inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
    DenseSubvector<VT,AF,TF>::load( size_t index ) const
 {
-   return loadu( index );
+   if( isAligned_ )
+      return loada( index );
+   else
+      return loadu( index );
 }
 //*************************************************************************************************
 
@@ -1920,12 +1918,7 @@ inline typename DenseSubvector<VT,AF,TF>::IntrinsicType
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
-   if( isAligned_ ) {
-      return vector_.loada( offset_+index );
-   }
-   else {
-      return vector_.loadu( offset_+index );
-   }
+   return vector_.loadu( offset_+index );
 }
 //*************************************************************************************************
 
@@ -1949,7 +1942,10 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,AF,TF>::store( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   if( isAligned_ )
+      storea( index, value );
+   else
+      storeu( index, value );
 }
 //*************************************************************************************************
 
@@ -2009,12 +2005,7 @@ inline void DenseSubvector<VT,AF,TF>::storeu( size_t index, const IntrinsicType&
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
-   if( isAligned_ ) {
-      vector_.storea( offset_+index, value );
-   }
-   else {
-      vector_.storeu( offset_+index, value );
-   }
+   vector_.storeu( offset_+index, value );
 }
 //*************************************************************************************************
 
@@ -2038,7 +2029,16 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline void DenseSubvector<VT,AF,TF>::stream( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
+
+   if( isAligned_ )
+      vector_.stream( offset_+index, value );
+   else
+      vector_.storeu( offset_+index, value );
 }
 //*************************************************************************************************
 
@@ -2119,13 +2119,13 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
       typename VT2::ConstIterator it( (~rhs).begin() );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storeu( i             , it.load() ); it += IT::size;
-         storeu( i+IT::size    , it.load() ); it += IT::size;
-         storeu( i+IT::size*2UL, it.load() ); it += IT::size;
-         storeu( i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storeu( i, it.load() );
+         store( i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
          vector_[offset_+i] = *it;
@@ -2221,13 +2221,13 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storeu( i             , loadu(i             ) + it.load() ); it += IT::size;
-      storeu( i+IT::size    , loadu(i+IT::size    ) + it.load() ); it += IT::size;
-      storeu( i+IT::size*2UL, loadu(i+IT::size*2UL) + it.load() ); it += IT::size;
-      storeu( i+IT::size*3UL, loadu(i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( i, loadu(i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] += *it;
@@ -2322,13 +2322,13 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storeu( i             , loadu(i             ) - it.load() ); it += IT::size;
-      storeu( i+IT::size    , loadu(i+IT::size    ) - it.load() ); it += IT::size;
-      storeu( i+IT::size*2UL, loadu(i+IT::size*2UL) - it.load() ); it += IT::size;
-      storeu( i+IT::size*3UL, loadu(i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( i, loadu(i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] -= *it;
@@ -2423,13 +2423,13 @@ inline typename EnableIf< typename DenseSubvector<VT,AF,TF>::BLAZE_TEMPLATE Vect
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storeu( i             , loadu(i             ) * it.load() ); it += IT::size;
-      storeu( i+IT::size    , loadu(i+IT::size    ) * it.load() ); it += IT::size;
-      storeu( i+IT::size*2UL, loadu(i+IT::size*2UL) * it.load() ); it += IT::size;
-      storeu( i+IT::size*3UL, loadu(i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( i, loadu(i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] *= *it;
@@ -2803,8 +2803,7 @@ inline DenseSubvector<VT,aligned,TF>::DenseSubvector( Operand vector, size_t ind
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   if( ( vectorizable && vector_.data() != NULL && !checkAlignment( vector_.data() + offset_ ) ) ||
-       ( offset_ + size_ != vector_.size() && size_ % IT::size != 0UL ) ) {
+   if( vectorizable && vector_.data() != NULL && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
    }
 }
@@ -3680,9 +3679,9 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( index < size()                , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL       , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
    return vector_.loada( offset_+index );
 }
@@ -3711,9 +3710,9 @@ BLAZE_ALWAYS_INLINE typename DenseSubvector<VT,aligned,TF>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( index < size()                , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL       , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
    return vector_.loadu( offset_+index );
 }
@@ -3769,9 +3768,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( index < size()                , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL       , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
    vector_.storea( offset_+index, value );
 }
@@ -3801,9 +3800,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( index < size()                , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL       , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
    vector_.storeu( offset_+index, value );
 }
@@ -3833,9 +3832,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( index < size()                , "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL       , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size(), "Invalid subvector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL   , "Invalid subvector access index" );
 
    vector_.stream( offset_+index, value );
 }
@@ -3898,10 +3897,8 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
    {
@@ -3910,7 +3907,7 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
       for( ; i<ipos; i+=IT::size ) {
          stream( i, (~rhs).load(i) );
       }
-      for( ; remainder && i<size_; ++i ) {
+      for( ; i<size_; ++i ) {
          vector_[offset_+i] = (~rhs)[i];
       }
    }
@@ -3920,15 +3917,15 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
       typename VT2::ConstIterator it( (~rhs).begin() );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( i             , it.load() ); it += IT::size;
-         storea( i+IT::size    , it.load() ); it += IT::size;
-         storea( i+IT::size*2UL, it.load() ); it += IT::size;
-         storea( i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( i, it.load() );
+         store( i, it.load() );
       }
-      for( ; remainder && i<size_; ++i, ++it ) {
+      for( ; i<size_; ++i, ++it ) {
          vector_[offset_+i] = *it;
       }
    }
@@ -4018,24 +4015,22 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) + it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) + it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) + it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) + it.load() );
+      store( i, load(i) + it.load() );
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
+   for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] += *it;
    }
 }
@@ -4124,24 +4119,22 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) - it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) - it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) - it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) - it.load() );
+      store( i, load(i) - it.load() );
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
+   for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] -= *it;
    }
 }
@@ -4230,24 +4223,22 @@ inline typename EnableIf< typename DenseSubvector<VT,aligned,TF>::BLAZE_TEMPLATE
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const bool remainder( !IsPadded<VT>::value || !IsPadded<VT2>::value );
-
-   const size_t ipos( ( remainder )?( size_ & size_t(-IT::size) ):( size_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( size_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
    typename VT2::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) * it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) * it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) * it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) * it.load() );
+      store( i, load(i) * it.load() );
    }
-   for( ; remainder && i<size_; ++i, ++it ) {
+   for( ; i<size_; ++i, ++it ) {
       vector_[offset_+i] *= *it;
    }
 }
@@ -5374,23 +5365,6 @@ struct HasMutableDataAccess< DenseSubvector<VT,AF,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DenseSubvector<VT,aligned,TF> > : public IsTrue<true>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISPADDED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct IsPadded< DenseSubvector<VT,aligned,TF> > : public IsTrue< IsPadded<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
