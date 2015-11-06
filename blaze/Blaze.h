@@ -5468,11 +5468,13 @@ namespace blaze {}
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense vector, assuming that AVX is available, which packs 4
-// \c double values into an intrinsic vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of the subvector must be aligned. The following source code gives some examples
+// for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
+// values into an intrinsic vector:
 
    \code
+   using blaze::aligned;
    using blaze::columnVector;
 
    typedef blaze::DynamicVector<double,columnVector>  VectorType;
@@ -5481,20 +5483,17 @@ namespace blaze {}
    VectorType d( 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at the beginning and the size is a multiple of 4
-   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+   // OK: Starts at the beginning, i.e. the first element is aligned
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 13UL );
 
-   // OK: Start index and the size are both a multiple of 4
-   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+   // OK: Start index is a multiple of 4, i.e. the first element is aligned
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 7UL );
 
    // OK: The start index is a multiple of 4 and the subvector includes the last element
    SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
 
-   // Error: Start index is not a multiple of 4
+   // Error: Start index is not a multiple of 4, i.e. the first element is not aligned
    SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
-
-   // Error: Size is not a multiple of 4 and the subvector does not include the last element
-   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense subvectors.
@@ -5884,11 +5883,13 @@ namespace blaze {}
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense matrix, assuming that AVX is available, which packs 4
-// \c double values into an intrinsic vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of each row/column of the submatrix must be aligned. The following source code
+// gives some examples for a double precision row-major dynamic matrix, assuming that padding is
+// enabled and that AVX is available, which packs 4 \c double values into an intrinsic vector:
 
    \code
+   using blaze::aligned;
    using blaze::rowMajor;
 
    typedef blaze::DynamicMatrix<double,rowMajor>      MatrixType;
@@ -5897,26 +5898,17 @@ namespace blaze {}
    MatrixType D( 13UL, 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at position (0,0) and the number of rows and columns are a multiple of 4
-   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 12UL );
+   // OK: Starts at position (0,0), i.e. the first element of each row is aligned (due to padding)
+   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 11UL );
 
-   // OK: First row and column and the number of rows and columns are all a multiple of 4
-   SubmatrixType dsm2 = submatrix<aligned>( D, 4UL, 12UL, 8UL, 16UL );
+   // OK: First column is a multiple of 4, i.e. the first element of each row is aligned (due to padding)
+   SubmatrixType dsm2 = submatrix<aligned>( D, 3UL, 12UL, 8UL, 16UL );
 
-   // OK: First row and column are a multiple of 4 and the submatrix includes the last row and column
+   // OK: First column is a multiple of 4 and the submatrix includes the last row and column
    SubmatrixType dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
 
-   // Error: First row is not a multiple of 4
-   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 4UL, 12UL, 12UL );
-
-   // Error: First column is not a multiple of 4
-   SubmatrixType dsm5 = submatrix<aligned>( D, 0UL, 2UL, 8UL, 8UL );
-
-   // Error: The number of rows is not a multiple of 4 and the submatrix does not include the last row
-   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 8UL );
-
-   // Error: The number of columns is not a multiple of 4 and the submatrix does not include the last column
-   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 11UL );
+   // Error: First column is not a multiple of 4, i.e. the first element is not aligned
+   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 3UL, 12UL, 12UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense submatrices.
