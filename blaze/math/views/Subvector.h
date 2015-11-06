@@ -254,14 +254,15 @@ inline typename SubvectorExprTrait<const VT,unaligned>::Type
 // vector) a \a std::invalid_argument exception is thrown.
 //
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
-// additional alignment restrictions and the given \a index and \a size are subject to additional
-// checks to guarantee proper alignment. However, especially in case of dense subvectors this may
-// result in considerable performance improvements.
+// additional alignment restrictions and the given \a index is subject to additional checks to
+// guarantee proper alignment. However, especially in case of dense subvectors this may result
+// in considerable performance improvements.
 //
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense vector, assuming that AVX is available, which packs 4
-// \c double values into an intrinsic vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of the subvector must be aligned. The following source code gives some examples
+// for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
+// values into an intrinsic vector:
 
    \code
    using blaze::columnVector;
@@ -272,20 +273,17 @@ inline typename SubvectorExprTrait<const VT,unaligned>::Type
    VectorType d( 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at the beginning and the size is a multiple of 4
-   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+   // OK: Starts at the beginning, i.e. the first element is aligned
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 13UL );
 
-   // OK: Start index and the size are both a multiple of 4
-   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+   // OK: Start index is a multiple of 4, i.e. the first element is aligned
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 7UL );
 
    // OK: The start index is a multiple of 4 and the subvector includes the last element
    SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
 
-   // Error: Start index is not a multiple of 4
+   // Error: Start index is not a multiple of 4, i.e. the first element is not aligned
    SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
-
-   // Error: Size is not a multiple of 4 and the subvector does not include the last element
-   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
    \endcode
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
@@ -342,14 +340,15 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >
 // vector) a \a std::invalid_argument exception is thrown.
 //
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
-// additional alignment restrictions and the given \a index and \a size are subject to additional
-// checks to guarantee proper alignment. However, especially in case of dense subvectors this may
-// result in considerable performance improvements.
+// additional alignment restrictions and the given \a index is subject to additional checks to
+// guarantee proper alignment. However, especially in case of dense subvectors this may result
+// in considerable performance improvements.
 //
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense vector, assuming that AVX is available, which packs 4
-// \c double values into an intrinsic vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of the subvector must be aligned. The following source code gives some examples
+// for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
+// values into an intrinsic vector:
 
    \code
    using blaze::columnVector;
@@ -360,20 +359,17 @@ inline typename DisableIf< Or< IsComputation<VT>, IsTransExpr<VT> >
    VectorType d( 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at the beginning and the size is a multiple of 4
-   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 12UL );
+   // OK: Starts at the beginning, i.e. the first element is aligned
+   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 13UL );
 
-   // OK: Start index and the size are both a multiple of 4
-   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 8UL );
+   // OK: Start index is a multiple of 4, i.e. the first element is aligned
+   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 7UL );
 
    // OK: The start index is a multiple of 4 and the subvector includes the last element
    SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
 
-   // Error: Start index is not a multiple of 4
+   // Error: Start index is not a multiple of 4, i.e. the first element is not aligned
    SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
-
-   // Error: Size is not a multiple of 4 and the subvector does not include the last element
-   SubvectorType dsv5 = subvector<aligned>( d, 8UL, 5UL );
    \endcode
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
