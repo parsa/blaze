@@ -218,18 +218,6 @@ void AlignedTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
-
-      try {
-         ASMT sm = submatrix<aligned>( mat1_, 8UL, 8UL, 8UL, 15UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of unaligned submatrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -327,18 +315,6 @@ void AlignedTest::testConstructors()
 
       try {
          AOSMT sm = submatrix<aligned>( tmat1_, 7UL, 8UL, 8UL, 8UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of unaligned submatrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 8UL, 15UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
