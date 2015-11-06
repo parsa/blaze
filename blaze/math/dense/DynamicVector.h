@@ -71,6 +71,7 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1458,9 +1459,10 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+index ), "Invalid alignment detected" );
 
    return loada( v_+index );
 }
@@ -1489,7 +1491,7 @@ BLAZE_ALWAYS_INLINE typename DynamicVector<Type,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    return loadu( v_+index );
@@ -1542,9 +1544,10 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storea( size_t index, const Int
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+index ), "Invalid alignment detected" );
 
    storea( v_+index, value );
 }
@@ -1573,7 +1576,7 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::storeu( size_t index, const Int
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    storeu( v_+index, value );
@@ -1603,9 +1606,10 @@ BLAZE_ALWAYS_INLINE void DynamicVector<Type,TF>::stream( size_t index, const Int
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL      , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+index ), "Invalid alignment detected" );
 
    stream( v_+index, value );
 }
@@ -1687,13 +1691,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
       typename VT::ConstIterator it( (~rhs).begin() );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( i             , it.load() ); it += IT::size;
-         storea( i+IT::size    , it.load() ); it += IT::size;
-         storea( i+IT::size*2UL, it.load() ); it += IT::size;
-         storea( i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( i, it.load() );
+         store( i, it.load() );
       }
       for( ; remainder && i<size_; ++i, ++it ) {
          v_[i] = *it;
@@ -1789,13 +1793,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) + it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) + it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) + it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -1890,13 +1894,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) - it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) - it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) - it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -1991,13 +1995,13 @@ inline typename EnableIf< typename DynamicVector<Type,TF>::BLAZE_TEMPLATE Vector
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-      storea( i             , loada(i             ) * it.load() ); it += IT::size;
-      storea( i+IT::size    , loada(i+IT::size    ) * it.load() ); it += IT::size;
-      storea( i+IT::size*2UL, loada(i+IT::size*2UL) * it.load() ); it += IT::size;
-      storea( i+IT::size*3UL, loada(i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( i, loada(i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] *= *it;
