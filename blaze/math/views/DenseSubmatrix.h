@@ -91,7 +91,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
-#include <blaze/util/AlignedArray.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -104,6 +104,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/Null.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -547,8 +548,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       */
       inline SubmatrixIterator()
          : iterator_ (       )  // Iterator to the current submatrix element
-         , final_    ( 0UL   )  // The final iterator for intrinsic operations
-         , rest_     ( 0UL   )  // The number of remaining elements beyond the final iterator
          , isAligned_( false )  // Memory alignment flag
       {}
       //*******************************************************************************************
@@ -561,12 +560,9 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \param remainingElements The number of remaining elements beyond the final iterator.
       // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator,
-                                size_t remainingElements, bool isMemoryAligned )
-         : iterator_ ( iterator          )  // Iterator to the current submatrix element
-         , final_    ( finalIterator     )  // The final iterator for intrinsic operations
-         , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
-         , isAligned_( isMemoryAligned   )  // Memory alignment flag
+      inline SubmatrixIterator( IteratorType iterator, bool isMemoryAligned )
+         : iterator_ ( iterator        )  // Iterator to the current submatrix element
+         , isAligned_( isMemoryAligned )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -578,8 +574,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       template< typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
          : iterator_ ( it.base()      )  // Iterator to the current submatrix element
-         , final_    ( it.final()     )  // The final iterator for intrinsic operations
-         , rest_     ( it.rest()      )  // The number of remaining elements beyond the final iterator
          , isAligned_( it.isAligned() )  // Memory alignment flag
       {}
       //*******************************************************************************************
@@ -625,7 +619,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator++( int ) {
-         return SubmatrixIterator( iterator_++, final_, rest_, isAligned_ );
+         return SubmatrixIterator( iterator_++, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -646,7 +640,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator--( int ) {
-         return SubmatrixIterator( iterator_--, final_, rest_, isAligned_ );
+         return SubmatrixIterator( iterator_--, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -671,7 +665,10 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType load() const {
-         return loadu();
+         if( isAligned_ )
+            return loada();
+         else
+            return loadu();
       }
       //*******************************************************************************************
 
@@ -701,20 +698,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         if( isAligned_ ) {
-            return iterator_.load();
-         }
-         else if( iterator_ != final_ ) {
-            return iterator_.loadu();
-         }
-         else {
-            AlignedArray<ElementType,IT::size> array;
-            for( size_t j=0UL; j<rest_; ++j )
-               array[j] = *(iterator_+j);
-            for( size_t j=rest_; j<IT::size; ++j )
-               array[j] = ElementType();
-            return blaze::loada( array.data() );
-         }
+         return iterator_.loadu();
       }
       //*******************************************************************************************
 
@@ -803,7 +787,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
-         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -815,7 +799,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
-         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -827,7 +811,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
-         return SubmatrixIterator( it.iterator_ - dec, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ - dec, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -838,26 +822,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       */
       inline IteratorType base() const {
          return iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Final function***************************************************************************
-      /*!\brief Access to the final position of the submatrix iterator.
-      //
-      // \return The final position of the submatrix iterator.
-      */
-      inline IteratorType final() const {
-         return final_;
-      }
-      //*******************************************************************************************
-
-      //**Rest function****************************************************************************
-      /*!\brief Access to the number of remaining elements beyond the final iterator.
-      //
-      // \return The number of remaining elements beyond the final iterator.
-      */
-      inline size_t rest() const {
-         return rest_;
       }
       //*******************************************************************************************
 
@@ -874,8 +838,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
     private:
       //**Member variables*************************************************************************
       IteratorType iterator_;   //!< Iterator to the current submatrix element.
-      IteratorType final_;      //!< The final iterator for intrinsic operations.
-      size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
       //*******************************************************************************************
    };
@@ -1105,22 +1067,13 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
    const size_t column_;   //!< The first column of the submatrix.
    const size_t m_;        //!< The number of rows of the submatrix.
    const size_t n_;        //!< The number of columns of the submatrix.
-   const size_t rest_;     //!< The number of remaining elements in an unaligned intrinsic operation.
-   const size_t final_;    //!< The final index for unaligned intrinsic operations.
-                           /*!< In case the submatrix is not fully aligned and the submatrix is
-                                involved in a vectorized operation, the final index indicates at
-                                which index a special treatment for the remaining elements is
-                                required. */
    const bool isAligned_;  //!< Memory alignment flag.
-                           /*!< The alignment flag indicates whether the submatrix is fully aligned.
-                                In case the submatrix is fully aligned, no special handling has to
-                                be used for the last elements of the submatrix in a vectorized
-                                operation. In order to be aligned, the following conditions must
-                                hold for the submatrix:
-                                 - The first element of each row/column must be aligned
-                                 - The submatrix must be at the end of the given matrix or
-                                 - The number of rows/columns of the submatrix must be a multiple
-                                   of the number of values per intrinsic element. */
+                           /*!< The alignment flag indicates whether the submatrix is fully aligned
+                                with respect to the given element type and the available instruction
+                                set. In case the submatrix is fully aligned it is possible to use
+                                aligned loads and stores instead of unaligned loads and stores. In
+                                order to be aligned, the first element of each row/column must be
+                                aligned. */
    //@}
    //**********************************************************************************************
 
@@ -1218,15 +1171,13 @@ template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,AF,SO>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : matrix_   ( matrix       )  // The dense matrix containing the submatrix
-   , row_      ( rindex       )  // The first row of the submatrix
-   , column_   ( cindex       )  // The first column of the submatrix
-   , m_        ( m            )  // The number of rows of the submatrix
-   , n_        ( n            )  // The number of columns of the submatrix
-   , rest_     ( n % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
-   , final_    ( n - rest_    )  // The final index for unaligned intrinsic operations
-   , isAligned_( ( cindex % IT::size == 0UL ) &&
-                 ( cindex + n == matrix.columns() || n % IT::size == 0UL ) )
+   : matrix_   ( matrix )  // The dense matrix containing the submatrix
+   , row_      ( rindex )  // The first row of the submatrix
+   , column_   ( cindex )  // The first column of the submatrix
+   , m_        ( m      )  // The number of rows of the submatrix
+   , n_        ( n      )  // The number of columns of the submatrix
+   , isAligned_( vectorizable && matrix.data() != NULL && checkAlignment( data() ) &&
+                 ( m < 2UL || ( matrix.spacing() & size_t(-IT::size) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -1376,8 +1327,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::Iterator DenseSubmatrix<MT,AF,SO>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::Iterator first( matrix_.begin( row_ + i ) + column_ );
-   return Iterator( first, first + final_, rest_, isAligned_ );
+   return Iterator( matrix_.begin( row_ + i ) + column_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1400,8 +1350,7 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
    DenseSubmatrix<MT,AF,SO>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::ConstIterator first( matrix_.cbegin( row_ + i ) + column_ );
-   return ConstIterator( first, first + final_, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1424,8 +1373,7 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
    DenseSubmatrix<MT,AF,SO>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::ConstIterator first( matrix_.cbegin( row_ + i ) + column_ );
-   return ConstIterator( first, first + final_, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1447,8 +1395,7 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::Iterator DenseSubmatrix<MT,AF,SO>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::Iterator last( matrix_.begin( row_ + i ) + column_ + n_ );
-   return Iterator( last, last, rest_, isAligned_ );
+   return Iterator( matrix_.begin( row_ + i ) + column_ + n_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1471,8 +1418,7 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
    DenseSubmatrix<MT,AF,SO>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::ConstIterator last( matrix_.cbegin( row_ + i ) + column_ + n_ );
-   return ConstIterator( last, last, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -1495,8 +1441,7 @@ inline typename DenseSubmatrix<MT,AF,SO>::ConstIterator
    DenseSubmatrix<MT,AF,SO>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
-   const typename MT::ConstIterator last( matrix_.cbegin( row_ + i ) + column_ + n_ );
-   return ConstIterator( last, last, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( row_ + i ) + column_ + n_, isAligned_ );
 }
 //*************************************************************************************************
 
@@ -2495,7 +2440,10 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
    DenseSubmatrix<MT,AF,SO>::load( size_t i, size_t j ) const
 {
-   return loadu( i, j );
+   if( isAligned_ )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 //*************************************************************************************************
 
@@ -2524,8 +2472,9 @@ inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return matrix_.loada( row_+i, column_+j );
@@ -2555,28 +2504,14 @@ template< typename MT  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,AF,SO>::IntrinsicType
    DenseSubmatrix<MT,AF,SO>::loadu( size_t i, size_t j ) const
 {
-   using blaze::loada;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( isAligned_ ) {
-      return matrix_.load( row_+i, column_+j );
-   }
-   else if( j != final_ ) {
-      return matrix_.loadu( row_+i, column_+j );
-   }
-   else {
-      AlignedArray<ElementType,IT::size> array;
-      for( size_t k=0UL; k<rest_; ++k )
-         array[k] = matrix_(row_+i,column_+j+k);
-      for( size_t k=rest_; k<IT::size; ++k )
-         array[k] = ElementType();
-      return loada( array.data() );
-   }
+   return matrix_.loadu( row_+i, column_+j );
 }
 //*************************************************************************************************
 
@@ -2602,7 +2537,10 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   if( isAligned_ )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 //*************************************************************************************************
 
@@ -2630,8 +2568,9 @@ inline void DenseSubmatrix<MT,AF,SO>::storea( size_t i, size_t j, const Intrinsi
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    matrix_.storea( row_+i, column_+j, value );
@@ -2660,26 +2599,14 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
-   if( isAligned_ ) {
-      matrix_.store( row_+i, column_+j, value );
-   }
-   else if( j != final_ ) {
-      matrix_.storeu( row_+i, column_+j, value );
-   }
-   else {
-      AlignedArray<ElementType,IT::size> array;
-      storea( array.data(), value );
-      for( size_t k=0UL; k<rest_; ++k )
-         matrix_(row_+i,column_+j+k) = array[k];
-   }
+   matrix_.storeu( row_+i, column_+j, value );
 }
 //*************************************************************************************************
 
@@ -2706,7 +2633,17 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline void DenseSubmatrix<MT,AF,SO>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+
+   if( isAligned_ )
+      matrix_.stream( row_+i, column_+j, value );
+   else
+      matrix_.storeu( row_+i, column_+j, value );
 }
 //*************************************************************************************************
 
@@ -2771,10 +2708,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
-   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
@@ -2787,7 +2722,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
          for( ; j<jpos; j+=IT::size ) {
             matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
          }
-         for( ; remainder && j<n_; ++j ) {
+         for( ; j<n_; ++j ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -2800,15 +2735,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
          typename MT2::ConstIterator it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-            matrix_.storeu( row_+i, column_+j             , it.load() ); it += IT::size;
-            matrix_.storeu( row_+i, column_+j+IT::size    , it.load() ); it += IT::size;
-            matrix_.storeu( row_+i, column_+j+IT::size*2UL, it.load() ); it += IT::size;
-            matrix_.storeu( row_+i, column_+j+IT::size*3UL, it.load() ); it += IT::size;
+            store( i, j             , it.load() ); it += IT::size;
+            store( i, j+IT::size    , it.load() ); it += IT::size;
+            store( i, j+IT::size*2UL, it.load() ); it += IT::size;
+            store( i, j+IT::size*3UL, it.load() ); it += IT::size;
          }
          for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-            storeu( i, j, it.load() );
+            store( i, j, it.load() );
          }
-         for( ; remainder && j<n_; ++j, ++it ) {
+         for( ; j<n_; ++j, ++it ) {
             matrix_(row_+i,column_+j) = *it;
          }
       }
@@ -2972,8 +2907,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper<MT2>::value )
@@ -2984,22 +2917,22 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( jend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , load(i,j             ) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
+         store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
+         store( i, j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
+         store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
+         store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storeu( i, j, load(i,j) + it.load() );
+         store( i, j, load(i,j) + it.load() );
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
+      for( ; j<jend; ++j, ++it ) {
          matrix_(row_+i,column_+j) += *it;
       }
    }
@@ -3162,8 +3095,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper<MT2>::value )
@@ -3174,22 +3105,22 @@ inline typename EnableIf< typename DenseSubmatrix<MT,AF,SO>::BLAZE_TEMPLATE Vect
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( jend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         matrix_.storeu( row_+i, column_+j             , load(i,j             ) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i, column_+j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
+         store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
+         store( i, j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
+         store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
+         store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storeu( i, j, load(i,j) - it.load() );
+         store( i, j, load(i,j) - it.load() );
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
+      for( ; j<jend; ++j, ++it ) {
          matrix_(row_+i,column_+j) -= *it;
       }
    }
@@ -3386,8 +3317,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       */
       inline SubmatrixIterator()
          : iterator_ (       )  // Iterator to the current submatrix element
-         , final_    ( 0UL   )  // The final iterator for intrinsic operations
-         , rest_     ( 0UL   )  // The number of remaining elements beyond the final iterator
          , isAligned_( false )  // Memory alignment flag
       {}
       //*******************************************************************************************
@@ -3400,12 +3329,9 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \param remainingElements The number of remaining elements beyond the final iterator.
       // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubmatrixIterator( IteratorType iterator, IteratorType finalIterator,
-                                size_t remainingElements, bool isMemoryAligned )
-         : iterator_ ( iterator          )  // Iterator to the current submatrix element
-         , final_    ( finalIterator     )  // The final iterator for intrinsic operations
-         , rest_     ( remainingElements )  // The number of remaining elements beyond the final iterator
-         , isAligned_( isMemoryAligned   )  // Memory alignment flag
+      inline SubmatrixIterator( IteratorType iterator, bool isMemoryAligned )
+         : iterator_ ( iterator        )  // Iterator to the current submatrix element
+         , isAligned_( isMemoryAligned )  // Memory alignment flag
       {}
       //*******************************************************************************************
 
@@ -3417,8 +3343,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       template< typename IteratorType2 >
       inline SubmatrixIterator( const SubmatrixIterator<IteratorType2>& it )
          : iterator_ ( it.base()      )  // Iterator to the current submatrix element
-         , final_    ( it.final()     )  // The final iterator for intrinsic operations
-         , rest_     ( it.rest()      )  // The number of remaining elements beyond the final iterator
          , isAligned_( it.isAligned() )  // Memory alignment flag
       {}
       //*******************************************************************************************
@@ -3464,7 +3388,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator++( int ) {
-         return SubmatrixIterator( iterator_++, final_, rest_, isAligned_ );
+         return SubmatrixIterator( iterator_++, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -3485,7 +3409,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \return The previous position of the iterator.
       */
       inline const SubmatrixIterator operator--( int ) {
-         return SubmatrixIterator( iterator_--, final_, rest_, isAligned_ );
+         return SubmatrixIterator( iterator_--, isAligned_ );
       }
       //*******************************************************************************************
 
@@ -3510,7 +3434,10 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType load() const {
-         return loadu();
+         if( isAligned_ )
+            return loada();
+         else
+            return loadu();
       }
       //*******************************************************************************************
 
@@ -3540,20 +3467,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // might result in erroneous results and/or in compilation errors.
       */
       inline IntrinsicType loadu() const {
-         if( isAligned_ ) {
-            return iterator_.load();
-         }
-         else if( iterator_ != final_ ) {
-            return iterator_.loadu();
-         }
-         else {
-            AlignedArray<ElementType,IT::size> array;
-            for( size_t i=0UL; i<rest_; ++i )
-               array[i] = *(iterator_+i);
-            for( size_t i=rest_; i<IT::size; ++i )
-               array[i] = ElementType();
-            return blaze::loada( array.data() );
-         }
+         return iterator_.loadu();
       }
       //*******************************************************************************************
 
@@ -3642,7 +3556,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( const SubmatrixIterator& it, size_t inc ) {
-         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -3654,7 +3568,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \return The incremented iterator.
       */
       friend inline const SubmatrixIterator operator+( size_t inc, const SubmatrixIterator& it ) {
-         return SubmatrixIterator( it.iterator_ + inc, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -3666,7 +3580,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       // \return The decremented iterator.
       */
       friend inline const SubmatrixIterator operator-( const SubmatrixIterator& it, size_t dec ) {
-         return SubmatrixIterator( it.iterator_ - dec, it.final_, it.rest_, it.isAligned_ );
+         return SubmatrixIterator( it.iterator_ - dec, it.isAligned_ );
       }
       //*******************************************************************************************
 
@@ -3677,26 +3591,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
       */
       inline IteratorType base() const {
          return iterator_;
-      }
-      //*******************************************************************************************
-
-      //**Final function***************************************************************************
-      /*!\brief Access to the final position of the submatrix iterator.
-      //
-      // \return The final position of the submatrix iterator.
-      */
-      inline IteratorType final() const {
-         return final_;
-      }
-      //*******************************************************************************************
-
-      //**Rest function****************************************************************************
-      /*!\brief Access to the number of remaining elements beyond the final iterator.
-      //
-      // \return The number of remaining elements beyond the final iterator.
-      */
-      inline size_t rest() const {
-         return rest_;
       }
       //*******************************************************************************************
 
@@ -3713,8 +3607,6 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
     private:
       //**Member variables*************************************************************************
       IteratorType iterator_;   //!< Iterator to the current submatrix element.
-      IteratorType final_;      //!< The final iterator for intrinsic operations.
-      size_t       rest_;       //!< The number of remaining elements beyond the final iterator.
       bool         isAligned_;  //!< Memory alignment flag.
       //*******************************************************************************************
    };
@@ -3938,22 +3830,13 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
    const size_t column_;   //!< The first column of the submatrix.
    const size_t m_;        //!< The number of rows of the submatrix.
    const size_t n_;        //!< The number of columns of the submatrix.
-   const size_t rest_;     //!< The number of remaining elements in an unaligned intrinsic operation.
-   const size_t final_;    //!< The final index for unaligned intrinsic operations.
-                           /*!< In case the submatrix is not fully aligned and the submatrix is
-                                involved in a vectorized operation, the final index indicates at
-                                which index a special treatment for the remaining elements is
-                                required. */
    const bool isAligned_;  //!< Memory alignment flag.
-                           /*!< The alignment flag indicates whether the submatrix is fully aligned.
-                                In case the submatrix is fully aligned, no special handling has to
-                                be used for the last elements of the submatrix in a vectorized
-                                operation. In order to be aligned, the following conditions must
-                                hold for the submatrix:
-                                 - The first element of each row/column must be aligned
-                                 - The submatrix must be at the end of the given matrix or
-                                 - The number of rows/columns of the submatrix must be a multiple
-                                   of the number of values per intrinsic element. */
+                           /*!< The alignment flag indicates whether the submatrix is fully aligned
+                                with respect to the given element type and the available instruction
+                                set. In case the submatrix is fully aligned it is possible to use
+                                aligned loads and stores instead of unaligned loads and stores. In
+                                order to be aligned, the first element of each row/column must be
+                                aligned. */
    //@}
    //**********************************************************************************************
 
@@ -4047,15 +3930,13 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>::DenseSubmatrix( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : matrix_   ( matrix       )  // The dense matrix containing the submatrix
-   , row_      ( rindex       )  // The first row of the submatrix
-   , column_   ( cindex       )  // The first column of the submatrix
-   , m_        ( m            )  // The number of rows of the submatrix
-   , n_        ( n            )  // The number of columns of the submatrix
-   , rest_     ( m % IT::size )  // The number of remaining elements in an unaligned intrinsic operation
-   , final_    ( m - rest_    )  // The final index for unaligned intrinsic operations
-   , isAligned_( ( rindex % IT::size == 0UL ) &&
-                 ( rindex + m == matrix.rows() || m % IT::size == 0UL ) )
+   : matrix_   ( matrix )  // The dense matrix containing the submatrix
+   , row_      ( rindex )  // The first row of the submatrix
+   , column_   ( cindex )  // The first column of the submatrix
+   , m_        ( m      )  // The number of rows of the submatrix
+   , n_        ( n      )  // The number of columns of the submatrix
+   , isAligned_( vectorizable && matrix.data() != NULL && checkAlignment( data() ) &&
+                 ( n < 2UL || ( matrix.spacing() & size_t(-IT::size) ) == 0UL ) )
 {
    if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -4205,8 +4086,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::Iterator
    DenseSubmatrix<MT,unaligned,true>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::Iterator first( matrix_.begin( column_ + j ) + row_ );
-   return Iterator( first, first + final_, rest_, isAligned_ );
+   return Iterator( matrix_.begin( column_ + j ) + row_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4224,8 +4104,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
    DenseSubmatrix<MT,unaligned,true>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::ConstIterator first( matrix_.cbegin( column_ + j ) + row_ );
-   return ConstIterator( first, first + final_, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4243,8 +4122,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
    DenseSubmatrix<MT,unaligned,true>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::ConstIterator first( matrix_.cbegin( column_ + j ) + row_ );
-   return ConstIterator( first, first + final_, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4262,8 +4140,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::Iterator
    DenseSubmatrix<MT,unaligned,true>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::Iterator last( matrix_.begin( column_ + j ) + row_ + m_ );
-   return Iterator( last, last, rest_, isAligned_ );
+   return Iterator( matrix_.begin( column_ + j ) + row_ + m_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4281,8 +4158,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
    DenseSubmatrix<MT,unaligned,true>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::ConstIterator last( matrix_.cbegin( column_ + j ) + row_ + m_ );
-   return ConstIterator( last, last, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4300,8 +4176,7 @@ inline typename DenseSubmatrix<MT,unaligned,true>::ConstIterator
    DenseSubmatrix<MT,unaligned,true>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
-   const typename MT::ConstIterator last( matrix_.cbegin( column_ + j ) + row_ + m_ );
-   return ConstIterator( last, last, rest_, isAligned_ );
+   return ConstIterator( matrix_.cbegin( column_ + j ) + row_ + m_, isAligned_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5286,7 +5161,10 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
    DenseSubmatrix<MT,unaligned,true>::load( size_t i, size_t j ) const
 {
-   return loadu( i, j );
+   if( isAligned_ )
+      return loada( i, j );
+   else
+      return loadu( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5312,6 +5190,13 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
    DenseSubmatrix<MT,unaligned,true>::loada( size_t i, size_t j ) const
 {
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+
    return matrix_.loada( row_+i, column_+j );
 }
 /*! \endcond */
@@ -5338,28 +5223,14 @@ template< typename MT >  // Type of the dense matrix
 inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
    DenseSubmatrix<MT,unaligned,true>::loadu( size_t i, size_t j ) const
 {
-   using blaze::loada;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
-   if( isAligned_ ) {
-      return matrix_.load( row_+i, column_+j );
-   }
-   else if( i != final_ ) {
-      return matrix_.loadu( row_+i, column_+j );
-   }
-   else {
-      AlignedArray<ElementType,IT::size> array;
-      for( size_t k=0UL; k<rest_; ++k )
-         array[k] = matrix_(row_+i+k,column_+j);
-      for( size_t k=rest_; k<IT::size; ++k )
-         array[k] = ElementType();
-      return loada( array.data() );
-   }
+   return matrix_.loadu( row_+i, column_+j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5384,7 +5255,10 @@ inline typename DenseSubmatrix<MT,unaligned,true>::IntrinsicType
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   if( isAligned_ )
+      storea( i, j, value );
+   else
+      storeu( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5409,6 +5283,13 @@ inline void DenseSubmatrix<MT,unaligned,true>::store( size_t i, size_t j, const 
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::storea( size_t i, size_t j, const IntrinsicType& value )
 {
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+
    matrix_.storea( row_+i, column_+j, value );
 }
 /*! \endcond */
@@ -5435,26 +5316,14 @@ inline void DenseSubmatrix<MT,unaligned,true>::storea( size_t i, size_t j, const
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::storeu( size_t i, size_t j, const IntrinsicType& value )
 {
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
-   if( isAligned_ ) {
-      matrix_.store( row_+i, column_+j, value );
-   }
-   else if( i != final_ ) {
-      matrix_.storeu( row_+i, column_+j, value );
-   }
-   else {
-      AlignedArray<ElementType,IT::size> array;
-      storea( array.data(), value );
-      for( size_t k=0UL; k<rest_; ++k )
-         matrix_(row_+i+k,column_+j) = array[k];
-   }
+   matrix_.storeu( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5480,7 +5349,17 @@ inline void DenseSubmatrix<MT,unaligned,true>::storeu( size_t i, size_t j, const
 template< typename MT >  // Type of the dense matrix
 inline void DenseSubmatrix<MT,unaligned,true>::stream( size_t i, size_t j, const IntrinsicType& value )
 {
-   storeu( i, j, value );
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
+
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+
+   if( isAligned_ )
+      matrix_.stream( row_+i, column_+j, value );
+   else
+      matrix_.storeu( row_+i, column_+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5545,10 +5424,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
-   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
@@ -5561,7 +5438,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
          for( ; i<ipos; i+=IT::size ) {
             matrix_.stream( row_+i, column_+j, (~rhs).load(i,j) );
          }
-         for( ; remainder && i<m_; ++i ) {
+         for( ; i<m_; ++i ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -5574,15 +5451,15 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
          typename MT2::ConstIterator it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-            matrix_.storeu( row_+i             , column_+j, it.load() ); it += IT::size;
-            matrix_.storeu( row_+i+IT::size    , column_+j, it.load() ); it += IT::size;
-            matrix_.storeu( row_+i+IT::size*2UL, column_+j, it.load() ); it += IT::size;
-            matrix_.storeu( row_+i+IT::size*3UL, column_+j, it.load() ); it += IT::size;
+            store( i             , j, it.load() ); it += IT::size;
+            store( i+IT::size    , j, it.load() ); it += IT::size;
+            store( i+IT::size*2UL, j, it.load() ); it += IT::size;
+            store( i+IT::size*3UL, j, it.load() ); it += IT::size;
          }
          for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-            storeu( i, j, it.load() );
+            store( i, j, it.load() );
          }
-         for( ; remainder && i<m_; ++i, ++it ) {
+         for( ; i<m_; ++i, ++it ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -5746,8 +5623,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower<MT>::value )
@@ -5758,20 +5633,20 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( iend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, load(i             ,j) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
+         store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
+         store( i+IT::size    , j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
+         store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
+         store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storeu( i, j, load(i,j) + it.load() );
+         store( i, j, load(i,j) + it.load() );
       }
       for( ; i<iend; ++i, ++it ) {
          matrix_(row_+i,column_+j) += *it;
@@ -5936,8 +5811,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower<MT>::value )
@@ -5948,20 +5821,20 @@ inline typename EnableIf< typename DenseSubmatrix<MT,unaligned,true>::BLAZE_TEMP
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( iend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         matrix_.storeu( row_+i             , column_+j, load(i             ,j) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size    , column_+j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size*2UL, column_+j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
-         matrix_.storeu( row_+i+IT::size*3UL, column_+j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
+         store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
+         store( i+IT::size    , j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
+         store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
+         store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storeu( i, j, load(i,j) - it.load() );
+         store( i, j, load(i,j) - it.load() );
       }
       for( ; i<iend; ++i, ++it ) {
          matrix_(row_+i,column_+j) -= *it;
@@ -6444,7 +6317,8 @@ inline DenseSubmatrix<MT,aligned,false>::DenseSubmatrix( Operand matrix, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( column_ % IT::size != 0UL || ( column_ + n_ != matrix_.columns() && n_ % IT::size != 0UL ) ) {
+   if( ( vectorizable && matrix_.data() != NULL && !checkAlignment( data() ) ) ||
+       ( m_ > 1UL && matrix_.spacing() % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
 }
@@ -7715,13 +7589,7 @@ template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
    DenseSubmatrix<MT,aligned,false>::load( size_t i, size_t j ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
-
-   return matrix_.load( row_+i, column_+j );
+   return loada( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7750,8 +7618,9 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return matrix_.loada( row_+i, column_+j );
@@ -7783,8 +7652,9 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,false>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return matrix_.loadu( row_+i, column_+j );
@@ -7814,13 +7684,7 @@ template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
    DenseSubmatrix<MT,aligned,false>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
-
-   return matrix_.store( row_+i, column_+j, value );
+   return storea( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7849,8 +7713,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    return matrix_.storea( row_+i, column_+j, value );
@@ -7882,8 +7747,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    matrix_.storeu( row_+i, column_+j, value );
@@ -7916,8 +7782,9 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
 
    matrix_.stream( row_+i, column_+j, value );
@@ -7985,10 +7852,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
-   const size_t jpos( ( remainder )?( n_ & size_t(-IT::size) ):( n_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
+   const size_t jpos( n_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
@@ -8001,7 +7866,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
          for( ; j<jpos; j+=IT::size ) {
             stream( i, j, (~rhs).load(i,j) );
          }
-         for( ; remainder && j<n_; ++j ) {
+         for( ; j<n_; ++j ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -8022,7 +7887,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
          for( ; j<jpos; j+=IT::size, it+=IT::size ) {
             store( i, j, it.load() );
          }
-         for( ; remainder && j<n_; ++j, ++it ) {
+         for( ; j<n_; ++j, ++it ) {
             matrix_(row_+i,column_+j) = *it;
          }
       }
@@ -8186,8 +8051,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper<MT2>::value )
@@ -8198,8 +8061,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( jend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
@@ -8213,7 +8076,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) + it.load() );
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
+      for( ; j<jend; ++j, ++it ) {
          matrix_(row_+i,column_+j) += *it;
       }
    }
@@ -8376,8 +8239,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t i=0UL; i<m_; ++i )
    {
       const size_t jbegin( ( IsUpper<MT2>::value )
@@ -8388,8 +8249,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-      const size_t jpos( ( remainder )?( jend & size_t(-IT::size) ):( jend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
+      const size_t jpos( jend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( jend - ( jend % (IT::size) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( jbegin );
       typename MT2::ConstIterator it( (~rhs).begin(i) );
@@ -8403,7 +8264,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,false>::BLAZE_TEMPL
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
          store( i, j, load(i,j) - it.load() );
       }
-      for( ; remainder && j<jend; ++j, ++it ) {
+      for( ; j<jend; ++j, ++it ) {
          matrix_(row_+i,column_+j) -= *it;
       }
    }
@@ -8884,7 +8745,8 @@ inline DenseSubmatrix<MT,aligned,true>::DenseSubmatrix( Operand matrix, size_t r
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   if( row_ % IT::size != 0UL || ( row_ + m_ != matrix_.rows() && m_ % IT::size != 0UL ) ) {
+   if( ( vectorizable && matrix_.data() != NULL && !checkAlignment( data() ) ) ||
+       ( n_ > 1UL && matrix_.spacing() % IT::size != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
    }
 }
@@ -10106,13 +9968,7 @@ template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
    DenseSubmatrix<MT,aligned,true>::load( size_t i, size_t j ) const
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
-
-   return matrix_.load( row_+i, column_+j );
+   return loada( i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10140,9 +9996,10 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loada( row_+i, column_+j );
 }
@@ -10172,9 +10029,10 @@ BLAZE_ALWAYS_INLINE typename DenseSubmatrix<MT,aligned,true>::IntrinsicType
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loadu( row_+i, column_+j );
 }
@@ -10202,13 +10060,7 @@ template< typename MT >  // Type of the dense matrix
 BLAZE_ALWAYS_INLINE void
    DenseSubmatrix<MT,aligned,true>::store( size_t i, size_t j, const IntrinsicType& value )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
-
-   matrix_.store( row_+i, column_+j, value );
+   storea( i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10236,9 +10088,10 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storea( row_+i, column_+j, value );
 }
@@ -10269,9 +10122,10 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storeu( row_+i, column_+j, value );
 }
@@ -10302,9 +10156,10 @@ BLAZE_ALWAYS_INLINE void
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( i < rows()         , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j < columns()      , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.stream( row_+i, column_+j, value );
 }
@@ -10371,10 +10226,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
-   const size_t ipos( ( remainder )?( m_ & size_t(-IT::size) ):( m_ ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
+   const size_t ipos( m_ & size_t(-IT::size) );
+   BLAZE_INTERNAL_ASSERT( ( m_ - ( m_ % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
    if( useStreaming &&
        m_*n_ > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
@@ -10387,7 +10240,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
          for( ; i<ipos; i+=IT::size ) {
             stream( i, j, (~rhs).load(i,j) );
          }
-         for( ; remainder && i<m_; ++i ) {
+         for( ; i<m_; ++i ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -10408,7 +10261,7 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
          for( ; i<ipos; i+=IT::size, it+=IT::size ) {
             store( i, j, it.load() );
          }
-         for( ; remainder && i<m_; ++i, ++it ) {
+         for( ; i<m_; ++i, ++it ) {
             matrix_(row_+i,column_+j) = (~rhs)(i,j);
          }
       }
@@ -10572,8 +10425,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower<MT>::value )
@@ -10584,8 +10435,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( iend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
@@ -10762,8 +10613,6 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   const bool remainder( !IsPadded<MT>::value || !IsPadded<MT2>::value );
-
    for( size_t j=0UL; j<n_; ++j )
    {
       const size_t ibegin( ( IsLower<MT>::value )
@@ -10774,8 +10623,8 @@ inline typename EnableIf< typename DenseSubmatrix<MT,aligned,true>::BLAZE_TEMPLA
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-      const size_t ipos( ( remainder )?( iend & size_t(-IT::size) ):( iend ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
+      const size_t ipos( iend & size_t(-IT::size) );
+      BLAZE_INTERNAL_ASSERT( ( iend - ( iend % (IT::size) ) ) == ipos, "Invalid end calculation" );
 
       size_t i( ibegin );
       typename MT2::ConstIterator it( (~rhs).begin(j) );
@@ -11903,23 +11752,6 @@ struct HasMutableDataAccess< DenseSubmatrix<MT,AF,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsAligned< DenseSubmatrix<MT,aligned,SO> > : public IsTrue<true>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISPADDED SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO >
-struct IsPadded< DenseSubmatrix<MT,AF,SO> > : public IsTrue< IsPadded<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
