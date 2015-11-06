@@ -78,6 +78,7 @@
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/util/AlignedArray.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/FloatingPoint.h>
@@ -1265,7 +1266,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator+=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1302,7 +1303,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator-=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -2052,7 +2053,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool HybridMatrix<Type,M,N,SO>::isAligned() const
 {
-   return usePadding;
+   return ( usePadding || ( columns() & size_t(-IT::size) ) == 0UL );
 }
 //*************************************************************************************************
 
@@ -2113,10 +2114,11 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    return loada( &v_[i*NN+j] );
 }
@@ -2149,9 +2151,9 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
 
    return loadu( &v_[i*NN+j] );
 }
@@ -2216,10 +2218,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    storea( &v_[i*NN+j], value );
 }
@@ -2253,8 +2256,8 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
 
    storeu( &v_[i*NN+j], value );
@@ -2289,10 +2292,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN , "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( j + IT::size <= NN, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i*NN+j] ), "Invalid alignment detected" );
 
    stream( &v_[i*NN+j], value );
 }
@@ -2364,7 +2368,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( 0UL );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( i, j, (~rhs).load(i,j) );
+         store( i, j, (~rhs).load(i,j) );
       }
       for( ; remainder && j<n_; ++j ) {
          v_[i*NN+j] = (~rhs)(i,j);
@@ -2524,7 +2528,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( i, j, loada(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] += (~rhs)(i,j);
@@ -2684,7 +2688,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE Vec
       size_t j( jbegin );
 
       for( ; j<jpos; j+=IT::size ) {
-         storea( i, j, loada(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (~rhs).load(i,j) );
       }
       for( ; remainder && j<jend; ++j ) {
          v_[i*NN+j] -= (~rhs)(i,j);
@@ -3822,7 +3826,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -3860,7 +3864,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -4626,7 +4630,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline bool HybridMatrix<Type,M,N,true>::isAligned() const
 {
-   return usePadding;
+   return ( usePadding || ( rows() & size_t(-IT::size) ) == 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4687,10 +4691,11 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
    return loada( &v_[i+j*MM] );
 }
@@ -4723,9 +4728,9 @@ BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
 
    return loadu( &v_[i+j*MM] );
 }
@@ -4790,10 +4795,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
    storea( &v_[i+j*MM], value );
 }
@@ -4827,9 +4833,9 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
 
    storeu( &v_[i+j*MM], value );
 }
@@ -4864,10 +4870,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= MM, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[i+j*MM] ), "Invalid alignment detected" );
 
    stream( &v_[i+j*MM], value );
 }
@@ -4941,7 +4948,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( 0UL );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( i, j, (~rhs).load(i,j) );
+         store( i, j, (~rhs).load(i,j) );
       }
       for( ; remainder && i<m_; ++i ) {
          v_[i+j*MM] = (~rhs)(i,j);
@@ -5105,7 +5112,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( i, j, loada(i,j) + (~rhs).load(i,j) );
+         store( i, j, load(i,j) + (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] += (~rhs)(i,j);
@@ -5269,7 +5276,7 @@ inline typename EnableIf< typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE V
       size_t i( ibegin );
 
       for( ; i<ipos; i+=IT::size ) {
-         storea( i, j, loada(i,j) - (~rhs).load(i,j) );
+         store( i, j, load(i,j) - (~rhs).load(i,j) );
       }
       for( ; remainder && i<iend; ++i ) {
          v_[i+j*MM] -= (~rhs)(i,j);
