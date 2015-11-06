@@ -59,6 +59,7 @@
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AlignedArray.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1650,9 +1651,10 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN   , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    return loada( &v_[index] );
 }
@@ -1682,8 +1684,8 @@ BLAZE_ALWAYS_INLINE typename HybridVector<Type,N,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
 
    return loadu( &v_[index] );
 }
@@ -1737,9 +1739,10 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storea( size_t index, const In
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN   , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    storea( &v_[index], value );
 }
@@ -1769,8 +1772,8 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::storeu( size_t index, const In
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
 
    storeu( &v_[index], value );
 }
@@ -1800,9 +1803,10 @@ BLAZE_ALWAYS_INLINE void HybridVector<Type,N,TF>::stream( size_t index, const In
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN   , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= NN, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[index] ), "Invalid alignment detected" );
 
    stream( &v_[index], value );
 }
@@ -1865,7 +1869,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( i, (~rhs).load(i) );
+      store( i, (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] = (~rhs)[i];
@@ -1955,7 +1959,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( i, loada(i) + (~rhs).load(i) );
+      store( i, load(i) + (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] += (~rhs)[i];
@@ -2045,7 +2049,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( i, loada(i) - (~rhs).load(i) );
+      store( i, load(i) - (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] -= (~rhs)[i];
@@ -2135,7 +2139,7 @@ inline typename EnableIf< typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE Vecto
    size_t i( 0UL );
 
    for( ; i<ipos; i+=IT::size ) {
-      storea( i, loada(i) * (~rhs).load(i) );
+      store( i, load(i) * (~rhs).load(i) );
    }
    for( ; remainder && i<size_; ++i ) {
       v_[i] *= (~rhs)[i];
