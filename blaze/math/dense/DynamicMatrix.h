@@ -80,6 +80,7 @@
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -287,7 +288,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
-                                     inline DynamicMatrix& operator= ( Type set );
+                                     inline DynamicMatrix& operator= ( const Type& rhs );
                                      inline DynamicMatrix& operator= ( const DynamicMatrix&  rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator= ( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs );
@@ -440,9 +441,9 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
    size_t nn_;               //!< The alignment adjusted number of columns.
    size_t capacity_;         //!< The maximum capacity of the matrix.
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated matrix elements.
-                             /*!< Access to the matrix elements is gained via the subscript or
-                                  function call operator. In case of row-major order the memory
-                                  layout of the elements is
+                             /*!< Access to the matrix elements is gained via the function call
+                                  operator. In case of row-major order the memory layout of the
+                                  elements is
                                   \f[\left(\begin{array}{*{5}{c}}
                                   0            & 1             & 2             & \cdots & N-1         \\
                                   N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
@@ -1022,7 +1023,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Other (&
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( Type rhs )
+inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1108,7 +1109,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator+=( const Matrix<
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1141,7 +1142,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator-=( const Matrix<
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1690,7 +1691,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool DynamicMatrix<Type,SO>::isAligned() const
 {
-   return usePadding;
+   return ( usePadding || ( columns() & size_t(-IT::size) ) == 0UL );
 }
 //*************************************************************************************************
 
@@ -1766,10 +1767,11 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    return loada( v_+i*nn_+j );
 }
@@ -1800,8 +1802,8 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,SO>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
 
    return loadu( v_+i*nn_+j );
@@ -1863,10 +1865,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    storea( v_+i*nn_+j, value );
 }
@@ -1898,8 +1901,8 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
 
    storeu( v_+i*nn_+j, value );
@@ -1932,10 +1935,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + IT::size <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || j % IT::size == 0UL, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i*nn_+j ), "Invalid alignment detected" );
 
    stream( v_+i*nn_+j, value );
 }
@@ -2028,13 +2032,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
          typename MT::ConstIterator it( (~rhs).begin(i) );
 
          for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-            storea( i, j             , it.load() ); it += IT::size;
-            storea( i, j+IT::size    , it.load() ); it += IT::size;
-            storea( i, j+IT::size*2UL, it.load() ); it += IT::size;
-            storea( i, j+IT::size*3UL, it.load() ); it += IT::size;
+            store( i, j             , it.load() ); it += IT::size;
+            store( i, j+IT::size    , it.load() ); it += IT::size;
+            store( i, j+IT::size*2UL, it.load() ); it += IT::size;
+            store( i, j+IT::size*3UL, it.load() ); it += IT::size;
          }
          for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-            storea( i, j, it.load() );
+            store( i, j, it.load() );
          }
          for( ; remainder && j<n_; ++j, ++it ) {
             v_[i*nn_+j] = *it;
@@ -2230,13 +2234,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         storea( i, j             , loada(i,j             ) + it.load() ); it += IT::size;
-         storea( i, j+IT::size    , loada(i,j+IT::size    ) + it.load() ); it += IT::size;
-         storea( i, j+IT::size*2UL, loada(i,j+IT::size*2UL) + it.load() ); it += IT::size;
-         storea( i, j+IT::size*3UL, loada(i,j+IT::size*3UL) + it.load() ); it += IT::size;
+         store( i, j             , load(i,j             ) + it.load() ); it += IT::size;
+         store( i, j+IT::size    , load(i,j+IT::size    ) + it.load() ); it += IT::size;
+         store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) + it.load() ); it += IT::size;
+         store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) + it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storea( i, j, loada(i,j) + it.load() );
+         store( i, j, load(i,j) + it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] += *it;
@@ -2443,13 +2447,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE Vector
       typename MT::ConstIterator it( (~rhs).begin(i) + jbegin );
 
       for( ; (j+IT::size*3UL) < jpos; j+=IT::size*4UL ) {
-         storea( i, j             , loada(i,j             ) - it.load() ); it += IT::size;
-         storea( i, j+IT::size    , loada(i,j+IT::size    ) - it.load() ); it += IT::size;
-         storea( i, j+IT::size*2UL, loada(i,j+IT::size*2UL) - it.load() ); it += IT::size;
-         storea( i, j+IT::size*3UL, loada(i,j+IT::size*3UL) - it.load() ); it += IT::size;
+         store( i, j             , load(i,j             ) - it.load() ); it += IT::size;
+         store( i, j+IT::size    , load(i,j+IT::size    ) - it.load() ); it += IT::size;
+         store( i, j+IT::size*2UL, load(i,j+IT::size*2UL) - it.load() ); it += IT::size;
+         store( i, j+IT::size*3UL, load(i,j+IT::size*3UL) - it.load() ); it += IT::size;
       }
       for( ; j<jpos; j+=IT::size, it+=IT::size ) {
-         storea( i, j, loada(i,j) - it.load() );
+         store( i, j, load(i,j) - it.load() );
       }
       for( ; remainder && j<jend; ++j, ++it ) {
          v_[i*nn_+j] -= *it;
@@ -2682,7 +2686,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    template< typename Other, size_t M, size_t N >
    inline DynamicMatrix& operator=( const Other (&array)[M][N] );
 
-                                    inline DynamicMatrix& operator= ( Type set );
+                                    inline DynamicMatrix& operator= ( const Type& rhs );
                                     inline DynamicMatrix& operator= ( const DynamicMatrix& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator= ( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs );
@@ -2829,9 +2833,9 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    size_t n_;                //!< The current number of columns of the matrix.
    size_t capacity_;         //!< The maximum capacity of the matrix.
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated matrix elements.
-                             /*!< Access to the matrix elements is gained via the subscript or
-                                  function call operator. In case of row-major order the memory
-                                  layout of the elements is
+                             /*!< Access to the matrix elements is gained via the function call
+                                  operator. In case of row-major order the memory layout of the
+                                  elements is
                                   \f[\left(\begin{array}{*{5}{c}}
                                   0            & 1             & 2             & \cdots & N-1         \\
                                   N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
@@ -3399,7 +3403,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Othe
 // \return Reference to the assigned matrix.
 */
 template< typename Type >  // Data type of the matrix
-inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( Type rhs )
+inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Type& rhs )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -3488,7 +3492,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator+=( const Mat
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -3522,7 +3526,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator-=( const Mat
    }
 
    if( (~rhs).canAlias( this ) ) {
-      typename MT::ResultType tmp( ~rhs );
+      const typename MT::ResultType tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -4080,7 +4084,7 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::isAligned() const
 {
-   return usePadding;
+   return ( usePadding || ( rows() & size_t(-IT::size) ) == 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4157,10 +4161,11 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
    return loada( v_+i+j*mm_ );
 }
@@ -4191,9 +4196,9 @@ BLAZE_ALWAYS_INLINE typename DynamicMatrix<Type,true>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
 
    return loadu( v_+i+j*mm_ );
 }
@@ -4254,10 +4259,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
    storea( v_+i+j*mm_, value );
 }
@@ -4289,9 +4295,9 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
 
    storeu( v_+i+j*mm_, value );
 }
@@ -4324,10 +4330,11 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( i            <  m_ , "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( i % IT::size == 0UL, "Invalid row access index"    );
-   BLAZE_INTERNAL_ASSERT( j            <  n_ , "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( i + IT::size <= mm_, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( !usePadding || i % IT::size == 0UL, "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_+i+j*mm_ ), "Invalid alignment detected" );
 
    stream( v_+i+j*mm_, value );
 }
@@ -4422,13 +4429,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
          typename MT::ConstIterator it( (~rhs).begin(j) );
 
          for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-            storea( i             , j, it.load() ); it += IT::size;
-            storea( i+IT::size    , j, it.load() ); it += IT::size;
-            storea( i+IT::size*2UL, j, it.load() ); it += IT::size;
-            storea( i+IT::size*3UL, j, it.load() ); it += IT::size;
+            store( i             , j, it.load() ); it += IT::size;
+            store( i+IT::size    , j, it.load() ); it += IT::size;
+            store( i+IT::size*2UL, j, it.load() ); it += IT::size;
+            store( i+IT::size*3UL, j, it.load() ); it += IT::size;
          }
          for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-            storea( i, j, it.load() );
+            store( i, j, it.load() );
          }
          for( ; remainder && i<m_; ++i, ++it ) {
             v_[i+j*mm_] = *it;
@@ -4629,13 +4636,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( i             , j, loada(i             ,j) + it.load() ); it += IT::size;
-         storea( i+IT::size    , j, loada(i+IT::size    ,j) + it.load() ); it += IT::size;
-         storea( i+IT::size*2UL, j, loada(i+IT::size*2UL,j) + it.load() ); it += IT::size;
-         storea( i+IT::size*3UL, j, loada(i+IT::size*3UL,j) + it.load() ); it += IT::size;
+         store( i             , j, load(i             ,j) + it.load() ); it += IT::size;
+         store( i+IT::size    , j, load(i+IT::size    ,j) + it.load() ); it += IT::size;
+         store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) + it.load() ); it += IT::size;
+         store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) + it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( i, j, loada(i,j) + it.load() );
+         store( i, j, load(i,j) + it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] += *it;
@@ -4848,13 +4855,13 @@ inline typename EnableIf< typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE Vect
       typename MT::ConstIterator it( (~rhs).begin(j) + ibegin );
 
       for( ; (i+IT::size*3UL) < ipos; i+=IT::size*4UL ) {
-         storea( i             , j, loada(i             ,j) - it.load() ); it += IT::size;
-         storea( i+IT::size    , j, loada(i+IT::size    ,j) - it.load() ); it += IT::size;
-         storea( i+IT::size*2UL, j, loada(i+IT::size*2UL,j) - it.load() ); it += IT::size;
-         storea( i+IT::size*3UL, j, loada(i+IT::size*3UL,j) - it.load() ); it += IT::size;
+         store( i             , j, load(i             ,j) - it.load() ); it += IT::size;
+         store( i+IT::size    , j, load(i+IT::size    ,j) - it.load() ); it += IT::size;
+         store( i+IT::size*2UL, j, load(i+IT::size*2UL,j) - it.load() ); it += IT::size;
+         store( i+IT::size*3UL, j, load(i+IT::size*3UL,j) - it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( i, j, loada(i,j) - it.load() );
+         store( i, j, load(i,j) - it.load() );
       }
       for( ; remainder && i<iend; ++i, ++it ) {
          v_[i+j*mm_] -= *it;
