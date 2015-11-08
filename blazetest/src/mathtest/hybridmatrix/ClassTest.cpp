@@ -3825,7 +3825,7 @@ void ClassTest::testMultAssign()
    }
 
    {
-      test_ = "Row-major/column-major HybridMatrix dense matrix multiplication assignment";
+      test_ = "Column-major/column-major HybridMatrix dense matrix multiplication assignment";
 
       blaze::HybridMatrix<int,3UL,4UL,blaze::columnMajor> mat1( 3UL, 4UL, 0 );
       mat1(0,1) = 2;
@@ -3910,7 +3910,7 @@ void ClassTest::testMultAssign()
    }
 
    {
-      test_ = "Row-major/column-major HybridMatrix sparse matrix multiplication assignment";
+      test_ = "Column-major/column-major HybridMatrix sparse matrix multiplication assignment";
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 5UL );
       mat1(0,1) = 2;
