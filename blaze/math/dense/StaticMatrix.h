@@ -1909,7 +1909,7 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
 {
-   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M ) {
+   if( M != N || (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -2176,7 +2176,7 @@ inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
 // \return Reference to the transposed matrix.
 //
 // This function transposes the static matrix in-place. Note that this function can only be used
-// for quadratic static matrices, i.e. if \a M is equal to N.
+// for square static matrices, i.e. if \a M is equal to N.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4917,7 +4917,7 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
 inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
 {
-   if( M != N || (~rhs).rows() != M || (~rhs).columns() != M ) {
+   if( M != N || (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -5185,7 +5185,7 @@ inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
 // \return Reference to the transposed matrix.
 //
 // This function transposes the static matrix in-place. Note that this function can only be used
-// for quadratic static matrices, i.e. if \a M is equal to N.
+// for square static matrices, i.e. if \a M is equal to N.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
