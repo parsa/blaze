@@ -1302,7 +1302,7 @@ inline size_t DynamicMatrix<Type,SO>::capacity() const
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename Type  // Data type of the sparse matrix
+template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::capacity( size_t i ) const
 {
@@ -1392,7 +1392,7 @@ inline void DynamicMatrix<Type,SO>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename Type  // Data type of the sparse matrix
+template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::reset( size_t i )
 {
@@ -2834,14 +2834,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
    size_t capacity_;         //!< The maximum capacity of the matrix.
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated matrix elements.
                              /*!< Access to the matrix elements is gained via the function call
-                                  operator. In case of row-major order the memory layout of the
-                                  elements is
-                                  \f[\left(\begin{array}{*{5}{c}}
-                                  0            & 1             & 2             & \cdots & N-1         \\
-                                  N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
-                                  \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
-                                  M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
-                                  \end{array}\right)\f]. */
+                                  operator. */
    //@}
    //**********************************************************************************************
 
@@ -3688,7 +3681,7 @@ inline size_t DynamicMatrix<Type,true>::capacity() const
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename Type >  // Data type of the sparse matrix
+template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::capacity( size_t j ) const
 {
    UNUSED_PARAMETER( j );
@@ -3775,7 +3768,7 @@ inline void DynamicMatrix<Type,true>::reset()
 // This function reset the values in the specified column to their default value. Note that
 // the capacity of the column remains unchanged.
 */
-template< typename Type >  // Data type of the sparse matrix
+template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::reset( size_t j )
 {
    using blaze::clear;
@@ -5308,13 +5301,13 @@ struct AddTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , false >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5381,13 +5374,13 @@ struct SubTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , false >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
