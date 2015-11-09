@@ -4308,12 +4308,11 @@ BLAZE_ALWAYS_INLINE void
 // \return void
 //
 // This function performs an aligned, non-temporal store of a specific intrinsic element of the
-// dense matrix. // The row index must be smaller than the number of rows and the column index
-// must be smaller than the number of columns. Additionally, the row index must be a multiple
-// of the number of values inside the intrinsic element. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
+// dense matrix. The row index must be smaller than the number of rows and the column index must
+// be smaller than the number of columns. Additionally, the row index must be a multiple of the
+// number of values inside the intrinsic element. This function must \b NOT be called explicitly!
+// It is used internally for the performance optimized evaluation of expression templates. Calling
+// this function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type >  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
