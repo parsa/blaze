@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
-#include <blaze/util/typetraits/AlignmentOf.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/Misalignment.h>
 
 
 namespace blaze {
@@ -53,7 +53,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checks the alignment of the given
+/*!\brief Checks the alignment of the given address.
 // \ingroup util
 //
 // \param address The address to be checked.
@@ -65,9 +65,9 @@ namespace blaze {
 // \a true, otherwise it returns \a false.
 */
 template< typename T >
-bool checkAlignment( const T* address )
+BLAZE_ALWAYS_INLINE bool checkAlignment( const T* address )
 {
-   return !( reinterpret_cast<size_t>( address ) % AlignmentOf<T>::value );
+   return ( misalignment( address ) == 0UL );
 }
 //*************************************************************************************************
 
