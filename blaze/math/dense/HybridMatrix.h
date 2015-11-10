@@ -1536,7 +1536,7 @@ inline size_t HybridMatrix<Type,M,N,SO>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jend( i*NN+n_ );
+   const size_t jend( i*NN + n_ );
    size_t nonzeros( 0UL );
 
    for( size_t j=i*NN; j<jend; ++j )
@@ -4097,7 +4097,7 @@ inline size_t HybridMatrix<Type,M,N,true>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t iend( j*MM+m_ );
+   const size_t iend( j*MM + m_ );
    size_t nonzeros( 0UL );
 
    for( size_t i=j*MM; i<iend; ++i )

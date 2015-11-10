@@ -1351,7 +1351,7 @@ inline size_t DynamicMatrix<Type,SO>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jend( (i+1UL)*nn_ );
+   const size_t jend( i*nn_ + n_ );
    size_t nonzeros( 0UL );
 
    for( size_t j=i*nn_; j<jend; ++j )
@@ -3726,7 +3726,7 @@ inline size_t DynamicMatrix<Type,true>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t iend( (j+1UL)*mm_ );
+   const size_t iend( j*mm_ + m_ );
    size_t nonzeros( 0UL );
 
    for( size_t i=j*mm_; i<iend; ++i )
