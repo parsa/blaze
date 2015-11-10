@@ -2053,7 +2053,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool HybridMatrix<Type,M,N,SO>::isAligned() const
 {
-   return ( usePadding || ( columns() & size_t(-IT::size) ) == 0UL );
+   return ( usePadding || columns() % IT::size == 0UL );
 }
 //*************************************************************************************************
 
@@ -4630,7 +4630,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline bool HybridMatrix<Type,M,N,true>::isAligned() const
 {
-   return ( usePadding || ( rows() & size_t(-IT::size) ) == 0UL );
+   return ( usePadding || rows() % IT::size == 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************

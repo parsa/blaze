@@ -1691,7 +1691,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool DynamicMatrix<Type,SO>::isAligned() const
 {
-   return ( usePadding || ( columns() & size_t(-IT::size) ) == 0UL );
+   return ( usePadding || columns() % IT::size == 0UL );
 }
 //*************************************************************************************************
 
@@ -4077,7 +4077,7 @@ inline bool DynamicMatrix<Type,true>::isAliased( const Other* alias ) const
 template< typename Type >  // Data type of the matrix
 inline bool DynamicMatrix<Type,true>::isAligned() const
 {
-   return ( usePadding || ( rows() & size_t(-IT::size) ) == 0UL );
+   return ( usePadding || rows() % IT::size == 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
