@@ -1398,6 +1398,18 @@ struct MultTrait< DynamicVector<T,true>, DiagonalMatrix<MT,SO,DF> >
    typedef typename MultTrait< DynamicVector<T,true>, MT >::Type  Type;
 };
 
+template< typename MT, bool SO, bool DF, typename T, bool AF, bool PF >
+struct MultTrait< DiagonalMatrix<MT,SO,DF>, CustomVector<T,AF,PF,false> >
+{
+   typedef typename MultTrait< MT, CustomVector<T,AF,PF,false> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, typename MT, bool SO, bool DF >
+struct MultTrait< CustomVector<T,AF,PF,true>, DiagonalMatrix<MT,SO,DF> >
+{
+   typedef typename MultTrait< CustomVector<T,AF,PF,true>, MT >::Type  Type;
+};
+
 template< typename MT, bool SO, bool DF, typename T >
 struct MultTrait< DiagonalMatrix<MT,SO,DF>, CompressedVector<T,false> >
 {
