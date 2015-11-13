@@ -215,7 +215,31 @@ namespace blaze {
    C = D;  // Throws an exception; strictly lower triangular matrix invariant would be violated!
    \endcode
 
-// The strictly lower matrix property is also enforced for views (rows, columns, submatrices,
+// The strictly lower matrix property is also enforced for strictly lower custom matrices: In case
+// the given array of elements does not represent a strictly lower matrix, a \a std::invalid_argument
+// exception is thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::StrictlyLowerMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef StrictlyLowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomStrictlyLower;
+
+   // Creating a 3x3 strictly lower custom matrix from a properly initialized array
+   double array[9] = { 0.0, 0.0, 0.0,
+                       1.0, 0.0, 0.0,
+                       2.0, 3.0, 0.0 };
+   CustomStrictlyLower A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 strictly lower custom matrix from an uninitialized array;
+   // Will result in an exception
+   CustomStrictlyLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the strictly lower matrix property is enforced for views (rows, columns, submatrices,
 // ...) on the strictly lower matrix. The following example demonstrates that modifying the
 // elements of an entire row and submatrix of a strictly lower matrix only affects the lower
 // matrix elements:
