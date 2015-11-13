@@ -242,9 +242,34 @@ namespace blaze {
    C = D;  // Throws an exception; lower unitriangular matrix invariant would be violated!
    \endcode
 
-// The lower unitriangular matrix property is also enforced for views (rows, columns, submatrices,
-// ...) on the unilower matrix. The following example demonstrates that modifying the elements of
-// an entire row and submatrix of an unilower matrix only affects the lower matrix elements:
+// The lower unitriangular matrix property is also enforced for unilower custom matrices: In case
+// the given array of elements does not represent an unilower matrix, a \a std::invalid_argument
+// exception is thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::UniLowerMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef UniLowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomUniLower;
+
+   // Creating a 3x3 unilower custom matrix from a properly initialized array
+   double array[9] = { 1.0, 0.0, 0.0,
+                       2.0, 1.0, 0.0,
+                       3.0, 4.0, 1.0 };
+   CustomUniLower A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 unilower custom matrix from an uninitialized array;
+   // Will result in an exception
+   CustomUniLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the lower unitriangular matrix property is enforced for views (rows, columns,
+// submatrices, ...) on the unilower matrix. The following example demonstrates that modifying
+// the elements of an entire row and submatrix of an unilower matrix only affects the lower
+// matrix elements:
 
    \code
    using blaze::DynamicMatrix;
