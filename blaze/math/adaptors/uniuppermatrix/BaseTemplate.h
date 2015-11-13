@@ -241,9 +241,34 @@ namespace blaze {
    C = D;  // Throws an exception; upper unitriangular matrix invariant would be violated!
    \endcode
 
-// The upper unitriangular matrix property is also enforced for views (rows, columns, submatrices,
-// ...) on the uniupper matrix. The following example demonstrates that modifying the elements of
-// an entire row and submatrix of an uniupper matrix only affects the upper matrix elements:
+// The upper unitriangular matrix property is also enforced for uniupper custom matrices: In case
+// the given array of elements does not represent an uniupper matrix, a \a std::invalid_argument
+// exception is thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::UniUpperMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef UniUpperMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomUniUpper;
+
+   // Creating a 3x3 uniupper custom matrix from a properly initialized array
+   double array[9] = { 1.0, 2.0, 3.0,
+                       0.0, 1.0, 4.0,
+                       0.0, 0.0, 1.0 };
+   CustomUniUpper A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 uniupper custom matrix from an uninitialized array;
+   // Will result in an exception
+   CustomUniUpper B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the upper unitriangular matrix property is enforced for views (rows, columns,
+// submatrices, ...) on the uniupper matrix. The following example demonstrates that modifying
+// the elements of an entire row and submatrix of an uniupper matrix only affects the upper
+// matrix elements:
 
    \code
    using blaze::DynamicMatrix;
