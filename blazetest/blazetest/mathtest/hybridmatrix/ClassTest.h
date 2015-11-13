@@ -45,7 +45,10 @@
 #include <string>
 #include <boost/container/static_vector.hpp>
 #include <boost/container/vector.hpp>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/AlignedAllocator.h>
@@ -136,30 +139,71 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>  MT;    //!< Type of the hybrid matrix.
-   typedef MT::OppositeType                                  OMT;   //!< Opposite hybrid matrix type.
-   typedef MT::TransposeType                                 TMT;   //!< Transpose hybrid matrix type.
-   typedef MT::Rebind<double>::Other                         RMT;   //!< Rebound hybrid matrix type.
-   typedef RMT::OppositeType                                 ORMT;  //!< Opposite rebound hybrid matrix type.
-   typedef RMT::TransposeType                                TRMT;  //!< Transpose rebound hybrid matrix type.
+   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>     MT;   //!< Type of the hybrid matrix.
+   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;  //!< Opposite hybrid matrix type.
+
+   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound hybrid matrix type.
+   typedef OMT::Rebind<double>::Other  ORMT;  //!< Opposite rebound hybrid matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TMT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RMT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORMT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRMT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, OMT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT, TMT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT, ORMT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT, TRMT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, OMT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, TMT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, ORMT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, TRMT::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( MT                );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( MT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OMT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RMT                );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORMT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORMT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORMT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORMT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, MT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, MT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT::ElementType, MT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OMT::ElementType, OMT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OMT::ElementType, OMT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OMT::ElementType, OMT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, RMT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, RMT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RMT::ElementType, RMT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORMT::ElementType, ORMT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORMT::ElementType, ORMT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORMT::ElementType, ORMT::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
