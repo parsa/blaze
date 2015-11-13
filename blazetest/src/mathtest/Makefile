@@ -37,8 +37,8 @@ default: all
 
 all: functions intrinsics typetraits \
      densevector sparsevector densematrix sparsematrix \
-     staticvector hybridvector dynamicvector compressedvector \
-     staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+     staticvector hybridvector dynamicvector customvector compressedvector \
+     staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
      symmetricmatrix hermitianmatrix \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
@@ -65,8 +65,8 @@ single: all
 
 noop: functions intrinsics typetraits \
       densevector sparsevector densematrix sparsematrix \
-      staticvector hybridvector dynamicvector compressedvector \
-      staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+      staticvector hybridvector dynamicvector customvector compressedvector \
+      staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
       symmetricmatrix hermitianmatrix \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
@@ -128,6 +128,11 @@ dynamicvector:
 	@echo "Building the DynamicVector tests..."
 	@$(MAKE) --no-print-directory -C ./dynamicvector $(MAKECMDGOALS)
 
+customvector:
+	@echo
+	@echo "Building the CustomVector tests..."
+	@$(MAKE) --no-print-directory -C ./customvector $(MAKECMDGOALS)
+
 compressedvector:
 	@echo
 	@echo "Building the CompressedVector tests..."
@@ -147,6 +152,11 @@ dynamicmatrix:
 	@echo
 	@echo "Building the DynamicMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix $(MAKECMDGOALS)
+
+custommatrix:
+	@echo
+	@echo "Building the CustomMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./custommatrix $(MAKECMDGOALS)
 
 compressedmatrix:
 	@echo
@@ -481,10 +491,12 @@ clean:
 	@$(MAKE) --no-print-directory -C ./staticvector clean
 	@$(MAKE) --no-print-directory -C ./hybridvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
+	@$(MAKE) --no-print-directory -C ./customvector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
 	@$(MAKE) --no-print-directory -C ./staticmatrix clean
 	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
 	@$(MAKE) --no-print-directory -C ./dynamicmatrix clean
+	@$(MAKE) --no-print-directory -C ./custommatrix clean
 	@$(MAKE) --no-print-directory -C ./compressedmatrix clean
 	@$(MAKE) --no-print-directory -C ./symmetricmatrix clean
 	@$(MAKE) --no-print-directory -C ./hermitianmatrix clean
@@ -556,8 +568,8 @@ clean:
 .PHONY: default all essential single noop clean \
         functions intrinsics typetraits \
         densevector sparsevector densematrix sparsematrix \
-        staticvector hybridvector dynamicvector compressedvector \
-        staticmatrix hybridmatrix dynamicmatrix compressedmatrix \
+        staticvector hybridvector dynamicvector customvector compressedvector \
+        staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
         symmetricmatrix hermitianmatrix \
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
