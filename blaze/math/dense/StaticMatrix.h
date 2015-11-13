@@ -189,7 +189,7 @@ namespace blaze {
    E  = B * 2.0;  // Scaling of matrix B
 
    E += A - B;    // Addition assignment
-   F -= A + C;    // Subtraction assignment
+   E -= A + C;    // Subtraction assignment
    F *= A * D;    // Multiplication assignment
    \endcode
 */
