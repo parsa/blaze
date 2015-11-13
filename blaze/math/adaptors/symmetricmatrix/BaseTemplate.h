@@ -274,7 +274,31 @@ namespace blaze {
    A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
    \endcode
 
-// The symmetry property is also enforced for views (rows, columns, submatrices, ...) on the
+// The symmetry property is also enforced for symmetric custom matrices: In case the given array
+// of elements does not represent a symmetric matrix, a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomSymmetric;
+
+   // Creating a 3x3 symmetric custom matrix from a properly initialized array
+   double array[9] = { 1.0, 2.0, 4.0,
+                       2.0, 3.0, 5.0,
+                       4.0, 5.0, 6.0 };
+   CustomSymmetric A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 symmetric custom matrix from an uninitialized array;
+   // Will result in an exception
+   CustomSymmetric B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the symmetry property is enforced for views (rows, columns, submatrices, ...) on the
 // symmetric matrix. The following example demonstrates that modifying the elements of an entire
 // row of the symmetric matrix also affects the counterpart elements in the according column of
 // the matrix:
