@@ -54,6 +54,8 @@ noop: $(BIN)
 
 
 # Build rules
+AlignedUnpaddedTest: AlignedUnpaddedTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UnalignedPaddedTest: UnalignedPaddedTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UnalignedUnpaddedTest: UnalignedUnpaddedTest.o
