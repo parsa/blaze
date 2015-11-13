@@ -40,12 +40,15 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/util/policies/ArrayDelete.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/hermitianmatrix/DenseRealTest.h>
 
 
@@ -175,6 +178,143 @@ void DenseRealTest::testConstructors()
       checkColumns ( herm, 2UL );
       checkCapacity( herm, 4UL );
       checkNonZeros( herm, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Row-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Row-major HermitianMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[3] = 2;
+      array[4] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.get()+1UL, 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Row-major HermitianMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[11UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[6] = 2;
+      array[7] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Row-major HermitianMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 2;
+      array[3] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Row-major HermitianMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[10UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[5] = 2;
+      array[6] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -385,6 +525,143 @@ void DenseRealTest::testConstructors()
       checkRows    ( herm, 2UL );
       checkColumns ( herm, 2UL );
       checkNonZeros( herm, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Column-major HermitianMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[3] = 2;
+      array[4] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.get()+1UL, 2UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Column-major HermitianMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[11UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[6] = 2;
+      array[7] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Column-major HermitianMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 2;
+      array[3] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Column-major HermitianMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[10UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[5] = 2;
+      array[6] = 1;
+      const blaze::HermitianMatrix<UnalignedUnpadded> herm( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( herm, 2UL );
+      checkColumns ( herm, 2UL );
+      checkCapacity( herm, 4UL );
+      checkNonZeros( herm, 4UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 ||
+          herm(1,0) != 2 || herm(1,1) != 1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 )\n( 2 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
