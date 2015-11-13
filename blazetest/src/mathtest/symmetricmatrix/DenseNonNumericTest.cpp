@@ -40,12 +40,15 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/util/policies/ArrayDelete.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/symmetricmatrix/DenseNonNumericTest.h>
 
 
@@ -175,6 +178,147 @@ void DenseNonNumericTest::testConstructors()
       checkColumns ( sym, 2UL );
       checkCapacity( sym, 4UL );
       checkNonZeros( sym, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Row-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[5UL] );
+      array[1] = vec( 1 );
+      array[2] = vec( 2 );
+      array[3] = vec( 2 );
+      array[4] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.get()+1UL, 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[11UL] );
+      array[1] = vec( 1 );
+      array[2] = vec( 2 );
+      array[6] = vec( 2 );
+      array[7] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[4UL] );
+      array[0] = vec( 1 );
+      array[1] = vec( 2 );
+      array[2] = vec( 2 );
+      array[3] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Row-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[10UL] );
+      array[0] = vec( 1 );
+      array[1] = vec( 2 );
+      array[5] = vec( 2 );
+      array[6] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -401,6 +545,147 @@ void DenseNonNumericTest::testConstructors()
       checkRows    ( sym, 2UL );
       checkColumns ( sym, 2UL );
       checkNonZeros( sym, 0UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[5UL] );
+      array[1] = vec( 1 );
+      array[2] = vec( 2 );
+      array[3] = vec( 2 );
+      array[4] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.get()+1UL, 2UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[11UL] );
+      array[1] = vec( 1 );
+      array[2] = vec( 2 );
+      array[6] = vec( 2 );
+      array[7] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[4UL] );
+      array[0] = vec( 1 );
+      array[1] = vec( 2 );
+      array[2] = vec( 2 );
+      array[3] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Column-major SymmetricMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<VT> array( new VT[10UL] );
+      array[0] = vec( 1 );
+      array[1] = vec( 2 );
+      array[5] = vec( 2 );
+      array[6] = vec( 1 );
+      const blaze::SymmetricMatrix<UnalignedUnpadded> sym( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( sym, 2UL );
+      checkColumns ( sym, 2UL );
+      checkCapacity( sym, 4UL );
+      checkNonZeros( sym, 4UL );
+
+      if( sym(0,0) != vec( 1 ) || sym(0,1) != vec( 2 ) ||
+          sym(1,0) != vec( 2 ) || sym(1,1) != vec( 1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) ( 2 ) )\n"
+                                     "( ( 2 ) ( 1 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
