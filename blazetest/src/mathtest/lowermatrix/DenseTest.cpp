@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DenseColumn.h>
 #include <blaze/math/DenseRow.h>
 #include <blaze/math/DenseSubmatrix.h>
@@ -48,6 +49,8 @@
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/policies/ArrayDelete.h>
+#include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/lowermatrix/DenseTest.h>
 
 
@@ -381,6 +384,143 @@ void DenseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Row-major LowerMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5UL] );
+      array[1] = 1;
+      array[2] = 0;
+      array[3] = 2;
+      array[4] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.get()+1UL, 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Row-major LowerMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[11UL] );
+      array[1] = 1;
+      array[2] = 0;
+      array[6] = 2;
+      array[7] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Row-major LowerMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4UL] );
+      array[0] = 1;
+      array[1] = 0;
+      array[2] = 2;
+      array[3] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Row-major LowerMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[10UL] );
+      array[0] = 1;
+      array[1] = 0;
+      array[5] = 2;
+      array[6] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -694,6 +834,143 @@ void DenseTest::testConstructors()
              << " Details:\n"
              << "   Result:\n" << lower << "\n"
              << "   Expected result:\n( 5 0 )\n( 5 5 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major custom matrix constructors
+   //=====================================================================================
+
+   // Custom matrix constructor (ElementType*, size_t)
+   {
+      test_ = "Column-major LowerMatrix custom matrix constructor (ElementType*, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[5UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[3] = 0;
+      array[4] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.get()+1UL, 2UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t)
+   {
+      test_ = "Column-major LowerMatrix custom matrix constructor (ElementType*, size_t, size_t)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[11UL] );
+      array[1] = 1;
+      array[2] = 2;
+      array[6] = 0;
+      array[7] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.get()+1UL, 2UL, 5UL );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, Deleter)
+   {
+      test_ = "Column-major LowerMatrix custom matrix constructor (ElementType*, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[4UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[2] = 0;
+      array[3] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.release(), 2UL, blaze::ArrayDelete() );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Custom matrix constructor (ElementType*, size_t, size_t, Deleter)
+   {
+      test_ = "Column-major LowerMatrix custom matrix constructor (ElementType*, size_t, size_t, Deleter)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      blaze::UniqueArray<int> array( new int[10UL] );
+      array[0] = 1;
+      array[1] = 2;
+      array[5] = 0;
+      array[6] = 3;
+      const blaze::LowerMatrix<UnalignedUnpadded> lower( array.release(), 2UL, 5UL, blaze::ArrayDelete() );
+
+      checkRows    ( lower, 2UL );
+      checkColumns ( lower, 2UL );
+      checkCapacity( lower, 4UL );
+      checkNonZeros( lower, 3UL );
+
+      if( lower(0,0) != 1 || lower(0,1) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 1 0 )\n( 2 3 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
