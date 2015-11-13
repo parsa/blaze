@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/UniqueArray.h>
 #include <blazetest/mathtest/densesubvector/UnalignedTest.h>
@@ -167,6 +168,13 @@ void UnalignedTest::testConstructors()
 */
 void UnalignedTest::testAssignment()
 {
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
    //=====================================================================================
    // Homogeneous assignment
    //=====================================================================================
@@ -295,10 +303,6 @@ void UnalignedTest::testAssignment()
    {
       test_ = "Dense vector assignment (aligned/padded)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::rowVector;
-
       initialize();
 
       SVT sv = subvector( vec_, 3UL, 4UL );
@@ -342,10 +346,6 @@ void UnalignedTest::testAssignment()
 
    {
       test_ = "Dense vector assignment (unaligned/unpadded)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowVector;
 
       initialize();
 
@@ -401,7 +401,7 @@ void UnalignedTest::testAssignment()
 
       SVT sv = subvector( vec_, 3UL, 4UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 4UL, 1UL );
+      blaze::CompressedVector<int,rowVector> vec( 4UL, 1UL );
       vec[3] = 9;
 
       sv = vec;
@@ -448,6 +448,13 @@ void UnalignedTest::testAssignment()
 */
 void UnalignedTest::testAddAssign()
 {
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
    //=====================================================================================
    // DenseSubvector addition assignment
    //=====================================================================================
@@ -536,10 +543,6 @@ void UnalignedTest::testAddAssign()
    {
       test_ = "Dense vector addition assignment (aligned/padded)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::rowVector;
-
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
@@ -581,10 +584,6 @@ void UnalignedTest::testAddAssign()
 
    {
       test_ = "Dense vector addition assignment (unaligned/unpadded)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowVector;
 
       initialize();
 
@@ -638,7 +637,7 @@ void UnalignedTest::testAddAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 2UL );
+      blaze::CompressedVector<int,rowVector> vec( 3UL, 2UL );
       vec[0] =  2;
       vec[1] = -4;
 
@@ -685,6 +684,13 @@ void UnalignedTest::testAddAssign()
 */
 void UnalignedTest::testSubAssign()
 {
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
    //=====================================================================================
    // DenseSubvector subtraction assignment
    //=====================================================================================
@@ -773,10 +779,6 @@ void UnalignedTest::testSubAssign()
    {
       test_ = "Dense vector subtraction assignment (aligned/padded)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::rowVector;
-
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
@@ -818,10 +820,6 @@ void UnalignedTest::testSubAssign()
 
    {
       test_ = "Dense vector subtraction assignment (unaligned/unpadded)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowVector;
 
       initialize();
 
@@ -875,7 +873,7 @@ void UnalignedTest::testSubAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 2UL );
+      blaze::CompressedVector<int,rowVector> vec( 3UL, 2UL );
       vec[0] =  2;
       vec[1] = -4;
 
@@ -922,6 +920,13 @@ void UnalignedTest::testSubAssign()
 */
 void UnalignedTest::testMultAssign()
 {
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowVector;
+
+
    //=====================================================================================
    // DenseSubvector multiplication assignment
    //=====================================================================================
@@ -1010,10 +1015,6 @@ void UnalignedTest::testMultAssign()
    {
       test_ = "Dense vector multiplication assignment (aligned/padded)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::rowVector;
-
       initialize();
 
       SVT sv = subvector( vec_, 1UL, 3UL );
@@ -1055,10 +1056,6 @@ void UnalignedTest::testMultAssign()
 
    {
       test_ = "Dense vector multiplication assignment (unaligned/unpadded)";
-
-      using blaze::unaligned;
-      using blaze::unpadded;
-      using blaze::rowVector;
 
       initialize();
 
@@ -1112,7 +1109,7 @@ void UnalignedTest::testMultAssign()
 
       SVT sv = subvector( vec_, 1UL, 3UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 2UL );
+      blaze::CompressedVector<int,rowVector> vec( 3UL, 2UL );
       vec[0] =  2;
       vec[1] = -4;
 

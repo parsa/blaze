@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/UniqueArray.h>
@@ -892,7 +893,7 @@ void AlignedTest::testMultAssign()
       ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
       USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
 
-      blaze::CompressedVector<int,blaze::rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 16UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
