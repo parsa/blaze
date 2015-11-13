@@ -128,10 +128,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<int,blaze::rowVector>  VT;    //!< Type of the compressed vector.
-   typedef VT::TransposeType                              TVT;   //!< Transpose compressed vector type.
-   typedef VT::Rebind<double>::Other                      RVT;   //!< Rebound compressed vector type.
-   typedef RVT::TransposeType                             TRVT;  //!< Transpose rebound compressed vector type.
+   typedef blaze::CompressedVector<int,blaze::rowVector>     VT;   //!< Type of the compressed vector.
+   typedef blaze::CompressedVector<int,blaze::columnVector>  TVT;  //!< Transpose compressed vector type.
+
+   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound compressed vector type.
+   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound compressed vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -140,10 +141,46 @@ class ClassTest
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TVT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RVT  );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( TRVT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT, TVT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT, TRVT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, TVT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT::ElementType, TRVT::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT                );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TVT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RVT                );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TRVT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( TRVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( TRVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TRVT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TRVT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, VT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT::ElementType, VT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVT::ElementType, TVT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVT::ElementType, TVT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT::ElementType, RVT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RVT::ElementType, RVT::TransposeType::ElementType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TRVT::ElementType, TRVT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TRVT::ElementType, TRVT::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
