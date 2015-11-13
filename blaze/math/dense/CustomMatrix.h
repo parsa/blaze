@@ -4357,6 +4357,7 @@ inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) /* throw() */
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resets the custom matrix and replaces the array of elements with the given array.
 //
 // \param ptr The array of elements to be used by the matrix.
@@ -4389,10 +4390,12 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n 
    CustomMatrix tmp( ptr, m, n );
    swap( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resets the custom matrix and replaces the array of elements with the given array.
 //
 // \param ptr The array of elements to be used by the matrix.
@@ -4423,10 +4426,12 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
    CustomMatrix tmp( ptr, m, n, mm );
    swap( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resets the custom matrix and replaces the array of elements with the given array.
 //
 // \param ptr The array of elements to be used by the matrix.
@@ -4460,10 +4465,12 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
    CustomMatrix tmp( ptr, m, n, d );
    swap( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resets the custom matrix and replaces the array of elements with the given array.
 //
 // \param ptr The array of elements to be used by the matrix.
@@ -4495,6 +4502,7 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
    CustomMatrix tmp( ptr, m, n, mm, d );
    swap( tmp );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 

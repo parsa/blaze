@@ -556,8 +556,6 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
       /*!\brief Constructor of the SubmatrixIterator class.
       //
       // \param iterator Iterator to the initial element.
-      // \param finalIterator The final iterator for intrinsic operations.
-      // \param remainingElements The number of remaining elements beyond the final iterator.
       // \param isMemoryAligned Memory alignment flag.
       */
       inline SubmatrixIterator( IteratorType iterator, bool isMemoryAligned )
