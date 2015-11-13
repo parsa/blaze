@@ -4948,37 +4948,61 @@ struct AddTrait< HybridMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< CompressedMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , SO2 >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO2 >  Type;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< DynamicMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type , SO1 >  Type;
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool SO, typename T2, bool AF, bool PF >
+struct AddTrait< CompressedMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
+{
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct AddTrait< CompressedMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO2 >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool SO, typename T2 >
+struct AddTrait< CustomMatrix<T1,AF,PF,SO>, CompressedMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, CompressedMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename AddTrait<T1,T2>::Type, SO1 >  Type;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   typedef CompressedMatrix< typename AddTrait<T1,T2>::Type , SO >  Type;
+   typedef CompressedMatrix< typename AddTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   typedef CompressedMatrix< typename AddTrait<T1,T2>::Type , false >  Type;
+   typedef CompressedMatrix< typename AddTrait<T1,T2>::Type, false >  Type;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5045,25 +5069,49 @@ struct SubTrait< HybridMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< CompressedMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO2 >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO2 >  Type;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< DynamicMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type , SO1 >  Type;
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool SO, typename T2, bool AF, bool PF >
+struct SubTrait< CompressedMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct SubTrait< CompressedMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO2 >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool SO, typename T2 >
+struct SubTrait< CustomMatrix<T1,AF,PF,SO>, CompressedMatrix<T2,SO> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, CompressedMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename SubTrait<T1,T2>::Type, SO1 >  Type;
 };
 
 template< typename T1, bool SO, typename T2 >
@@ -5197,6 +5245,18 @@ struct MultTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
+struct MultTrait< CompressedMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
+{
+   typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
+};
+
+template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
+struct MultTrait< CustomMatrix<T1,AF,PF,SO1>, CompressedMatrix<T2,SO2> >
 {
    typedef DynamicMatrix< typename MultTrait<T1,T2>::Type, SO1 >  Type;
 };
