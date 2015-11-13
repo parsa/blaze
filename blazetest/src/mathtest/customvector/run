@@ -37,7 +37,7 @@ PATH_CUSTOMVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running CustomVector tests..."
 
-EXE=$PATH_CUSTOMVECTOR/AlignedPaddedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_CUSTOMVECTOR/AlignedUnpaddedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_CUSTOMVECTOR/UnalignedPaddedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMVECTOR/AlignedPaddedTest;     if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMVECTOR/AlignedUnpaddedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_CUSTOMVECTOR/UnalignedPaddedTest;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_CUSTOMVECTOR/UnalignedUnpaddedTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

@@ -121,14 +121,14 @@ void AlignedUnpaddedTest::testConstructors()
 
 
    //=====================================================================================
-   // Constructor without deleter
+   // Constructor ( Type*, size_t )
    //=====================================================================================
 
    {
+      test_ = "CustomVector constructor ( Type*, size_t )";
+
       // Constructing a custom vector of size 10
       {
-         test_ = "CustomVector constructor without deleter (size 10)";
-
          blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 10UL ) );
          VT vec( array.get(), 10UL );
 
@@ -149,8 +149,8 @@ void AlignedUnpaddedTest::testConstructors()
 
       // Trying to construct a custom vector with invalid alignment
       try {
-         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 4UL ) );
-         VT vec( array.get() + 1UL, 4UL );
+         blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
+         VT vec( array.get()+1UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -164,14 +164,14 @@ void AlignedUnpaddedTest::testConstructors()
 
 
    //=====================================================================================
-   // Constructor with deleter
+   // Constructor ( Type*, size_t, Deleter )
    //=====================================================================================
 
    {
+      test_ = "CustomVector constructor ( Type*, size_t, Deleter )";
+
       // Constructing a custom vector of size 10
       {
-         test_ = "CustomVector constructor without deleter (size 10)";
-
          VT vec( blaze::allocate<int>( 10UL ), 10UL, blaze::Deallocate() );
 
          checkSize    ( vec, 10UL );
@@ -192,7 +192,7 @@ void AlignedUnpaddedTest::testConstructors()
       // Trying to construct a custom vector with invalid alignment
       try {
          blaze::UniqueArray<int,blaze::Deallocate> array( blaze::allocate<int>( 5UL ) );
-         VT vec( array.get() + 1UL, 4UL, blaze::Deallocate() );
+         VT vec( array.get()+1UL, 4UL, blaze::Deallocate() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -363,6 +363,7 @@ void AlignedUnpaddedTest::testAssignment()
       vec1[2] = 3;
       vec1[3] = 4;
       vec1[4] = 5;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2 = vec1;
 
@@ -389,13 +390,14 @@ void AlignedUnpaddedTest::testAssignment()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      blaze::UniqueArray<int> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = 1;
       vec1[1] = 2;
       vec1[2] = 3;
       vec1[3] = 4;
       vec1[4] = 5;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2 = vec1;
 
@@ -476,6 +478,7 @@ void AlignedUnpaddedTest::testAddAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -508,13 +511,14 @@ void AlignedUnpaddedTest::testAddAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      blaze::UniqueArray<int> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -607,6 +611,7 @@ void AlignedUnpaddedTest::testSubAssign()
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -639,13 +644,14 @@ void AlignedUnpaddedTest::testSubAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      blaze::UniqueArray<int> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] = -1;
       vec1[1] =  0;
       vec1[2] =  2;
       vec1[3] = -3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -738,6 +744,7 @@ void AlignedUnpaddedTest::testMultAssign()
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -770,13 +777,14 @@ void AlignedUnpaddedTest::testMultAssign()
       using blaze::rowVector;
 
       typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
-      blaze::UniqueArray<int> array( new int[6] );
+      blaze::UniqueArray<int> array( new int[6UL] );
       UnalignedUnpadded vec1( array.get()+1UL, 5UL );
       vec1[0] =  1;
       vec1[1] =  0;
       vec1[2] = -2;
       vec1[3] =  3;
       vec1[4] =  0;
+
       VT vec2( blaze::allocate<int>( 5UL ), 5UL, blaze::Deallocate() );
       vec2[0] =  0;
       vec2[1] =  4;
@@ -1082,7 +1090,8 @@ void AlignedUnpaddedTest::testScaling()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      blaze::CustomVector<complex<float>,aligned,unpadded,rowVector> vec( blaze::allocate< complex<float> >( 2UL ), 2UL, blaze::Deallocate() );
+      typedef blaze::CustomVector<complex<float>,aligned,unpadded,rowVector>  AlignedUnpadded;
+      AlignedUnpadded vec( blaze::allocate< complex<float> >( 2UL ), 2UL, blaze::Deallocate() );
       vec[0] = complex<float>( 1.0F, 0.0F );
       vec[1] = complex<float>( 2.0F, 0.0F );
       vec.scale( complex<float>( 3.0F, 0.0F ) );
