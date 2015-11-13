@@ -1045,6 +1045,18 @@ struct AddTrait< DynamicMatrix<T,SO1>, UpperMatrix<MT,SO2,DF> >
    typedef typename AddTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
 };
 
+template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
+struct AddTrait< UpperMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename AddTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
+struct AddTrait< CustomMatrix<T,AF,PF,SO1>, UpperMatrix<MT,SO2,DF> >
+{
+   typedef typename AddTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
+};
+
 template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
 struct AddTrait< UpperMatrix<MT,SO1,DF>, CompressedMatrix<T,SO2> >
 {
@@ -1170,6 +1182,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct SubTrait< DynamicMatrix<T,SO1>, UpperMatrix<MT,SO2,DF> >
 {
    typedef typename SubTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
+struct SubTrait< UpperMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename SubTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
+struct SubTrait< CustomMatrix<T,AF,PF,SO1>, UpperMatrix<MT,SO2,DF> >
+{
+   typedef typename SubTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
 };
 
 template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
@@ -1371,6 +1395,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct MultTrait< DynamicMatrix<T,SO1>, UpperMatrix<MT,SO2,DF> >
 {
    typedef typename MultTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
+struct MultTrait< UpperMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename MultTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
+struct MultTrait< CustomMatrix<T,AF,PF,SO1>, UpperMatrix<MT,SO2,DF> >
+{
+   typedef typename MultTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
 };
 
 template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
