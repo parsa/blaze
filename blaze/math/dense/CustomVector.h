@@ -82,10 +82,12 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
+#include <blaze/util/Null.h>
 #include <blaze/util/policies/NoDelete.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -152,7 +154,7 @@ namespace blaze {
    typedef CustomVector<double,aligned,unpadded,rowVector>  AlignedUnpadded;
 
    // Definition of a custom row vector for aligned, padded 'complex<double>' arrays
-   typedef CustomVector<complex<double>,aligned,padded,columnVector>  AlignedPadded;
+   typedef CustomVector<complex<double>,aligned,padded,rowVector>  AlignedPadded;
    \endcode
 
 // \n \section customvector_special_properties Special Properties of Custom Vectors
@@ -343,10 +345,11 @@ namespace blaze {
 //
 // The number of padding elements is required to be sufficient with respect to the available
 // instruction set: In case of an aligned padded custom vector the added padding elements must
-// guarantee that the capacity is a multiple of the intrinsic vector width. In case of unaligned
-// padded vectors \f$ N-1 \f$ additional padding elements are required, where \f$ N \f$ is the
-// intrinsic vector width. In case the padding is insufficient with respect to the available
-// instruction set, a \a std::invalid_argument exception is thrown.
+// guarantee that the capacity is greater or equal than the size and a multiple of the intrinsic
+// vector width. In case of unaligned padded vectors the number of padding elements can be greater
+// or equal the number of padding elements of an aligned padded custom vector. In case the padding
+// is insufficient with respect to the available instruction set, a \a std::invalid_argument
+// exception is thrown.
 //
 // Please also note that \b Blaze will zero initialize the padding elements in order to achieve
 // maximum performance!
@@ -364,7 +367,7 @@ namespace blaze {
    using blaze::CustomVector;
    using blaze::CompressedVector;
    using blaze::DynamicMatrix;
-   usign blaze::ArrayDelete;
+   using blaze::ArrayDelete;
    using blaze::Deallocate;
    using blaze::allocate;
    using blaze::aligned;
@@ -373,13 +376,13 @@ namespace blaze {
    using blaze::unpadded;
 
    // Non-initialized custom column vector of size 2. All given arrays are considered to be
-   // unaligned and unpadded. The memory is managed via the 'ArrayDeleter'.
+   // unaligned and unpadded. The memory is managed via 'ArrayDelete'.
    CustomVector<double,unaligned,unpadded> a( new double[2], 2UL, ArrayDelete() );
 
    a[0] = 1.0;  // Initialization of the first element
    a[1] = 2.0;  // Initialization of the second element
 
-   // Non-initialized custom column vector of size 2 and capacity 4. All given array are required
+   // Non-initialized custom column vector of size 2 and capacity 4. All given arrays are required
    // to be properly aligned and padded. The memory is managed via 'Deallocate'.
    CustomVector<double,aligned,padded> b( allocate<double>( 4UL ), 2UL, 4UL, Deallocate() );
 
@@ -419,13 +422,13 @@ class CustomVector : public DenseVector< CustomVector<Type,AF,PF,TF>, TF >
 
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,AF,PF,TF>   This;           //!< Type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>        ResultType;     //!< Result type for expression template evaluations.
-   typedef CustomVector<Type,AF,PF,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                          ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type             IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const Type&                   ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&           CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,AF,PF,TF>  This;           //!< Type of this CustomVector instance.
+   typedef DynamicVector<Type,TF>       ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>      TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                         ElementType;    //!< Type of the vector elements.
+   typedef typename IT::Type            IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef const Type&                  ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&          CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -754,7 +757,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n )
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and the
-//    available instruction set, a \a std::invalid_argument exception is thrown.
+//    available instruction set.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -828,7 +831,7 @@ inline CustomVector<Type,AF,PF,TF>::CustomVector( Type* ptr, size_t n, Deleter d
 //  - ... the alignment flag \a AF is set to \a aligned, but the passed pointer is not properly
 //    aligned according to the available instruction set (SSE, AVX, ...);
 //  - ... the specified capacity \a nn is insufficient for the given data type \a Type and the
-//    available instruction set, a \a std::invalid_argument exception is thrown.
+//    available instruction set.
 //
 // In all failure cases a \a std::invalid_argument exception is thrown.
 //
@@ -1707,7 +1710,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool CustomVector<Type,AF,PF,TF>::isAligned() const
 {
-   return false;
+   return checkAlignment( v_.get() );
 }
 //*************************************************************************************************
 
@@ -1782,8 +1785,8 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    return loada( v_.get()+index );
@@ -1815,7 +1818,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,AF,PF,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index< size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
 
    return loadu( v_.get()+index );
@@ -1872,8 +1875,8 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storea( size_t index, cons
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_       , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    storea( v_.get()+index, value );
@@ -1905,7 +1908,7 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::storeu( size_t index, cons
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
 
    storeu( v_.get()+index, value );
@@ -1933,7 +1936,15 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 BLAZE_ALWAYS_INLINE void CustomVector<Type,AF,PF,TF>::stream( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   stream( v_.get()+index, value );
 }
 //*************************************************************************************************
 
@@ -1991,8 +2002,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,AF,PF,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2004,18 +2013,17 @@ inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE V
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, it.load() ); it += IT::size;
+      store( i             , it.load() ); it += IT::size;
+      store( i+IT::size    , it.load() ); it += IT::size;
+      store( i+IT::size*2UL, it.load() ); it += IT::size;
+      store( i+IT::size*3UL, it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, it.load() );
+      store( i, it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] = *it;
@@ -2103,9 +2111,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    CustomVector<Type,AF,PF,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2117,18 +2122,17 @@ inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE V
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -2216,9 +2220,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    CustomVector<Type,AF,PF,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2230,18 +2231,17 @@ inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE V
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -2329,9 +2329,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    CustomVector<Type,AF,PF,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -2343,18 +2340,17 @@ inline typename EnableIf< typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE V
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] *= *it;
@@ -2425,13 +2421,13 @@ class CustomVector<Type,unaligned,padded,TF>
 
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,unaligned,padded,TF>   This;           //!< Type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>                   ResultType;     //!< Result type for expression template evaluations.
-   typedef CustomVector<Type,unaligned,padded,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                                     ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type                        IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const Type&                              ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&                      CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,unaligned,padded,TF>  This;           //!< Type of this CustomVector instance.
+   typedef DynamicVector<Type,TF>                  ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>                 TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                                    ElementType;    //!< Type of the vector elements.
+   typedef typename IT::Type                       IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef const Type&                             ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&                     CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -2728,7 +2724,7 @@ inline CustomVector<Type,unaligned,padded,TF>::CustomVector( Type* ptr, size_t n
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
-   if( capacity_ < size_ + ( IT::size - 1UL ) ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, IT::size ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
@@ -2774,7 +2770,7 @@ inline CustomVector<Type,unaligned,padded,TF>::CustomVector( Type* ptr, size_t n
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
 
-   if( capacity_ < size_ + ( IT::size - 1UL ) ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, IT::size ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
@@ -3662,8 +3658,8 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicTy
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    return loada( v_.get()+index );
@@ -3695,7 +3691,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,unaligned,padded,TF>::IntrinsicTy
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    return loadu( v_.get()+index );
@@ -3754,8 +3750,8 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_       , "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_   , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    storea( v_.get()+index, value );
@@ -3788,7 +3784,7 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    storeu( v_.get()+index, value );
@@ -3817,7 +3813,15 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE void
    CustomVector<Type,unaligned,padded,TF>::stream( size_t index, const IntrinsicType& value )
 {
-   storeu( index, value );
+   using blaze::stream;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
+
+   stream( v_.get()+index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3875,8 +3879,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,unaligned,padded,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -3890,18 +3892,17 @@ inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, it.load() ); it += IT::size;
+      store( i             , it.load() ); it += IT::size;
+      store( i+IT::size    , it.load() ); it += IT::size;
+      store( i+IT::size*2UL, it.load() ); it += IT::size;
+      store( i+IT::size*3UL, it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, it.load() );
+      store( i, it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] = *it;
@@ -3989,9 +3990,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    CustomVector<Type,unaligned,padded,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -4005,18 +4003,17 @@ inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -4104,9 +4101,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    CustomVector<Type,unaligned,padded,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -4120,18 +4114,17 @@ inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -4219,9 +4212,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    CustomVector<Type,unaligned,padded,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loadu;
-   using blaze::storeu;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -4235,18 +4225,17 @@ inline typename EnableIf< typename CustomVector<Type,unaligned,padded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storeu( v+i             , loadu(v+i             ) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size    , loadu(v+i+IT::size    ) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size*2UL, loadu(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      storeu( v+i+IT::size*3UL, loadu(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storeu( v+i, loadu(v+i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] *= *it;
@@ -4318,13 +4307,13 @@ class CustomVector<Type,aligned,unpadded,TF>
 
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,aligned,unpadded,TF>   This;           //!< Type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>                   ResultType;     //!< Result type for expression template evaluations.
-   typedef CustomVector<Type,aligned,unpadded,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                                     ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type                        IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const Type&                              ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&                      CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,aligned,unpadded,TF>  This;           //!< Type of this CustomVector instance.
+   typedef DynamicVector<Type,TF>                  ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>                 TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                                    ElementType;    //!< Type of the vector elements.
+   typedef typename IT::Type                       IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef const Type&                             ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&                     CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -5534,9 +5523,10 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicTy
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    return loada( v_.get()+index );
 }
@@ -5567,7 +5557,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,unpadded,TF>::IntrinsicTy
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
 
    return loadu( v_.get()+index );
@@ -5624,9 +5614,10 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::storea( size_t 
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    storea( v_.get()+index, value );
 }
@@ -5657,7 +5648,7 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::storeu( size_t 
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
 
    storeu( v_.get()+index, value );
@@ -5689,9 +5680,10 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,unpadded,TF>::stream( size_t 
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= size_, "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL  , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    stream( v_.get()+index, value );
 }
@@ -5751,9 +5743,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,aligned,unpadded,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::storea;
-   using blaze::stream;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -5766,7 +5755,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
       size_t i( 0UL );
 
       for( ; i<ipos; i+=IT::size ) {
-         stream( v_.get()+i, (~rhs).load(i) );
+         stream( i, (~rhs).load(i) );
       }
       for( ; i<size_; ++i ) {
          v_[i] = (~rhs)[i];
@@ -5778,18 +5767,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-      Type* const v( v_.get() );
       size_t i( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
-         storea( v+i             , it.load() ); it += IT::size;
-         storea( v+i+IT::size    , it.load() ); it += IT::size;
-         storea( v+i+IT::size*2UL, it.load() ); it += IT::size;
-         storea( v+i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( v+i, it.load() );
+         store( i, it.load() );
       }
       for( ; i<size_; ++i, ++it ) {
          v_[i] = *it;
@@ -5878,9 +5866,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    CustomVector<Type,aligned,unpadded,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -5892,18 +5877,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -5991,9 +5975,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    CustomVector<Type,aligned,unpadded,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -6005,18 +5986,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -6104,9 +6084,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    CustomVector<Type,aligned,unpadded,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -6118,18 +6095,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,unpadded,TF>::BLAZE
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; i<size_; ++i, ++it ) {
       v_[i] *= *it;
@@ -6201,13 +6177,13 @@ class CustomVector<Type,aligned,padded,TF>
 
  public:
    //**Type definitions****************************************************************************
-   typedef CustomVector<Type,aligned,padded,TF>   This;           //!< Type of this CustomVector instance.
-   typedef DynamicVector<Type,TF>                 ResultType;     //!< Result type for expression template evaluations.
-   typedef CustomVector<Type,aligned,padded,!TF>  TransposeType;  //!< Transpose type for expression template evaluations.
-   typedef Type                                   ElementType;    //!< Type of the vector elements.
-   typedef typename IT::Type                      IntrinsicType;  //!< Intrinsic type of the vector elements.
-   typedef const Type&                            ReturnType;     //!< Return type for expression template evaluations
-   typedef const CustomVector&                    CompositeType;  //!< Data type for composite expression templates.
+   typedef CustomVector<Type,aligned,padded,TF>  This;           //!< Type of this CustomVector instance.
+   typedef DynamicVector<Type,TF>                ResultType;     //!< Result type for expression template evaluations.
+   typedef DynamicVector<Type,!TF>               TransposeType;  //!< Transpose type for expression template evaluations.
+   typedef Type                                  ElementType;    //!< Type of the vector elements.
+   typedef typename IT::Type                     IntrinsicType;  //!< Intrinsic type of the vector elements.
+   typedef const Type&                           ReturnType;     //!< Return type for expression template evaluations
+   typedef const CustomVector&                   CompositeType;  //!< Data type for composite expression templates.
 
    typedef Type&        Reference;       //!< Reference to a non-constant vector value.
    typedef const Type&  ConstReference;  //!< Reference to a constant vector value.
@@ -6510,7 +6486,7 @@ inline CustomVector<Type,aligned,padded,TF>::CustomVector( Type* ptr, size_t n, 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( capacity_ < size_ + ( IT::size - ( size_ % IT::size ) ) % IT::size ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, IT::size ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
@@ -6562,7 +6538,7 @@ inline CustomVector<Type,aligned,padded,TF>::CustomVector( Type* ptr, size_t n, 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( capacity_ < size_ + ( IT::size - ( size_ % IT::size ) ) % IT::size ) {
+   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, IT::size ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
@@ -7454,9 +7430,10 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    return loada( v_.get()+index );
 }
@@ -7487,7 +7464,7 @@ BLAZE_ALWAYS_INLINE typename CustomVector<Type,aligned,padded,TF>::IntrinsicType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    return loadu( v_.get()+index );
@@ -7544,9 +7521,10 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::storea( size_t in
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    storea( v_.get()+index, value );
 }
@@ -7577,7 +7555,7 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::storeu( size_t in
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
 
    storeu( v_.get()+index, value );
@@ -7609,9 +7587,10 @@ BLAZE_ALWAYS_INLINE void CustomVector<Type,aligned,padded,TF>::stream( size_t in
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( index            <  size_    , "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + IT::size <= capacity_, "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index % IT::size == 0UL, "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( checkAlignment( v_.get()+index ), "Invalid vector access index" );
 
    stream( v_.get()+index, value );
 }
@@ -7671,9 +7650,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_TEMPLATE VectorizedAssign<VT> >::Type
    CustomVector<Type,aligned,padded,TF>::assign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::storea;
-   using blaze::stream;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -7688,7 +7664,7 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
       size_t i( 0UL );
 
       for( ; i<ipos; i+=IT::size ) {
-         stream( v_.get()+i, (~rhs).load(i) );
+         stream( i, (~rhs).load(i) );
       }
       for( ; remainder && i<size_; ++i ) {
          v_[i] = (~rhs)[i];
@@ -7700,18 +7676,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-      Type* const v( v_.get() );
       size_t i( 0UL );
       typename VT::ConstIterator it( (~rhs).begin() );
 
       for( ; i<i4way; i+=IT::size*4UL ) {
-         storea( v+i             , it.load() ); it += IT::size;
-         storea( v+i+IT::size    , it.load() ); it += IT::size;
-         storea( v+i+IT::size*2UL, it.load() ); it += IT::size;
-         storea( v+i+IT::size*3UL, it.load() ); it += IT::size;
+         store( i             , it.load() ); it += IT::size;
+         store( i+IT::size    , it.load() ); it += IT::size;
+         store( i+IT::size*2UL, it.load() ); it += IT::size;
+         store( i+IT::size*3UL, it.load() ); it += IT::size;
       }
       for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-         storea( v+i, it.load() );
+         store( i, it.load() );
       }
       for( ; remainder && i<size_; ++i, ++it ) {
          v_[i] = *it;
@@ -7800,9 +7775,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >::Type
    CustomVector<Type,aligned,padded,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -7816,18 +7788,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) + it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) + it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) + it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) + it.load() ); it += IT::size;
+      store( i             , load(i             ) + it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) + it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) + it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) + it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) + it.load() );
+      store( i, load(i) + it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] += *it;
@@ -7915,9 +7886,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >::Type
    CustomVector<Type,aligned,padded,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -7931,18 +7899,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) - it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) - it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) - it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) - it.load() ); it += IT::size;
+      store( i             , load(i             ) - it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) - it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) - it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) - it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) - it.load() );
+      store( i, load(i) - it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] -= *it;
@@ -8030,9 +7997,6 @@ template< typename VT >  // Type of the right-hand side dense vector
 inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >::Type
    CustomVector<Type,aligned,padded,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 {
-   using blaze::loada;
-   using blaze::storea;
-
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
@@ -8046,18 +8010,17 @@ inline typename EnableIf< typename CustomVector<Type,aligned,padded,TF>::BLAZE_T
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (IT::size*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
-   Type* const v( v_.get() );
    size_t i( 0UL );
    typename VT::ConstIterator it( (~rhs).begin() );
 
    for( ; i<i4way; i+=IT::size*4UL ) {
-      storea( v+i             , loada(v+i             ) * it.load() ); it += IT::size;
-      storea( v+i+IT::size    , loada(v+i+IT::size    ) * it.load() ); it += IT::size;
-      storea( v+i+IT::size*2UL, loada(v+i+IT::size*2UL) * it.load() ); it += IT::size;
-      storea( v+i+IT::size*3UL, loada(v+i+IT::size*3UL) * it.load() ); it += IT::size;
+      store( i             , load(i             ) * it.load() ); it += IT::size;
+      store( i+IT::size    , load(i+IT::size    ) * it.load() ); it += IT::size;
+      store( i+IT::size*2UL, load(i+IT::size*2UL) * it.load() ); it += IT::size;
+      store( i+IT::size*3UL, load(i+IT::size*3UL) * it.load() ); it += IT::size;
    }
    for( ; i<ipos; i+=IT::size, it+=IT::size ) {
-      storea( v+i, loada(v+i) * it.load() );
+      store( i, load(i) * it.load() );
    }
    for( ; remainder && i<size_; ++i, ++it ) {
       v_[i] *= *it;
@@ -8302,6 +8265,23 @@ struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
 struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool PF, bool TF >
+struct IsAligned< CustomVector<T,aligned,PF,TF> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
