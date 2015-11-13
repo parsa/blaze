@@ -300,7 +300,31 @@ namespace blaze {
    A.append( 2, 0, cplx( 3.0, 4.0 ) );  // Appending an element at position (2,0) and (0,2)
    \endcode
 
-// The Hermitian property is also enforced for views (rows, columns, submatrices, ...) on the
+// The Hermitian property is also enforced for Hermitian custom matrices: In case the given array
+// of elements does not represent a Hermitian matrix, a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::HermitianMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomHermitian;
+
+   // Creating a 3x3 Hermitian custom matrix from a properly initialized array
+   double array[9] = { 1.0, 2.0, 4.0,
+                       2.0, 3.0, 5.0,
+                       4.0, 5.0, 6.0 };
+   CustomHermitian A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 Hermitian custom matrix from an uninitialized array;
+   // Will result in an exception
+   CustomHermitian B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the Hermitian property is enforced for views (rows, columns, submatrices, ...) on the
 // Hermitian matrix. The following example demonstrates that modifying the elements of an entire
 // row of the Hermitian matrix also affects the counterpart elements in the according column of
 // the matrix:
