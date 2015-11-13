@@ -601,6 +601,18 @@ struct AddTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
    typedef typename AddTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
 };
 
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
+struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename AddTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct AddTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   typedef typename AddTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
+};
+
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
@@ -666,6 +678,18 @@ template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    typedef typename SubTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
+struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename SubTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct SubTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   typedef typename SubTrait< CustomMatrix<T,AF,PF,SO1>, MT >::Type  Type;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
@@ -805,6 +829,18 @@ struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
+{
+   typedef typename MultTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
+};
+
+template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
+struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
+{
+   typedef typename MultTrait< MT, CustomMatrix<T,AF,PF,SO2> >::Type  Type;
+};
+
+template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
+struct MultTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
    typedef typename MultTrait< DynamicMatrix<T,SO1>, MT >::Type  Type;
 };
