@@ -58,12 +58,13 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/views/DenseSubmatrix.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/util/Assert.h>
@@ -624,7 +625,7 @@ class SymmetricMatrix<MT,SO,true,false>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE         ( ElementType );
-   //BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -61,10 +61,11 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/traits/TransExprTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/DenseColumn.h>
 #include <blaze/math/views/DenseRow.h>
@@ -765,7 +766,7 @@ class HermitianMatrix<MT,SO,true>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE             ( ElementType );
-   //BLAZE_STATIC_ASSERT( IsResizable<MT>::value || IsSquare<MT>::value );
+   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
    //**********************************************************************************************
 };
 /*! \endcond */
