@@ -232,8 +232,7 @@ namespace blaze {
                        0.0, 0.0, 6.0 };
    CustomUpper A( array, 3UL );  // OK
 
-   // Attempt to create a second 3x3 upper custom matrix from an uninitialized array;
-   // Will result in an exception
+   // Attempt to create a second 3x3 upper custom matrix from an uninitialized array
    CustomUpper B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
    \endcode
 

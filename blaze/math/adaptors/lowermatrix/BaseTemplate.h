@@ -232,8 +232,7 @@ namespace blaze {
                        4.0, 5.0, 6.0 };
    CustomLower A( array, 3UL );  // OK
 
-   // Attempt to create a second 3x3 lower custom matrix from an uninitialized array;
-   // Will result in an exception
+   // Attempt to create a second 3x3 lower custom matrix from an uninitialized array
    CustomLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
    \endcode
 

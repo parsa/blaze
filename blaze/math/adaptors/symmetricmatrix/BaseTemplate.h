@@ -293,8 +293,7 @@ namespace blaze {
                        4.0, 5.0, 6.0 };
    CustomSymmetric A( array, 3UL );  // OK
 
-   // Attempt to create a second 3x3 symmetric custom matrix from an uninitialized array;
-   // Will result in an exception
+   // Attempt to create a second 3x3 symmetric custom matrix from an uninitialized array
    CustomSymmetric B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
    \endcode
 

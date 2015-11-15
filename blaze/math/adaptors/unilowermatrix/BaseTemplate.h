@@ -261,8 +261,7 @@ namespace blaze {
                        3.0, 4.0, 1.0 };
    CustomUniLower A( array, 3UL );  // OK
 
-   // Attempt to create a second 3x3 unilower custom matrix from an uninitialized array;
-   // Will result in an exception
+   // Attempt to create a second 3x3 unilower custom matrix from an uninitialized array
    CustomUniLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
    \endcode
 

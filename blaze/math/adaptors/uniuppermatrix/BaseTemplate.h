@@ -260,8 +260,7 @@ namespace blaze {
                        0.0, 0.0, 1.0 };
    CustomUniUpper A( array, 3UL );  // OK
 
-   // Attempt to create a second 3x3 uniupper custom matrix from an uninitialized array;
-   // Will result in an exception
+   // Attempt to create a second 3x3 uniupper custom matrix from an uninitialized array
    CustomUniUpper B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
    \endcode
 
