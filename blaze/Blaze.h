@@ -692,8 +692,8 @@ namespace blaze {}
    class CustomVector;
    \endcode
 
-//  - Type: specifies the type of the vector elements. CustomVector can be used with any
-//          non-cv-qualified, non-reference, non-pointer element type.
+//  - Type: specifies the type of the vector elements. blaze::CustomVector can be used with
+//          any non-cv-qualified, non-reference, non-pointer element type.
 //  - AF  : specifies whether the represented, external arrays are properly aligned with
 //          respect to the available instruction set (SSE, AVX, ...) or not.
 //  - PF  : specified whether the represented, external arrays are properly padded with
@@ -702,7 +702,8 @@ namespace blaze {}
 //          vector (\a blaze::columnVector). The default value is \a blaze::columnVector.
 //
 // The blaze::CustomVector is the right choice if any external array needs to be represented as
-// a \b Blaze dense vector data structure:
+// a \b Blaze dense vector data structure or if a custom memory allocation strategy needs to be
+// realized:
 
    \code
    using blaze::CustomVector;
@@ -722,17 +723,17 @@ namespace blaze {}
 
    // Definition of a managed custom row vector for aligned, unpadded 'double' arrays
    typedef CustomVector<double,aligned,unpadded,rowVector>  AlignedUnpadded;
-   AlignedUnpadded c( allocate<double>( 7UL ), 7UL, blaze::Deallocate() );
+   AlignedUnpadded c( blaze::allocate<double>( 7UL ), 7UL, blaze::Deallocate() );
 
    // Definition of a managed custom row vector for aligned, padded 'complex<double>' arrays
    typedef CustomVector<complex<double>,aligned,padded,columnVector>  AlignedPadded;
    AlignedPadded d( allocate< complex<double> >( 8UL ), 5UL, 8UL, blaze::Deallocate() );
    \endcode
 
-// In comparison with the remaining \b Blaze dense vector types CustomVector has several special
-// characteristics. All of these result from the fact that a custom vector is not performing any
-// kind of memory allocation, but instead is given an existing array of elements. The following
-// sections discuss all of these characteristics:
+// In comparison with the remaining \b Blaze dense vector types blaze::CustomVector has several
+// special characteristics. All of these result from the fact that a custom vector is not
+// performing any kind of memory allocation, but instead is given an existing array of elements.
+// The following sections discuss all of these characteristics:
 //
 //  -# <b>\ref vector_types_custom_vector_memory_management</b>
 //  -# <b>\ref vector_types_custom_vector_copy_operations</b>
@@ -741,8 +742,8 @@ namespace blaze {}
 //
 // \n \subsection vector_types_custom_vector_memory_management Memory Management
 //
-// The CustomVector class template acts as an adaptor for an existing array of elements. As such
-// it provides everything that is required to use the array just like a native \b Blaze dense
+// The blaze::CustomVector class template acts as an adaptor for an existing array of elements. As
+// such it provides everything that is required to use the array just like a native \b Blaze dense
 // vector data structure. However, this flexibility comes with the price that the user of a custom
 // vector is responsible for the resource management.
 //
@@ -863,7 +864,7 @@ namespace blaze {}
 //
 // \n \subsection vector_types_custom_vector_padding Padding
 //
-// Adding padding elements to the end of an array can have a significant impact on performance.
+// Adding padding elements to the end of an array can have a significant impact on the performance.
 // For instance, assuming that AVX is available, then two aligned, padded, 3-dimensional vectors
 // of double precision values can be added via a single intrinsic addition instruction:
 
@@ -1510,8 +1511,8 @@ namespace blaze {}
    \endcode
 
 // A vector is in default state if it appears to just have been default constructed. All resizable
-// vectors (\c HybridVector, \c DynamicVector, or \c CompressedVector) and \a CustomVector are
-// in default state if its size is equal to zero. All non-resizable vector (\c StaticVector, all
+// vectors (\c HybridVector, \c DynamicVector, or \c CompressedVector) and \c CustomVector are
+// in default state if its size is equal to zero. A non-resizable vector (\c StaticVector, all
 // subvectors, rows, and columns) is in default state if all its elements are in default state.
 // For instance, in case the vector is instantiated for a built-in integral or floating point data
 // type, the function returns \c true in case all vector elements are 0 and \c false in case any
@@ -1947,6 +1948,267 @@ namespace blaze {}
    blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor> C;
    \endcode
 
+// \n \section matrix_types_custom_matrix CustomMatrix
+// <hr>
+//
+// The blaze::CustomMatrix class template provides the functionality to represent an external
+// array of elements of arbitrary type and a fixed size as a native \b Blaze dense matrix data
+// structure. Thus in contrast to all other dense matrix types a custom matrix does not perform
+// any kind of memory allocation by itself, but it is provided with an existing array of element
+// during construction. A custom matrix can therefore be considered an alias to the existing
+// array. It can be included via the header file
+
+   \code
+   #include <blaze/math/CustomMatrix.h>
+   \endcode
+
+// The type of the elements, the properties of the given array of elements and the storage order
+// of the matrix can be specified via the following four template parameters:
+
+   \code
+   template< typename Type, bool AF, bool PF, bool SO >
+   class CustomMatrix;
+   \endcode
+
+//  - Type: specifies the type of the matrix elements. blaze::CustomMatrix can be used with
+//          any non-cv-qualified, non-reference, non-pointer element type.
+//  - AF  : specifies whether the represented, external arrays are properly aligned with
+//          respect to the available instruction set (SSE, AVX, ...) or not.
+//  - PF  : specified whether the represented, external arrays are properly padded with
+//          respect to the available instruction set (SSE, AVX, ...) or not.
+//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//          The default value is blaze::rowMajor.
+//
+// The blaze::CustomMatrix is the right choice if any external array needs to be represented as
+// a \b Blaze dense matrix data structure or if a custom memory allocation strategy needs to be
+// realized:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+
+   // Definition of an unmanaged 3x4 custom matrix for unaligned, unpadded integer arrays
+   typedef CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+   std::vector<int> vec( 12UL )
+   UnalignedUnpadded A( &vec[0], 3UL, 4UL );
+
+   // Definition of a managed 5x6 custom matrix for unaligned but padded 'float' arrays
+   typedef CustomMatrix<float,unaligned,padded,columnMajor>  UnalignedPadded;
+   UnalignedPadded B( new float[40], 5UL, 6UL, 8UL, blaze::ArrayDelete() );
+
+   // Definition of a managed 12x13 custom matrix for aligned, unpadded 'double' arrays
+   typedef CustomMatrix<double,aligned,unpadded,rowMajor>  AlignedUnpadded;
+   AlignedUnpadded C( blaze::allocate<double>( 192UL ), 12UL, 13UL, 16UL, blaze::Deallocate );
+
+   // Definition of a 7x14 custom matrix for aligned, padded 'complex<double>' arrays
+   typedef CustomMatrix<complex<double>,aligned,padded,columnMajor>  AlignedPadded;
+   AlignedPadded D( blaze::allocate<double>( 112UL ), 7UL, 14UL, 16UL, blaze::Deallocate() );
+   \endcode
+
+// In comparison with the remaining \b Blaze dense matrix types blaze::CustomMatrix has several
+// special characteristics. All of these result from the fact that a custom matrix is not
+// performing any kind of memory allocation, but instead is given an existing array of elements.
+// The following sections discuss all of these characteristics:
+//
+//  -# <b>\ref matrix_types_custom_matrix_memory_management</b>
+//  -# <b>\ref matrix_types_custom_matrix_copy_operations</b>
+//  -# <b>\ref matrix_types_custom_matrix_alignment</b>
+//  -# <b>\ref matrix_types_custom_matrix_padding</b>
+//
+// \n \subsection matrix_types_custom_matrix_memory_management Memory Management
+//
+// The blaze::CustomMatrix class template acts as an adaptor for an existing array of elements. As
+// such it provides everything that is required to use the array just like a native \b Blaze dense
+// matrix data structure. However, this flexibility comes with the price that the user of a custom
+// matrix is responsible for the resource management.
+//
+// When constructing a custom matrix there are two choices: Either a user manually manages the
+// array of elements outside the custom matrix, or alternatively passes the responsibility for
+// the memory management to an instance of CustomMatrix. In the second case the CustomMatrix
+// class employs shared ownership between all copies of the custom matrix, which reference the
+// same array.
+//
+// The following examples give an impression of several possible types of custom matrices:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::ArrayDelete;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::unaligned;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Definition of a 3x4 custom row-major matrix with unaligned, unpadded and externally
+   // managed integer array. Note that the std::vector must be guaranteed to outlive the
+   // custom matrix!
+   std::vector<int> vec( 12UL );
+   CustomMatrix<int,unaligned,unpadded> A( &vec[0], 3UL, 4UL );
+
+   // Definition of a 3x4 custom row-major matrix for unaligned, unpadded integer arrays.
+   // The responsibility for the memory management is passed to the custom matrix by
+   // providing a deleter of type 'blaze::ArrayDelete' that is used during the destruction
+   // of the custom matrix.
+   CustomMatrix<int,unaligned,unpadded,rowMajor> B( new int[12], 3UL, 4UL, ArrayDelete() );
+
+   // Definition of a custom 8x12 matrix and capacity 128 with aligned and padded
+   // integer array. The memory management is passed to the custom matrix by providing a
+   // deleter of type 'blaze::Deallocate'.
+   CustomMatrix<int,aligned,padded> C( allocate<int>( 128UL ), 8UL, 12UL, 16UL, Deallocate() );
+   \endcode
+
+// It is possible to pass any type of deleter to the constructor. The deleter is only required
+// to provide a function call operator that can be passed the pointer to the managed array. As
+// an example the following code snipped shows the implementation of two native \b Blaze deleters
+// blaze::ArrayDelete and blaze::Deallocate:
+
+   \code
+   namespace blaze {
+
+   struct ArrayDelete
+   {
+      template< typename Type >
+      inline void operator()( Type ptr ) const { boost::checked_array_delete( ptr ); }
+   };
+
+   struct Deallocate
+   {
+      template< typename Type >
+      inline void operator()( Type ptr ) const { deallocate( ptr ); }
+   };
+
+   } // namespace blaze
+   \endcode
+
+// \n \subsection matrix_types_custom_matrix_copy_operations Copy Operations
+//
+// As with all dense matrices it is possible to copy construct a custom matrix:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+
+   typedef CustomMatrix<int,unaligned,unpadded>  CustomType;
+
+   std::vector<int> vec( 6UL, 10 );    // Vector of 6 integers of the value 10
+   CustomType A( &vec[0], 2UL, 3UL );  // Represent the std::vector as Blaze dense matrix
+   a[1] = 20;                          // Also modifies the std::vector
+
+   CustomType B( a );  // Creating a copy of vector a
+   b[2] = 20;          // Also affect matrix A and the std::vector
+   \endcode
+
+// It is important to note that a custom matrix acts as a reference to the specified array. Thus
+// the result of the copy constructor is a new custom matrix that is referencing and representing
+// the same array as the original custom matrix. In case a deleter has been provided to the first
+// custom matrix, both matrices share the responsibility to destroy the array when the last matrix
+// goes out of scope.
+//
+// In contrast to copy construction, just as with references, copy assignment does not change
+// which array is referenced by the custom matrices, but modifies the values of the array:
+
+   \code
+   std::vector<int> vec2( 6UL, 4 );     // Vector of 6 integers of the value 4
+   CustomType C( &vec2[0], 2UL, 3UL );  // Represent the std::vector as Blaze dense matrix
+
+   A = C;  // Copy assignment: Set all values of matrix A and B to 4.
+   \endcode
+
+// \n \subsection matrix_types_custom_matrix_alignment Alignment
+//
+// In case the custom matrix is specified as \a aligned the passed array must adhere to some
+// alignment restrictions based on the alignment requirements of the used data type and the
+// used instruction set (SSE, AVX, ...). The restriction applies to the first element of each
+// row/column: In case of a row-major matrix the first element of each row must be properly
+// aligned, in case of a column-major matrix the first element of each column must be properly
+// aligned. For instance, if a row-major matrix is used and AVX is active the first element of
+// each row must be 32-bit aligned:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::Deallocate;
+   using blaze::aligned;
+   using blaze::padded;
+   using blaze::rowMajor;
+
+   int* array = blaze::allocate<int>( 40UL );  // Is guaranteed to be 32-bit aligned
+   CustomMatrix<int,aligned,padded,rowMajor> A( array, 5UL, 6UL, 8UL, Deallocate() );
+   \endcode
+
+// In the example, the row-major matrix has six columns. However, since with AVX eight integer
+// values are loaded together the matrix is padded with two additional elements. This guarantees
+// that the first element of each row is 32-bit aligned. In case the alignment requirements are
+// violated, a \a std::invalid_argument exception is thrown.
+//
+// \n \subsection matrix_types_custom_matrix_padding Padding
+//
+// Adding padding elements to the end of each row/column can have a significant impact on the
+// performance. For instance, assuming that AVX is available, then two aligned, padded, 3x3 double
+// precision matrices can be added via three intrinsic addition instruction:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::padded;
+
+   typedef CustomMatrix<double,aligned,padded>  CustomType;
+
+   // Creating padded custom 3x3 matrix with an additional padding element in each row
+   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+
+   // ... Initialization
+
+   C = A + B;  // AVX-based matrix addition
+   \endcode
+
+// In this example, maximum performance is possible. However, in case no padding elements are
+// inserted a scalar addition has to be used:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::Deallocate;
+   using blaze::allocate;
+   using blaze::aligned;
+   using blaze::unpadded;
+
+   typedef CustomMatrix<double,aligned,unpadded>  CustomType;
+
+   // Creating unpadded custom 3x3 matrix
+   CustomType A( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType B( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+   CustomType C( allocate<double>( 12UL ), 3UL, 3UL, 4UL, Deallocate() );
+
+   // ... Initialization
+
+   C = A + B;  // Scalar matrix addition
+   \endcode
+
+// Note that the construction of padded and unpadded aligned matrices looks identical. However,
+// in case of padded matrices, \b Blaze will zero initialize the padding element and use them
+// in all computations in order to achieve maximum performance. In case of an unpadded matrix
+// \b Blaze will ignore the elements with the downside that it is not possible to load a complete
+// row to an AVX register, which makes it necessary to fall back to a scalar addition.
+//
+// The number of padding elements is required to be sufficient with respect to the available
+// instruction set: In case of an aligned padded custom matrix the added padding elements must
+// guarantee that the total number of elements in each row/column is a multiple of the intrinsic
+// vector width. In case of an unaligned padded matrix the number of padding elements can be
+// greater or equal the number of padding elements of an aligned padded custom matrix. In case
+// the padding is insufficient with respect to the available instruction set, a
+// \a std::invalid_argument exception is thrown.
+//
+//
 // \n \section matrix_types_compressed_matrix CompressedMatrix
 // <hr>
 //
@@ -2522,8 +2784,8 @@ namespace blaze {}
 // \n \subsection matrix_operations_resize_reserve Resize/Reserve
 //
 // The dimensions of a \c StaticMatrix are fixed at compile time by the second and third template
-// parameter. In contrast, the number or rows and/or columns of \c DynamicMatrix, \c HybridMatrix,
-// and \c CompressedMatrix can be changed at runtime:
+// parameter and a \c CustomMatrix cannot be resized. In contrast, the number or rows and columns
+// of \c DynamicMatrix, \c HybridMatrix, and \c CompressedMatrix can be changed at runtime:
 
    \code
    using blaze::DynamicMatrix;
@@ -2649,12 +2911,13 @@ namespace blaze {}
    if( isDefault( A ) ) { ... }
    \endcode
 
-// A matrix is in default state if it appears to just have been default constructed. A resizable
-// matrix (\c HybridMatrix, \c DynamicMatrix, or \c CompressedMatrix) is in default state if its
-// size is equal to zero. A non-resizable matrix (\c StaticMatrix and all submatrices) is in
-// default state if all its elements are in default state. For instance, in case the matrix is
-// instantiated for a built-in integral or floating point data type, the function returns \c true
-// in case all matrix elements are 0 and \c false in case any vector element is not 0.
+// A matrix is in default state if it appears to just have been default constructed. All resizable
+// matrices (\c HybridMatrix, \c DynamicMatrix, or \c CompressedMatrix) and \c CustomMatrix are in
+// default state if its size is equal to zero. A non-resizable matrix (\c StaticMatrix and all
+// submatrices) is in default state if all its elements are in default state. For instance, in case
+// the matrix is instantiated for a built-in integral or floating point data type, the function
+// returns \c true in case all matrix elements are 0 and \c false in case any vector element is
+// not 0.
 //
 //
 // \n \subsection matrix_operations_isSquare isSquare
@@ -3283,7 +3546,30 @@ namespace blaze {}
    A.append( 2, 0, 3.0 );  // Appending the value 3 at position (2,0) and (0,2)
    \endcode
 
-// The symmetry property is also enforced for views (rows, columns, submatrices, ...) on the
+// The symmetry property is also enforced for symmetric custom matrices: In case the given array
+// of elements does not represent a symmetric matrix, a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomSymmetric;
+
+   // Creating a 3x3 symmetric custom matrix from a properly initialized array
+   double array[9] = { 1.0, 2.0, 4.0,
+                       2.0, 3.0, 5.0,
+                       4.0, 5.0, 6.0 };
+   CustomSymmetric A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 symmetric custom matrix from an uninitialized array
+   CustomSymmetric B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the symmetry property is enforced for views (rows, columns, submatrices, ...) on the
 // symmetric matrix. The following example demonstrates that modifying the elements of an entire
 // row of the symmetric matrix also affects the counterpart elements in the according column of
 // the matrix:
@@ -3838,7 +4124,30 @@ namespace blaze {}
    A.append( 2, 0, cplx( 3.0, 4.0 ) );  // Appending an element at position (2,0) and (0,2)
    \endcode
 
-// The Hermitian property is also enforced for views (rows, columns, submatrices, ...) on the
+// The Hermitian property is also enforced for Hermitian custom matrices: In case the given array
+// of elements does not represent a Hermitian matrix, a \a std::invalid_argument exception is
+// thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::HermitianMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomHermitian;
+
+   // Creating a 3x3 Hermitian custom matrix from a properly initialized array
+   double array[9] = { 1.0, 2.0, 4.0,
+                       2.0, 3.0, 5.0,
+                       4.0, 5.0, 6.0 };
+   CustomHermitian A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 Hermitian custom matrix from an uninitialized array
+   CustomHermitian B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the Hermitian property is enforced for views (rows, columns, submatrices, ...) on the
 // Hermitian matrix. The following example demonstrates that modifying the elements of an entire
 // row of the Hermitian matrix also affects the counterpart elements in the according column of
 // the matrix:
@@ -4669,11 +4978,34 @@ namespace blaze {}
    C = D;  // Throws an exception; lower matrix invariant would be violated!
    \endcode
 
-// The lower/upper matrix property is also enforced for views (rows, columns, submatrices, ...)
-// on the triangular matrix. The following example demonstrates that modifying the elements of
-// an entire row and submatrix of a lower matrix only affects the lower and diagonal matrix
-// elements. Again, this example uses blaze::LowerMatrix, for examples with other triangular
-// matrix types see the according class documentations.
+// The triangular property is also enforced during the construction of triangular custom matrices:
+// In case the given array of elements does not represent the according triangular matrix type, a
+// \a std::invalid_argument exception is thrown:
+
+   \code
+   using blaze::CustomMatrix;
+   using blaze::LowerMatrix;
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   typedef LowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomLower;
+
+   // Creating a 3x3 lower custom matrix from a properly initialized array
+   double array[9] = { 1.0, 0.0, 0.0,
+                       2.0, 3.0, 0.0,
+                       4.0, 5.0, 6.0 };
+   CustomLower A( array, 3UL );  // OK
+
+   // Attempt to create a second 3x3 lower custom matrix from an uninitialized array
+   CustomLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   \endcode
+
+// Finally, the triangular matrix property is enforced for views (rows, columns, submatrices, ...)
+// on the triangular matrix. The following example demonstrates that modifying the elements of an
+// entire row and submatrix of a lower matrix only affects the lower and diagonal matrix elements.
+// Again, this example uses blaze::LowerMatrix, for examples with other triangular matrix types
+// see the according class documentations.
 
    \code
    using blaze::DynamicMatrix;
