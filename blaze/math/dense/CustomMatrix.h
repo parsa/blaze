@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -5747,6 +5748,23 @@ struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool SO >
 struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCUSTOM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool SO >
+struct IsCustom< CustomMatrix<T,AF,PF,SO> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
