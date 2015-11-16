@@ -43,7 +43,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
@@ -139,14 +142,14 @@ class DenseNonNumericTest
    //! Type of a resizable, non-numeric element.
    typedef blaze::DynamicVector<int,blaze::rowVector>  VT;
 
-   //! Type of the non-numeric symmetric matrix.
+   //! Type of the non-numeric row-major symmetric matrix.
    typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >  ST;
 
-   typedef ST::OppositeType           OST;   //!< Opposite non-numeric symmetric matrix type.
-   typedef ST::TransposeType          TST;   //!< Transpose non-numeric symmetric matrix type.
-   typedef ST::Rebind<double>::Other  RST;   //!< Type of the non-numeric symmetric matrix.
-   typedef RST::OppositeType          ORST;  //!< Opposite non-numeric symmetric matrix type.
-   typedef RST::TransposeType         TRST;  //!< Transpose non-numeric symmetric matrix type.
+   //! Type of the non-numeric column-major symmetric matrix.
+   typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::columnMajor> >  OST;
+
+   typedef ST::Rebind<double>::Other   RST;   //!< Rebound row-major symmetric matrix type.
+   typedef OST::Rebind<double>::Other  ORST;  //!< Rebound column-major symmetric matrix type.
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -158,26 +161,82 @@ class DenseNonNumericTest
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TST  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRST );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST   );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( TST  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( TRST );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, OST::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, TST::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST, ORST::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST, TRST::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType, OST::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType, TST::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType, ORST::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType, TRST::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST                  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ST::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST                 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST                 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST                );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORST::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ST                  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ST::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ST::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ST::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OST                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RST                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORST                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORST::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORST::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORST::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST                  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ST::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST                );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORST::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ST::ResultType      );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ST::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ST::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RST::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RST::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RST::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORST::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORST::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORST::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType,   ST::ResultType::ElementType      );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType,   ST::OppositeType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST::ElementType,   ST::TransposeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OST::ElementType,  OST::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OST::ElementType,  OST::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OST::ElementType,  OST::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType,  RST::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType,  RST::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RST::ElementType,  RST::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORST::ElementType, ORST::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORST::ElementType, ORST::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORST::ElementType, ORST::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
