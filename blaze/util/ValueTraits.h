@@ -42,6 +42,7 @@
 
 #include <blaze/util/valuetraits/IsEven.h>
 #include <blaze/util/valuetraits/IsFalse.h>
+#include <blaze/util/valuetraits/IsMultipleOf.h>
 #include <blaze/util/valuetraits/IsOdd.h>
 #include <blaze/util/valuetraits/IsPowerOf.h>
 #include <blaze/util/valuetraits/IsTrue.h>
