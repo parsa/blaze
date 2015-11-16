@@ -139,11 +139,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>     MT;   //!< Type of the hybrid matrix.
-   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;  //!< Opposite hybrid matrix type.
+   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>     MT;   //!< Type of the row-major hybrid matrix.
+   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;  //!< Type of the column-major hybrid matrix.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound hybrid matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Opposite rebound hybrid matrix type.
+   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound row-major hybrid matrix type.
+   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound column-major hybrid matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

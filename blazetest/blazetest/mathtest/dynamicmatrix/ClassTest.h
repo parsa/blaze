@@ -140,11 +140,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>     MT;   //!< Type of the dynamic matrix.
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  OMT;  //!< Opposite dynamic matrix type.
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>     MT;   //!< Type of the row-major dynamic matrix.
+   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  OMT;  //!< Type of the column-major dynamic matrix.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound dynamic matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound dynamic matrix type.
+   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound row-major dynamic matrix type.
+   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound column-major dynamic matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

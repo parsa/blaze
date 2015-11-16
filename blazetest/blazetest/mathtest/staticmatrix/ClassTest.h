@@ -134,11 +134,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>     MT;    //!< Type of the static matrix.
-   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;   //!< Opposite static matrix type.
+   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::rowMajor>     MT;   //!< Type of the row-major static matrix.
+   typedef blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;  //!< Type of the column-major static matrix.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound static matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Opposite rebound static matrix type.
+   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound row-major static matrix type.
+   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound column-major static matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
