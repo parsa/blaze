@@ -58,9 +58,10 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -978,6 +979,23 @@ struct IsRestricted< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct HasConstDataAccess< StrictlyLowerMatrix<MT,SO,true> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsAligned< StrictlyLowerMatrix<MT,SO,DF> > : public IsTrue< IsAligned<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
