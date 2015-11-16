@@ -43,7 +43,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyUpper.h>
 #include <blaze/math/DynamicMatrix.h>
@@ -137,38 +140,94 @@ class DenseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of the lower matrix.
+   //! Type of the row-major strictly lower matrix.
    typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  LT;
 
-   typedef LT::OppositeType           OLT;   //!< Opposite lower matrix type.
-   typedef LT::TransposeType          TLT;   //!< Transpose lower matrix type.
-   typedef LT::Rebind<double>::Other  RLT;   //!< Type of the lower matrix.
-   typedef RLT::OppositeType          ORLT;  //!< Opposite lower matrix type.
-   typedef RLT::TransposeType         TRLT;  //!< Transpose lower matrix type.
+   //! Type of the column-major strictly lower matrix.
+   typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >  OLT;
+
+   typedef LT::Rebind<double>::Other   RLT;   //!< Rebound row-major strictly lower matrix type.
+   typedef OLT::Rebind<double>::Other  ORLT;  //!< Rebound column-major strictly lower matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( LT   );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OLT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TLT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( TRLT );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( LT   );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OLT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( TLT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RLT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORLT );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( TRLT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, OLT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT, TLT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT, ORLT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT, TRLT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT::ElementType, OLT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT::ElementType, TLT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT::ElementType, ORLT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT::ElementType, TRLT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( LT                  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( LT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( LT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( LT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT                );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ORLT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( LT                  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( LT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( LT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( LT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORLT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORLT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORLT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORLT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( LT                  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( LT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( LT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( LT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( OLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RLT                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( RLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORLT                );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORLT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORLT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( ORLT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( LT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( LT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( LT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RLT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RLT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RLT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORLT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORLT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORLT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT::ElementType,   LT::ResultType::ElementType      );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT::ElementType,   LT::OppositeType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( LT::ElementType,   LT::TransposeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OLT::ElementType,  OLT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OLT::ElementType,  OLT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OLT::ElementType,  OLT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT::ElementType,  RLT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT::ElementType,  RLT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RLT::ElementType,  RLT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORLT::ElementType, ORLT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORLT::ElementType, ORLT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORLT::ElementType, ORLT::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
