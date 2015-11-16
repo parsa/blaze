@@ -44,6 +44,9 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyUpper.h>
@@ -146,38 +149,94 @@ class SparseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of the upper matrix.
+   //! Type of the row-major strictly upper matrix.
    typedef blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  UT;
 
-   typedef UT::OppositeType           OUT;   //!< Opposite upper matrix type.
-   typedef UT::TransposeType          TUT;   //!< Transpose upper matrix type.
-   typedef UT::Rebind<double>::Other  RUT;   //!< Type of the upper matrix.
-   typedef RUT::OppositeType          ORUT;  //!< Opposite upper matrix type.
-   typedef RUT::TransposeType         TRUT;  //!< Transpose upper matrix type.
+   //! Type of the column-major strictly upper matrix.
+   typedef blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >  OUT;
+
+   typedef UT::Rebind<double>::Other   RUT;   //!< Rebound row-major strictly upper matrix type.
+   typedef OUT::Rebind<double>::Other  ORUT;  //!< Rebound column-major strictly upper matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( UT   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OUT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TUT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RUT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORUT );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TRUT );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( UT   );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( OUT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( TUT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( RUT  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( ORUT );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( TRUT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT, OUT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT, TUT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT, ORUT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT, TRUT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT::ElementType, OUT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT::ElementType, TUT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT::ElementType, ORUT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT::ElementType, TRUT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( UT                  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( UT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( UT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( UT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORUT                );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORUT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORUT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORUT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( UT                  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( UT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( UT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( UT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORUT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORUT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORUT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORUT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( UT                  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( UT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( UT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( UT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( OUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( OUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( OUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( OUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( RUT                 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( RUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( RUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( RUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( ORUT                );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( ORUT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE( ORUT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE( ORUT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( UT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( UT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( UT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RUT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RUT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RUT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORUT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORUT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORUT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT::ElementType,   UT::ResultType::ElementType      );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT::ElementType,   UT::OppositeType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UT::ElementType,   UT::TransposeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OUT::ElementType,  OUT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OUT::ElementType,  OUT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OUT::ElementType,  OUT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT::ElementType,  RUT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT::ElementType,  RUT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RUT::ElementType,  RUT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORUT::ElementType, ORUT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORUT::ElementType, ORUT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORUT::ElementType, ORUT::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
