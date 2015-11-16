@@ -77,6 +77,7 @@ class OperationTest
    void testIsFalse();
    void testIsEven();
    void testIsOdd();
+   void testIsMultipleOf();
    void testIsPowerOf();
    //@}
    //**********************************************************************************************

@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/util/valuetraits/IsEven.h>
 #include <blaze/util/valuetraits/IsFalse.h>
+#include <blaze/util/valuetraits/IsMultipleOf.h>
 #include <blaze/util/valuetraits/IsOdd.h>
 #include <blaze/util/valuetraits/IsPowerOf.h>
 #include <blaze/util/valuetraits/IsTrue.h>
@@ -71,6 +72,7 @@ OperationTest::OperationTest()
    testIsFalse();
    testIsEven();
    testIsOdd();
+   testIsMultipleOf();
    testIsPowerOf();
 }
 //*************************************************************************************************
@@ -162,6 +164,30 @@ void OperationTest::testIsOdd()
    BLAZE_STATIC_ASSERT( IsOdd<2>::value == 0 );
    BLAZE_STATIC_ASSERT( IsOdd<3>::value == 1 );
    BLAZE_STATIC_ASSERT( IsOdd<4>::value == 0 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the 'IsMultipleOf' value trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the 'IsMultipleOf' value trait. In case an
+// error is detected, a compilation error is created.
+*/
+void OperationTest::testIsMultipleOf()
+{
+   using blaze::IsMultipleOf;
+
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<8,2>::value == 1 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<2,2>::value == 1 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<0,2>::value == 1 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<0,0>::value == 1 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<5,3>::value == 0 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<2,3>::value == 0 ) );
+   BLAZE_STATIC_ASSERT( ( IsMultipleOf<2,0>::value == 0 ) );
 }
 //*************************************************************************************************
 
