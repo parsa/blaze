@@ -44,7 +44,10 @@
 #include <stdexcept>
 #include <string>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Hermitian.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/HermitianMatrix.h>
@@ -147,44 +150,111 @@ class SparseRealTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   //! Type of the Hermitian matrix.
+   //! Type of the row-major Hermitian matrix.
    typedef blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  HT;
 
-   typedef HT::OppositeType           OHT;   //!< Opposite Hermitian matrix type.
-   typedef HT::TransposeType          THT;   //!< Transpose Hermitian matrix type.
-   typedef HT::Rebind<double>::Other  RHT;   //!< Type of the Hermitian matrix.
-   typedef RHT::OppositeType          ORHT;  //!< Opposite Hermitian matrix type.
-   typedef RHT::TransposeType         TRHT;  //!< Transpose Hermitian matrix type.
+   //! Type of the column-major Hermitian matrix.
+   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >  OHT;
+
+   typedef HT::Rebind<double>::Other   RHT;   //!< Rebound row-major Hermitian matrix type.
+   typedef OHT::Rebind<double>::Other  ORHT;  //!< Rebound column-major Hermitian matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( HT   );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OHT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( THT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RHT  );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORHT );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( TRHT );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( HT   );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( OHT  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( THT  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( RHT  );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( ORHT );
-   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( TRHT );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( HT   );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OHT  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( THT  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RHT  );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORHT );
-   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( TRHT );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT, OHT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT, THT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT, ORHT::OppositeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT, TRHT::TransposeType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT::ElementType, OHT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT::ElementType, THT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT::ElementType, ORHT::ElementType );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT::ElementType, TRHT::ElementType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( HT                  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( HT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( HT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( HT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( OHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( RHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORHT                );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORHT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORHT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ORHT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( HT                  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( HT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( HT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( HT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( OHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( RHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( RHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORHT                );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ORHT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORHT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE   ( ORHT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( HT                  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( HT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( HT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( HT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( OHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( OHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( OHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( OHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( RHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( RHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( RHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( RHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( ORHT                );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( ORHT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( ORHT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE( ORHT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( HT                  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( HT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( HT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( HT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( OHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RHT                 );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( RHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORHT                );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORHT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORHT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE( ORHT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( HT::ResultType      );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( HT::OppositeType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( HT::TransposeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( OHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RHT::ResultType     );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RHT::OppositeType   );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RHT::TransposeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORHT::ResultType    );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORHT::OppositeType  );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ORHT::TransposeType );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT::ElementType,   HT::ResultType::ElementType      );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT::ElementType,   HT::OppositeType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( HT::ElementType,   HT::TransposeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OHT::ElementType,  OHT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OHT::ElementType,  OHT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( OHT::ElementType,  OHT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT::ElementType,  RHT::ResultType::ElementType     );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT::ElementType,  RHT::OppositeType::ElementType   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RHT::ElementType,  RHT::TransposeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORHT::ElementType, ORHT::ResultType::ElementType    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORHT::ElementType, ORHT::OppositeType::ElementType  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ORHT::ElementType, ORHT::TransposeType::ElementType );
    /*! \endcond */
    //**********************************************************************************************
 };
