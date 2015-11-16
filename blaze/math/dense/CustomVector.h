@@ -63,6 +63,7 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -8265,6 +8266,23 @@ struct HasConstDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool AF, bool PF, bool TF >
 struct HasMutableDataAccess< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCUSTOM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool TF >
+struct IsCustom< CustomVector<T,AF,PF,TF> > : public IsTrue<true>
 {};
 /*! \endcond */
 //*************************************************************************************************
