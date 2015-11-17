@@ -107,8 +107,8 @@ namespace blaze {
 // Depending on this type the proxy selects the additional interface to provide to the deriving
 // class.
 */
-template< typename PT           // Type of the proxy
-        , typename RT = void >  // Type of the represented element
+template< typename PT          // Type of the proxy
+        , typename RT = int >  // Type of the represented element
 class Proxy : public If< IsVector<RT>
                        , typename If< IsDenseVector<RT>
                                     , DenseVectorProxy<PT,RT>
