@@ -8195,10 +8195,30 @@ namespace blaze {}
 //
 // \b Blaze provides several thresholds that can be adapted to the characteristics of the target
 // platform. For instance, the \a DMATDVECMULT_THRESHOLD specifies the threshold between the
-// application of the custom Blaze kernels for small dense matrix/dense vector multiplications
+// application of the custom \b Blaze kernels for small dense matrix/dense vector multiplications
 // and the BLAS kernels for large multiplications. All thresholds, including the thresholds for
 // the OpenMP-based parallelization, are contained within the configuration file
 // <em>./blaze/config/Thresholds.h</em>.
+//
+//
+// \n \section padding Padding
+//
+// By default the \b Blaze library uses padding for all dense vectors and matrices in order to
+// achieve maximum performance in all operations. Due to padding, the proper alignment of data
+// elements can be guaranteed and the need for remainder loops is minimized. However, on the
+// downside padding introduces an additional memory overhead, which can be large depending on
+// the used data type.
+//
+// The configuration file <em>./blaze/config/Optimizations.h</em> provides a compile time switch
+// that can be used to (de-)activate padding:
+
+   \code
+   const bool usePadding = true;
+   \endcode
+
+// If \a usePadding is set to \a true padding is enabled for all dense vectors and matrices, if
+// it is set to \a false padding is disabled. Note however that disabling padding can considerably
+// reduce the performance of all dense vector and matrix operations!
 //
 //
 // \n \section streaming Streaming (Non-Temporal Stores)
@@ -8209,8 +8229,8 @@ namespace blaze {}
 // memory bandwidth cannot be exhausted the use of non-temporal stores can decrease performance
 // instead of increasing it.
 //
-// The configuration file <em>./blaze/config/Streaming.h</em> provides a compile time switch that
-// can be used to (de-)activate streaming:
+// The configuration file <em>./blaze/config/Optimizations.h</em> provides a compile time switch
+// that can be used to (de-)activate streaming:
 
    \code
    const bool useStreaming = true;
@@ -8256,7 +8276,7 @@ namespace blaze {}
 
 // This macro represents the default mechanism of the \b Blaze library to report errors of any
 // kind. In order to customize the error reporing mechanism all that needs to be done is to
-// define the macro prior to including any \a Blaze header file. This will cause the \b Blaze
+// define the macro prior to including any \b Blaze header file. This will cause the \b Blaze
 // specific mechanism to be overridden. The following example demonstrates this by replacing
 // exceptions by a call to a \a log() function and a direct call to abort:
 
