@@ -53,6 +53,7 @@
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -551,6 +552,7 @@ class CustomMatrix : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
                               inline void          reset( size_t i );
                               inline void          clear();
                               inline CustomMatrix& transpose();
+                              inline CustomMatrix& ctranspose();
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
                               inline void          swap( CustomMatrix& m ) /* throw() */;
    //@}
@@ -1736,7 +1738,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::clear()
 
 
 //*************************************************************************************************
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 // \exception std::logic_error Impossible transpose operation.
@@ -1758,6 +1760,40 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::transpose()
    for( size_t i=1UL; i<m_; ++i )
       for( size_t j=0UL; j<i; ++j )
          swap( v_[i*nn_+j], v_[j*nn_+i] );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+// \exception std::logic_error Impossible transpose operation.
+//
+// In case the matrix is not a square matrix, a \a std::logic_error exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , bool SO >      // Storage order
+inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::ctranspose()
+{
+   using std::swap;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+   for( size_t i=0UL; i<m_; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         swap( v_[i*nn_+j], v_[j*nn_+i] );
+         v_[i*nn_+j] = conj( v_[i*nn_+j] );
+         v_[j*nn_+i] = conj( v_[j*nn_+i] );
+      }
+      v_[i*nn_+i] = conj( v_[i*nn_+i] );
+   }
 
    return *this;
 }
@@ -3102,6 +3138,7 @@ class CustomMatrix<Type,AF,PF,true> : public DenseMatrix< CustomMatrix<Type,AF,P
                               inline void          reset( size_t j );
                               inline void          clear();
                               inline CustomMatrix& transpose();
+                              inline CustomMatrix& ctranspose();
    template< typename Other > inline CustomMatrix& scale( const Other& scalar );
                               inline void          swap( CustomMatrix& m ) /* throw() */;
    //@}
@@ -4274,7 +4311,7 @@ inline void CustomMatrix<Type,AF,PF,true>::clear()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 // \exception std::logic_error Impossible transpose operation.
@@ -4295,6 +4332,41 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::transpose()
    for( size_t j=1UL; j<n_; ++j )
       for( size_t i=0UL; i<j; ++i )
          swap( v_[i+j*mm_], v_[j+i*mm_] );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+// \exception std::logic_error Impossible transpose operation.
+//
+// In case the matrix is not a square matrix, a \a std::logic_error exception is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , bool AF        // Alignment flag
+        , bool PF >      // Padding flag
+inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::ctranspose()
+{
+   using std::swap;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+   for( size_t j=0UL; j<n_; ++j ) {
+      for( size_t i=0UL; i<j; ++i ) {
+         swap( v_[i+j*mm_], v_[j+i*mm_] );
+         v_[i+j*mm_] = conj( v_[i+j*mm_] );
+         v_[j+i*mm_] = conj( v_[j+i*mm_] );
+      }
+      v_[j+j*mm_] = conj( v_[j+j*mm_] );
+   }
 
    return *this;
 }
