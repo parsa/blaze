@@ -57,6 +57,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseMatrix.h>
@@ -75,6 +76,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/Unused.h>
@@ -395,6 +397,7 @@ class SymmetricMatrix<MT,SO,false,true>
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline SymmetricMatrix& transpose();
+                              inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
    template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
@@ -1763,7 +1766,7 @@ inline void SymmetricMatrix<MT,SO,false,true>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the symmetric matrix.
+/*!\brief In-place transpose the symmetric matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -1771,6 +1774,25 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::transpose()
 {
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose the symmetric matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline SymmetricMatrix<MT,SO,false,true>& SymmetricMatrix<MT,SO,false,true>::ctranspose()
+{
+   if( !IsBuiltin<ElementType>::value )
+      matrix_ = conj( matrix_ );
+
    return *this;
 }
 /*! \endcond */
