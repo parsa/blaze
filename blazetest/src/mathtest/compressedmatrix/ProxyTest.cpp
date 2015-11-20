@@ -81,6 +81,7 @@ ProxyTest::ProxyTest()
    testReserve();
    testTrim();
    testTranspose();
+   testCTranspose();
    testSwap();
    testFind();
    testLowerBound();
@@ -3285,6 +3286,75 @@ void ProxyTest::testTranspose()
       ODMM mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 5UL, 3UL );
       mat(1,1).transpose();
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the MatrixAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the MatrixAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major MatrixAccessProxy::ctranspose()";
+
+      DMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      mat(1,1).ctranspose();
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major MatrixAccessProxy::ctranspose()";
+
+      ODMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      mat(1,1).ctranspose();
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
