@@ -126,6 +126,7 @@ class SparseMatrixProxy : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::valu
    inline void     trim() const;
    inline void     trim( size_t i ) const;
    inline void     transpose() const;
+   inline void     ctranspose() const;
 
    template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
@@ -743,7 +744,7 @@ inline void SparseMatrixProxy<PT,MT>::trim( size_t i ) const
 
 
 //*************************************************************************************************
-/*!\brief Transposing the represented matrix.
+/*!\brief In-place transpose of the represented matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -756,6 +757,24 @@ inline void SparseMatrixProxy<PT,MT>::transpose() const
    }
 
    (~*this).get().transpose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the represented matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the sparse matrix
+inline void SparseMatrixProxy<PT,MT>::ctranspose() const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   (~*this).get().ctranspose();
 }
 //*************************************************************************************************
 
