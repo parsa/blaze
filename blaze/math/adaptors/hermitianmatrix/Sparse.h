@@ -403,6 +403,7 @@ class HermitianMatrix<MT,SO,false>
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline HermitianMatrix& transpose();
+                              inline HermitianMatrix& ctranspose();
    template< typename Other > inline HermitianMatrix& scale( const Other& scalar );
    template< typename Other > inline HermitianMatrix& scaleDiagonal( Other scale );
                               inline void             swap( HermitianMatrix& m ) /* throw() */;
@@ -1773,7 +1774,7 @@ inline void HermitianMatrix<MT,SO,false>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the Hermitian matrix.
+/*!\brief In-place transpose of the Hermitian matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -1783,6 +1784,22 @@ inline HermitianMatrix<MT,SO,false>& HermitianMatrix<MT,SO,false>::transpose()
 {
    if( IsComplex<ElementType>::value )
       matrix_.transpose();
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place transpose of the Hermitian matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline HermitianMatrix<MT,SO,false>& HermitianMatrix<MT,SO,false>::ctranspose()
+{
    return *this;
 }
 /*! \endcond */
