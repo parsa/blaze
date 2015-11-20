@@ -109,6 +109,7 @@ ClassTest::ClassTest()
    testNonZeros();
    testReset();
    testTranspose();
+   testCTranspose();
    testSwap();
    testIsDefault();
 }
@@ -8437,6 +8438,166 @@ void ClassTest::testTranspose()
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n( 7 8 9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the StaticMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the StaticMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via StaticMatrix::ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
+                                                             cplx(4,-4), cplx(5,-5), cplx(6,-6),
+                                                             cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+
+      mat.ctranspose();
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(4,4) || mat(0,2) != cplx(7,7) ||
+          mat(1,0) != cplx(2,2) || mat(1,1) != cplx(5,5) || mat(1,2) != cplx(8,8) ||
+          mat(2,0) != cplx(3,3) || mat(2,1) != cplx(6,6) || mat(2,2) != cplx(9,9) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (1,1) (4,4) (7,7) )\n"
+                                     "( (2,2) (5,5) (8,8) )\n"
+                                     "( (3,3) (6,6) (9,9) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::rowMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
+                                                             cplx(4,-4), cplx(5,-5), cplx(6,-6),
+                                                             cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+
+      mat = ctrans( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(4,4) || mat(0,2) != cplx(7,7) ||
+          mat(1,0) != cplx(2,2) || mat(1,1) != cplx(5,5) || mat(1,2) != cplx(8,8) ||
+          mat(2,0) != cplx(3,3) || mat(2,1) != cplx(6,6) || mat(2,2) != cplx(9,9) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (1,1) (4,4) (7,7) )\n"
+                                     "( (2,2) (5,5) (8,8) )\n"
+                                     "( (3,3) (6,6) (9,9) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via StaticMatrix::ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
+                                                                cplx(4,-4), cplx(5,-5), cplx(6,-6),
+                                                                cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+
+      mat.ctranspose();
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(2,2) || mat(0,2) != cplx(3,3) ||
+          mat(1,0) != cplx(4,4) || mat(1,1) != cplx(5,5) || mat(1,2) != cplx(6,6) ||
+          mat(2,0) != cplx(7,7) || mat(2,1) != cplx(8,8) || mat(2,2) != cplx(9,9) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (1,1) (2,2) (3,3) )\n"
+                                     "( (4,4) (5,5) (6,6) )\n"
+                                     "( (7,7) (8,8) (9,9) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      blaze::StaticMatrix<cplx,3UL,3UL,blaze::columnMajor> mat( cplx(1,-1), cplx(2,-2), cplx(3,-3),
+                                                                cplx(4,-4), cplx(5,-5), cplx(6,-6),
+                                                                cplx(7,-7), cplx(8,-8), cplx(9,-9) );
+
+      mat = ctrans( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 9UL );
+      checkNonZeros( mat, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 3UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(2,2) || mat(0,2) != cplx(3,3) ||
+          mat(1,0) != cplx(4,4) || mat(1,1) != cplx(5,5) || mat(1,2) != cplx(6,6) ||
+          mat(2,0) != cplx(7,7) || mat(2,1) != cplx(8,8) || mat(2,2) != cplx(9,9) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Initialization failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( (1,1) (2,2) (3,3) )\n"
+                                     "( (4,4) (5,5) (6,6) )\n"
+                                     "( (7,7) (8,8) (9,9) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
