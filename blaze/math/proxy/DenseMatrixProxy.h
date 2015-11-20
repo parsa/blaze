@@ -125,6 +125,7 @@ class DenseMatrixProxy : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value 
    inline void   extend( size_t m, size_t n, bool preserve=true ) const;
    inline void   reserve( size_t n ) const;
    inline void   transpose() const;
+   inline void   ctranspose() const;
 
    template< typename Other > inline void scale( const Other& scalar ) const;
    //@}
@@ -566,7 +567,7 @@ inline void DenseMatrixProxy<PT,MT>::reserve( size_t n ) const
 
 
 //*************************************************************************************************
-/*!\brief Transposing the represented matrix.
+/*!\brief In-place transpose of the represented matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -579,6 +580,24 @@ inline void DenseMatrixProxy<PT,MT>::transpose() const
    }
 
    (~*this).get().transpose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the represented matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename PT    // Type of the proxy
+        , typename MT >  // Type of the dense matrix
+inline void DenseMatrixProxy<PT,MT>::ctranspose() const
+{
+   if( (~*this).isRestricted() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to restricted element" );
+   }
+
+   (~*this).get().ctranspose();
 }
 //*************************************************************************************************
 
