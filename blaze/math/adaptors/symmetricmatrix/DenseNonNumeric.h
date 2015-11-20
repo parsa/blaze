@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -562,6 +563,7 @@ class SymmetricMatrix<MT,SO,true,false>
                               inline void             extend ( size_t n, bool preserve=true );
                               inline void             reserve( size_t elements );
                               inline SymmetricMatrix& transpose();
+                              inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
    //@}
@@ -2062,7 +2064,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the symmetric matrix.
+/*!\brief In-place transpose of the symmetric matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -2070,6 +2072,33 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,false>& SymmetricMatrix<MT,SO,true,false>::transpose()
 {
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the symmetric matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,false>& SymmetricMatrix<MT,SO,true,false>::ctranspose()
+{
+   if( SO ) {
+      for( size_t j=0UL; j<columns(); ++j )
+         for( size_t i=0UL; i<=j; ++i )
+            matrix_(i,j) = conj( matrix_(i,j) );
+   }
+   else {
+      for( size_t i=0UL; i<rows(); ++i )
+         for( size_t j=0UL; j<=i; ++j )
+            matrix_(i,j) = conj( matrix_(i,j) );
+   }
+
    return *this;
 }
 /*! \endcond */
