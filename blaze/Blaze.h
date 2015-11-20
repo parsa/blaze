@@ -3210,6 +3210,22 @@ namespace blaze {}
    M1 += trans( M2 );  // Addition assignment of two row-major matrices
    \endcode
 
+// Additionally, matrices can be transposed in-place via the \c transpose() function:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
+
+   transpose( M );  // In-place transpose operation.
+   \endcode
+
+// Note however that the transpose operation fails if ...
+//
+//  - ... the given matrix has a fixed size and is non-square;
+//  - ... the given matrix is a triangular matrix;
+//  - ... the given submatrix affects the restricted parts of a triangular matrix;
+//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
 // \n \subsection matrix_operations_conjugate_transpose Conjugate Transpose
 //
 // The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
