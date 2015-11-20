@@ -696,6 +696,7 @@ class HermitianMatrix<MT,SO,true>
                               inline void             extend ( size_t n, bool preserve=true );
                               inline void             reserve( size_t elements );
                               inline HermitianMatrix& transpose();
+                              inline HermitianMatrix& ctranspose();
    template< typename Other > inline HermitianMatrix& scale( const Other& scalar );
                               inline void             swap( HermitianMatrix& m ) /* throw() */;
    //@}
@@ -2030,7 +2031,7 @@ inline void HermitianMatrix<MT,SO,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the Hermitian matrix.
+/*!\brief In-place transpose of the Hermitian matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -2040,6 +2041,22 @@ inline HermitianMatrix<MT,SO,true>& HermitianMatrix<MT,SO,true>::transpose()
 {
    if( IsComplex<ElementType>::value )
       matrix_.transpose();
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the Hermitian matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline HermitianMatrix<MT,SO,true>& HermitianMatrix<MT,SO,true>::ctranspose()
+{
    return *this;
 }
 /*! \endcond */
