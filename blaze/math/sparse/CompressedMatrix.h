@@ -361,6 +361,7 @@ class CompressedMatrix : public SparseMatrix< CompressedMatrix<Type,SO>, SO >
                               inline void              trim   ();
                               inline void              trim   ( size_t i );
                               inline CompressedMatrix& transpose();
+                              inline CompressedMatrix& ctranspose();
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
@@ -1734,7 +1735,7 @@ inline void CompressedMatrix<Type,SO>::trim( size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -1743,6 +1744,22 @@ template< typename Type  // Data type of the sparse matrix
 inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
+   swap( tmp );
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename Type  // Data type of the sparse matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::ctranspose()
+{
+   CompressedMatrix tmp( ctrans( *this ) );
    swap( tmp );
    return *this;
 }
@@ -2609,6 +2626,7 @@ class CompressedMatrix<Type,true> : public SparseMatrix< CompressedMatrix<Type,t
                               inline void              trim   ();
                               inline void              trim   ( size_t j );
                               inline CompressedMatrix& transpose();
+                              inline CompressedMatrix& ctranspose();
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
    template< typename Other > inline CompressedMatrix& scaleDiagonal( Other scalar );
                               inline void              swap( CompressedMatrix& sm ) /* throw() */;
@@ -3975,7 +3993,7 @@ void CompressedMatrix<Type,true>::trim( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -3983,6 +4001,23 @@ template< typename Type >  // Data type of the sparse matrix
 inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::transpose()
 {
    CompressedMatrix tmp( trans( *this ) );
+   swap( tmp );
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename Type >  // Data type of the sparse matrix
+inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::ctranspose()
+{
+   CompressedMatrix tmp( ctrans( *this ) );
    swap( tmp );
    return *this;
 }
