@@ -86,6 +86,7 @@ DenseComplexTest::DenseComplexTest()
    testExtend();
    testReserve();
    testTranspose();
+   testCTranspose();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -8517,6 +8518,190 @@ void DenseComplexTest::testTranspose()
                                      "( (0, 0) (4, 0) (0,0) (5, 3) )\n"
                                      "( (2,-1) (0, 0) (6,0) (7,-1) )\n"
                                      "( (3, 2) (5,-3) (7,1) (0, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the HermitianMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the HermitianMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseComplexTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via HermitianMatrix::ctranspose()";
+
+      HT herm( 4UL );
+      herm(0,0) = cplx(1, 0);
+      herm(0,2) = cplx(2,-1);
+      herm(0,3) = cplx(3, 2);
+      herm(1,1) = cplx(4, 0);
+      herm(1,3) = cplx(5,-3);
+      herm(2,2) = cplx(6, 0);
+      herm(2,3) = cplx(7, 1);
+
+      herm.ctranspose();
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 16UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(0, 0) || herm(0,2) != cplx(2,-1) || herm(0,3) != cplx(3, 2) ||
+          herm(1,0) != cplx(0, 0) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) || herm(1,3) != cplx(5,-3) ||
+          herm(2,0) != cplx(2, 1) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) || herm(2,3) != cplx(7, 1) ||
+          herm(3,0) != cplx(3,-2) || herm(3,1) != cplx(5, 3) || herm(3,2) != cplx(7,-1) || herm(3,3) != cplx(0, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (0, 0) (2,-1) (3, 2) )\n"
+                                     "( (0, 0) (4, 0) (0, 0) (5,-3) )\n"
+                                     "( (2, 1) (0, 0) (6, 0) (7, 1) )\n"
+                                     "( (3,-2) (5, 3) (7,-1) (0, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      HT herm( 4UL );
+      herm(0,0) = cplx(1, 0);
+      herm(0,2) = cplx(2,-1);
+      herm(0,3) = cplx(3, 2);
+      herm(1,1) = cplx(4, 0);
+      herm(1,3) = cplx(5,-3);
+      herm(2,2) = cplx(6, 0);
+      herm(2,3) = cplx(7, 1);
+
+      herm = ctrans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 16UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(0, 0) || herm(0,2) != cplx(2,-1) || herm(0,3) != cplx(3, 2) ||
+          herm(1,0) != cplx(0, 0) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) || herm(1,3) != cplx(5,-3) ||
+          herm(2,0) != cplx(2, 1) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) || herm(2,3) != cplx(7, 1) ||
+          herm(3,0) != cplx(3,-2) || herm(3,1) != cplx(5, 3) || herm(3,2) != cplx(7,-1) || herm(3,3) != cplx(0, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (0, 0) (2,-1) (3, 2) )\n"
+                                     "( (0, 0) (4, 0) (0, 0) (5,-3) )\n"
+                                     "( (2, 1) (0, 0) (6, 0) (7, 1) )\n"
+                                     "( (3,-2) (5, 3) (7,-1) (0, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via HermitianMatrix::ctranspose()";
+
+      OHT herm( 4UL );
+      herm(0,0) = cplx(1, 0);
+      herm(0,2) = cplx(2,-1);
+      herm(0,3) = cplx(3, 2);
+      herm(1,1) = cplx(4, 0);
+      herm(1,3) = cplx(5,-3);
+      herm(2,2) = cplx(6, 0);
+      herm(2,3) = cplx(7, 1);
+
+      herm.ctranspose();
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 16UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(0, 0) || herm(0,2) != cplx(2,-1) || herm(0,3) != cplx(3, 2) ||
+          herm(1,0) != cplx(0, 0) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) || herm(1,3) != cplx(5,-3) ||
+          herm(2,0) != cplx(2, 1) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) || herm(2,3) != cplx(7, 1) ||
+          herm(3,0) != cplx(3,-2) || herm(3,1) != cplx(5, 3) || herm(3,2) != cplx(7,-1) || herm(3,3) != cplx(0, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (0, 0) (2,-1) (3, 2) )\n"
+                                     "( (0, 0) (4, 0) (0, 0) (5,-3) )\n"
+                                     "( (2, 1) (0, 0) (6, 0) (7, 1) )\n"
+                                     "( (3,-2) (5, 3) (7,-1) (0, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      OHT herm( 4UL );
+      herm(0,0) = cplx(1, 0);
+      herm(0,2) = cplx(2,-1);
+      herm(0,3) = cplx(3, 2);
+      herm(1,1) = cplx(4, 0);
+      herm(1,3) = cplx(5,-3);
+      herm(2,2) = cplx(6, 0);
+      herm(2,3) = cplx(7, 1);
+
+      herm = ctrans( herm );
+
+      checkRows    ( herm,  4UL );
+      checkColumns ( herm,  4UL );
+      checkCapacity( herm, 16UL );
+      checkNonZeros( herm, 11UL );
+      checkNonZeros( herm,  0UL, 3UL );
+      checkNonZeros( herm,  1UL, 2UL );
+      checkNonZeros( herm,  2UL, 3UL );
+      checkNonZeros( herm,  3UL, 3UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(0, 0) || herm(0,2) != cplx(2,-1) || herm(0,3) != cplx(3, 2) ||
+          herm(1,0) != cplx(0, 0) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) || herm(1,3) != cplx(5,-3) ||
+          herm(2,0) != cplx(2, 1) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) || herm(2,3) != cplx(7, 1) ||
+          herm(3,0) != cplx(3,-2) || herm(3,1) != cplx(5, 3) || herm(3,2) != cplx(7,-1) || herm(3,3) != cplx(0, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (0, 0) (2,-1) (3, 2) )\n"
+                                     "( (0, 0) (4, 0) (0, 0) (5,-3) )\n"
+                                     "( (2, 1) (0, 0) (6, 0) (7, 1) )\n"
+                                     "( (3,-2) (5, 3) (7,-1) (0, 0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
