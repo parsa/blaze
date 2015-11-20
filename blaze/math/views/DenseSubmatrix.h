@@ -940,6 +940,7 @@ class DenseSubmatrix : public DenseMatrix< DenseSubmatrix<MT,AF,SO>, SO >
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
+                              inline DenseSubmatrix& ctranspose();
    template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -2173,7 +2174,7 @@ inline void DenseSubmatrix<MT,AF,SO>::reset( size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -2204,6 +2205,45 @@ inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   smpAssign( left, tmp );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::ctranspose()
+{
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    smpAssign( left, tmp );
 
    return *this;
@@ -3707,6 +3747,7 @@ class DenseSubmatrix<MT,unaligned,true> : public DenseMatrix< DenseSubmatrix<MT,
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
+                              inline DenseSubmatrix& ctranspose();
    template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -4895,7 +4936,7 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -4924,6 +4965,45 @@ inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::tra
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   smpAssign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::ctranspose()
+{
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    smpAssign( left, tmp );
 
    return *this;
@@ -6089,6 +6169,7 @@ class DenseSubmatrix<MT,aligned,false> : public DenseMatrix< DenseSubmatrix<MT,a
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
+                              inline DenseSubmatrix& ctranspose();
    template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -7320,7 +7401,7 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -7349,6 +7430,45 @@ inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::trans
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   smpAssign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::ctranspose()
+{
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    smpAssign( left, tmp );
 
    return *this;
@@ -8515,6 +8635,7 @@ class DenseSubmatrix<MT,aligned,true> : public DenseMatrix< DenseSubmatrix<MT,al
                               inline void            reset();
                               inline void            reset( size_t i );
                               inline DenseSubmatrix& transpose();
+                              inline DenseSubmatrix& ctranspose();
    template< typename Other > inline DenseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -9698,7 +9819,7 @@ inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -9727,6 +9848,45 @@ inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpo
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   smpAssign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the dense submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT >  // Type of the dense matrix
+inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::ctranspose()
+{
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    smpAssign( left, tmp );
 
    return *this;
