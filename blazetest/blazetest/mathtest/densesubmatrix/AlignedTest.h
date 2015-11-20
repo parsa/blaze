@@ -98,6 +98,7 @@ class AlignedTest
    void testReset       ();
    void testClear       ();
    void testTranspose   ();
+   void testCTranspose  ();
    void testIsDefault   ();
    void testIsSame      ();
    void testSubmatrix   ();

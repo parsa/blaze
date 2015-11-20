@@ -86,6 +86,7 @@ AlignedTest::AlignedTest()
    testReset();
    testClear();
    testTranspose();
+   testCTranspose();
    testIsDefault();
    testIsSame();
    testSubmatrix();
@@ -4845,6 +4846,143 @@ void AlignedTest::testTranspose()
 
       sm1 = trans( sm1 );
       sm2 = trans( sm2 );
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the DenseSubmatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the DenseSubmatrix
+// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedTest::testCTranspose()
+{
+   using blaze::submatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
+
+
+   //=====================================================================================
+   // Row-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via DenseSubmatrix::ctranspose()";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
+
+      sm1.ctranspose();
+      sm2.ctranspose();
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      initialize();
+
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 8UL );
+
+      sm1 = ctrans( sm1 );
+      sm2 = ctrans( sm2 );
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major submatrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via DenseSubmatrix::ctranspose()";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
+
+      sm1.ctranspose();
+      sm2.ctranspose();
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 8UL );
+
+      sm1 = ctrans( sm1 );
+      sm2 = ctrans( sm2 );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
