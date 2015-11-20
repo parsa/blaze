@@ -89,17 +89,25 @@ namespace blaze {
 // The following examples give an impression of several possible upper unitriangular matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense uniupper matrix with static memory
-   blaze::UniUpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::UniUpperMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense uniupper matrix based on HybridMatrix
-   blaze::UniUpperMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::UniUpperMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense uniupper matrix based on DynamicMatrix
-   blaze::UniUpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::UniUpperMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense uniupper matrix based on CustomMatrix
+   blaze::UniUpperMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision uniupper matrix
-   blaze::UniUpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::UniUpperMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of an upper unitriangular matrix is depending on the storage order of the

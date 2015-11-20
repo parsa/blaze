@@ -88,17 +88,25 @@ namespace blaze {
 // The following examples give an impression of several possible strictly lower triangular matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense strictly lower matrix with static memory
-   blaze::StrictlyLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::StrictlyLowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense strictly lower matrix based on HybridMatrix
-   blaze::StrictlyLowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::StrictlyLowerMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense strictly lower matrix based on DynamicMatrix
-   blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense strictly lower matrix based on CustomMatrix
+   blaze::StrictlyLowerMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision strictly lower matrix
-   blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of a strictly lower triangular matrix is depending on the storage order of

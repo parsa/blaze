@@ -88,17 +88,25 @@ namespace blaze {
 // The following examples give an impression of several possible diagonal matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense diagonal matrix with static memory
-   blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::DiagonalMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense diagonal matrix based on HybridMatrix
-   blaze::DiagonalMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::DiagonalMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense diagonal matrix based on DynamicMatrix
-   blaze::DiagonalMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::DiagonalMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense diagonal matrix based on CustomMatrix
+   blaze::DiagonalMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision diagonal matrix
-   blaze::DiagonalMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::DiagonalMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of a diagonal matrix is depending on the storage order of the adapted matrix

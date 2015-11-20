@@ -88,17 +88,25 @@ namespace blaze {
 // The following examples give an impression of several possible lower matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense lower matrix with static memory
-   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense lower matrix based on HybridMatrix
-   blaze::LowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::LowerMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense lower matrix based on DynamicMatrix
-   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense lower matrix based on CustomMatrix
+   blaze::LowerMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision lower matrix
-   blaze::LowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::LowerMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of a lower matrix is depending on the storage order of the adapted matrix

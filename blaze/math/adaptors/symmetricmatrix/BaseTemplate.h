@@ -96,17 +96,25 @@ namespace blaze {
 // The following examples give an impression of several possible symmetric matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense symmetric matrix with static memory
-   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense symmetric matrix based on HybridMatrix
-   blaze::SymmetricMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::SymmetricMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense symmetric matrix based on DynamicMatrix
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense symmetric matrix based on CustomMatrix
+   blaze::SymmetricMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision symmetric matrix
-   blaze::SymmetricMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of a symmetric matrix is depending on the storage order of the adapted matrix

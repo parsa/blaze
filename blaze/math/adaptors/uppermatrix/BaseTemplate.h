@@ -88,17 +88,25 @@ namespace blaze {
 // The following examples give an impression of several possible upper matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense upper matrix with static memory
-   blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::UpperMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense upper matrix based on HybridMatrix
-   blaze::UpperMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::UpperMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense upper matrix based on DynamicMatrix
-   blaze::UpperMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::UpperMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed-size row-major dense upper matrix based on CustomMatrix
+   blaze::UpperMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision upper matrix
-   blaze::UpperMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::UpperMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of an upper matrix is depending on the storage order of the adapted matrix
