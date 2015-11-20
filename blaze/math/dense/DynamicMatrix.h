@@ -322,6 +322,7 @@ class DynamicMatrix : public DenseMatrix< DynamicMatrix<Type,SO>, SO >
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
+                              inline DynamicMatrix& ctranspose();
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
@@ -1558,7 +1559,7 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
 
 
 //*************************************************************************************************
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -1567,6 +1568,22 @@ template< typename Type  // Data type of the matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::transpose()
 {
    DynamicMatrix tmp( trans(*this) );
+   swap( tmp );
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::ctranspose()
+{
+   DynamicMatrix tmp( ctrans(*this) );
    swap( tmp );
    return *this;
 }
@@ -2720,6 +2737,7 @@ class DynamicMatrix<Type,true> : public DenseMatrix< DynamicMatrix<Type,true>, t
                               inline void           extend ( size_t m, size_t n, bool preserve=true );
                               inline void           reserve( size_t elements );
                               inline DynamicMatrix& transpose();
+                              inline DynamicMatrix& ctranspose();
    template< typename Other > inline DynamicMatrix& scale( const Other& scalar );
                               inline void           swap( DynamicMatrix& m ) /* throw() */;
    //@}
@@ -3939,7 +3957,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -3947,6 +3965,23 @@ template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::transpose()
 {
    DynamicMatrix tmp( trans(*this) );
+   swap( tmp );
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename Type >  // Data type of the matrix
+inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::ctranspose()
+{
+   DynamicMatrix tmp( ctrans(*this) );
    swap( tmp );
    return *this;
 }
