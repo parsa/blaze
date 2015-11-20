@@ -103,6 +103,7 @@ class UnalignedPaddedTest
    void testReset       ();
    void testClear       ();
    void testTranspose   ();
+   void testCTranspose  ();
    void testSwap        ();
    void testIsDefault   ();
 

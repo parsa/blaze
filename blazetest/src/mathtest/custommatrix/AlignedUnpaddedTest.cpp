@@ -85,6 +85,7 @@ AlignedUnpaddedTest::AlignedUnpaddedTest()
    testReset();
    testClear();
    testTranspose();
+   testCTranspose();
    testSwap();
    testIsDefault();
 }
@@ -7339,7 +7340,7 @@ void AlignedUnpaddedTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via CustomMatrix::transpose()";
+      test_ = "Column-major self-transpose via CustomMatrix::transpose()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7392,7 +7393,7 @@ void AlignedUnpaddedTest::testTranspose()
    }
 
    {
-      test_ = "Row-major self-transpose via trans()";
+      test_ = "Column-major self-transpose via trans()";
 
       // Self-transpose of a 3x3 matrix
       {
@@ -7435,6 +7436,278 @@ void AlignedUnpaddedTest::testTranspose()
          OMT mat( blaze::allocate<int>( 48UL ), 5UL, 3UL, 16UL, blaze::Deallocate() );
 
          mat = trans( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Self-transpose of a non-square matrix succeeded\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c transpose() member function of the CustomMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the CustomMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void AlignedUnpaddedTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via CustomMatrix::ctranspose()";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::complex<int>  cplx;
+      typedef blaze::CustomMatrix<cplx,aligned,unpadded,rowMajor>  AlignedUnpadded;
+
+      // Self-transpose of a 3x3 matrix
+      {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,1) = cplx(0, 0);
+         mat(0,2) = cplx(2,-2);
+         mat(1,0) = cplx(0, 0);
+         mat(1,1) = cplx(3,-3);
+         mat(1,2) = cplx(0, 0);
+         mat(2,0) = cplx(4,-4);
+         mat(2,1) = cplx(0, 0);
+         mat(2,2) = cplx(5,-5);
+
+         mat.ctranspose();
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(5,5) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (4,4) )\n"
+                                        "( (0,0) (3,3) (0,0) )\n"
+                                        "( (2,2) (0,0) (5,5) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Try to self-transpose a 3x5 matrix
+      try {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+
+         mat.ctranspose();
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Self-transpose of a non-square matrix succeeded\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::logic_error& ) {}
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      typedef blaze::complex<int>  cplx;
+      typedef blaze::CustomMatrix<cplx,aligned,unpadded,rowMajor>  AlignedUnpadded;
+
+      // Self-transpose of a 3x3 matrix
+      {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,1) = cplx(0, 0);
+         mat(0,2) = cplx(2,-2);
+         mat(1,0) = cplx(0, 0);
+         mat(1,1) = cplx(3,-3);
+         mat(1,2) = cplx(0, 0);
+         mat(2,0) = cplx(4,-4);
+         mat(2,1) = cplx(0, 0);
+         mat(2,2) = cplx(5,-5);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(5,5) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (4,4) )\n"
+                                        "( (0,0) (3,3) (0,0) )\n"
+                                        "( (2,2) (0,0) (5,5) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Try to self-transpose a 3x5 matrix
+      try {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+
+         mat = ctrans( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Self-transpose of a non-square matrix succeeded\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via CustomMatrix::ctranspose()";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::complex<int>  cplx;
+      typedef blaze::CustomMatrix<cplx,aligned,unpadded,columnMajor>  AlignedUnpadded;
+
+      // Self-transpose of a 3x3 matrix
+      {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,1) = cplx(0, 0);
+         mat(0,2) = cplx(2,-2);
+         mat(1,0) = cplx(0, 0);
+         mat(1,1) = cplx(3,-3);
+         mat(1,2) = cplx(0, 0);
+         mat(2,0) = cplx(4,-4);
+         mat(2,1) = cplx(0, 0);
+         mat(2,2) = cplx(5,-5);
+
+         mat.ctranspose();
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(5,5) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (4,4) )\n"
+                                        "( (0,0) (3,3) (0,0) )\n"
+                                        "( (2,2) (0,0) (5,5) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Try to self-transpose a 3x5 matrix
+      try {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+
+         mat.ctranspose();
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Self-transpose of a non-square matrix succeeded\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::logic_error& ) {}
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      using blaze::aligned;
+      using blaze::unpadded;
+      using blaze::columnMajor;
+
+      typedef blaze::complex<int>  cplx;
+      typedef blaze::CustomMatrix<cplx,aligned,unpadded,columnMajor>  AlignedUnpadded;
+
+      // Self-transpose of a 3x3 matrix
+      {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 3UL, 16UL, blaze::Deallocate() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,1) = cplx(0, 0);
+         mat(0,2) = cplx(2,-2);
+         mat(1,0) = cplx(0, 0);
+         mat(1,1) = cplx(3,-3);
+         mat(1,2) = cplx(0, 0);
+         mat(2,0) = cplx(4,-4);
+         mat(2,1) = cplx(0, 0);
+         mat(2,2) = cplx(5,-5);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(4,4) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(3,3) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(5,5) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (4,4) )\n"
+                                        "( (0,0) (3,3) (0,0) )\n"
+                                        "( (2,2) (0,0) (5,5) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Try to self-transpose a 3x5 matrix
+      try {
+         AlignedUnpadded mat( blaze::allocate<cplx>( 48UL ), 3UL, 5UL, 16UL, blaze::Deallocate() );
+
+         mat = ctrans( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
