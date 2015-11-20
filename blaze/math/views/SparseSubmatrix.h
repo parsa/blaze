@@ -2057,12 +2057,18 @@ void SparseSubmatrix<MT,AF,SO>::trim( size_t i )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function transposes the sparse submatrix in-place. Note that this function can only be
-// used for quadratic submatrices, i.e. if the number of rows is equal to the number of columns.
-// The attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error
-// exception.
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF      // Alignment flag
@@ -2071,16 +2077,12 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
 {
    using blaze::assign;
 
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4322,12 +4324,18 @@ void SparseSubmatrix<MT,AF,true>::trim( size_t j )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
-// This function transposes the sparse submatrix in-place. Note that this function can only be
-// used for quadratic submatrices, i.e. if the number of rows is equal to the number of columns.
-// The attempt to transpose a non-quadratic submatrix results in a \a std::runtime_error
-// exception.
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the sparse matrix
         , bool AF >    // Alignment flag
@@ -4335,16 +4343,12 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
 {
    using blaze::assign;
 
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
