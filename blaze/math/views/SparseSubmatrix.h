@@ -882,6 +882,7 @@ class SparseSubmatrix : public SparseMatrix< SparseSubmatrix<MT,AF,SO>, SO >
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline SparseSubmatrix& transpose();
+                              inline SparseSubmatrix& ctranspose();
    template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -2054,7 +2055,7 @@ void SparseSubmatrix<MT,AF,SO>::trim( size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -2087,6 +2088,48 @@ inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::transpose()
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF      // Alignment flag
+        , bool SO >    // Storage order
+inline SparseSubmatrix<MT,AF,SO>& SparseSubmatrix<MT,AF,SO>::ctranspose()
+{
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    reset();
    assign( left, tmp );
 
@@ -3172,6 +3215,7 @@ class SparseSubmatrix<MT,AF,true> : public SparseMatrix< SparseSubmatrix<MT,AF,t
                               inline void             trim();
                               inline void             trim( size_t j );
                               inline SparseSubmatrix& transpose();
+                              inline SparseSubmatrix& ctranspose();
    template< typename Other > inline SparseSubmatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
@@ -4321,7 +4365,7 @@ void SparseSubmatrix<MT,AF,true>::trim( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the submatrix.
+/*!\brief In-place transpose of the submatrix.
 //
 // \return Reference to the transposed submatrix.
 // \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
@@ -4353,6 +4397,49 @@ inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::transpose()
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
    const ResultType tmp( trans(*this) );
+   reset();
+   assign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the submatrix.
+//
+// \return Reference to the transposed submatrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the sparse submatrix in-place. Note that this function can only be used
+// for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline SparseSubmatrix<MT,AF,true>& SparseSubmatrix<MT,AF,true>::ctranspose()
+{
+   using blaze::assign;
+
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   }
+
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   typename DerestrictTrait<This>::Type left( derestrict( *this ) );
+   const ResultType tmp( ctrans(*this) );
    reset();
    assign( left, tmp );
 
