@@ -58,6 +58,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -83,6 +84,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -689,6 +691,7 @@ class SymmetricMatrix<MT,SO,true,true>
                               inline void             extend ( size_t n, bool preserve=true );
                               inline void             reserve( size_t elements );
                               inline SymmetricMatrix& transpose();
+                              inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
    //@}
@@ -2033,7 +2036,7 @@ inline void SymmetricMatrix<MT,SO,true,true>::reserve( size_t elements )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the symmetric matrix.
+/*!\brief In-place transpose of the symmetric matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -2041,6 +2044,25 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,true>& SymmetricMatrix<MT,SO,true,true>::transpose()
 {
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the symmetric matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted dense matrix
+        , bool SO >    // Storage order of the adapted dense matrix
+inline SymmetricMatrix<MT,SO,true,true>& SymmetricMatrix<MT,SO,true,true>::ctranspose()
+{
+   if( !IsBuiltin<ElementType>::value )
+      matrix_ = conj( matrix_ );
+
    return *this;
 }
 /*! \endcond */
