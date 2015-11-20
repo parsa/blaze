@@ -55,6 +55,7 @@
 #include <blaze/util/constraints/Empty.h>
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/constraints/FloatingPoint.h>
+#include <blaze/util/constraints/Integer.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/constraints/LongDouble.h>
 #include <blaze/util/constraints/Numeric.h>
