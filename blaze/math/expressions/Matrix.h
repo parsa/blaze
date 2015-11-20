@@ -534,7 +534,7 @@ BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool
 
 
 //*************************************************************************************************
-/*!\brief Transposing a matrix in-place.
+/*!\brief In-place transpose of the given matrix.
 // \ingroup matrix
 //
 // \param matrix The given matrix to be transposed.
@@ -555,6 +555,32 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix )
 {
    matrix.transpose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the given matrix.
+// \ingroup matrix
+//
+// \param matrix The given matrix to be transposed.
+// \return void
+// \exception std::logic_error Matrix cannot be transposed.
+//
+// This function transposes the given matrix in-place. The function fails if ...
+//
+//  - ... the given matrix has a fixed size and is non-square;
+//  - ... the given matrix is a triangular matrix;
+//  - ... the given submatrix affects the restricted parts of a triangular matrix;
+//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
+{
+   matrix.ctranspose();
 }
 //*************************************************************************************************
 
