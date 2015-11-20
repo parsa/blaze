@@ -3216,6 +3216,7 @@ namespace blaze {}
    blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
 
    transpose( M );  // In-place transpose operation.
+   M = trans( M );  // Same as above
    \endcode
 
 // Note however that the transpose operation fails if ...
@@ -3246,6 +3247,23 @@ namespace blaze {}
    M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
    \endcode
 
+// The 'ctranspose()' function can be used to perform an in-place conjugate transpose operation:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
+
+   ctranspose( M );  // In-place conjugate transpose operation.
+   M = ctrans( M );  // Same as above
+   \endcode
+
+// Note however that the conjugate transpose operation fails if ...
+//
+//  - ... the given matrix has a fixed size and is non-square;
+//  - ... the given matrix is a triangular matrix;
+//  - ... the given submatrix affects the restricted parts of a triangular matrix;
+//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
 // \n \subsection matrix_operations_swap Swap
 //
 // Via the \c \c swap() function it is possible to completely swap the contents of two matrices
