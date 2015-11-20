@@ -112,6 +112,7 @@ class ClassTest
    void testExtend      ();
    void testReserve     ();
    void testTranspose   ();
+   void testCTranspose  ();
    void testSwap        ();
    void testIsDefault   ();
 

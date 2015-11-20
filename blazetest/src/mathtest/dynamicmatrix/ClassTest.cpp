@@ -112,6 +112,7 @@ ClassTest::ClassTest()
    testExtend();
    testReserve();
    testTranspose();
+   testCTranspose();
    testSwap();
    testIsDefault();
 }
@@ -7984,6 +7985,374 @@ void ClassTest::testTranspose()
                 << " Details:\n"
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the DynamicMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the DynamicMatrix
+// class template. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via DynamicMatrix::ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat.ctranspose();
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat.ctranspose();
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 3UL, 5UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::rowMajor> mat( 5UL, 3UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via DynamicMatrix::ctranspose()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat.ctranspose();
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat.ctranspose();
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      typedef blaze::complex<int>  cplx;
+
+      // Self-transpose of a 3x5 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 3UL, 5UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(2,-2);
+         mat(0,4) = cplx(3,-3);
+         mat(1,1) = cplx(4,-4);
+         mat(1,3) = cplx(5,-5);
+         mat(2,0) = cplx(6,-6);
+         mat(2,2) = cplx(7,-7);
+         mat(2,4) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(6,6) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) ||
+             mat(2,0) != cplx(2,2) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) ||
+             mat(3,0) != cplx(0,0) || mat(3,1) != cplx(5,5) || mat(3,2) != cplx(0,0) ||
+             mat(4,0) != cplx(3,3) || mat(4,1) != cplx(0,0) || mat(4,2) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (6,6) )\n"
+                                        "( (0,0) (4,4) (0,0) )\n"
+                                        "( (2,2) (0,0) (7,7) )\n"
+                                        "( (0,0) (5,5) (0,0) )\n"
+                                        "( (3,3) (0,0) (8,8) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Self-transpose of a 5x3 matrix
+      {
+         blaze::DynamicMatrix<cplx,blaze::columnMajor> mat( 5UL, 3UL, cplx() );
+         mat(0,0) = cplx(1,-1);
+         mat(0,2) = cplx(6,-6);
+         mat(1,1) = cplx(4,-4);
+         mat(2,0) = cplx(2,-2);
+         mat(2,2) = cplx(7,-7);
+         mat(3,1) = cplx(5,-5);
+         mat(4,0) = cplx(3,-3);
+         mat(4,2) = cplx(8,-8);
+
+         mat = ctrans( mat );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  8UL );
+         checkNonZeros( mat,  0UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL );
+         checkNonZeros( mat,  2UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL );
+         checkNonZeros( mat,  4UL, 2UL );
+
+         if( mat(0,0) != cplx(1,1) || mat(0,1) != cplx(0,0) || mat(0,2) != cplx(2,2) || mat(0,3) != cplx(0,0) || mat(0,4) != cplx(3,3) ||
+             mat(1,0) != cplx(0,0) || mat(1,1) != cplx(4,4) || mat(1,2) != cplx(0,0) || mat(1,3) != cplx(5,5) || mat(1,4) != cplx(0,0) ||
+             mat(2,0) != cplx(6,6) || mat(2,1) != cplx(0,0) || mat(2,2) != cplx(7,7) || mat(2,3) != cplx(0,0) || mat(2,4) != cplx(8,8) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Initialization failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n( (1,1) (0,0) (2,2) (0,0) (3,3) )\n"
+                                        "( (0,0) (4,4) (0,0) (5,5) (0,0) )\n"
+                                        "( (6,6) (0,0) (7,7) (0,0) (8,8) )\n";
             throw std::runtime_error( oss.str() );
          }
       }
