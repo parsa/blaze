@@ -86,6 +86,7 @@ DenseNonNumericTest::DenseNonNumericTest()
    testExtend();
    testReserve();
    testTranspose();
+   testCTranspose();
    testSwap();
    testIsDefault();
    testSubmatrix();
@@ -6723,6 +6724,170 @@ void DenseNonNumericTest::testTranspose()
       sym(2,2) = vec( 5 );
 
       sym = trans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n"
+                                     "( (   ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the SymmetricMatrix specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the SymmetricMatrix
+// specialization. Additionally, it performs a test of self-transpose via the \c ctrans()
+// function. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseNonNumericTest::testCTranspose()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via SymmetricMatrix::ctranspose()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym.ctranspose();
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n"
+                                     "( (   ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via ctrans()";
+
+      ST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = ctrans( sym );
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n"
+                                     "( (   ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major self-transpose via SymmetricMatrix::ctranspose()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym.ctranspose();
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 9UL );
+      checkNonZeros( sym, 7UL );
+      checkNonZeros( sym, 0UL, 2UL );
+      checkNonZeros( sym, 1UL, 2UL );
+      checkNonZeros( sym, 2UL, 3UL );
+
+      if( sym(0,0) != vec( 1 )   || !isDefault( sym(0,1) ) || sym(0,2) != vec( 2 ) ||
+          !isDefault( sym(1,0) ) || sym(1,1) != vec( 3 )   || sym(1,2) != vec( 4 ) ||
+          sym(2,0) != vec( 2 )   || sym(2,1) != vec( 4 )   || sym(2,2) != vec( 5 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( ( 1 ) (   ) ( 2 ) )\n"
+                                     "( (   ) ( 3 ) ( 4 ) )\n"
+                                     "( ( 2 ) ( 4 ) ( 5 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major self-transpose via ctrans()";
+
+      OST sym( 3UL );
+      sym(0,0) = vec( 1 );
+      sym(0,2) = vec( 2 );
+      sym(1,1) = vec( 3 );
+      sym(1,2) = vec( 4 );
+      sym(2,2) = vec( 5 );
+
+      sym = ctrans( sym );
 
       checkRows    ( sym, 3UL );
       checkColumns ( sym, 3UL );

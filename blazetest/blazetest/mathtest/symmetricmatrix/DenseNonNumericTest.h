@@ -108,6 +108,7 @@ class DenseNonNumericTest
    void testExtend      ();
    void testReserve     ();
    void testTranspose   ();
+   void testCTranspose  ();
    void testSwap        ();
    void testIsDefault   ();
    void testSubmatrix   ();
