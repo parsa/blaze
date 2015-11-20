@@ -242,6 +242,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Static array alignment test
    //=====================================================================================
 
+#if BOOST_VERSION >= 105400
    {
       const VectorType init( 7UL );
       const boost::container::static_vector<VectorType,7UL> vecs( 7UL, init );
@@ -262,6 +263,7 @@ void ClassTest::testAlignment( const std::string& type )
          }
       }
    }
+#endif
 
 
    //=====================================================================================
