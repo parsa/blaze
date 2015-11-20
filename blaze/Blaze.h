@@ -3212,7 +3212,7 @@ namespace blaze {}
 
 // \n \subsection matrix_operations_conjugate_transpose Conjugate Transpose
 //
-// The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermetian
+// The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
 // conjugate, or transjugate) can be computed via the \a ctrans() function:
 
    \code
@@ -3321,8 +3321,8 @@ namespace blaze {}
 // performance advantage in comparison to a general matrix multiplication, especially for large
 // matrices.
 //
-// The second example shows the SymmetricMatrix adaptor in a row-major dense matrix/sparse vector
-// multiplication:
+// The second example shows the \c SymmetricMatrix adaptor in a row-major dense matrix/sparse
+// vector multiplication:
 
    \code
    using blaze::DynamicMatrix;
@@ -3403,17 +3403,25 @@ namespace blaze {}
 // The following examples give an impression of several possible symmetric matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense symmetric matrix with static memory
-   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::SymmetricMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense symmetric matrix based on HybridMatrix
-   blaze::SymmetricMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::SymmetricMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense symmetric matrix based on DynamicMatrix
-   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::SymmetricMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed size row-major dense symmetric matrix based on CustomMatrix
+   blaze::SymmetricMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision symmetric matrix
-   blaze::SymmetricMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > E;
    \endcode
 
 // The storage order of a symmetric matrix is depending on the storage order of the adapted matrix
@@ -3913,17 +3921,25 @@ namespace blaze {}
 // The following examples give an impression of several possible Hermitian matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense Hermitian matrix with static memory
-   blaze::HermitianMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::HermitianMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense Hermitian matrix based on HybridMatrix
-   blaze::HermitianMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::HermitianMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense Hermitian matrix based on DynamicMatrix
-   blaze::HermitianMatrix< blaze::DynamicMatrix<std::complex<double>,blaze::rowMajor> > C;
+   blaze::HermitianMatrix< blaze::DynamicMatrix<std::complex<double>,rowMajor> > C;
+
+   // Definition of a fixed size row-major dense Hermitian matrix based on CustomMatrix
+   blaze::HermitianMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision complex Hermitian matrix
-   blaze::HermitianMatrix< blaze::CompressedMatrix<std::complex<float>,blaze::rowMajor> > D;
+   blaze::HermitianMatrix< blaze::CompressedMatrix<std::complex<float>,rowMajor> > E;
    \endcode
 
 // The storage order of a Hermitian matrix is depending on the storage order of the adapted matrix
@@ -4498,17 +4514,25 @@ namespace blaze {}
 // The following examples give an impression of several possible lower matrices:
 
    \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
    // Definition of a 3x3 row-major dense lower matrix with static memory
-   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor> > A;
+   blaze::LowerMatrix< blaze::StaticMatrix<int,3UL,3UL,rowMajor> > A;
 
    // Definition of a resizable column-major dense lower matrix based on HybridMatrix
-   blaze::LowerMatrix< blaze::HybridMatrix<float,4UL,4UL,blaze::columnMajor> B;
+   blaze::LowerMatrix< blaze::HybridMatrix<float,4UL,4UL,columnMajor> B;
 
    // Definition of a resizable row-major dense lower matrix based on DynamicMatrix
-   blaze::LowerMatrix< blaze::DynamicMatrix<double,blaze::rowMajor> > C;
+   blaze::LowerMatrix< blaze::DynamicMatrix<double,rowMajor> > C;
+
+   // Definition of a fixed size row-major dense lower matrix based on CustomMatrix
+   blaze::LowerMatrix< blaze::CustomMatrix<double,unaligned,unpadded,rowMajor> > D;
 
    // Definition of a compressed row-major single precision lower matrix
-   blaze::LowerMatrix< blaze::CompressedMatrix<float,blaze::rowMajor> > D;
+   blaze::LowerMatrix< blaze::CompressedMatrix<float,rowMajor> > E;
    \endcode
 
 // The storage order of a lower matrix is depending on the storage order of the adapted matrix
