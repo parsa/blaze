@@ -81,6 +81,7 @@ ProxyTest::ProxyTest()
    testReserve();
    testTrim();
    testTranspose();
+   testCTranspose();
    testSwap();
    testFind();
    testLowerBound();
@@ -1682,6 +1683,38 @@ void ProxyTest::testTranspose()
    DMV vec( 3UL, 1UL );
    vec[0].resize( 5UL, 3UL );
    vec[0].transpose();
+
+   checkSize    ( vec, 3UL );
+   checkCapacity( vec, 1UL );
+   checkNonZeros( vec, 1UL );
+
+   checkRows    ( vec[0],  3UL );
+   checkColumns ( vec[0],  5UL );
+   checkCapacity( vec[0], 15UL );
+   checkRows    ( vec[1],  0UL );
+   checkColumns ( vec[1],  0UL );
+   checkRows    ( vec[2],  0UL );
+   checkColumns ( vec[2],  0UL );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c ctranspose() member function of the VectorAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c ctranspose() member function of the VectorAccessProxy
+// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testCTranspose()
+{
+   test_ = "VectorAccessProxy::ctranspose()";
+
+   DMV vec( 3UL, 1UL );
+   vec[0].resize( 5UL, 3UL );
+   vec[0].ctranspose();
 
    checkSize    ( vec, 3UL );
    checkCapacity( vec, 1UL );
