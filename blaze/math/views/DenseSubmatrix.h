@@ -2176,32 +2176,30 @@ inline void DenseSubmatrix<MT,AF,SO>::reset( size_t i )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::runtime_error Invalid transpose of a lower matrix.
-// \exception std::runtime_error Invalid transpose of an upper matrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
 // This function transposes the dense submatrix in-place. Note that this function can only be used
 // for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// in case the underlying matrix is a lower or upper triangular matrix the function can only be
-// used in case the submatrix does not contain elements from the upper or lower part of the matrix,
-// respectively. The attempt to transpose a non-quadratic submatrix or an invalid part of a lower
-// or triangular matrix results in a \a std::runtime_error exception.
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT  // Type of the dense matrix
         , bool AF      // Alignment flag
         , bool SO >    // Storage order
 inline DenseSubmatrix<MT,AF,SO>& DenseSubmatrix<MT,AF,SO>::transpose()
 {
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -4900,30 +4898,28 @@ inline void DenseSubmatrix<MT,unaligned,true>::reset( size_t j )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::runtime_error Invalid transpose of a lower matrix.
-// \exception std::runtime_error Invalid transpose of an upper matrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
 // This function transposes the dense submatrix in-place. Note that this function can only be used
 // for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// in case the underlying matrix is a lower or upper triangular matrix the function can only be
-// used in case the submatrix does not contain elements from the upper or lower part of the matrix,
-// respectively. The attempt to transpose a non-quadratic submatrix or an invalid part of a lower
-// or triangular matrix results in a \a std::runtime_error exception.
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,unaligned,true>& DenseSubmatrix<MT,unaligned,true>::transpose()
 {
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -7327,30 +7323,28 @@ inline void DenseSubmatrix<MT,aligned,false>::reset( size_t i )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::runtime_error Invalid transpose of a lower matrix.
-// \exception std::runtime_error Invalid transpose of an upper matrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
 // This function transposes the dense submatrix in-place. Note that this function can only be used
 // for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// in case the underlying matrix is a lower or upper triangular matrix the function can only be
-// used in case the submatrix does not contain elements from the upper or lower part of the matrix,
-// respectively. The attempt to transpose a non-quadratic submatrix or an invalid part of a lower
-// or triangular matrix results in a \a std::runtime_error exception.
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,false>& DenseSubmatrix<MT,aligned,false>::transpose()
 {
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
@@ -9707,30 +9701,28 @@ inline void DenseSubmatrix<MT,aligned,true>::reset( size_t j )
 /*!\brief Transposing the submatrix.
 //
 // \return Reference to the transposed submatrix.
-// \exception std::runtime_error Invalid transpose of a non-quadratic submatrix.
-// \exception std::runtime_error Invalid transpose of a lower matrix.
-// \exception std::runtime_error Invalid transpose of an upper matrix.
+// \exception std::logic_error Invalid transpose of a non-quadratic submatrix.
+// \exception std::logic_error Invalid transpose operation.
 //
 // This function transposes the dense submatrix in-place. Note that this function can only be used
 // for quadratic submatrices, i.e. if the number of rows is equal to the number of columns. Also,
-// in case the underlying matrix is a lower or upper triangular matrix the function can only be
-// used in case the submatrix does not contain elements from the upper or lower part of the matrix,
-// respectively. The attempt to transpose a non-quadratic submatrix or an invalid part of a lower
-// or triangular matrix results in a \a std::runtime_error exception.
+// the function fails if ...
+//
+//  - ... the submatrix contains elements from the upper part of the underlying lower matrix;
+//  - ... the submatrix contains elements from the lower part of the underlying upper matrix;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian matrix.
+//
+// In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT >  // Type of the dense matrix
 inline DenseSubmatrix<MT,aligned,true>& DenseSubmatrix<MT,aligned,true>::transpose()
 {
-   if( rows() != columns() ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a non-quadratic submatrix" );
+   if( m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
    }
 
-   if( IsLower<MT>::value && ( row_ + 1UL < column_ + n_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of a lower matrix" );
-   }
-
-   if( IsUpper<MT>::value && ( column_ + 1UL < row_ + m_ ) ) {
-      BLAZE_THROW_RUNTIME_ERROR( "Invalid transpose of an upper matrix" );
+   if( !tryTranspose( matrix_, row_, column_, n_ ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
    typename DerestrictTrait<This>::Type left( derestrict( *this ) );
