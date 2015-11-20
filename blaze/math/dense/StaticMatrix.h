@@ -50,6 +50,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -342,6 +343,7 @@ class StaticMatrix : public DenseMatrix< StaticMatrix<Type,M,N,SO>, SO >
                               inline void          reset();
                               inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
+                              inline StaticMatrix& ctranspose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
    //@}
@@ -2171,7 +2173,7 @@ inline void StaticMatrix<Type,M,N,SO>::reset( size_t i )
 
 
 //*************************************************************************************************
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 //
@@ -2191,6 +2193,38 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::transpose()
    for( size_t i=1UL; i<M; ++i )
       for( size_t j=0UL; j<i; ++j )
          swap( v_[i*NN+j], v_[j*NN+i] );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+//
+// This function transposes the static matrix in-place. Note that this function can only be used
+// for square static matrices, i.e. if \a M is equal to N.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::ctranspose()
+{
+   using std::swap;
+
+   BLAZE_STATIC_ASSERT( M == N );
+
+   for( size_t i=0UL; i<M; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         swap( v_[i*NN+j], v_[j*NN+i] );
+         v_[i*NN+j] = conj( v_[i*NN+j] );
+         v_[j*NN+i] = conj( v_[j*NN+i] );
+      }
+      v_[i*NN+i] = conj( v_[i*NN+i] );
+   }
 
    return *this;
 }
@@ -3357,6 +3391,7 @@ class StaticMatrix<Type,M,N,true> : public DenseMatrix< StaticMatrix<Type,M,N,tr
                               inline void          reset();
                               inline void          reset( size_t i );
                               inline StaticMatrix& transpose();
+                              inline StaticMatrix& ctranspose();
    template< typename Other > inline StaticMatrix& scale( const Other& scalar );
                               inline void          swap( StaticMatrix& m ) /* throw() */;
    //@}
@@ -5180,7 +5215,7 @@ inline void StaticMatrix<Type,M,N,true>::reset( size_t j )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 //
@@ -5199,6 +5234,39 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::transpose()
    for( size_t j=1UL; j<N; ++j )
       for( size_t i=0UL; i<j; ++i )
          swap( v_[i+j*MM], v_[j+i*MM] );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+//
+// This function transposes the static matrix in-place. Note that this function can only be used
+// for square static matrices, i.e. if \a M is equal to N.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::ctranspose()
+{
+   using std::swap;
+
+   BLAZE_STATIC_ASSERT( M == N );
+
+   for( size_t j=0UL; j<N; ++j ) {
+      for( size_t i=0UL; i<j; ++i ) {
+         swap( v_[i+j*MM], v_[j+i*MM] );
+         v_[i+j*MM] = conj( v_[i+j*MM] );
+         v_[j+i*MM] = conj( v_[j+i*MM] );
+      }
+      v_[j+j*MM] = conj( v_[j+j*MM] );
+   }
 
    return *this;
 }
