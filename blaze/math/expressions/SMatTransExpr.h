@@ -431,7 +431,7 @@ class SMatTransExpr : public SparseMatrix< SMatTransExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return sm_.canAlias( alias );
+      return sm_.isAliased( alias );
    }
    //**********************************************************************************************
 
