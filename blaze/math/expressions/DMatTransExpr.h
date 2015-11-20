@@ -551,7 +551,7 @@ class DMatTransExpr : public DenseMatrix< DMatTransExpr<MT,SO>, SO >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const {
-      return dm_.canAlias( alias );
+      return dm_.isAliased( alias );
    }
    //**********************************************************************************************
 
