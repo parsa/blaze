@@ -487,7 +487,7 @@ namespace blaze {}
    using blaze::columnVector;
    using blaze::rowVector;
 
-   // Setup of the 3-dimensional column vector
+   // Setup of the 3-dimensional dense column vector
    //
    //    ( 1 )
    //    ( 2 )
@@ -498,7 +498,7 @@ namespace blaze {}
    a[1] = 2;
    a[2] = 3;
 
-   // Setup of the 3-dimensional row vector
+   // Setup of the 3-dimensional dense row vector
    //
    //    ( 4  5  6 )
    //
@@ -555,7 +555,7 @@ namespace blaze {}
 // \n \section vector_types_static_vector StaticVector
 // <hr>
 //
-// The blaze::StaticVector class template is the representation of a fixed-size vector with
+// The blaze::StaticVector class template is the representation of a fixed size vector with
 // statically allocated elements of arbitrary type. It can be included via the header file
 
    \code
@@ -632,7 +632,7 @@ namespace blaze {}
 // <hr>
 //
 // The blaze::HybridVector class template combines the advantages of the blaze::StaticVector and
-// the blaze::DynamicVector class templates. It represents a fixed-size vector with statically
+// the blaze::DynamicVector class templates. It represents a fixed size vector with statically
 // allocated elements, but still can be dynamically resized (within the bounds of the available
 // memory). It can be included via the header file
 
@@ -1750,17 +1750,17 @@ namespace blaze {}
 // \n \section matrices_general General Concepts
 // <hr>
 //
-// The \b Blaze library currently offers three dense matrix types (\ref matrix_types_static_matrix,
-// \ref matrix_types_hybrid_matrix and \ref matrix_types_dynamic_matrix) and one sparse matrix type
-// (\ref matrix_types_compressed_matrix). All matrices can either be stored as row-major matrices
-// or column-major matrices:
+// The \b Blaze library currently offers four dense matrix types (\ref matrix_types_static_matrix,
+// \ref matrix_types_dynamic_matrix, \ref matrix_types_hybrid_matrix, and \ref matrix_types_custom_matrix)
+// and one sparse matrix type (\ref matrix_types_compressed_matrix). All matrices can either be
+// stored as row-major matrices or column-major matrices:
 
    \code
    using blaze::DynamicMatrix;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   // Setup of the 2x3 row-major matrix
+   // Setup of the 2x3 row-major dense matrix
    //
    //    ( 1  2  3 )
    //    ( 4  5  6 )
@@ -1769,7 +1769,7 @@ namespace blaze {}
    A(0,0) = 1;   A(0,1) = 2;   A(0,2) = 3;
    A(1,0) = 4;   A(1,1) = 5;   A(1,2) = 6;
 
-   // Setup of the 3x2 column-major matrix
+   // Setup of the 3x2 column-major dense matrix
    //
    //    ( 1  4 )
    //    ( 2  5 )
@@ -1828,7 +1828,7 @@ namespace blaze {}
 // \n \section matrix_types_static_matrix StaticMatrix
 // <hr>
 //
-// The blaze::StaticMatrix class template is the representation of a fixed-size matrix with
+// The blaze::StaticMatrix class template is the representation of a fixed size matrix with
 // statically allocated elements of arbitrary type. It can be included via the header file
 
    \code
@@ -1907,7 +1907,7 @@ namespace blaze {}
 // <hr>
 //
 // The HybridMatrix class template combines the flexibility of a dynamically sized matrix with
-// the efficiency and performance of a fixed-size matrix. It is implemented as a crossing between
+// the efficiency and performance of a fixed size matrix. It is implemented as a crossing between
 // the blaze::StaticMatrix and the blaze::DynamicMatrix class templates: Similar to the static
 // matrix it uses static stack memory instead of dynamically allocated memory and similar to the
 // dynamic matrix it can be resized (within the extend of the static memory). It can be included
