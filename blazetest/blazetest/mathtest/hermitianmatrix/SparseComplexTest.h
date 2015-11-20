@@ -113,6 +113,7 @@ class SparseComplexTest
    void testReserve     ();
    void testTrim        ();
    void testTranspose   ();
+   void testCTranspose  ();
    void testSwap        ();
    void testFind        ();
    void testLowerBound  ();
