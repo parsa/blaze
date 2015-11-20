@@ -57,6 +57,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Move.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -544,6 +545,7 @@ class SymmetricMatrix<MT,SO,false,false>
                               inline void             trim();
                               inline void             trim( size_t i );
                               inline SymmetricMatrix& transpose();
+                              inline SymmetricMatrix& ctranspose();
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
    template< typename Other > inline SymmetricMatrix& scaleDiagonal( Other scale );
                               inline void             swap( SymmetricMatrix& m ) /* throw() */;
@@ -1922,7 +1924,7 @@ inline void SymmetricMatrix<MT,SO,false,false>::trim( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the symmetric matrix.
+/*!\brief In-place transpose of the symmetric matrix.
 //
 // \return Reference to the transposed matrix.
 */
@@ -1930,6 +1932,28 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline SymmetricMatrix<MT,SO,false,false>& SymmetricMatrix<MT,SO,false,false>::transpose()
 {
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the symmetric matrix.
+//
+// \return Reference to the transposed matrix.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline SymmetricMatrix<MT,SO,false,false>& SymmetricMatrix<MT,SO,false,false>::ctranspose()
+{
+   for( size_t i=0UL; i<rows(); ++i ) {
+      const typename MatrixType::Iterator last( matrix_.upperBound(i,i) );
+      for( typename MatrixType::Iterator element=matrix_.begin(i); element!=last; ++element )
+         *element->value() = conj( *element->value() );
+   }
+
    return *this;
 }
 /*! \endcond */
