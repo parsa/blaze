@@ -52,6 +52,7 @@
 #include <blaze/math/Functions.h>
 #include <blaze/math/Intrinsics.h>
 #include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -334,6 +335,7 @@ class HybridMatrix : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
                                      void          resize ( size_t m, size_t n, bool preserve=true );
                               inline void          extend ( size_t m, size_t n, bool preserve=true );
                               inline HybridMatrix& transpose();
+                              inline HybridMatrix& ctranspose();
    template< typename Other > inline HybridMatrix& scale( const Other& scalar );
                               inline void          swap( HybridMatrix& m ) /* throw() */;
    //@}
@@ -1710,7 +1712,7 @@ inline void HybridMatrix<Type,M,N,SO>::extend( size_t m, size_t n, bool preserve
 
 
 //*************************************************************************************************
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 // \exception std::logic_error Impossible transpose operation.
@@ -1736,6 +1738,62 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
    for( size_t i=1UL; i<maxsize; ++i )
       for( size_t j=0UL; j<i; ++j )
          swap( v_[i*NN+j], v_[j*NN+i] );
+
+   if( IsVectorizable<Type>::value && m_ < n_ ) {
+      for( size_t i=0UL; i<m_; ++i ) {
+         for( size_t j=m_; j<n_; ++j ) {
+            v_[i*NN+j] = Type();
+         }
+      }
+   }
+
+   if( IsVectorizable<Type>::value && m_ > n_ ) {
+      for( size_t i=n_; i<m_; ++i ) {
+         for( size_t j=0UL; j<n_; ++j ) {
+            v_[i*NN+j] = Type();
+         }
+      }
+   }
+
+   swap( m_, n_ );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+// \exception std::logic_error Impossible transpose operation.
+//
+// This function transposes the hybrid matrix in-place. Note that this function can only be used
+// on hybrid matrices whose current dimensions allow an in-place transpose operation. In case the
+// current number of rows is larger than the maximum number of columns or if the current number
+// of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N       // Number of columns
+        , bool SO >      // Storage order
+inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
+{
+   using std::swap;
+
+   if( m_ > N || n_ > M ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+   const size_t maxsize( max( m_, n_ ) );
+   for( size_t i=0UL; i<maxsize; ++i ) {
+      for( size_t j=0UL; j<i; ++j ) {
+         swap( v_[i*NN+j], v_[j*NN+i] );
+         v_[i*NN+j] = conj( v_[i*NN+j] );
+         v_[j*NN+i] = conj( v_[j*NN+i] );
+      }
+      v_[i*NN+i] = conj( v_[i*NN+i] );
+   }
 
    if( IsVectorizable<Type>::value && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
@@ -2914,6 +2972,7 @@ class HybridMatrix<Type,M,N,true> : public DenseMatrix< HybridMatrix<Type,M,N,tr
                                      void          resize ( size_t m, size_t n, bool preserve=true );
                               inline void          extend ( size_t m, size_t n, bool preserve=true );
                               inline HybridMatrix& transpose();
+                              inline HybridMatrix& ctranspose();
    template< typename Other > inline HybridMatrix& scale( const Other& scalar );
                               inline void          swap( HybridMatrix& m ) /* throw() */;
    //@}
@@ -4276,7 +4335,7 @@ inline void HybridMatrix<Type,M,N,true>::extend( size_t m, size_t n, bool preser
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Transposing the matrix.
+/*!\brief In-place transpose of the matrix.
 //
 // \return Reference to the transposed matrix.
 // \exception std::logic_error Impossible transpose operation.
@@ -4301,6 +4360,61 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
    for( size_t j=1UL; j<maxsize; ++j )
       for( size_t i=0UL; i<j; ++i )
          swap( v_[i+j*MM], v_[j+i*MM] );
+
+   if( IsVectorizable<Type>::value && n_ < m_ ) {
+      for( size_t j=0UL; j<n_; ++j ) {
+         for( size_t i=n_; i<m_; ++i ) {
+            v_[i+j*MM] = Type();
+         }
+      }
+   }
+
+   if( IsVectorizable<Type>::value && n_ > m_ ) {
+      for( size_t j=m_; j<n_; ++j )
+         for( size_t i=0UL; i<m_; ++i )
+            v_[i+j*MM] = Type();
+   }
+
+   swap( m_, n_ );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the matrix.
+//
+// \return Reference to the transposed matrix.
+// \exception std::logic_error Impossible transpose operation.
+//
+// This function transposes the hybrid matrix in-place. Note that this function can only be used
+// on hybrid matrices whose current dimensions allow an in-place transpose operation. In case the
+// current number of rows is larger than the maximum number of columns or if the current number
+// of columns is larger than the maximum number of rows, an \a std::logic_error is thrown.
+*/
+template< typename Type  // Data type of the matrix
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
+{
+   using std::swap;
+
+   if( m_ > N || n_ > M ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+   const size_t maxsize( max( m_, n_ ) );
+   for( size_t j=0UL; j<maxsize; ++j ) {
+      for( size_t i=0UL; i<j; ++i ) {
+         swap( v_[i+j*MM], v_[j+i*MM] );
+         v_[i+j*MM] = conj( v_[i+j*MM] );
+         v_[j+i*MM] = conj( v_[j+i*MM] );
+      }
+      v_[j+j*MM] = conj( v_[j+j*MM] );
+   }
 
    if( IsVectorizable<Type>::value && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
