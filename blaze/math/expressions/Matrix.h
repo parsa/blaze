@@ -554,7 +554,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix )
 {
-   matrix.transpose();
+   (~matrix).transpose();
 }
 //*************************************************************************************************
 
@@ -580,7 +580,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix )
 {
-   matrix.ctranspose();
+   (~matrix).ctranspose();
 }
 //*************************************************************************************************
 
