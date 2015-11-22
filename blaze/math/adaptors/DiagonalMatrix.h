@@ -780,6 +780,8 @@ inline bool tryTranspose( const DiagonalMatrix<MT,SO,DF>& matrix, size_t row, si
    BLAZE_INTERNAL_ASSERT( row + n <= (~matrix).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~matrix).columns(), "Invalid column access index" );
 
+   UNUSED_PARAMETERS( matrix, n );
+
    return ( row == column );
 }
 /*! \endcond */

@@ -866,6 +866,8 @@ inline bool tryTranspose( const StrictlyUpperMatrix<MT,SO,DF>& matrix,
    BLAZE_INTERNAL_ASSERT( row + n <= (~matrix).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~matrix).columns(), "Invalid column access index" );
 
+   UNUSED_PARAMETER( matrix );
+
    return ( row + n <= column );
 }
 /*! \endcond */

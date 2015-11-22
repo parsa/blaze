@@ -808,6 +808,8 @@ inline bool tryTranspose( const UpperMatrix<MT,SO,DF>& matrix, size_t row, size_
    BLAZE_INTERNAL_ASSERT( row + n <= (~matrix).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~matrix).columns(), "Invalid column access index" );
 
+   UNUSED_PARAMETER( matrix );
+
    return ( row + n <= column + 1UL );
 }
 /*! \endcond */
