@@ -102,7 +102,7 @@ ClassTest::ClassTest()
    testAssignment();
    testAddAssign();
    testSubAssign();
-   //testMultAssign();
+   testMultAssign();
    testScaling();
    testFunctionCall();
    testIterator();
