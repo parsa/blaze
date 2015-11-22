@@ -800,7 +800,7 @@ inline const SVecTransExpr<VT,!TF> trans( const SparseVector<VT,TF>& sv )
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
-inline typename SVecConjExpr<VT,TF>::Operand trans( const SVecConjExpr<VT,TF>& sv )
+inline typename SVecTransExpr<VT,TF>::Operand trans( const SVecTransExpr<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
