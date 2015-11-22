@@ -916,7 +916,7 @@ inline const DVecTransExpr<VT,!TF> trans( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline typename DVecConjExpr<VT,TF>::Operand trans( const DVecConjExpr<VT,TF>& dv )
+inline typename DVecTransExpr<VT,TF>::Operand trans( const DVecTransExpr<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
