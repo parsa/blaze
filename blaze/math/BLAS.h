@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/BLAS.h
-//  \brief Header file for all type traits
+//  \brief Header file for BLAS functionality
 //
 //  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
 //
