@@ -40,7 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/shims/Square.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/Complex.h>
 
 
 namespace blaze {
@@ -86,18 +88,75 @@ BLAZE_ALWAYS_INLINE double inv( double a )
 
 
 //*************************************************************************************************
-/*!\brief Inverting the given long double value.
+/*!\brief Inverting the given extended precision value.
 // \ingroup math_shims
 //
-// \param a The long double value to be inverted.
+// \param a The extended precision value to be inverted.
 // \return The inverse of the given value.
 //
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
-// data type. For long double floating point values this results in \f$ \frac{1}{a} \f$.
+// data type. For extended precision floating point values this results in \f$ \frac{1}{a} \f$.
 */
 BLAZE_ALWAYS_INLINE long double inv( long double a )
 {
    return ( 1.0L / a );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inverting the given single precision complex.
+// \ingroup math_shims
+//
+// \param a The single precision complex to be inverted.
+// \return The inverse of the given value.
+//
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
+// data type. For a single precision floating point complex number \f$ z = x + yi \f$ this
+// results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+*/
+BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a )
+{
+   const float tmp( 1.0F / ( sq( real(a) ) + sq( imag(a) ) ) );
+   return complex<float>( tmp*real(a), -tmp*imag(a) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inverting the given double precision complex.
+// \ingroup math_shims
+//
+// \param a The double precision complex to be inverted.
+// \return The inverse of the given value.
+//
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
+// data type. For a double precision floating point complex number \f$ z = x + yi \f$ this
+// results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+*/
+BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a )
+{
+   const double tmp( 1.0 / ( sq( real(a) ) + sq( imag(a) ) ) );
+   return complex<double>( tmp*real(a), -tmp*imag(a) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inverting the given extended precision complex.
+// \ingroup math_shims
+//
+// \param a The extended precision complex to be inverted.
+// \return The inverse of the given value.
+//
+// The \a inv shim represents an abstract interface for inverting a value/object of any given
+// data type. For an extended precision floating point complex number \f$ z = x + yi \f$ this
+// results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+*/
+BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a )
+{
+   const long double tmp( 1.0L / ( sq( real(a) ) + sq( imag(a) ) ) );
+   return complex<long double>( tmp*real(a), -tmp*imag(a) );
 }
 //*************************************************************************************************
 
