@@ -42,6 +42,7 @@
 
 #include <blaze/math/shims/Square.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 
 
@@ -62,9 +63,12 @@ namespace blaze {
 //
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For single precision floating point values this results in \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE float inv( float a )
 {
+   BLAZE_USER_ASSERT( a != 0.0F, "Division by zero detected" );
    return ( 1.0F / a );
 }
 //*************************************************************************************************
@@ -79,9 +83,12 @@ BLAZE_ALWAYS_INLINE float inv( float a )
 //
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For double precision floating point values this results in \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE double inv( double a )
 {
+   BLAZE_USER_ASSERT( a != 0.0, "Division by zero detected" );
    return ( 1.0 / a );
 }
 //*************************************************************************************************
@@ -96,9 +103,12 @@ BLAZE_ALWAYS_INLINE double inv( double a )
 //
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For extended precision floating point values this results in \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE long double inv( long double a )
 {
+   BLAZE_USER_ASSERT( a != 0.0L, "Division by zero detected" );
    return ( 1.0L / a );
 }
 //*************************************************************************************************
@@ -114,11 +124,16 @@ BLAZE_ALWAYS_INLINE long double inv( long double a )
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For a single precision floating point complex number \f$ z = x + yi \f$ this
 // results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a )
 {
-   const float tmp( 1.0F / ( sq( real(a) ) + sq( imag(a) ) ) );
-   return complex<float>( tmp*real(a), -tmp*imag(a) );
+   const float abs( sq( real(a) ) + sq( imag(a) ) );
+   BLAZE_USER_ASSERT( abs != 0.0F, "Division by zero detected" );
+
+   const float iabs( 1.0F / abs );
+   return complex<float>( iabs*real(a), -iabs*imag(a) );
 }
 //*************************************************************************************************
 
@@ -133,11 +148,16 @@ BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a )
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For a double precision floating point complex number \f$ z = x + yi \f$ this
 // results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a )
 {
-   const double tmp( 1.0 / ( sq( real(a) ) + sq( imag(a) ) ) );
-   return complex<double>( tmp*real(a), -tmp*imag(a) );
+   const double abs( sq( real(a) ) + sq( imag(a) ) );
+   BLAZE_USER_ASSERT( abs != 0.0, "Division by zero detected" );
+
+   const double iabs( 1.0 / abs );
+   return complex<double>( iabs*real(a), -iabs*imag(a) );
 }
 //*************************************************************************************************
 
@@ -152,11 +172,16 @@ BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a )
 // The \a inv shim represents an abstract interface for inverting a value/object of any given
 // data type. For an extended precision floating point complex number \f$ z = x + yi \f$ this
 // results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a )
 {
-   const long double tmp( 1.0L / ( sq( real(a) ) + sq( imag(a) ) ) );
-   return complex<long double>( tmp*real(a), -tmp*imag(a) );
+   const long double abs( sq( real(a) ) + sq( imag(a) ) );
+   BLAZE_USER_ASSERT( abs != 0.0L, "Division by zero detected" );
+
+   const long double iabs( 1.0L / abs );
+   return complex<long double>( iabs*real(a), -iabs*imag(a) );
 }
 //*************************************************************************************************
 
@@ -171,6 +196,8 @@ BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any
 // given data type in-place. For single precision floating point values this results in
 // \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( float& a )
 {
@@ -189,6 +216,8 @@ BLAZE_ALWAYS_INLINE void invert( float& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any
 // given data type in-place. For double precision floating point values this results in
 // \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( double& a )
 {
@@ -207,6 +236,8 @@ BLAZE_ALWAYS_INLINE void invert( double& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any
 // given data type in-place. For extended precision floating point values this results in
 // \f$ \frac{1}{a} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( long double& a )
 {
@@ -225,6 +256,8 @@ BLAZE_ALWAYS_INLINE void invert( long double& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any given
 // data type in-place. For a single precision floating point complex number \f$ z = x + yi \f$
 // this results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( complex<float>& a )
 {
@@ -243,6 +276,8 @@ BLAZE_ALWAYS_INLINE void invert( complex<float>& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any given
 // data type in-place. For a double precision floating point complex number \f$ z = x + yi \f$
 // this results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( complex<double>& a )
 {
@@ -261,6 +296,8 @@ BLAZE_ALWAYS_INLINE void invert( complex<double>& a )
 // The \a invert shim represents an abstract interface for inverting a value/object of any given
 // data type in-place. For an extended precision floating point complex number \f$ z = x + yi \f$
 // this results in \f$ \frac{\overline{z}}{x^2+y^2} \f$.
+//
+// \note: A division by zero is only checked by an user assert.
 */
 BLAZE_ALWAYS_INLINE void invert( complex<long double>& a )
 {
