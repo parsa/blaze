@@ -52,6 +52,7 @@
 #include <blazetest/mathtest/dynamicmatrix/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
+#include <blazetest/system/LAPACK.h>
 
 
 namespace blazetest {
@@ -113,6 +114,7 @@ ClassTest::ClassTest()
    testReserve();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testIsDefault();
 }
@@ -7674,7 +7676,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DynamicMatrix::transpose()";
+      test_ = "Row-major self-transpose via transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -7688,7 +7690,7 @@ void ClassTest::testTranspose()
          mat(2,2) = 7;
          mat(2,4) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  5UL );
          checkColumns ( mat,  3UL );
@@ -7727,7 +7729,7 @@ void ClassTest::testTranspose()
          mat(4,0) = 3;
          mat(4,2) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  5UL );
@@ -7835,7 +7837,7 @@ void ClassTest::testTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DynamicMatrix::transpose()";
+      test_ = "Column-major self-transpose via transpose()";
 
       // Self-transpose of a 3x5 matrix
       {
@@ -7849,7 +7851,7 @@ void ClassTest::testTranspose()
          mat(2,2) = 7;
          mat(2,4) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  5UL );
          checkColumns ( mat,  3UL );
@@ -7886,7 +7888,7 @@ void ClassTest::testTranspose()
          mat(4,0) = 3;
          mat(4,2) = 8;
 
-         mat.transpose();
+         transpose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  5UL );
@@ -8010,7 +8012,7 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Row-major self-transpose via DynamicMatrix::ctranspose()";
+      test_ = "Row-major self-transpose via ctranspose()";
 
       typedef blaze::complex<int>  cplx;
 
@@ -8026,7 +8028,7 @@ void ClassTest::testCTranspose()
          mat(2,2) = cplx(7,-7);
          mat(2,4) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat,  5UL );
          checkColumns ( mat,  3UL );
@@ -8069,7 +8071,7 @@ void ClassTest::testCTranspose()
          mat(4,0) = cplx(3,-3);
          mat(4,2) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  5UL );
@@ -8187,7 +8189,7 @@ void ClassTest::testCTranspose()
    //=====================================================================================
 
    {
-      test_ = "Column-major self-transpose via DynamicMatrix::ctranspose()";
+      test_ = "Column-major self-transpose via ctranspose()";
 
       typedef blaze::complex<int>  cplx;
 
@@ -8203,7 +8205,7 @@ void ClassTest::testCTranspose()
          mat(2,2) = cplx(7,-7);
          mat(2,4) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat,  5UL );
          checkColumns ( mat,  3UL );
@@ -8244,7 +8246,7 @@ void ClassTest::testCTranspose()
          mat(4,0) = cplx(3,-3);
          mat(4,2) = cplx(8,-8);
 
-         mat.ctranspose();
+         ctranspose( mat );
 
          checkRows    ( mat,  3UL );
          checkColumns ( mat,  5UL );
@@ -8357,6 +8359,103 @@ void ClassTest::testCTranspose()
          }
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the DynamicMatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function with the DynamicMatrix class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ClassTest::testInvert()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major DynamicMatrix inversion";
+
+      blaze::DynamicMatrix<double,blaze::rowMajor> mat( 3UL, 3UL, 0.0 );
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 3UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major DynamicMatrix inversion";
+
+      blaze::DynamicMatrix<double,blaze::columnMajor> mat( 3UL, 3UL, 0.0 );
+      mat(0,0) = 1.0;
+      mat(1,1) = 1.0;
+      mat(2,0) = 1.0;
+      mat(2,1) = 1.0;
+      mat(2,2) = 1.0;
+
+      invert( mat );
+
+      checkRows    ( mat, 3UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 9UL );
+      checkNonZeros( mat, 5UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 2UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) !=  1.0 || mat(0,1) !=  0.0 || mat(0,2) != 0.0 ||
+          mat(1,0) !=  0.0 || mat(1,1) !=  1.0 || mat(1,2) != 0.0 ||
+          mat(2,0) != -1.0 || mat(2,1) != -1.0 || mat(2,2) != 1.0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Inversion failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(  1  0  0 )\n"
+                                     "(  0  1  0 )\n"
+                                     "( -1 -1  1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
 }
 //*************************************************************************************************
 
