@@ -82,6 +82,7 @@ ProxyTest::ProxyTest()
    testTrim();
    testTranspose();
    testCTranspose();
+   testInvert();
    testSwap();
    testFind();
    testLowerBound();
@@ -3238,13 +3239,13 @@ void ProxyTest::testTrim()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c transpose() member function of the MatrixAccessProxy class template.
+/*!\brief Test of the \c transpose() functions of the MatrixAccessProxy class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c transpose() member function of the MatrixAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c transpose() functions of the MatrixAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ProxyTest::testTranspose()
 {
@@ -3258,6 +3259,29 @@ void ProxyTest::testTranspose()
       DMM mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 5UL, 3UL );
       mat(1,1).transpose();
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
+
+   {
+      test_ = "Row-major transpose( MatrixAccessProxy )";
+
+      DMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      transpose( mat(1,1) );
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 2UL );
@@ -3302,18 +3326,41 @@ void ProxyTest::testTranspose()
       checkColumns ( mat(1,1),  5UL );
       checkCapacity( mat(1,1), 15UL );
    }
+
+   {
+      test_ = "Column-major transpose( MatrixAccessProxy )";
+
+      ODMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      transpose( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c ctranspose() member function of the MatrixAccessProxy class template.
+/*!\brief Test of the \c ctranspose() functions of the MatrixAccessProxy class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c ctranspose() member function of the MatrixAccessProxy
-// class template. In case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c ctranspose() functions of the MatrixAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ProxyTest::testCTranspose()
 {
@@ -3344,13 +3391,36 @@ void ProxyTest::testCTranspose()
       checkCapacity( mat(1,1), 15UL );
    }
 
+   {
+      test_ = "Row-major ctranspose( MatrixAccessProxy )";
+
+      DMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      ctranspose( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
+
 
    //=====================================================================================
    // Column-major matrix tests
    //=====================================================================================
 
    {
-      test_ = "Column-major MatrixAccessProxy::ctranspose()";
+      test_ = "Column-major MatrixAccessProxy ctranspose()";
 
       ODMM mat( 2UL, 2UL, 1UL );
       mat(1,1).resize( 5UL, 3UL );
@@ -3370,6 +3440,108 @@ void ProxyTest::testCTranspose()
       checkRows    ( mat(1,1),  3UL );
       checkColumns ( mat(1,1),  5UL );
       checkCapacity( mat(1,1), 15UL );
+   }
+
+   {
+      test_ = "Column-major ctranspose( MatrixAccessProxy )";
+
+      ODMM mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 5UL, 3UL );
+      ctranspose( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0),  0UL );
+      checkColumns ( mat(0,0),  0UL );
+      checkRows    ( mat(0,1),  0UL );
+      checkColumns ( mat(0,1),  0UL );
+      checkRows    ( mat(1,0),  0UL );
+      checkColumns ( mat(1,0),  0UL );
+      checkRows    ( mat(1,1),  3UL );
+      checkColumns ( mat(1,1),  5UL );
+      checkCapacity( mat(1,1), 15UL );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c invert() function with the MatrixAccessProxy class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c invert() function with the MatrixAccessProxy class
+// template. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ProxyTest::testInvert()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major invert( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::rowMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major invert( MatrixAccessProxy )";
+
+      blaze::CompressedMatrix< blaze::DynamicMatrix<double>, blaze::columnMajor > mat( 2UL, 2UL, 1UL );
+      mat(1,1).resize( 3UL, 3UL );
+      mat(1,1) = 0.0;
+      mat(1,1)(0,0) = 1.0;
+      mat(1,1)(1,1) = 1.0;
+      mat(1,1)(2,2) = 1.0;
+      invert( mat(1,1) );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 2UL );
+      checkCapacity( mat, 1UL );
+      checkNonZeros( mat, 1UL );
+
+      checkRows    ( mat(0,0), 0UL );
+      checkColumns ( mat(0,0), 0UL );
+      checkRows    ( mat(0,1), 0UL );
+      checkColumns ( mat(0,1), 0UL );
+      checkRows    ( mat(1,0), 0UL );
+      checkColumns ( mat(1,0), 0UL );
+      checkRows    ( mat(1,1), 3UL );
+      checkColumns ( mat(1,1), 3UL );
+      checkCapacity( mat(1,1), 9UL );
+      checkNonZeros( mat(1,1), 3UL );
    }
 }
 //*************************************************************************************************
