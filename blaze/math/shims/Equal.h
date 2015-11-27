@@ -43,7 +43,6 @@
 #include <cmath>
 #include <boost/math/special_functions/next.hpp>
 #include <blaze/math/Accuracy.h>
-#include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Complex.h>
 
 
@@ -328,7 +327,7 @@ template< typename T1    // Type of the left-hand side complex value
         , typename T2 >  // Type of the right-hand side scalar value
 inline bool equal( complex<T1> a, T2 b )
 {
-   return equal( a.real(), b ) && isDefault( a.imag() );
+   return equal( real( a ), b ) && equal( imag( a ), T1() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -351,7 +350,7 @@ template< typename T1    // Type of the left-hand side scalar value
         , typename T2 >  // Type of the right-hand side complex value
 inline bool equal( T1 a, complex<T2> b )
 {
-   return equal( a, b.real() ) && isDefault( b.imag() );
+   return equal( a, real( b ) ) && equal( imag( b ), T2() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -374,7 +373,7 @@ template< typename T1    // Type of the left-hand side complex value
         , typename T2 >  // Type of the right-hand side complex value
 inline bool equal( complex<T1> a, complex<T2> b )
 {
-   return equal( a.real(), b.real() ) && equal( a.imag(), b.imag() );
+   return equal( real( a ), real( b ) ) && equal( imag( a ), imag( b ) );
 }
 /*! \endcond */
 //*************************************************************************************************
