@@ -91,7 +91,7 @@ intrinsics:
 lapack:
 	@echo
 	@echo "Building the LAPACK operation tests..."
-	@$(MAKE) --no-print-directory -C ./intrinsics $(MAKECMDGOALS)
+	@$(MAKE) --no-print-directory -C ./lapack $(MAKECMDGOALS)
 
 typetraits:
 	@echo
