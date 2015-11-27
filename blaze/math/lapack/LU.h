@@ -124,7 +124,7 @@ inline void zgetrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c A may already have been modified.
+// is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -183,7 +183,7 @@ inline void sgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c A may already have been modified.
+// is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -242,7 +242,7 @@ inline void dgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c A may already have been modified.
+// is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
@@ -302,7 +302,7 @@ inline void cgetrf( DenseMatrix<MT,SO>& A, int* ipiv )
 //        http://www.netlib.org/lapack/explore-html/
 //
 // \note This function does not provide any exception safety guarantee, i.e. in case an exception
-// is thrown, \c A may already have been modified.
+// is thrown \c A may already have been modified.
 // \note This function can only be used if the fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
 */
